@@ -10,7 +10,7 @@ JEXLER_DIR=`pwd`
 # assemble classpath
 CP="$JEXLER_DIR/`ls target/jexler-*.jar`"
 CP="$CP:`cat target/classpath`"
-echo "$CP"
+#echo "$CP"
 
 java -cp "$CP" net.jexler.JexlerMain
 
