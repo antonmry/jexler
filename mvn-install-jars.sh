@@ -9,4 +9,4 @@ cd "${0%/*}"
 mvn install:install-file -Dfile=jars/cron4j-2.2.5.jar -DgroupId=net.sf.cron4j \
     -DartifactId=cron4j -Dversion=2.2.5 -Dpackaging=jar
 
-echo - EXIT
+trap - EXIT
