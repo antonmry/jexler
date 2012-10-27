@@ -24,19 +24,19 @@ package net.jexler.core;
  */
 public interface JexlerSystem {
 
-    	/**
-	 * Startup system.
-	 */
-	void startup();
-	
-	/**
-	 * Shutdown system.
-	 */
-	void shutdown();
-	
-	/**
-	 * Block until shutdown.
-	 */
-	void waitForShutdown();
+        /**
+     * Startup system.
+     */
+    void startup();
+    
+    /**
+     * Shutdown system.
+     */
+    void shutdown();
+    
+    /**
+     * Block until shutdown.
+     */
+    void waitForShutdown();
 
 }

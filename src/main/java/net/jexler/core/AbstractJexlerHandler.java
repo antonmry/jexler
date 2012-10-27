@@ -39,36 +39,36 @@ public abstract class AbstractJexlerHandler implements JexlerHandler {
      * @param id id
      */
     public AbstractJexlerHandler(String id) {
-    		this.id = id;
-    		this.info = this.getClass().getName() + ":" + id;
+            this.id = id;
+            this.info = this.getClass().getName() + ":" + id;
     }
     
-	@Override
-	public void startup(JexlerSubmitter submitter) {
-		this.submitter = submitter;
-	}
+    @Override
+    public void startup(JexlerSubmitter submitter) {
+        this.submitter = submitter;
+    }
 
-	@Override
-	public boolean canHandle(JexlerMessage message) {
-		return false;
-	}
+    @Override
+    public boolean canHandle(JexlerMessage message) {
+        return false;
+    }
 
-	@Override
-	public void handle(JexlerMessage message) {
-	}
+    @Override
+    public void handle(JexlerMessage message) {
+    }
 
-	@Override
-	public void shutdown() {
-	}
-	
-	@Override
-	public String getId() {
-		return id;
-	}
-	
-	@Override
-	public String getInfo() {
-		return info;
-	}
+    @Override
+    public void shutdown() {
+    }
+    
+    @Override
+    public String getId() {
+        return id;
+    }
+    
+    @Override
+    public String getInfo() {
+        return info;
+    }
     
 }

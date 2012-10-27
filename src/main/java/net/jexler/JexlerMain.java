@@ -30,25 +30,25 @@ import org.slf4j.LoggerFactory;
 public final class JexlerMain
 {
     static final Logger log = LoggerFactory.getLogger(JexlerMain.class);
-    
+
     /**
      * Main method.
      * 
      * @param args command line arguments
      */
     public static void main(final String[] args) {
-    		System.out.println("Welcome to jexler.");
+            System.out.println("Welcome to jexler.");
         Thread.currentThread().setName("jexler");
         JexlerSystem system = JexlerSystemFactory.getSystem();
         system.startup();
         system.waitForShutdown();
         
-		// wait a little (just for testing in eclipse with slf4j log output)
-		try {
-			Thread.sleep(100);
-		} catch (InterruptedException e) {
-			// ignore
-		}
+        // wait a little (just for testing in eclipse with slf4j log output)
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            // ignore
+        }
         System.out.println("Jexler done OK.");
         System.exit(0);
     }

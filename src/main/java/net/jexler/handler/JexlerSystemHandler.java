@@ -31,11 +31,11 @@ import org.slf4j.LoggerFactory;
  */
 public class JexlerSystemHandler extends AbstractJexlerHandler {
 
-	public static enum Method {
-		SHUTDOWN;
-	}
+    public static enum Method {
+        SHUTDOWN;
+    }
 
-	static final Logger log = LoggerFactory.getLogger(JexlerSystemHandler.class);
+    static final Logger log = LoggerFactory.getLogger(JexlerSystemHandler.class);
 
     private JexlerSystem system;
     
@@ -45,31 +45,31 @@ public class JexlerSystemHandler extends AbstractJexlerHandler {
      * @param system system
      */
     public JexlerSystemHandler(String id, JexlerSystem system) {
-    		super(id);
-    		this.system = system;
+            super(id);
+            this.system = system;
     }
-	
-	@Override
-	public boolean canHandle(JexlerMessage message) {
-		return this.getClass() == message.get("destination.class")
-			&& this.getId().equals(message.get("destination.id"));
-	}
+    
+    @Override
+    public boolean canHandle(JexlerMessage message) {
+        return this.getClass() == message.get("destination.class")
+            && this.getId().equals(message.get("destination.id"));
+    }
 
-	@Override
-	public void handle(JexlerMessage message) {
-		Object methodObj = message.get("destination.method");
-		Method method = null;
-		try {
-			method = (Method)methodObj;
-		} catch (ClassCastException e) {
-		}
-		if (method == null) {
-			log.error("Unknown method " + methodObj);
-		} else {
-			switch (method) {
-				case SHUTDOWN: system.shutdown();
-			}
-		}
-	}
+    @Override
+    public void handle(JexlerMessage message) {
+        Object methodObj = message.get("destination.method");
+        Method method = null;
+        try {
+            method = (Method)methodObj;
+        } catch (ClassCastException e) {
+        }
+        if (method == null) {
+            log.error("Unknown method " + methodObj);
+        } else {
+            switch (method) {
+                case SHUTDOWN: system.shutdown();
+            }
+        }
+    }
 
 }

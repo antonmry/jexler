@@ -24,28 +24,28 @@ package net.jexler.core;
  */
 public interface JexlerHandler {
 
-	/**
-	 * Startup handler.
-	 * Writes possibly messages to submitter,
-	 * even after call returned.
-	 * @param submitter
-	 */
-	void startup(JexlerSubmitter submitter);
-	
-	/**
-	 * Say if can handle message or not (does nothing more).
-	 * @param message message
-	 * @return true if can handle
-	 */
+    /**
+     * Startup handler.
+     * Writes possibly messages to submitter,
+     * even after call returned.
+     * @param submitter
+     */
+    void startup(JexlerSubmitter submitter);
+    
+    /**
+     * Say if can handle message or not (does nothing more).
+     * @param message message
+     * @return true if can handle
+     */
     boolean canHandle(JexlerMessage message);
     
-	/**
-	 * Handle message.
-	 * Called by jexler system in separate thread from canHandle()
-	 * if the latter returned true.
-	 * Writes possibly messages to submitter given in startup().
-	 * @param message message
-	 */
+    /**
+     * Handle message.
+     * Called by jexler system in separate thread from canHandle()
+     * if the latter returned true.
+     * Writes possibly messages to submitter given in startup().
+     * @param message message
+     */
     void handle(JexlerMessage message);
         
     /**

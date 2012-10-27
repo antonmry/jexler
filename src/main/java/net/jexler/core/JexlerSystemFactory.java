@@ -24,15 +24,15 @@ package net.jexler.core;
  * @author $(whois jexler.net)
  */
 public class JexlerSystemFactory {
-	
-	private static JexlerSystemImpl system = new JexlerSystemImpl();
-	
-	/**
-	 * Get system.
-	 * @return system
-	 */
-	public static JexlerSystem getSystem() {
-		return system;
-	}
+    
+    private static JexlerSystemImpl system = new JexlerSystemImpl();
+    
+    /**
+     * Get system.
+     * @return system
+     */
+    public static JexlerSystem getSystem() {
+        return system;
+    }
     
 }
