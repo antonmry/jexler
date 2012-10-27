@@ -27,19 +27,19 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Cron handler.
- * 
+ *
  * @author $(whois jexler.net)
  */
 public class CronHandler extends AbstractJexlerHandler {
 
     static final Logger log = LoggerFactory.getLogger(CronHandler.class);
-        
+
     private class CronThread extends Thread {
             public void run() {
                 submitter.submit(cronMessage);
             }
     }
-    
+
     private final String cron;
     private final JexlerMessage cronMessage;
     private final Scheduler scheduler;
@@ -59,17 +59,17 @@ public class CronHandler extends AbstractJexlerHandler {
                     "info", "cron-job:" + cronId);
             scheduler = new Scheduler();
     }
-    
+
     @Override
     public void startup(JexlerSubmitter submitter) {
         super.startup(submitter);
         scheduler.start();
         scheduler.schedule(cron, new CronThread());
     }
-    
+
     @Override
     public void shutdown() {
         scheduler.stop();
     }
-    
+
 }

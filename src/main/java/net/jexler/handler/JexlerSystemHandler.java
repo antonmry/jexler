@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Jexler system handler.
- * 
+ *
  * @author $(whois jexler.net)
  */
 public class JexlerSystemHandler extends AbstractJexlerHandler {
@@ -38,7 +38,7 @@ public class JexlerSystemHandler extends AbstractJexlerHandler {
     static final Logger log = LoggerFactory.getLogger(JexlerSystemHandler.class);
 
     private JexlerSystem system;
-    
+
     /**
      * Constructor from id and system.
      * @param id id
@@ -48,7 +48,7 @@ public class JexlerSystemHandler extends AbstractJexlerHandler {
             super(id);
             this.system = system;
     }
-    
+
     @Override
     public boolean canHandle(JexlerMessage message) {
         return this.getClass() == message.get("destination.class")

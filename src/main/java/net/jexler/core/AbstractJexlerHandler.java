@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Abstract base jexler handler.
- * 
+ *
  * @author $(whois jexler.net)
  */
 public abstract class AbstractJexlerHandler implements JexlerHandler {
@@ -32,7 +32,7 @@ public abstract class AbstractJexlerHandler implements JexlerHandler {
     protected final String id;
     protected final String info;
     protected JexlerSubmitter submitter;
-    
+
     /**
      * Constructor from id.
      * Info is set to <class name>:<id>.
@@ -42,7 +42,7 @@ public abstract class AbstractJexlerHandler implements JexlerHandler {
             this.id = id;
             this.info = this.getClass().getName() + ":" + id;
     }
-    
+
     @Override
     public void startup(JexlerSubmitter submitter) {
         this.submitter = submitter;
@@ -60,15 +60,15 @@ public abstract class AbstractJexlerHandler implements JexlerHandler {
     @Override
     public void shutdown() {
     }
-    
+
     @Override
     public String getId() {
         return id;
     }
-    
+
     @Override
     public String getInfo() {
         return info;
     }
-    
+
 }

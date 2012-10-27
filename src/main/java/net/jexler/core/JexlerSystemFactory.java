@@ -20,13 +20,13 @@ package net.jexler.core;
 
 /**
  * Jexler system factory.
- * 
+ *
  * @author $(whois jexler.net)
  */
 public class JexlerSystemFactory {
-    
+
     private static JexlerSystemImpl system = new JexlerSystemImpl();
-    
+
     /**
      * Get system.
      * @return system
@@ -34,5 +34,5 @@ public class JexlerSystemFactory {
     public static JexlerSystem getSystem() {
         return system;
     }
-    
+
 }

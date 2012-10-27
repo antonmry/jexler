@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Main class for starting jexler from the command line.
- * 
+ *
  * @author $(whois jexler.net)
  */
 public final class JexlerMain
@@ -33,7 +33,7 @@ public final class JexlerMain
 
     /**
      * Main method.
-     * 
+     *
      * @param args command line arguments
      */
     public static void main(final String[] args) {
@@ -42,7 +42,7 @@ public final class JexlerMain
         JexlerSystem system = JexlerSystemFactory.getSystem();
         system.startup();
         system.waitForShutdown();
-        
+
         // wait a little (just for testing in eclipse with slf4j log output)
         try {
             Thread.sleep(100);

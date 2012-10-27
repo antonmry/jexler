@@ -19,7 +19,7 @@ package net.jexler.core;
 
 /**
  * Interface for jexler system.
- * 
+ *
  * @author $(whois jexler.net)
  */
 public interface JexlerSystem {
@@ -28,12 +28,12 @@ public interface JexlerSystem {
      * Startup system.
      */
     void startup();
-    
+
     /**
      * Shutdown system.
      */
     void shutdown();
-    
+
     /**
      * Block until shutdown.
      */

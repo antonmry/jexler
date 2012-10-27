@@ -36,13 +36,13 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Script handler (handles messages by a script language).
- * 
+ *
  * @author $(whois jexler.net)
  */
 public class ScriptHandler extends AbstractJexlerHandler {
 
     static final Logger log = LoggerFactory.getLogger(ScriptHandler.class);
-    
+
     private static final ScriptEngineManager SCRIPT_ENGINE_MANAGER = new ScriptEngineManager();
 
     private final String scriptLanguage;
@@ -66,13 +66,13 @@ public class ScriptHandler extends AbstractJexlerHandler {
             engine.put("config", this.config);
             engine.put("log", log);
     }
-    
+
     @Override
     public void startup(JexlerSubmitter submitter) {
             super.startup(submitter);
             doScript("startup", null);
     }
-    
+
     @Override
     public boolean canHandle(JexlerMessage message) {
         Object obj = doScript("canHandle", message);
@@ -83,12 +83,12 @@ public class ScriptHandler extends AbstractJexlerHandler {
     public void handle(JexlerMessage message) {
         doScript("handle", message);
     }
-    
+
     @Override
     public void shutdown() {
             doScript("shutdown", null);
     }
-    
+
     private Object doScript(String method, Object message) {
         engine.put("method", method);
         engine.put("message", message);

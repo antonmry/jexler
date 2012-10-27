@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Jexler message handler, gets submitted messages
  * and handles them in separate threads.
- * 
+ *
  * @author $(whois jexler.net)
  */
 public class MessageHandler implements JexlerSubmitter {
@@ -37,7 +37,7 @@ public class MessageHandler implements JexlerSubmitter {
     private List<JexlerHandler> handlers;
     private BlockingQueue<JexlerMessage> handleQueue;
     private BlockingQueue<JexlerMessage> processQueue;
-    
+
     /**
      * Thread for canHandle() of messages.
      */
@@ -68,7 +68,7 @@ public class MessageHandler implements JexlerSubmitter {
                 }
             }
         }
-    
+
     /**
      * Thread for handle() of messages.
      */
@@ -88,7 +88,7 @@ public class MessageHandler implements JexlerSubmitter {
                 }
             }
         }
-    
+
     /**
      * Constructor.
      */
@@ -97,7 +97,7 @@ public class MessageHandler implements JexlerSubmitter {
         handleQueue = new LinkedBlockingQueue<JexlerMessage>();
         processQueue = new LinkedBlockingQueue<JexlerMessage>();
     }
-    
+
     /**
      * Start handling submitted messages.
      */
@@ -105,11 +105,11 @@ public class MessageHandler implements JexlerSubmitter {
         new CanHandleThread().start();
         new HandleThread().start();
     }
-    
+
     @Override
     public void submit(JexlerMessage message) {
             log.info("SUBMIT " + message.get("info"));
             handleQueue.add(message);
     }
-    
+
 }

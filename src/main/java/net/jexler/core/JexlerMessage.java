@@ -21,12 +21,12 @@ import java.util.HashMap;
 
 /**
  * Class for jexler message.
- * 
+ *
  * @author $(whois jexler.net)
  */
 public class JexlerMessage extends HashMap<String,Object> {
     private static final long serialVersionUID = 5540166367357174705L;
-    
+
     /**
      * Constructor from key/value pairs.
      * Example: JexlerMessage("id", id, "value", x.getValue())
@@ -44,4 +44,5 @@ public class JexlerMessage extends HashMap<String,Object> {
             put((String)keyValuePairs[i], keyValuePairs[i+1]);
         }
     }
+
 }

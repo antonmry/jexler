@@ -19,7 +19,7 @@ package net.jexler.core;
 
 /**
  * Interface for jexler handler.
- * 
+ *
  * @author $(whois jexler.net)
  */
 public interface JexlerHandler {
@@ -31,14 +31,14 @@ public interface JexlerHandler {
      * @param submitter
      */
     void startup(JexlerSubmitter submitter);
-    
+
     /**
      * Say if can handle message or not (does nothing more).
      * @param message message
      * @return true if can handle
      */
     boolean canHandle(JexlerMessage message);
-    
+
     /**
      * Handle message.
      * Called by jexler system in separate thread from canHandle()
@@ -47,23 +47,22 @@ public interface JexlerHandler {
      * @param message message
      */
     void handle(JexlerMessage message);
-        
+
     /**
      * Shutdown handler.
      */
     void shutdown();
-    
+
     /**
      * Get id of the handler, unique per handler class.
      * @return id, never null
      */
     String getId();
-    
+
     /**
      * Get human readable description of the handler.
      * @return info, never null
      */
     public String getInfo();
-
 
 }

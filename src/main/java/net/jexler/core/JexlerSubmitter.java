@@ -19,7 +19,7 @@ package net.jexler.core;
 
 /**
  * Interface for jexler submitter.
- * 
+ *
  * @author $(whois jexler.net)
  */
 public interface JexlerSubmitter {
@@ -29,5 +29,5 @@ public interface JexlerSubmitter {
      * @param message message
      */
     void submit(JexlerMessage message);
-    
+
 }

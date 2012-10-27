@@ -20,7 +20,7 @@ import org.junit.Test;
 
 /**
  * Tests the respective class.
- * 
+ *
  * @author $(whois jexler.net)
  */
 public class JexlerTest
@@ -28,7 +28,8 @@ public class JexlerTest
     @Test
     public void testApp() {
         // TODO test jexler...
-            // String[] args = {};
+        // String[] args = {};
         // JexlerMain.main(args);
     }
+
 }

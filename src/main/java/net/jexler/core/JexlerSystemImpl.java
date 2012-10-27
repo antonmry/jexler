@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * The jexler system.
- * 
+ *
  * @author $(whois jexler.net)
  */
 public class JexlerSystemImpl implements JexlerSystem {
@@ -47,43 +47,43 @@ public class JexlerSystemImpl implements JexlerSystem {
     private MessageHandler messageHandler;
     private List<JexlerHandler> handlers;
     private boolean isRunning;
-    
+
     /**
      * Constructor.
      */
     public JexlerSystemImpl() {
     }
-    
+
     @Override
     public void startup() {
         log.info("Startup...");
-        
+
         // always create the following handlers (part of jexler)
         handlers = new LinkedList<JexlerHandler>();
         handlers.add(new JexlerSystemHandler("jexler", this));
         handlers.add(new CommandLineHandler("jexler"));
-        
+
         // create handlers from config script(s)
         // TODO current dir now for inside eclipse (not maven)
         // TODO inject how? properties file?
         addHandlersFromScript("ruby", new File("scripts/config.rb"));
-        
+
         log.info("Handlers:");
         for (JexlerHandler handler : handlers) {
             log.info("*" + handler.getInfo());
         }
-        
+
         messageHandler = new MessageHandler(handlers);
         for (JexlerHandler handler : handlers) {
             handler.startup(messageHandler);
         }
-                
+
         isRunning = true;
         messageHandler.startHandling();
 
         log.info("Started up.");
     }
-        
+
     @Override
     public void shutdown() {
         log.info("Shutting down...");
@@ -96,7 +96,7 @@ public class JexlerSystemImpl implements JexlerSystem {
             this.notify();
         }
     }
-    
+
     @Override
     public void waitForShutdown() {
         log.info("Waiting for shutdown...");
@@ -111,7 +111,7 @@ public class JexlerSystemImpl implements JexlerSystem {
         }
         log.info("Has shut down.");
     }
-    
+
     private void addHandlersFromScript(String scriptLanguage, File scriptFile) {
         ScriptEngine engine = new ScriptEngineManager().getEngineByName("ruby");
         engine.put("handlers", handlers);
@@ -138,5 +138,5 @@ public class JexlerSystemImpl implements JexlerSystem {
             }
         }
     }
-    
+
 }

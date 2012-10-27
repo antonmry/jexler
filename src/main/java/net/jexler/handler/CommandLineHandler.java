@@ -30,13 +30,13 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Command line handler.
- * 
+ *
  * @author $(whois jexler.net)
  */
 public class CommandLineHandler extends AbstractJexlerHandler implements Runnable {
 
     static final Logger log = LoggerFactory.getLogger(CommandLineHandler.class);
-    
+
     /**
      * Constructor from id.
      * @param id id
@@ -44,7 +44,7 @@ public class CommandLineHandler extends AbstractJexlerHandler implements Runnabl
     public CommandLineHandler(String id) {
             super(id);
     }
-    
+
     @Override
     public void startup(JexlerSubmitter submitter) {
         super.startup(submitter);
@@ -52,7 +52,7 @@ public class CommandLineHandler extends AbstractJexlerHandler implements Runnabl
         thread.setName(info);
         thread.start();
     }
-    
+
     public void run() {
         Thread.currentThread().setName(info);
         // wait a little (just for testing in eclipse with slf4j log output)
@@ -81,15 +81,15 @@ public class CommandLineHandler extends AbstractJexlerHandler implements Runnabl
             }
         } while (true);
     }
-    
+
     private String readLine(String prompt) {
         System.out.print(prompt);
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         try {
             return bufferedReader.readLine();
-        } catch (IOException e) { 
+        } catch (IOException e) {
             return null;
         }
     }
-    
+
 }
