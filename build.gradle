@@ -1,0 +1,27 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'application'
+
+sourceCompatibility = 1.6
+
+version = '0.0.1-SNAPSHOT'
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'jexler', 'Implementation-Version': version
+    }
+}
+
+// needed for application plugin
+mainClassName = "net.jexler.JexlerMain"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.slf4j:slf4j-api:1.7.2'
+    compile 'org.slf4j:slf4j-simple:1.7.2'
+    compile 'org.jruby:jruby:1.6.8'
+    compile files('jars/cron4j-2.2.5.jar')
+    testCompile 'junit:junit:4.10'
+}
