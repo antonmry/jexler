@@ -1,0 +1,6 @@
+gradle build
+
+gradle installApp
+build/install/jexler/bin/jexler
+
+gradle eclipse
