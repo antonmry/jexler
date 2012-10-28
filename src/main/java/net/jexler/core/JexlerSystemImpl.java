@@ -44,7 +44,7 @@ public class JexlerSystemImpl implements JexlerSystem {
 
     static final Logger log = LoggerFactory.getLogger(JexlerSystemImpl.class);
 
-    private MessageHandler messageHandler;
+    private SimpleMessageProcessor processor;
     private List<JexlerHandler> handlers;
     private boolean isRunning;
 
@@ -73,13 +73,13 @@ public class JexlerSystemImpl implements JexlerSystem {
             log.info("*" + handler.getInfo());
         }
 
-        messageHandler = new MessageHandler(handlers);
+        processor = new SimpleMessageProcessor(handlers);
         for (JexlerHandler handler : handlers) {
-            handler.startup(messageHandler);
+            handler.startup(processor);
         }
 
         isRunning = true;
-        messageHandler.startHandling();
+        processor.startProcessing();
 
         log.info("Started up.");
     }

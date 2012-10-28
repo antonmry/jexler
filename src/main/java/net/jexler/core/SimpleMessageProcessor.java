@@ -25,14 +25,18 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Jexler message handler, gets submitted messages
- * and handles them in separate threads.
+ * Simple message processor, gets submitted messages
+ * and handles them in two separate threads for canHandle()
+ * and handle().
+ *
+ * LATER A more sophisticated processor would maybe call handle()
+ * in individual threads from a pool?
  *
  * @author $(whois jexler.net)
  */
-public class MessageHandler implements JexlerSubmitter {
+public class SimpleMessageProcessor implements JexlerSubmitter {
 
-    static final Logger log = LoggerFactory.getLogger(MessageHandler.class);
+    static final Logger log = LoggerFactory.getLogger(SimpleMessageProcessor.class);
 
     /**
      * Context for processing message.
@@ -111,16 +115,16 @@ public class MessageHandler implements JexlerSubmitter {
     /**
      * Constructor.
      */
-    public MessageHandler(List<JexlerHandler> handlers) {
+    public SimpleMessageProcessor(List<JexlerHandler> handlers) {
         this.handlers = handlers;
         canHandleQueue = new LinkedBlockingQueue<Context>();
         handleQueue = new LinkedBlockingQueue<Context>();
     }
 
     /**
-     * Start handling submitted messages.
+     * Start processing submitted messages.
      */
-    public void startHandling() {
+    public void startProcessing() {
         new CanHandleThread().start();
         new HandleThread().start();
     }
