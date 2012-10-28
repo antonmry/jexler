@@ -16,6 +16,8 @@
 
 package net.jexler;
 
+import java.io.File;
+
 import net.jexler.core.JexlerSystem;
 import net.jexler.core.JexlerSystemFactory;
 
@@ -39,7 +41,8 @@ public final class JexlerMain
     public static void main(final String[] args) {
             System.out.println("Welcome to jexler.");
         Thread.currentThread().setName("jexler");
-        JexlerSystem system = JexlerSystemFactory.getSystem();
+        JexlerSystem system = JexlerSystemFactory.getSystem(
+                "ruby", new File("scripts/config.rb"));
         system.startup();
         system.waitForShutdown();
 

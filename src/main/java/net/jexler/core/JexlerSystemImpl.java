@@ -50,13 +50,11 @@ public class JexlerSystemImpl implements JexlerSystem {
 
     /**
      * Constructor.
+     * @param configScriptLanguage
+     * @param configScriptFile
      */
-    public JexlerSystemImpl() {
-    }
-
-    @Override
-    public void startup() {
-        log.info("Startup...");
+    public JexlerSystemImpl(String configScriptLanguage, File configScriptFile) {
+        log.info("Creating jexler system...");
 
         // always create the following handlers (part of jexler)
         handlers = new LinkedList<JexlerHandler>();
@@ -64,9 +62,7 @@ public class JexlerSystemImpl implements JexlerSystem {
         handlers.add(new CommandLineHandler("jexler"));
 
         // create handlers from config script(s)
-        // TODO current dir now for inside eclipse (not maven)
-        // TODO inject how? properties file?
-        addHandlersFromScript("ruby", new File("scripts/config.rb"));
+        addHandlersFromScript(configScriptLanguage, configScriptFile);
 
         log.info("Handlers:");
         for (JexlerHandler handler : handlers) {
@@ -74,6 +70,11 @@ public class JexlerSystemImpl implements JexlerSystem {
         }
 
         processor = new SimpleMessageProcessor(handlers);
+    }
+
+    @Override
+    public void startup() {
+        log.info("Startup...");
         for (JexlerHandler handler : handlers) {
             handler.startup(processor);
         }
@@ -113,7 +114,7 @@ public class JexlerSystemImpl implements JexlerSystem {
     }
 
     private void addHandlersFromScript(String scriptLanguage, File scriptFile) {
-        ScriptEngine engine = new ScriptEngineManager().getEngineByName("ruby");
+        ScriptEngine engine = new ScriptEngineManager().getEngineByName(scriptLanguage);
         engine.put("handlers", handlers);
         FileReader fileReader;
         try {

@@ -16,6 +16,8 @@
 
 package net.jexler.core;
 
+import java.io.File;
+
 
 
 /**
@@ -25,14 +27,14 @@ package net.jexler.core;
  */
 public class JexlerSystemFactory {
 
-    private static JexlerSystemImpl system = new JexlerSystemImpl();
-
     /**
-     * Get system (singleton so far).
+     * Get system for given config script.
+     * @param configScriptLanguage
+     * @param configScriptFile
      * @return system
      */
-    public static JexlerSystem getSystem() {
-        return system;
+    public static JexlerSystem getSystem(String configScriptLanguage, File configScriptFile) {
+        return new JexlerSystemImpl(configScriptLanguage, configScriptFile);
     }
 
 }
