@@ -34,9 +34,21 @@ public class MessageHandler implements JexlerSubmitter {
 
     static final Logger log = LoggerFactory.getLogger(MessageHandler.class);
 
+    /**
+     * Context for processing message.
+     */
+    private static final class Context {
+        private final JexlerMessage message;
+        private int pos = 0;
+        private boolean canHandle = false;
+        private Context(JexlerMessage message) {
+            this.message = message;
+        }
+    }
+
     private List<JexlerHandler> handlers;
-    private BlockingQueue<JexlerMessage> handleQueue;
-    private BlockingQueue<JexlerMessage> processQueue;
+    private BlockingQueue<Context> canHandleQueue;
+    private BlockingQueue<Context> handleQueue;
 
     /**
      * Thread for canHandle() of messages.
@@ -44,21 +56,21 @@ public class MessageHandler implements JexlerSubmitter {
     private class CanHandleThread extends Thread {
             public void run() {
                 setName("jexler-can-handle");
-                while(true) {
+                while (true) {
                     try {
-                        JexlerMessage message = handleQueue.take();
-                        boolean canHandle = false;
-                        for (JexlerHandler handler : handlers) {
+                        Context context = canHandleQueue.take();
+                        JexlerMessage message = context.message;
+                        for ( ; context.pos < handlers.size(); context.pos++) {
+                            JexlerHandler handler = handlers.get(context.pos);
                             if (handler.canHandle(message)) {
-                                canHandle = true;
+                                context.canHandle = true;
                                 log.info("CAN HANDLE " + message.get("info")
                                         + " => " + handler.getInfo());
-                                message.put("handler", handler);
-                                processQueue.add(message);
+                                handleQueue.add(context);
                                 break;
                             }
                         }
-                        if (!canHandle) {
+                        if (!context.canHandle) {
                             log.warn("CANNOT HANDLE " + message.get("info"));
                             // TODO create message? (one that is always handled by system?)
                         }
@@ -75,13 +87,20 @@ public class MessageHandler implements JexlerSubmitter {
     private class HandleThread extends Thread {
             public void run() {
                 setName("jexler-handle");
-                while(true) {
+                while (true) {
                     try {
-                        JexlerMessage message = processQueue.take();
-                        JexlerHandler handler = (JexlerHandler)message.get("handler");
+                        Context context = handleQueue.take();
+                        JexlerMessage message = context.message;
+                        JexlerHandler handler = handlers.get(context.pos);
                         log.info("HANDLE " + message.get("info")
                                 + " => " + handler.getInfo());
+                        //boolean passOn = handler.handle(message);
+                        boolean passOn = false;
                         handler.handle(message);
+                        if (passOn) {
+                            context.pos++;
+                            canHandleQueue.add(context);
+                       }
                     } catch (InterruptedException e) {
                         log.error("Could not take");
                     }
@@ -94,8 +113,8 @@ public class MessageHandler implements JexlerSubmitter {
      */
     public MessageHandler(List<JexlerHandler> handlers) {
         this.handlers = handlers;
-        handleQueue = new LinkedBlockingQueue<JexlerMessage>();
-        processQueue = new LinkedBlockingQueue<JexlerMessage>();
+        canHandleQueue = new LinkedBlockingQueue<Context>();
+        handleQueue = new LinkedBlockingQueue<Context>();
     }
 
     /**
@@ -108,8 +127,8 @@ public class MessageHandler implements JexlerSubmitter {
 
     @Override
     public void submit(JexlerMessage message) {
-            log.info("SUBMIT " + message.get("info"));
-            handleQueue.add(message);
+        log.info("SUBMIT " + message.get("info"));
+        canHandleQueue.add(new Context(message));
     }
 
 }

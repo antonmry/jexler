@@ -80,8 +80,9 @@ public class ScriptHandler extends AbstractJexlerHandler {
     }
 
     @Override
-    public void handle(JexlerMessage message) {
-        doScript("handle", message);
+    public boolean handle(JexlerMessage message) {
+        Object obj = doScript("handle", message);
+        return (obj instanceof Boolean) ? (Boolean)obj : false;
     }
 
     @Override

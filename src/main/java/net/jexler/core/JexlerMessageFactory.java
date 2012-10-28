@@ -19,20 +19,18 @@ package net.jexler.core;
 
 
 /**
- * Jexler system factory.
+ * Jexler message factory.
  *
  * @author $(whois jexler.net)
  */
-public class JexlerSystemFactory {
-
-    private static JexlerSystemImpl system = new JexlerSystemImpl();
+public class JexlerMessageFactory {
 
     /**
-     * Get system (singleton so far).
-     * @return system
+     * Create a new message.
+     * @return new message
      */
-    public static JexlerSystem getSystem() {
-        return system;
+    public static JexlerMessage create() {
+        return new JexlerMessageImpl();
     }
 
 }

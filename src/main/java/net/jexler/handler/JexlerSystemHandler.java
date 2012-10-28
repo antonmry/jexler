@@ -56,7 +56,7 @@ public class JexlerSystemHandler extends AbstractJexlerHandler {
     }
 
     @Override
-    public void handle(JexlerMessage message) {
+    public boolean handle(JexlerMessage message) {
         Object methodObj = message.get("destination.method");
         Method method = null;
         try {
@@ -70,6 +70,7 @@ public class JexlerSystemHandler extends AbstractJexlerHandler {
                 case SHUTDOWN: system.shutdown();
             }
         }
+        return false;
     }
 
 }

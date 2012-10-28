@@ -22,6 +22,7 @@ import java.io.InputStreamReader;
 
 import net.jexler.core.AbstractJexlerHandler;
 import net.jexler.core.JexlerMessage;
+import net.jexler.core.JexlerMessageFactory;
 import net.jexler.core.JexlerSubmitter;
 
 import org.slf4j.Logger;
@@ -68,7 +69,7 @@ public class CommandLineHandler extends AbstractJexlerHandler implements Runnabl
                 return;
             } else if (cmd.equals("shutdown")) {
                 System.out.println("Shutting down jexler...");
-                JexlerMessage message = new JexlerMessage(
+                JexlerMessage message = JexlerMessageFactory.create().set(
                     "destination.class", JexlerSystemHandler.class,
                     "destination.id", "jexler",
                     "destination.method", JexlerSystemHandler.Method.SHUTDOWN,

@@ -16,33 +16,23 @@
 
 package net.jexler.core;
 
-import java.util.HashMap;
+import java.util.Map;
 
 
 /**
- * Class for jexler message.
+ * Interface for jexler message.
  *
  * @author $(whois jexler.net)
  */
-public class JexlerMessage extends HashMap<String,Object> {
-    private static final long serialVersionUID = 5540166367357174705L;
+public interface JexlerMessage extends Map<String,Object> {
 
     /**
-     * Constructor from key/value pairs.
-     * Example: JexlerMessage("id", id, "value", x.getValue())
+     * Set key/value pairs.
+     * Example: set("id", id, "value", x.getValue())
      * @param keyValuePairs key/value pairs
+     * @return this
      * @throws IllegalArgumentException if odd number of arguments or keys not strings
      */
-    public JexlerMessage(Object... keyValuePairs) {
-        if (keyValuePairs.length % 2 != 0) {
-            throw new IllegalArgumentException("odd number of arguments");
-        }
-        for (int i = 0; i<keyValuePairs.length; i+=2) {
-            if (!(keyValuePairs[i] instanceof String)) {
-                throw new IllegalArgumentException("key " + i/2+1 + " is not a string");
-            }
-            put((String)keyValuePairs[i], keyValuePairs[i+1]);
-        }
-    }
+    JexlerMessage set(Object... keyValuePairs);
 
 }

@@ -19,6 +19,7 @@ package net.jexler.handler;
 import it.sauronsoftware.cron4j.Scheduler;
 import net.jexler.core.AbstractJexlerHandler;
 import net.jexler.core.JexlerMessage;
+import net.jexler.core.JexlerMessageFactory;
 import net.jexler.core.JexlerSubmitter;
 
 import org.slf4j.Logger;
@@ -53,7 +54,7 @@ public class CronHandler extends AbstractJexlerHandler {
     public CronHandler(String id, String cron, String cronId) {
             super(id);
             this.cron = cron;
-            cronMessage = new JexlerMessage(
+            cronMessage = JexlerMessageFactory.create().set(
                     "sender", this,
                     "cronid", cronId,
                     "info", "cron-job:" + cronId);

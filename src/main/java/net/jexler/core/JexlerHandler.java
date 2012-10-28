@@ -45,8 +45,10 @@ public interface JexlerHandler {
      * if the latter returned true.
      * Writes possibly messages to submitter given in startup().
      * @param message message
+     * @return true if handled for good, false if should be passed
+     *         on to remaining handlers (try canHandle() first).
      */
-    void handle(JexlerMessage message);
+    boolean handle(JexlerMessage message);
 
     /**
      * Shutdown handler.

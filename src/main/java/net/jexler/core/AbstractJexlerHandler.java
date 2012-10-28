@@ -54,7 +54,8 @@ public abstract class AbstractJexlerHandler implements JexlerHandler {
     }
 
     @Override
-    public void handle(JexlerMessage message) {
+    public boolean handle(JexlerMessage message) {
+        return false;
     }
 
     @Override
