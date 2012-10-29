@@ -54,23 +54,23 @@ public class ScriptHandler extends AbstractJexlerHandler {
      * Constructor from id.
      * @param id id
      */
-    public ScriptHandler(String id, String scriptLanguage, String scriptFileName,
-            Map<String,Object> config) {
-            super(id);
-            this.scriptLanguage = scriptLanguage;
-            scriptFile = new File(scriptFileName);
-            this.config = config;
-            // TODO handle null? or maybe rather at startup?
-            engine = SCRIPT_ENGINE_MANAGER.getEngineByName(this.scriptLanguage);
-            engine.put("handler", this);
-            engine.put("config", this.config);
-            engine.put("log", log);
+    public ScriptHandler(String id, String description, String scriptLanguage,
+            String scriptFileName, Map<String,Object> config) {
+        super(id, description);
+        this.scriptLanguage = scriptLanguage;
+        scriptFile = new File(scriptFileName);
+        this.config = config;
+        // TODO handle null? or maybe rather at startup?
+        engine = SCRIPT_ENGINE_MANAGER.getEngineByName(this.scriptLanguage);
+        engine.put("handler", this);
+        engine.put("config", this.config);
+        engine.put("log", log);
     }
 
     @Override
     public void startup(JexlerSubmitter submitter) {
-            super.startup(submitter);
-            doScript("startup", null);
+        super.startup(submitter);
+        doScript("startup", null);
     }
 
     @Override

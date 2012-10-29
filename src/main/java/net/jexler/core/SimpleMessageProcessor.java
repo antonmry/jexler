@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  * and handle().
  *
  * LATER A more sophisticated processor would maybe call handle()
- * in individual threads from a pool?
+ * in multiple threads from a pool?
  *
  * @author $(whois jexler.net)
  */
@@ -50,6 +50,7 @@ public class SimpleMessageProcessor implements JexlerSubmitter {
         }
     }
 
+    private final Jexler jexler;
     private List<JexlerHandler> handlers;
     private BlockingQueue<Context> canHandleQueue;
     private BlockingQueue<Context> handleQueue;
@@ -58,64 +59,65 @@ public class SimpleMessageProcessor implements JexlerSubmitter {
      * Thread for canHandle() of messages.
      */
     private class CanHandleThread extends Thread {
-            public void run() {
-                setName("jexler-can-handle");
-                while (true) {
-                    try {
-                        Context context = canHandleQueue.take();
-                        JexlerMessage message = context.message;
-                        for ( ; context.pos < handlers.size(); context.pos++) {
-                            JexlerHandler handler = handlers.get(context.pos);
-                            if (handler.canHandle(message)) {
-                                context.canHandle = true;
-                                log.info("CAN HANDLE " + message.get("info")
-                                        + " => " + handler.getInfo());
-                                handleQueue.add(context);
-                                break;
-                            }
+        public void run() {
+            setName(jexler.getId() + ":canHandle");
+            while (true) {
+                try {
+                    Context context = canHandleQueue.take();
+                    JexlerMessage message = context.message;
+                    for ( ; context.pos < handlers.size(); context.pos++) {
+                        JexlerHandler handler = handlers.get(context.pos);
+                        if (handler.canHandle(message)) {
+                            context.canHandle = true;
+                            log.info("CAN HANDLE " + message.get("info")
+                                    + " => " + handler.getClass().getName() + ":" + handler.getId());
+                            handleQueue.add(context);
+                            break;
                         }
-                        if (!context.canHandle) {
-                            log.warn("CANNOT HANDLE " + message.get("info"));
-                            // TODO create message? (one that is always handled by system?)
-                        }
-                    } catch (InterruptedException e) {
-                        log.error("Could not take");
                     }
+                    if (!context.canHandle) {
+                        log.warn("CANNOT HANDLE " + message.get("info"));
+                        // TODO create message? (one that is always handled by system?)
+                    }
+                } catch (InterruptedException e) {
+                    log.error("Could not take");
                 }
             }
         }
+    }
 
     /**
      * Thread for handle() of messages.
      */
     private class HandleThread extends Thread {
-            public void run() {
-                setName("jexler-handle");
-                while (true) {
-                    try {
-                        Context context = handleQueue.take();
-                        JexlerMessage message = context.message;
-                        JexlerHandler handler = handlers.get(context.pos);
-                        log.info("HANDLE " + message.get("info")
-                                + " => " + handler.getInfo());
-                        //boolean passOn = handler.handle(message);
-                        boolean passOn = false;
-                        handler.handle(message);
-                        if (passOn) {
-                            context.pos++;
-                            canHandleQueue.add(context);
-                       }
-                    } catch (InterruptedException e) {
-                        log.error("Could not take");
+        public void run() {
+            setName(jexler.getId() + ":handle");
+            while (true) {
+                try {
+                    Context context = handleQueue.take();
+                    JexlerMessage message = context.message;
+                    JexlerHandler handler = handlers.get(context.pos);
+                    log.info("HANDLE " + message.get("info")
+                            + " => " + handler.getClass().getName() + ":" + handler.getId());
+                    //boolean passOn = handler.handle(message);
+                    boolean passOn = false;
+                    handler.handle(message);
+                    if (passOn) {
+                        context.pos++;
+                        canHandleQueue.add(context);
                     }
+                } catch (InterruptedException e) {
+                    log.error("Could not take");
                 }
             }
         }
+    }
 
     /**
      * Constructor.
      */
-    public SimpleMessageProcessor(List<JexlerHandler> handlers) {
+    public SimpleMessageProcessor(Jexler jexler, List<JexlerHandler> handlers) {
+        this.jexler = jexler;
         this.handlers = handlers;
         canHandleQueue = new LinkedBlockingQueue<Context>();
         handleQueue = new LinkedBlockingQueue<Context>();

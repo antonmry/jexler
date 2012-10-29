@@ -30,7 +30,7 @@ public abstract class AbstractJexlerHandler implements JexlerHandler {
     static final Logger log = LoggerFactory.getLogger(AbstractJexlerHandler.class);
 
     protected final String id;
-    protected final String info;
+    protected final String description;
     protected JexlerSubmitter submitter;
 
     /**
@@ -38,9 +38,9 @@ public abstract class AbstractJexlerHandler implements JexlerHandler {
      * Info is set to <class name>:<id>.
      * @param id id
      */
-    public AbstractJexlerHandler(String id) {
-            this.id = id;
-            this.info = this.getClass().getName() + ":" + id;
+    public AbstractJexlerHandler(String id, String description) {
+        this.id = id;
+        this.description = description;
     }
 
     @Override
@@ -68,8 +68,8 @@ public abstract class AbstractJexlerHandler implements JexlerHandler {
     }
 
     @Override
-    public String getInfo() {
-        return info;
+    public String getDescription() {
+        return description;
     }
 
 }

@@ -16,25 +16,24 @@
 
 package net.jexler.core;
 
-import java.util.Map;
-
 
 /**
- * Interface for jexler message.
- *
- * LATER extend JexlerInfo?
+ * Interface for info about some jexler objects.
  *
  * @author $(whois jexler.net)
  */
-public interface JexlerMessage extends Map<String,Object> {
+public interface JexlerInfo {
 
     /**
-     * Set key/value pairs.
-     * Example: set("id", id, "value", x.getValue())
-     * @param keyValuePairs key/value pairs
-     * @return this
-     * @throws IllegalArgumentException if odd number of arguments or keys not strings
+     * Get id, unique per implementing class.
+     * @return id, never null
      */
-    JexlerMessage set(Object... keyValuePairs);
+    String getId();
+
+    /**
+     * Get human readable description of object.
+     * @return description, never null
+     */
+    String getDescription();
 
 }

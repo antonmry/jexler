@@ -42,20 +42,19 @@ public class CommandLineHandler extends AbstractJexlerHandler implements Runnabl
      * Constructor from id.
      * @param id id
      */
-    public CommandLineHandler(String id) {
-            super(id);
+    public CommandLineHandler(String id, String description) {
+        super(id, description);
     }
 
     @Override
     public void startup(JexlerSubmitter submitter) {
         super.startup(submitter);
         Thread thread = new Thread(this);
-        thread.setName(info);
+        thread.setName(this.getClass().getName() + ":" + id);
         thread.start();
     }
 
     public void run() {
-        Thread.currentThread().setName(info);
         // wait a little (just for testing in eclipse with slf4j log output)
         try {
             Thread.sleep(100);
@@ -70,9 +69,9 @@ public class CommandLineHandler extends AbstractJexlerHandler implements Runnabl
             } else if (cmd.equals("shutdown")) {
                 System.out.println("Shutting down jexler...");
                 JexlerMessage message = JexlerMessageFactory.create().set(
-                    "destination.class", JexlerSystemHandler.class,
+                    "destination.class", JexlerControllerHandler.class,
                     "destination.id", "jexler",
-                    "destination.method", JexlerSystemHandler.Method.SHUTDOWN,
+                    "destination.method", JexlerControllerHandler.Method.SHUTDOWN,
                     "info", "jexler-shutdown");
                 submitter.submit(message);
                 return;

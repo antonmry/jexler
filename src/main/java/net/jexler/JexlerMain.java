@@ -18,8 +18,8 @@ package net.jexler;
 
 import java.io.File;
 
-import net.jexler.core.JexlerSystem;
-import net.jexler.core.JexlerSystemFactory;
+import net.jexler.core.Jexler;
+import net.jexler.core.JexlerFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,12 +39,11 @@ public final class JexlerMain
      * @param args command line arguments
      */
     public static void main(final String[] args) {
-            System.out.println("Welcome to jexler.");
-        Thread.currentThread().setName("jexler");
-        JexlerSystem system = JexlerSystemFactory.getSystem(
+        System.out.println("Welcome to jexler.");
+        Jexler jexler = JexlerFactory.getJexler("main", "Main Jexler started from command line",
                 "ruby", new File("scripts/config.rb"));
-        system.startup();
-        system.waitForShutdown();
+        jexler.startup();
+        jexler.waitForShutdown();
 
         // wait a little (just for testing in eclipse with slf4j log output)
         try {

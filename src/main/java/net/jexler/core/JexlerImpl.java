@@ -28,7 +28,7 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import net.jexler.handler.CommandLineHandler;
-import net.jexler.handler.JexlerSystemHandler;
+import net.jexler.handler.JexlerControllerHandler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,45 +36,52 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * The jexler system.
+ * The jexler implementation.
  *
  * @author $(whois jexler.net)
  */
-public class JexlerSystemImpl implements JexlerSystem {
+public class JexlerImpl implements Jexler {
 
-    static final Logger log = LoggerFactory.getLogger(JexlerSystemImpl.class);
+    static final Logger log = LoggerFactory.getLogger(JexlerImpl.class);
 
+    private final String id;
+    private final String description;
     private SimpleMessageProcessor processor;
     private List<JexlerHandler> handlers;
     private boolean isRunning;
 
     /**
      * Constructor.
+     * @param id
      * @param configScriptLanguage
      * @param configScriptFile
      */
-    public JexlerSystemImpl(String configScriptLanguage, File configScriptFile) {
-        log.info("Creating jexler system...");
+    public JexlerImpl(String id, String description, String configScriptLanguage,
+            File configScriptFile) {
+        log.info("Creating jexler '" + id + "'...");
+        this.id = id;
+        this.description = description;
 
         // always create the following handlers (part of jexler)
         handlers = new LinkedList<JexlerHandler>();
-        handlers.add(new JexlerSystemHandler("jexler", this));
-        handlers.add(new CommandLineHandler("jexler"));
+        handlers.add(new JexlerControllerHandler("jexler", "Handles jexler operation", this));
+        handlers.add(new CommandLineHandler("jexler", "Handles command line input"));
 
         // create handlers from config script(s)
         addHandlersFromScript(configScriptLanguage, configScriptFile);
 
         log.info("Handlers:");
         for (JexlerHandler handler : handlers) {
-            log.info("*" + handler.getInfo());
+            log.info("*" + handler.getClass().getName() + ":" + handler.getId()
+                    + " -- " + handler.getDescription());
         }
 
-        processor = new SimpleMessageProcessor(handlers);
+        processor = new SimpleMessageProcessor(this, handlers);
     }
 
     @Override
     public void startup() {
-        log.info("Startup...");
+        log.info("Starting jexler '" + id + "'...");
         for (JexlerHandler handler : handlers) {
             handler.startup(processor);
         }
@@ -82,25 +89,12 @@ public class JexlerSystemImpl implements JexlerSystem {
         isRunning = true;
         processor.startProcessing();
 
-        log.info("Started up.");
-    }
-
-    @Override
-    public void shutdown() {
-        log.info("Shutting down...");
-        for (JexlerHandler handler : handlers) {
-            handler.shutdown();
-        }
-        log.info("Shutdown.");
-        synchronized (this) {
-            isRunning = false;
-            this.notify();
-        }
+        log.info("Jexler '" + id + "' has started up.");
     }
 
     @Override
     public void waitForShutdown() {
-        log.info("Waiting for shutdown...");
+        log.info("Waiting for shutdown of jexler '" + id  + "'...");
         synchronized (this) {
             while (isRunning) {
                 try {
@@ -110,7 +104,30 @@ public class JexlerSystemImpl implements JexlerSystem {
                 }
             }
         }
-        log.info("Has shut down.");
+        log.info("Jexler '" + id + "' has shut down.");
+    }
+
+    @Override
+    public void shutdown() {
+        log.info("Shutting down jexler '" + id + "'...");
+        for (JexlerHandler handler : handlers) {
+            handler.shutdown();
+        }
+        log.info("Jexler '" + id + "' has shutdown.");
+        synchronized (this) {
+            isRunning = false;
+            this.notify();
+        }
+    }
+
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
     }
 
     private void addHandlersFromScript(String scriptLanguage, File scriptFile) {

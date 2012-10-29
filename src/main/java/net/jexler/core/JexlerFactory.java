@@ -21,20 +21,22 @@ import java.io.File;
 
 
 /**
- * Jexler system factory.
+ * Jexler factory.
  *
  * @author $(whois jexler.net)
  */
-public class JexlerSystemFactory {
+public class JexlerFactory {
 
     /**
-     * Get system for given config script.
+     * Get jexler for given config script.
+     * @param id
      * @param configScriptLanguage
      * @param configScriptFile
      * @return system
      */
-    public static JexlerSystem getSystem(String configScriptLanguage, File configScriptFile) {
-        return new JexlerSystemImpl(configScriptLanguage, configScriptFile);
+    public static Jexler getJexler(String id, String description,
+            String configScriptLanguage, File configScriptFile) {
+        return new JexlerImpl(id, description, configScriptLanguage, configScriptFile);
     }
 
 }

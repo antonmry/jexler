@@ -18,35 +18,35 @@ package net.jexler.handler;
 
 import net.jexler.core.AbstractJexlerHandler;
 import net.jexler.core.JexlerMessage;
-import net.jexler.core.JexlerSystem;
+import net.jexler.core.Jexler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
- * Jexler system handler.
+ * Jexler controller handler.
  *
  * @author $(whois jexler.net)
  */
-public class JexlerSystemHandler extends AbstractJexlerHandler {
+public class JexlerControllerHandler extends AbstractJexlerHandler {
 
     public static enum Method {
         SHUTDOWN;
     }
 
-    static final Logger log = LoggerFactory.getLogger(JexlerSystemHandler.class);
+    static final Logger log = LoggerFactory.getLogger(JexlerControllerHandler.class);
 
-    private JexlerSystem system;
+    private Jexler jexler;
 
     /**
-     * Constructor from id and system.
+     * Constructor from id and jexler.
      * @param id id
-     * @param system system
+     * @param jexler jexler
      */
-    public JexlerSystemHandler(String id, JexlerSystem system) {
-            super(id);
-            this.system = system;
+    public JexlerControllerHandler(String id, String description, Jexler jexler) {
+        super(id, description);
+        this.jexler = jexler;
     }
 
     @Override
@@ -67,7 +67,7 @@ public class JexlerSystemHandler extends AbstractJexlerHandler {
             log.error("Unknown method " + methodObj);
         } else {
             switch (method) {
-                case SHUTDOWN: system.shutdown();
+                case SHUTDOWN: jexler.shutdown();
             }
         }
         return false;

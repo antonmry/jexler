@@ -36,9 +36,9 @@ public class CronHandler extends AbstractJexlerHandler {
     static final Logger log = LoggerFactory.getLogger(CronHandler.class);
 
     private class CronThread extends Thread {
-            public void run() {
-                submitter.submit(cronMessage);
-            }
+        public void run() {
+            submitter.submit(cronMessage);
+        }
     }
 
     private final String cron;
@@ -51,14 +51,14 @@ public class CronHandler extends AbstractJexlerHandler {
      * @param cron cron string, e.g. "* * * * *"
      * @param cronId id of message to send when time has come
      */
-    public CronHandler(String id, String cron, String cronId) {
-            super(id);
-            this.cron = cron;
-            cronMessage = JexlerMessageFactory.create().set(
-                    "sender", this,
-                    "cronid", cronId,
-                    "info", "cron-job:" + cronId);
-            scheduler = new Scheduler();
+    public CronHandler(String id, String description, String cron, String cronId) {
+        super(id, description);
+        this.cron = cron;
+        cronMessage = JexlerMessageFactory.create().set(
+                "sender", this,
+                "cronid", cronId,
+                "info", "cron-job:" + cronId);
+        scheduler = new Scheduler();
     }
 
     @Override
