@@ -18,25 +18,28 @@ package net.jexler.core;
 
 
 /**
- * Interface for jexler system.
+ * Interface for a jexler.
  *
  * @author $(whois jexler.net)
  */
-public interface JexlerSystem {
-
-        /**
-     * Startup system.
-     */
-    void startup();
+public interface Jexler extends JexlerInfo {
 
     /**
-     * Shutdown system.
+     * Startup jexler.
      */
-    void shutdown();
+    void startup();
 
     /**
      * Block until shutdown.
      */
     void waitForShutdown();
+
+    // LATER pause/resume, get handlers (for listing),
+    // add/remove handlers while jexler is running, ...
+
+    /**
+     * Shutdown jexler.
+     */
+    void shutdown();
 
 }
