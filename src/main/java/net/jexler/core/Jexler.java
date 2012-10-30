@@ -16,6 +16,8 @@
 
 package net.jexler.core;
 
+import java.util.List;
+
 
 /**
  * Interface for a jexler.
@@ -34,7 +36,13 @@ public interface Jexler extends JexlerInfo {
      */
     void waitForShutdown();
 
-    // LATER pause/resume, get handlers (for listing),
+    /**
+     * Get list of handlers.
+     * @return handlers
+     */
+    List<JexlerHandler> getHandlers();
+
+    // LATER pause/resume,
     // add/remove handlers while jexler is running, ...
 
     /**

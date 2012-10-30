@@ -27,7 +27,6 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-import net.jexler.handler.CommandLineHandler;
 import net.jexler.handler.JexlerControllerHandler;
 
 import org.slf4j.Logger;
@@ -65,7 +64,7 @@ public class JexlerImpl implements Jexler {
         // always create the following handlers (part of jexler)
         handlers = new LinkedList<JexlerHandler>();
         handlers.add(new JexlerControllerHandler("jexler", "Handles jexler operation", this));
-        handlers.add(new CommandLineHandler("jexler", "Handles command line input"));
+        //handlers.add(new CommandLineHandler("jexler", "Handles command line input"));
 
         // create handlers from config script(s)
         addHandlersFromScript(configScriptLanguage, configScriptFile);
@@ -105,6 +104,11 @@ public class JexlerImpl implements Jexler {
             }
         }
         log.info("Jexler '" + id + "' has shut down.");
+    }
+
+    @Override
+    public List<JexlerHandler> getHandlers() {
+        return handlers;
     }
 
     @Override

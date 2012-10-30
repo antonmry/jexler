@@ -1,11 +1,8 @@
 # test
 
 import Java::java.util.HashMap
-import Java::net.jexler.handler.CommandLineHandler
 import Java::net.jexler.handler.CronHandler
 import Java::net.jexler.handler.ScriptHandler
-
-$handlers.add CommandLineHandler.new("jexler", "Handles command line input")
 
 $handlers.add CronHandler.new("jexler", "Sends every minute a cron message",
   "* * * * *", "test-cron-id")

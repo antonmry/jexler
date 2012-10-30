@@ -23,8 +23,8 @@ import org.junit.Test;
  *
  * @author $(whois jexler.net)
  */
-public class JexlerTest
-{
+public class JexlerTest {
+
     @Test
     public void testApp() {
         // TODO test jexler...
