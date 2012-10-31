@@ -1,3 +1,5 @@
+![jexler logo](jexler.jpg)
+
 jexler
 ======
 
