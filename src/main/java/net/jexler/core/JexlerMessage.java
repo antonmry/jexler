@@ -19,22 +19,21 @@ package net.jexler.core;
 import java.util.Map;
 
 
+
 /**
  * Interface for jexler message.
- *
- * LATER extend JexlerInfo?
  *
  * @author $(whois jexler.net)
  */
 public interface JexlerMessage extends Map<String,Object> {
 
     /**
-     * Set key/value pairs.
-     * Example: set("id", id, "value", x.getValue())
+     * Put key/value pairs.
+     * Example: put("id", id, "value", x.getValue())
      * @param keyValuePairs key/value pairs
      * @return this
      * @throws IllegalArgumentException if odd number of arguments or keys not strings
      */
-    JexlerMessage set(Object... keyValuePairs);
+    JexlerMessage put(Object... keyValuePairs);
 
 }

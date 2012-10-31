@@ -26,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Main class for starting jexler from the command line.
+ * Starts embedded jetty with a jexler.
  *
  * @author $(whois jexler.net)
  */

@@ -28,7 +28,7 @@ public class JexlerMessageImpl extends HashMap<String,Object> implements JexlerM
     private static final long serialVersionUID = 5540166367357174705L;
 
     @Override
-    public JexlerMessage set(Object... keyValuePairs) {
+    public JexlerMessage put(Object... keyValuePairs) {
         if (keyValuePairs.length % 2 != 0) {
             throw new IllegalArgumentException("odd number of arguments");
         }

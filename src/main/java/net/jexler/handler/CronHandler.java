@@ -54,7 +54,7 @@ public class CronHandler extends AbstractJexlerHandler {
     public CronHandler(String id, String description, String cron, String cronId) {
         super(id, description);
         this.cron = cron;
-        cronMessage = JexlerMessageFactory.create().set(
+        cronMessage = JexlerMessageFactory.create().put(
                 "sender", this,
                 "cronid", cronId,
                 "info", "cron-job:" + cronId);

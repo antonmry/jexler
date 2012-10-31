@@ -68,7 +68,7 @@ public class CommandLineHandler extends AbstractJexlerHandler implements Runnabl
                 return;
             } else if (cmd.equals("shutdown")) {
                 System.out.println("Shutting down jexler...");
-                JexlerMessage message = JexlerMessageFactory.create().set(
+                JexlerMessage message = JexlerMessageFactory.create().put(
                     "destination.class", JexlerControllerHandler.class,
                     "destination.id", "jexler",
                     "destination.method", JexlerControllerHandler.Method.SHUTDOWN,
