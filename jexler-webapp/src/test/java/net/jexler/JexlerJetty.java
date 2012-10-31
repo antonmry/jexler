@@ -56,7 +56,8 @@ public final class JexlerJetty {
         server.setHandler(wac);
 
         server.start();
-        System.out.println("Embedded jetty running on http://localhost:" + port + "/ ...");
+        System.out.println("Jexler in embedded jetty running on http://localhost:"
+                + port + "/jexler ...");
 
         // let user stop server
         new Thread() {
