@@ -54,6 +54,7 @@ public class JexlerContextListener implements ServletContextListener    {
     @Override
     public void contextDestroyed(ServletContextEvent event) {
         jexler.shutdown();
+        jexler.waitForShutdown();
     }
 
     public static ServletContext getServletContext() {
