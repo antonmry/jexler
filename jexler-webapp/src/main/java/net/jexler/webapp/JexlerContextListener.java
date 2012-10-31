@@ -44,6 +44,7 @@ public class JexlerContextListener implements ServletContextListener    {
     public void contextInitialized(ServletContextEvent event) {
         servletContext = event.getServletContext();
         String webappPath = servletContext.getRealPath("/");
+        log.info("ServletContextName: " + servletContext.getServletContextName());
         log.info("webappPath: " + webappPath);
         jexler = JexlerFactory.getJexler("main", "Main Jexler started from command line",
                 "ruby", new File(webappPath, "WEB-INF/scripts/config.rb"));

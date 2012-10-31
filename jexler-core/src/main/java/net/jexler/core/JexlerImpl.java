@@ -43,6 +43,8 @@ public class JexlerImpl implements Jexler {
 
     private final String id;
     private final String description;
+    private final String configScriptLanguage;
+    private final File configScriptFile;
     private SimpleMessageProcessor processor;
     private List<JexlerHandler> handlers;
     private boolean isRunning;
@@ -58,13 +60,20 @@ public class JexlerImpl implements Jexler {
         log.info("Creating jexler '" + id + "'...");
         this.id = id;
         this.description = description;
-
-        // always create the following handlers (part of jexler)
+        this.configScriptLanguage = configScriptLanguage;
+        this.configScriptFile = configScriptFile;
         handlers = new LinkedList<JexlerHandler>();
-        //handlers.add(new JexlerControllerHandler("jexler", "Handles jexler operation", this));
-        //handlers.add(new CommandLineHandler("jexler", "Handles command line input"));
+        processor = new SimpleMessageProcessor(this, handlers);
+    }
 
-        // create handlers from config script(s)
+    @Override
+    public void startup() {
+        if (isRunning()) {
+            return;
+        }
+        log.info("Starting jexler '" + id + "'...");
+
+        // create handlers from config script
         addHandlersFromScript(configScriptLanguage, configScriptFile);
 
         log.info("Handlers:");
@@ -73,12 +82,6 @@ public class JexlerImpl implements Jexler {
                     + " -- " + handler.getDescription());
         }
 
-        processor = new SimpleMessageProcessor(this, handlers);
-    }
-
-    @Override
-    public void startup() {
-        log.info("Starting jexler '" + id + "'...");
         for (JexlerHandler handler : handlers) {
             handler.startup(processor);
         }
@@ -87,6 +90,11 @@ public class JexlerImpl implements Jexler {
         processor.startProcessing();
 
         log.info("Jexler '" + id + "' has started up.");
+    }
+
+    @Override
+    public synchronized boolean isRunning() {
+        return isRunning;
     }
 
     @Override
@@ -111,10 +119,17 @@ public class JexlerImpl implements Jexler {
 
     @Override
     public void shutdown() {
+        if (!isRunning()) {
+            return;
+        }
         log.info("Shutting down jexler '" + id + "'...");
+
+        processor.stopProcessing();
         for (JexlerHandler handler : handlers) {
             handler.shutdown();
         }
+        handlers.clear();
+
         log.info("Jexler '" + id + "' has shutdown.");
         synchronized (this) {
             isRunning = false;

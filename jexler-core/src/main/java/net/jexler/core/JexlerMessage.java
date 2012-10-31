@@ -30,6 +30,8 @@ public interface JexlerMessage extends Map<String,Object> {
     /**
      * Put key/value pairs.
      * Example: put("id", id, "value", x.getValue())
+     * TODO change name, this way conflicts with put(key,value)
+     *      for two args (different return type)
      * @param keyValuePairs key/value pairs
      * @return this
      * @throws IllegalArgumentException if odd number of arguments or keys not strings

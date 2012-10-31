@@ -45,6 +45,7 @@ public class SimpleMessageProcessor implements JexlerSubmitter {
         private final JexlerMessage message;
         private int pos = 0;
         private boolean canHandle = false;
+        private boolean stopProcessing = false;
         private Context(JexlerMessage message) {
             this.message = message;
         }
@@ -54,6 +55,8 @@ public class SimpleMessageProcessor implements JexlerSubmitter {
     private List<JexlerHandler> handlers;
     private BlockingQueue<Context> canHandleQueue;
     private BlockingQueue<Context> handleQueue;
+    private Thread canHandleThread;
+    private Thread handleThread;
 
     /**
      * Thread for canHandle() of messages.
@@ -61,9 +64,13 @@ public class SimpleMessageProcessor implements JexlerSubmitter {
     private class CanHandleThread extends Thread {
         public void run() {
             setName(jexler.getId() + ":canHandle");
+            log.info("canHandleThread running.");
             while (true) {
                 try {
                     Context context = canHandleQueue.take();
+                    if (context.stopProcessing) {
+                        return;
+                    }
                     JexlerMessage message = context.message;
                     for ( ; context.pos < handlers.size(); context.pos++) {
                         JexlerHandler handler = handlers.get(context.pos);
@@ -92,9 +99,13 @@ public class SimpleMessageProcessor implements JexlerSubmitter {
     private class HandleThread extends Thread {
         public void run() {
             setName(jexler.getId() + ":handle");
+            log.info("handleThread running.");
             while (true) {
                 try {
                     Context context = handleQueue.take();
+                    if (context.stopProcessing) {
+                        return;
+                    }
                     JexlerMessage message = context.message;
                     JexlerHandler handler = handlers.get(context.pos);
                     log.info("HANDLE " + message.get("info")
@@ -127,8 +138,35 @@ public class SimpleMessageProcessor implements JexlerSubmitter {
      * Start processing submitted messages.
      */
     public void startProcessing() {
-        new CanHandleThread().start();
-        new HandleThread().start();
+        log.info("Starting processing...");
+        canHandleThread = new CanHandleThread();
+        handleThread = new HandleThread();
+        canHandleThread.start();
+        handleThread.start();
+    }
+
+    /**
+     * Stop processing submitted messages.
+     */
+    public void stopProcessing() {
+        log.info("Stopping processing...");
+        Context context = new Context(JexlerMessageFactory.create());
+        context.stopProcessing = true;
+        canHandleQueue.add(context);
+        handleQueue.add(context);
+        try {
+            canHandleThread.join();
+            log.info("canHandleThread joined.");
+        } catch (InterruptedException e) {
+            log.error("could not join", e);
+        }
+        try {
+            handleThread.join();
+            log.info("handleThread joined.");
+        } catch (InterruptedException e) {
+            log.error("could not join", e);
+        }
+        log.info("Stopped processing.");
     }
 
     @Override

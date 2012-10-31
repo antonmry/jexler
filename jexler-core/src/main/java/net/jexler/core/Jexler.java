@@ -32,6 +32,12 @@ public interface Jexler extends JexlerInfo {
     void startup();
 
     /**
+     * Tell if jexler is running.
+     * @return true if running
+     */
+    boolean isRunning();
+
+    /**
      * Block until shutdown.
      */
     void waitForShutdown();

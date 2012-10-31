@@ -10,7 +10,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>Jexler</servlet-name>
-    <url-pattern>/*</url-pattern>
+    <url-pattern>/jexler</url-pattern>
   </servlet-mapping>
   <listener>
     <listener-class>
