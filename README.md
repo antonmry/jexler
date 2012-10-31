@@ -1,9 +1,9 @@
-![jexler logo](jexler.jpg)
+![jexler logo](http://www.jexler.net/jexler.jpg)
 
 jexler
 ======
 
-Java 6, Eclipse/Gradle
+Java 6, Eclipse/Gradle, Apache License
 
 e.g.
 
