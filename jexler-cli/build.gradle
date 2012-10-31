@@ -1,3 +1,5 @@
+apply plugin: 'application'
+
 dependencies {
   compile project(':jexler-core')
   compile project(':jexler-handler')
@@ -8,3 +10,6 @@ jar {
     attributes 'Implementation-Title': 'jexler-cli', 'Implementation-Version': version
   }
 }
+
+// needed for application plugin
+mainClassName = "net.jexler.cli.JexlerMain"

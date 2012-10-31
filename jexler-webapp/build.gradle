@@ -1,3 +1,5 @@
+apply plugin: 'war'
+
 dependencies {
   compile project(':jexler-core')
   compile project(':jexler-handler')
@@ -6,9 +8,11 @@ dependencies {
   testCompile 'org.mortbay.jetty:jsp-2.1-glassfish:2.1.v20100127'
 }
 
-// TODO war
 jar {
   manifest {
     attributes 'Implementation-Title': 'jexler-webapp', 'Implementation-Version': version
   }
+}
+
+war {
 }
