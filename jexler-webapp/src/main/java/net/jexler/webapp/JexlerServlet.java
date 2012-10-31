@@ -66,7 +66,7 @@ public class JexlerServlet extends HttpServlet {
 
         writer.println("</head>");
         writer.println("<body>");
-        writer.println("<a href='/jexler'><img src='jexler.jpg'></a>");
+        writer.println("<a href='jexler'><img src='jexler.jpg'></a>");
 
         Jexler jexler = JexlerContextListener.getJexler();
 
@@ -84,7 +84,7 @@ public class JexlerServlet extends HttpServlet {
             }
         }
 
-        writer.println("<form action='/jexler' method='get'>");
+        writer.println("<form action='jexler' method='get'>");
         //writer.println("<input type='hidden' value='startup'>");
         writer.println("<input type='submit' name='method' value='startup'"
                 + (!jexler.isRunning() ? "" : " disabled='disabled'")

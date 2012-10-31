@@ -1,16 +1,19 @@
 jexler
 ======
 
-Java 1.6, Eclipse/Gradle
+Java 6, Eclipse/Gradle
 
-&gt; gradle build
-&gt; gradle eclipse
+e.g.
+
+* &gt; gradle build
+* &gt; gradle eclipse
 
 jexler webapp
 -------------
 
 * run JexlerJetty class in Eclipse
 * http://localhost:8080/jexler
+* or deploy jexler-webapp/build/libs/jexler-*.war
 
 jexler command line application
 -------------------------------
