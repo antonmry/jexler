@@ -1,0 +1,10 @@
+#org.springsource.ide.eclipse.gradle.core.preferences.GradleImportPreferences
+#Wed Oct 31 07:35:13 CET 2012
+addResourceFilters=true
+afterTasks=afterEclipseImport;
+beforeTasks=cleanEclipse;eclipse;
+enableAfterTasks=true
+enableBeforeTasks=true
+enableDSLD=false
+enableDependendencyManagement=true
+projects=jexler-cli;jexler-core;jexler-handler;jexler-webapp;

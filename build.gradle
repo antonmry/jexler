@@ -1,31 +1,25 @@
-apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'application'
+subprojects {
+  apply plugin: 'java'
+  apply plugin: 'eclipse'
 
-sourceCompatibility = 1.6
-targetCompatibility = 1.6
+  sourceCompatibility = 1.6
+  targetCompatibility = 1.6
 
-version = '0.0.1-SNAPSHOT'
-jar {
-    manifest {
-        attributes 'Implementation-Title': 'jexler', 'Implementation-Version': version
-    }
-}
+  version = '0.0.1-SNAPSHOT'
 
-// needed for application plugin
-mainClassName = "net.jexler.JexlerMain"
+  jar {
+    manifest.attributes provider: 'gradle'
+  }
 
-repositories {
+  repositories {
     mavenCentral()
-}
+  }
 
-dependencies {
+  dependencies {
     compile 'org.slf4j:slf4j-api:1.7.2'
+    // LATER simple for tests, something else or nothing in jars/wars?
     compile 'org.slf4j:slf4j-simple:1.7.2'
-    compile 'org.jruby:jruby:1.6.8'
-    compile files('jars/cron4j-2.2.5.jar')
     testCompile 'junit:junit:4.10'
-    // embedded jetty with jsp support
-    testCompile 'org.eclipse.jetty.aggregate:jetty-all-server:7.5.0.v20110901'
-    testCompile 'org.mortbay.jetty:jsp-2.1-glassfish:2.1.v20100127'
+  }
+
 }

@@ -1,0 +1,5 @@
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'jexler-core', 'Implementation-Version': version
+    }
+}

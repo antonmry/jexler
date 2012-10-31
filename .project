@@ -1,21 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>jexler</name>
-	<comment/>
-	<projects/>
-	<natures>
-		<nature>org.eclipse.jdt.core.javanature</nature>
-		<nature>com.aptana.ruby.core.rubynature</nature>
-	</natures>
+	<comment></comment>
+	<projects>
+	</projects>
 	<buildSpec>
 		<buildCommand>
-			<name>com.aptana.ide.core.unifiedBuilder</name>
-			<arguments/>
-		</buildCommand>
-		<buildCommand>
 			<name>org.eclipse.jdt.core.javabuilder</name>
-			<arguments/>
+			<arguments>
+			</arguments>
 		</buildCommand>
 	</buildSpec>
-	<linkedResources/>
+	<natures>
+		<nature>org.springsource.ide.eclipse.gradle.core.nature</nature>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+	</natures>
+	<filteredResources>
+		<filter>
+			<id>1351667672790</id>
+			<name></name>
+			<type>10</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.orFilterMatcher</id>
+				<arguments>
+					<matcher>
+						<id>org.eclipse.ui.ide.multiFilter</id>
+						<arguments>1.0-projectRelativePath-equals-true-false-jexler-cli</arguments>
+					</matcher>
+					<matcher>
+						<id>org.eclipse.ui.ide.multiFilter</id>
+						<arguments>1.0-projectRelativePath-equals-true-false-jexler-webapp</arguments>
+					</matcher>
+					<matcher>
+						<id>org.eclipse.ui.ide.multiFilter</id>
+						<arguments>1.0-projectRelativePath-equals-true-false-jexler-core</arguments>
+					</matcher>
+					<matcher>
+						<id>org.eclipse.ui.ide.multiFilter</id>
+						<arguments>1.0-projectRelativePath-equals-true-false-jexler-handler</arguments>
+					</matcher>
+				</arguments>
+			</matcher>
+		</filter>
+	</filteredResources>
 </projectDescription>

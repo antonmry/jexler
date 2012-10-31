@@ -1,0 +1,10 @@
+dependencies {
+  compile project(':jexler-core')
+  compile project(':jexler-handler')
+}
+
+jar {
+  manifest {
+    attributes 'Implementation-Title': 'jexler-cli', 'Implementation-Version': version
+  }
+}
