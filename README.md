@@ -22,19 +22,5 @@ jexler command line application
 
 * &gt; cd jexler-cli
 * &gt; gradle installApp
-* &gt; build/install/jexler/bin/jexler
+* &gt; build/install/jexler-cli/bin/jexler-cli
 * or run JexlerMain class in Eclipse
-
-
-
-
-
-
-
-
-
-
-
-
-
-

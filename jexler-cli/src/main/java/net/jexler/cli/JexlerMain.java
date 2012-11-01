@@ -16,11 +16,13 @@
 
 package net.jexler.cli;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 import net.jexler.core.Jexler;
 import net.jexler.core.JexlerFactory;
-import net.jexler.handler.JexlerControllerHandler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,13 +42,21 @@ public final class JexlerMain
      * @param args command line arguments
      */
     public static void main(final String[] args) {
+        System.out.println(JexlerMain.class.getPackage().getImplementationVersion());
         System.out.println("Welcome to jexler.");
+        File configDir = new File("config");
         Jexler jexler = JexlerFactory.getJexler("main", "Main Jexler started from command line",
-                "ruby", new File("scripts/config.rb"));
-        jexler.getHandlers().add(
-                new JexlerControllerHandler("jexler", "Handles jexler operation", jexler));
+                configDir, new File(configDir, "create_handlers.rb"));
         jexler.startup();
-        jexler.waitForShutdown();
+
+        System.out.println("Press return to stop...");
+        try {
+            BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+            stdIn.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        jexler.shutdown();
 
         // wait a little (just for testing in eclipse with slf4j log output)
         try {

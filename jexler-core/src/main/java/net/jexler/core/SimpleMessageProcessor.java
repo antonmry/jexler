@@ -69,6 +69,7 @@ public class SimpleMessageProcessor implements JexlerSubmitter {
                 try {
                     Context context = canHandleQueue.take();
                     if (context.stopProcessing) {
+                        handleQueue.add(context);
                         return;
                     }
                     JexlerMessage message = context.message;
@@ -110,9 +111,7 @@ public class SimpleMessageProcessor implements JexlerSubmitter {
                     JexlerHandler handler = handlers.get(context.pos);
                     log.info("HANDLE " + message.get("info")
                             + " => " + handler.getClass().getName() + ":" + handler.getId());
-                    //boolean passOn = handler.handle(message);
-                    boolean passOn = false;
-                    handler.handle(message);
+                    boolean passOn = handler.handle(message);
                     if (passOn) {
                         context.pos++;
                         canHandleQueue.add(context);
@@ -153,7 +152,6 @@ public class SimpleMessageProcessor implements JexlerSubmitter {
         Context context = new Context(JexlerMessageFactory.create());
         context.stopProcessing = true;
         canHandleQueue.add(context);
-        handleQueue.add(context);
         try {
             canHandleThread.join();
             log.info("canHandleThread joined.");
@@ -166,6 +164,7 @@ public class SimpleMessageProcessor implements JexlerSubmitter {
         } catch (InterruptedException e) {
             log.error("could not join", e);
         }
+
         log.info("Stopped processing.");
     }
 

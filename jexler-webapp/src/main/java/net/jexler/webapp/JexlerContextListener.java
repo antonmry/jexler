@@ -46,15 +46,15 @@ public class JexlerContextListener implements ServletContextListener    {
         String webappPath = servletContext.getRealPath("/");
         log.info("ServletContextName: " + servletContext.getServletContextName());
         log.info("webappPath: " + webappPath);
-        jexler = JexlerFactory.getJexler("main", "Main Jexler started from command line",
-                "ruby", new File(webappPath, "WEB-INF/scripts/config.rb"));
+        File configDir = new File(webappPath, "WEB-INF/config");
+        jexler = JexlerFactory.getJexler("main", "Main Jexler of webapp",
+                configDir, new File(configDir, "create_handlers.rb"));
         jexler.startup();
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent event) {
         jexler.shutdown();
-        jexler.waitForShutdown();
     }
 
     public static ServletContext getServletContext() {

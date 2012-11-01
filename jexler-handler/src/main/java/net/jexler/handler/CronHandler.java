@@ -49,15 +49,14 @@ public class CronHandler extends AbstractJexlerHandler {
      * Constructor.
      * @param id id
      * @param cron cron string, e.g. "* * * * *"
-     * @param cronId id of message to send when time has come
      */
-    public CronHandler(String id, String description, String cron, String cronId) {
+    public CronHandler(String id, String description, String cron) {
         super(id, description);
         this.cron = cron;
         cronMessage = JexlerMessageFactory.create().put(
                 "sender", this,
-                "cronid", cronId,
-                "info", "cron-job:" + cronId);
+                "id", getId(),
+                "info", "cron-" + getId());
         scheduler = new Scheduler();
     }
 

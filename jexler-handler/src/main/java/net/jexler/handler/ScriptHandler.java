@@ -45,26 +45,23 @@ public class ScriptHandler extends AbstractJexlerHandler {
 
     private static final ScriptEngineManager SCRIPT_ENGINE_MANAGER = new ScriptEngineManager();
 
-    private final String scriptLanguage;
     private final File scriptFile;
+    private final String scriptFileExtension;
     private final Map<String,Object> config;
-    private final ScriptEngine engine;
 
     /**
-     * Constructor from id.
+     * Constructor.
      * @param id id
+     * TODO
      */
-    public ScriptHandler(String id, String description, String scriptLanguage,
-            String scriptFileName, Map<String,Object> config) {
+    public ScriptHandler(String id, String description, String scriptFileName,
+            Map<String,Object> config) {
         super(id, description);
-        this.scriptLanguage = scriptLanguage;
         scriptFile = new File(scriptFileName);
+        // LATER handle case where no extension is present
+        String[] split = scriptFile.getName().split("\\.");
+        scriptFileExtension = split[split.length-1];
         this.config = config;
-        // TODO handle null? or maybe rather at startup?
-        engine = SCRIPT_ENGINE_MANAGER.getEngineByName(this.scriptLanguage);
-        engine.put("handler", this);
-        engine.put("config", this.config);
-        engine.put("log", log);
     }
 
     @Override
@@ -91,6 +88,11 @@ public class ScriptHandler extends AbstractJexlerHandler {
     }
 
     private Object doScript(String method, Object message) {
+        // TODO handle null? or maybe rather at startup?
+        ScriptEngine engine = SCRIPT_ENGINE_MANAGER.getEngineByExtension(scriptFileExtension);
+        engine.put("handler", this);
+        engine.put("log", log);
+        engine.put("config", config);
         engine.put("method", method);
         engine.put("message", message);
         FileReader fileReader;

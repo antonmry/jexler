@@ -43,8 +43,9 @@ public class JexlerImpl implements Jexler {
 
     private final String id;
     private final String description;
-    private final String configScriptLanguage;
-    private final File configScriptFile;
+    private final File configDir;
+    private final File scriptFile;
+    private final String scriptFileExtension;
     private SimpleMessageProcessor processor;
     private List<JexlerHandler> handlers;
     private boolean isRunning;
@@ -52,16 +53,18 @@ public class JexlerImpl implements Jexler {
     /**
      * Constructor.
      * @param id
-     * @param configScriptLanguage
-     * @param configScriptFile
+     * @param configDir
+     * @param scriptFile constructs handlers
      */
-    public JexlerImpl(String id, String description, String configScriptLanguage,
-            File configScriptFile) {
+    public JexlerImpl(String id, String description, File configDir, File scriptFile) {
         log.info("Creating jexler '" + id + "'...");
         this.id = id;
         this.description = description;
-        this.configScriptLanguage = configScriptLanguage;
-        this.configScriptFile = configScriptFile;
+        this.configDir = configDir;
+        this.scriptFile = scriptFile;
+        // LATER handle case where no extension is present
+        String[] split = scriptFile.getName().split("\\.");
+        scriptFileExtension = split[split.length-1];
         handlers = new LinkedList<JexlerHandler>();
         processor = new SimpleMessageProcessor(this, handlers);
     }
@@ -74,7 +77,7 @@ public class JexlerImpl implements Jexler {
         log.info("Starting jexler '" + id + "'...");
 
         // create handlers from config script
-        addHandlersFromScript(configScriptLanguage, configScriptFile);
+        addHandlersFromScript();
 
         log.info("Handlers:");
         for (JexlerHandler handler : handlers) {
@@ -98,21 +101,6 @@ public class JexlerImpl implements Jexler {
     }
 
     @Override
-    public void waitForShutdown() {
-        log.info("Waiting for shutdown of jexler '" + id  + "'...");
-        synchronized (this) {
-            while (isRunning) {
-                try {
-                    this.wait();
-                } catch (InterruptedException e) {
-                    log.info("interrupted");
-                }
-            }
-        }
-        log.info("Jexler '" + id + "' has shut down.");
-    }
-
-    @Override
     public List<JexlerHandler> getHandlers() {
         return handlers;
     }
@@ -133,7 +121,6 @@ public class JexlerImpl implements Jexler {
         log.info("Jexler '" + id + "' has shutdown.");
         synchronized (this) {
             isRunning = false;
-            this.notify();
         }
     }
 
@@ -147,9 +134,10 @@ public class JexlerImpl implements Jexler {
         return description;
     }
 
-    private void addHandlersFromScript(String scriptLanguage, File scriptFile) {
-        ScriptEngine engine = new ScriptEngineManager().getEngineByName(scriptLanguage);
+    private void addHandlersFromScript() {
+        ScriptEngine engine = new ScriptEngineManager().getEngineByExtension(scriptFileExtension);
         engine.put("handlers", handlers);
+        engine.put("configDir", configDir.getAbsolutePath());
         FileReader fileReader;
         try {
             fileReader = new FileReader(scriptFile);

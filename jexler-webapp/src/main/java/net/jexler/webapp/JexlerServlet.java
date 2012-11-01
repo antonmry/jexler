@@ -76,10 +76,8 @@ public class JexlerServlet extends HttpServlet {
                 jexler.startup();
             } else if (method.equals("shutdown")) {
                 jexler.shutdown();
-                jexler.waitForShutdown();
             } else if (method.equals("restart")) {
                 jexler.shutdown();
-                jexler.waitForShutdown();
                 jexler.startup();
             }
         }

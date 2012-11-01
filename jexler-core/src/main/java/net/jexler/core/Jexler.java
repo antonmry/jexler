@@ -38,11 +38,6 @@ public interface Jexler extends JexlerInfo {
     boolean isRunning();
 
     /**
-     * Block until shutdown.
-     */
-    void waitForShutdown();
-
-    /**
      * Get list of handlers.
      * @return handlers
      */
