@@ -46,9 +46,8 @@ public class JexlerContextListener implements ServletContextListener    {
         String webappPath = servletContext.getRealPath("/");
         log.info("ServletContextName: " + servletContext.getServletContextName());
         log.info("webappPath: " + webappPath);
-        File configDir = new File(webappPath, "WEB-INF/config");
         jexler = JexlerFactory.getJexler("main", "Main Jexler of webapp",
-                configDir, new File(configDir, "create_handlers.rb"));
+                new File(webappPath, "WEB-INF/config/create_handlers.rb"));
         jexler.startup();
     }
 

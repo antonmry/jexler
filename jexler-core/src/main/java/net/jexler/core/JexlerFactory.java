@@ -31,13 +31,11 @@ public class JexlerFactory {
      * Get jexler for given config script.
      * @param id
      * @param description
-     * @param configDir
-     * @param scriptFile constructs handlers
+     * @param scriptFile constructs handlers, containing directory is config dir
      * @return jexler
      */
-    public static Jexler getJexler(String id, String description, File configDir,
-            File scriptFile) {
-        return new JexlerImpl(id, description, configDir, scriptFile);
+    public static Jexler getJexler(String id, String description, File scriptFile) {
+        return new JexlerImpl(id, description, scriptFile);
     }
 
 }

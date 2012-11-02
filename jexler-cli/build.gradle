@@ -11,5 +11,4 @@ jar {
   }
 }
 
-// needed for application plugin
-mainClassName = "net.jexler.cli.JexlerMain"
+mainClassName = "net.jexler.cli.JexlerCli"

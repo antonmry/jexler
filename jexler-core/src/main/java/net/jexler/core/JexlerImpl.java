@@ -43,7 +43,6 @@ public class JexlerImpl implements Jexler {
 
     private final String id;
     private final String description;
-    private final File configDir;
     private final File scriptFile;
     private final String scriptFileExtension;
     private SimpleMessageProcessor processor;
@@ -53,14 +52,12 @@ public class JexlerImpl implements Jexler {
     /**
      * Constructor.
      * @param id
-     * @param configDir
-     * @param scriptFile constructs handlers
+     * @param scriptFile constructs handlers, containing directory is config dir
      */
-    public JexlerImpl(String id, String description, File configDir, File scriptFile) {
+    public JexlerImpl(String id, String description, File scriptFile) {
         log.info("Creating jexler '" + id + "'...");
         this.id = id;
         this.description = description;
-        this.configDir = configDir;
         this.scriptFile = scriptFile;
         // LATER handle case where no extension is present
         String[] split = scriptFile.getName().split("\\.");
@@ -137,7 +134,7 @@ public class JexlerImpl implements Jexler {
     private void addHandlersFromScript() {
         ScriptEngine engine = new ScriptEngineManager().getEngineByExtension(scriptFileExtension);
         engine.put("handlers", handlers);
-        engine.put("configDir", configDir.getAbsolutePath());
+        engine.put("configDir", scriptFile.getParentFile().getAbsolutePath());
         FileReader fileReader;
         try {
             fileReader = new FileReader(scriptFile);

@@ -22,4 +22,8 @@ subprojects {
     testCompile 'junit:junit:4.10'
   }
 
+  task myJavadocs(type: Javadoc) {
+    source = sourceSets.main.allJava
+  }
+
 }
