@@ -41,29 +41,59 @@ public class JexlerImpl implements Jexler {
 
     static final Logger log = LoggerFactory.getLogger(JexlerImpl.class);
 
+    private static final String JEXLER_INIT_FILE_PREFIX = "jexler.init.";
+
     private final String id;
-    private final String description;
-    private final File scriptFile;
-    private final String scriptFileExtension;
+    private String description;
+    private File jexlerDir;
+    private File jexlerInitFile;
+    private String jexlerInitFileExtension;
     private SimpleMessageProcessor processor;
     private List<JexlerHandler> handlers;
     private boolean isRunning;
 
     /**
      * Constructor.
-     * @param id
-     * @param scriptFile constructs handlers, containing directory is config dir
+     * The id is set to the name of the jexler directory,
+     * the description is set in the jexler.init.* script
+     * at startup, here only a default is set.
+     * @param jexlerDir
      */
-    public JexlerImpl(String id, String description, File scriptFile) {
+    public JexlerImpl(File jexlerDir) {
+        if (!isJexlerDir(jexlerDir)) {
+            // TODO handle better
+            throw new RuntimeException("File '" + jexlerDir.getAbsolutePath() +
+                    "' is not a jexler directory");
+        }
+
+        this.jexlerDir = jexlerDir;
+        this.id = jexlerDir.getName();
         log.info("Creating jexler '" + id + "'...");
-        this.id = id;
-        this.description = description;
-        this.scriptFile = scriptFile;
-        // LATER handle case where no extension is present
-        String[] split = scriptFile.getName().split("\\.");
-        scriptFileExtension = split[split.length-1];
+        description = "jexler '" + id + "'";
+        String[] filenames = jexlerDir.list();
+        for (String filename : filenames) {
+            if (filename.startsWith(JEXLER_INIT_FILE_PREFIX)) {
+                jexlerInitFile = new File(jexlerDir, filename);
+                jexlerInitFileExtension = filename.substring(JEXLER_INIT_FILE_PREFIX.length());
+                break;
+            }
+        }
         handlers = new LinkedList<JexlerHandler>();
         processor = new SimpleMessageProcessor(this, handlers);
+    }
+
+    public static boolean isJexlerDir(File dir) {
+        if (!dir.isDirectory()) {
+            return false;
+        }
+        String[] filenames = dir.list();
+        int nFound = 0;
+        for (String filename : filenames) {
+            if (filename.startsWith(JEXLER_INIT_FILE_PREFIX)) {
+                nFound++;
+            }
+        }
+        return (nFound == 1);
     }
 
     @Override
@@ -73,8 +103,7 @@ public class JexlerImpl implements Jexler {
         }
         log.info("Starting jexler '" + id + "'...");
 
-        // create handlers from config script
-        addHandlersFromScript();
+        runJexlerInitScript();
 
         log.info("Handlers:");
         for (JexlerHandler handler : handlers) {
@@ -131,15 +160,16 @@ public class JexlerImpl implements Jexler {
         return description;
     }
 
-    private void addHandlersFromScript() {
-        ScriptEngine engine = new ScriptEngineManager().getEngineByExtension(scriptFileExtension);
+    private void runJexlerInitScript() {
+        ScriptEngine engine = new ScriptEngineManager().getEngineByExtension(jexlerInitFileExtension);
+        engine.put("jexlerDir", jexlerDir.getAbsolutePath());
         engine.put("handlers", handlers);
-        engine.put("configDir", scriptFile.getParentFile().getAbsolutePath());
+        engine.put("description", description);
         FileReader fileReader;
         try {
-            fileReader = new FileReader(scriptFile);
+            fileReader = new FileReader(jexlerInitFile);
         } catch (FileNotFoundException e) {
-            log.error("file '" + scriptFile.getAbsolutePath() + "' not found");
+            log.error("file '" + jexlerInitFile.getAbsolutePath() + "' not found");
             // TODO
             throw new RuntimeException(e);
         }
@@ -157,6 +187,8 @@ public class JexlerImpl implements Jexler {
                 log.warn("could not close file reader: " + e);
             }
         }
+        // need to read back since strings are immutable
+        description = (String)engine.get("description");
     }
 
 }

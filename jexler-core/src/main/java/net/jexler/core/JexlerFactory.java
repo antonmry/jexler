@@ -28,14 +28,12 @@ import java.io.File;
 public class JexlerFactory {
 
     /**
-     * Get jexler for given config script.
-     * @param id
-     * @param description
-     * @param scriptFile constructs handlers, containing directory is config dir
+     * Get jexler from given directory.
+     * @param jexlerDir
      * @return jexler
      */
-    public static Jexler getJexler(String id, String description, File scriptFile) {
-        return new JexlerImpl(id, description, scriptFile);
+    public static Jexler getJexler(File jexlerDir) {
+        return new JexlerImpl(jexlerDir);
     }
 
 }

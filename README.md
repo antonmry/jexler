@@ -22,5 +22,5 @@ jexler command line application
 
 * &gt; cd jexler-cli
 * &gt; gradle installApp
-* &gt; build/install/jexler-cli/bin/jexler-cli config/create_handlers.rb
+* &gt; build/install/jexler-cli/bin/jexler-cli ../jexler-webapp/src/main/webapp/WEB-INF/suite
 * or run JexlerCli class in Eclipse

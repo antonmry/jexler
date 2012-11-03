@@ -12,4 +12,3 @@ if $method == "canHandle"
 elsif $method == "handle"
   puts "line: " + $message.get("line")
 end
-

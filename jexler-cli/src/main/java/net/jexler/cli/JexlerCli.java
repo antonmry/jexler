@@ -18,9 +18,11 @@ package net.jexler.cli;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 import net.jexler.core.Jexler;
-import net.jexler.core.JexlerFactory;
+import net.jexler.core.JexlerSuite;
+import net.jexler.core.JexlerSuiteFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +42,7 @@ public final class JexlerCli
      * @param args command line arguments, must be a single argument:
      *             <ul>
      *             <li> "-v": Show version and exit.</li>
-     *             <li> &lt;file>: Startup jexler using given config script file,
+     *             <li> &lt;dir>: Startup jexler suite using given suite directory,
      *                          wait for any key stroke, shutdown jexler and exit.</li>
      *             </ul>
      * @throws IOException if an I/O error occurs while trying to read from stdin
@@ -49,7 +51,7 @@ public final class JexlerCli
         if (args.length != 1) {
             System.err.println("Usage:");
             System.err.println("  -v      Show version and exit.");
-            System.err.println("  <file>  Startup jexler using given config script file,");
+            System.err.println("  <dir>   Startup jexler suite using given suite directory,");
             System.err.println("          wait for any key stroke, shutdown jexler and exit.");
             System.exit(1);
         }
@@ -58,10 +60,16 @@ public final class JexlerCli
             System.out.println("jexler " + (version == null ? "(unknown)" : version));
             System.exit(0);
         }
-        Jexler jexler = JexlerFactory.getJexler("main", "main jexler", new File(args[0]));
-        jexler.startup();
+        final JexlerSuite suite = JexlerSuiteFactory.getSuite(new File(args[0]));
+        suite.startup();
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                setName("main-shutdown");
+                suite.shutdown();
+            }
+        });
         System.in.read();
-        jexler.shutdown();
+        suite.shutdown();
     }
 
 }

@@ -22,8 +22,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import net.jexler.core.Jexler;
-import net.jexler.core.JexlerFactory;
+import net.jexler.core.JexlerSuite;
+import net.jexler.core.JexlerSuiteFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +38,7 @@ public class JexlerContextListener implements ServletContextListener    {
     static final Logger log = LoggerFactory.getLogger(JexlerContextListener.class);
 
     private static ServletContext servletContext;
-    private static Jexler jexler;
+    private static JexlerSuite jexlerSuite;
 
     @Override
     public void contextInitialized(ServletContextEvent event) {
@@ -46,22 +46,21 @@ public class JexlerContextListener implements ServletContextListener    {
         String webappPath = servletContext.getRealPath("/");
         log.info("ServletContextName: " + servletContext.getServletContextName());
         log.info("webappPath: " + webappPath);
-        jexler = JexlerFactory.getJexler("main", "Main Jexler of webapp",
-                new File(webappPath, "WEB-INF/config/create_handlers.rb"));
-        jexler.startup();
+        jexlerSuite = JexlerSuiteFactory.getSuite(new File(webappPath, "WEB-INF/suite"));
+        jexlerSuite.startup();
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent event) {
-        jexler.shutdown();
+        jexlerSuite.shutdown();
     }
 
     public static ServletContext getServletContext() {
         return servletContext;
     }
 
-    public static Jexler getJexler() {
-        return jexler;
+    public static JexlerSuite getJexlerSuite() {
+        return jexlerSuite;
     }
 
 }

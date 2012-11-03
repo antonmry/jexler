@@ -16,24 +16,38 @@
 
 package net.jexler.core;
 
+import java.util.List;
+
 
 /**
- * Interface for info about some jexler objects.
+ * Interface for a suite of jexlers.
  *
  * @author $(whois jexler.net)
  */
-public interface JexlerInfo {
+public interface JexlerSuite {
 
     /**
-     * Get id, unique per implementing class.
-     * @return id, never null
+     * Get list of all jexlers, sorted alphabetically by id.
+     * @return jexlers
      */
-    String getId();
+    List<Jexler> getJexlers();
 
     /**
-     * Get human readable description of object.
-     * @return description, never null
+     * Get jexler with given id.
+     * @param id id
+     * @return jexler or null
      */
-    String getDescription();
+    Jexler getJexler(String id);
+
+    /**
+     * Start up all jexlers.
+     * LATER only ones with autostartup set
+     */
+    void startup();
+
+    /**
+     * Shutdown all jexlers.
+     */
+    void shutdown();
 
 }

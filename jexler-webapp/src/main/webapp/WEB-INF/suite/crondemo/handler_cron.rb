@@ -12,4 +12,3 @@ if $method == "canHandle"
 elsif $method == "handle"
   puts "It is now " + Time.new.inspect
 end
-

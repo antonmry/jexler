@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.jexler.core.Jexler;
-import net.jexler.core.JexlerHandler;
+import net.jexler.core.JexlerSuite;
 
 /**
  * Jexler servlet.
@@ -68,8 +68,22 @@ public class JexlerServlet extends HttpServlet {
         writer.println("<body>");
         writer.println("<a href='jexler'><img src='jexler.jpg'></a>");
 
-        Jexler jexler = JexlerContextListener.getJexler();
+        JexlerSuite jexlerSuite = JexlerContextListener.getJexlerSuite();
+        writer.println("<table>");
+        writer.println("<tr>");
+        writer.println("<td><strong>ID</strong></td>");
+        writer.println("<td><strong>Description</strong></td>");
+        writer.println("</tr>");
+        List<Jexler> jexlers = jexlerSuite.getJexlers();
+        for (Jexler jexler : jexlers) {
+            writer.println("<tr>");
+            writer.println("<td>" + jexler.getId() + "</td>");
+            writer.println("<td>" + jexler.getDescription() + "</td>");
+            writer.println("</tr>");
+        }
+        writer.println("</table>");
 
+        /*
         String method = request.getParameter("method");
         if (method != null) {
             if (method.equals("startup")) {
@@ -119,6 +133,7 @@ public class JexlerServlet extends HttpServlet {
             // LATER handle case of unknown method?
             writer.println("<div class='ok'>" + method + " ok</div>");
         }
+        */
 
         writer.println("</body>");
         writer.println("</html>");

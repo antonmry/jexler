@@ -22,7 +22,7 @@ package net.jexler.core;
  *
  * @author $(whois jexler.net)
  */
-public interface JexlerHandler extends JexlerInfo {
+public interface JexlerHandler {
 
     /**
      * Startup handler.
@@ -54,5 +54,17 @@ public interface JexlerHandler extends JexlerInfo {
      * Shutdown handler.
      */
     void shutdown();
+
+    /**
+     * Get id, unique per implementing class.
+     * @return id, never null
+     */
+    String getId();
+
+    /**
+     * Get human readable description of handler.
+     * @return description, never null
+     */
+    String getDescription();
 
 }

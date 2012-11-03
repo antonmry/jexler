@@ -16,48 +16,24 @@
 
 package net.jexler.core;
 
-import java.util.List;
+import java.io.File;
+
 
 
 /**
- * Interface for a jexler.
+ * Jexler suite factory.
  *
  * @author $(whois jexler.net)
  */
-public interface Jexler {
+public class JexlerSuiteFactory {
 
     /**
-     * Startup jexler.
+     * Get jexler suite from given directory.
+     * @param suiteDir
+     * @return jexler suite
      */
-    void startup();
-
-    /**
-     * Tell if jexler is running.
-     * @return true if running
-     */
-    boolean isRunning();
-
-    /**
-     * Get list of handlers.
-     * @return handlers
-     */
-    List<JexlerHandler> getHandlers();
-
-    /**
-     * Shutdown jexler.
-     */
-    void shutdown();
-
-    /**
-     * Get id.
-     * @return id, never null
-     */
-    String getId();
-
-    /**
-     * Get human readable description of jexler.
-     * @return description, never null
-     */
-    String getDescription();
+    public static JexlerSuite getSuite(File suiteDir) {
+        return new JexlerSuiteImpl(suiteDir);
+    }
 
 }
