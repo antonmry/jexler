@@ -3,6 +3,8 @@ apply plugin: 'application'
 dependencies {
   compile project(':jexler-core')
   compile project(':jexler-handler')
+  runtime files('src/main/resources')
+  testRuntime files('src/test/resources')
 }
 
 jar {
@@ -12,3 +14,16 @@ jar {
 }
 
 mainClassName = "net.jexler.cli.JexlerCli"
+
+// currently no other way to set a java property in installApp start scripts
+// (need it for defining location of log files in logback config)
+startScripts{
+    doLast{
+        unixScript.text = unixScript.text.replace(
+          'APP_HOME="`pwd -P`"',
+          'APP_HOME="`pwd -P`"\nDEFAULT_JVM_OPTS="-Dnet.jexler.cli.home=$APP_HOME"')
+        windowsScript.text = windowsScript.text.replace(
+          'set APP_HOME=%DIRNAME%..',
+          'set APP_HOME=%DIRNAME%..\r\nset DEFAULT_JVM_OPTS=-Dnet.jexler.cli.home=%APP_HOME%')
+    }
+}

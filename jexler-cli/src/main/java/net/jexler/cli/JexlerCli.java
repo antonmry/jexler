@@ -18,9 +18,7 @@ package net.jexler.cli;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
-import net.jexler.core.Jexler;
 import net.jexler.core.JexlerSuite;
 import net.jexler.core.JexlerSuiteFactory;
 
@@ -55,6 +53,7 @@ public final class JexlerCli
             System.err.println("          wait for any key stroke, shutdown jexler and exit.");
             System.exit(1);
         }
+
         if (args[0].equals("-v")) {
             String version = JexlerCli.class.getPackage().getImplementationVersion();
             System.out.println("jexler " + (version == null ? "(unknown)" : version));

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<configuration scan="true" scanPeriod="3 seconds">
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>
+        %d{HH:mm:ss.SSS} [%thread] %-5level %logger{32} - %msg%n
+      </pattern>
+    </encoder>
+  </appender>
+
+  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <file>${user.dir}/build/logs/jexler.log</file>
+    <encoder>
+      <pattern>%-26(%d{HH:mm:ss.SSS} [%thread]) %-5level %logger{32} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <logger name="net.jexler" level="TRACE">
+    <appender-ref ref="FILE" />
+  </logger>
+
+  <root level="ERROR">
+    <!-- <appender-ref ref="STDOUT" /> -->
+  </root>
+
+</configuration>

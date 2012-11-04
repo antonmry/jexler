@@ -20,6 +20,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -46,6 +48,12 @@ public final class JexlerJetty {
         //Resource jettyConfig = Resource.newSystemResource("jetty.xml");
         //XmlConfiguration configuration = new XmlConfiguration(jettyConfig.getInputStream());
         //Server server = (Server)configuration.configure();
+
+        ClassLoader sysClassLoader = ClassLoader.getSystemClassLoader();
+        URL[] urls = ((URLClassLoader)sysClassLoader).getURLs();
+        for(int i=0; i< urls.length; i++) {
+            System.out.println(urls[i].getFile());
+        }
 
         System.out.println(new File(".").getAbsolutePath());
         WebAppContext wac = new WebAppContext();
