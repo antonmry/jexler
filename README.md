@@ -14,13 +14,19 @@ jexler webapp
 -------------
 
 * run JexlerJetty class in Eclipse
-* http://localhost:8080/jexler
+* => http://localhost:8080/jexler
+* => build/logs/jexler.log
 * or deploy jexler-webapp/build/libs/jexler-*.war
 
 jexler command line application
 -------------------------------
 
-* &gt; cd jexler-cli
-* &gt; gradle installApp
-* &gt; build/install/jexler-cli/bin/jexler-cli ../jexler-webapp/src/main/webapp/WEB-INF/suite
-* or run JexlerCliTest class in Eclipse
+* run JexlerCliTest class in Eclipse
+* => build/logs/jexler.log
+* or do this
+  * &gt; cd jexler-cli
+  * &gt; gradle installApp
+  * &gt; build/install/jexler-cli/bin/jexler-cli ../jexler-webapp/src/main/webapp/WEB-INF/suite
+  * => build/install/jexler-cli/logs/jexler.log
+
+
