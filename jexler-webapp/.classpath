@@ -28,6 +28,5 @@
 	<classpathentry kind="lib" path="/Users/alain/.gradle/caches/artifacts-14/filestore/org.mortbay.jetty/jsp-api-2.1-glassfish/2.1.v20100127/jar/98e90faaff0df6a0b117f405032e1fa92e33114f/jsp-api-2.1-glassfish-2.1.v20100127.jar" exported="true"/>
 	<classpathentry sourcepath="/Users/alain/.gradle/caches/artifacts-14/filestore/ant/ant/1.6.5/source/9e0a847494563f35f9b02846a1c1eb4aa2ee5a9a/ant-1.6.5-sources.jar" kind="lib" path="/Users/alain/.gradle/caches/artifacts-14/filestore/ant/ant/1.6.5/jar/7d18faf23df1a5c3a43613952e0e8a182664564b/ant-1.6.5.jar" exported="true"/>
 	<classpathentry sourcepath="/Users/alain/.gradle/caches/artifacts-14/filestore/org.hamcrest/hamcrest-core/1.1/source/2ccf1154d1a8936042a8a742dc3e611d02ac7213/hamcrest-core-1.1-sources.jar" kind="lib" path="/Users/alain/.gradle/caches/artifacts-14/filestore/org.hamcrest/hamcrest-core/1.1/jar/860340562250678d1a344907ac75754e259cdb14/hamcrest-core-1.1.jar" exported="true"/>
-	<classpathentry kind="lib" path="/Users/alain/me/computer/jexler/workspace/jexler/jexler-webapp/src/test/resources" exported="true"/>
 	<classpathentry kind="lib" path="/Users/alain/me/computer/jexler/workspace/jexler/jexler-webapp/src/main/resources" exported="true"/>
 </classpath>

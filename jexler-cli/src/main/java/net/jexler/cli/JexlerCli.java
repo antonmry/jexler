@@ -56,7 +56,8 @@ public final class JexlerCli
 
         if (args[0].equals("-v")) {
             String version = JexlerCli.class.getPackage().getImplementationVersion();
-            System.out.println("jexler " + (version == null ? "(unknown)" : version));
+            // no version in eclipse/unit tests (no jar with MANIFEST.MF)
+            System.out.println("Welcome to jexler. Version: " + (version == null ? "NONE" : version));
             System.exit(0);
         }
         final JexlerSuite suite = JexlerSuiteFactory.getSuite(new File(args[0]));

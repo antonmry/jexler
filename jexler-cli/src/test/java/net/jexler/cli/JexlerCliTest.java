@@ -18,6 +18,7 @@ package net.jexler.cli;
 
 import java.io.IOException;
 
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,5 +40,12 @@ public final class JexlerCliTest
         String[] cliArgs = new String[] { "../jexler-webapp/src/main/webapp/WEB-INF/suite"};
         JexlerCli.main(cliArgs);
     }
+
+    @Test
+    public void versionTest() throws Exception {
+        String[] cliArgs = new String[] { "-v"};
+        JexlerCli.main(cliArgs);
+    }
+
 
 }

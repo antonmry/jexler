@@ -49,13 +49,6 @@ public final class JexlerJetty {
         //XmlConfiguration configuration = new XmlConfiguration(jettyConfig.getInputStream());
         //Server server = (Server)configuration.configure();
 
-        ClassLoader sysClassLoader = ClassLoader.getSystemClassLoader();
-        URL[] urls = ((URLClassLoader)sysClassLoader).getURLs();
-        for(int i=0; i< urls.length; i++) {
-            System.out.println(urls[i].getFile());
-        }
-
-        System.out.println(new File(".").getAbsolutePath());
         WebAppContext wac = new WebAppContext();
         wac.setResourceBase("./src/main/webapp");
         wac.setDescriptor("WEB-INF/web.xml");
@@ -70,10 +63,9 @@ public final class JexlerJetty {
         // let user stop server
         new Thread() {
             public void run() {
-                BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-                System.out.println("Press return to stop...");
+                System.out.println("Press any key to stop...");
                 try {
-                    stdIn.readLine();
+                    System.in.read();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
