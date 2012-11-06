@@ -27,9 +27,9 @@ import java.util.List;
 public interface Jexler {
 
     /**
-     * Startup jexler.
+     * Start jexler.
      */
-    void startup();
+    void start();
 
     /**
      * Tell if jexler is running.
@@ -38,15 +38,15 @@ public interface Jexler {
     boolean isRunning();
 
     /**
-     * Get list of handlers.
+     * Get list of handlers (empty if not running).
      * @return handlers
      */
     List<JexlerHandler> getHandlers();
 
     /**
-     * Shutdown jexler.
+     * Stop jexler.
      */
-    void shutdown();
+    void stop();
 
     /**
      * Get id.

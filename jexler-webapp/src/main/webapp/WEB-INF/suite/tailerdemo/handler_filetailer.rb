@@ -10,5 +10,6 @@ if $method == "canHandle"
     end
   end
 elsif $method == "handle"
-  puts "got line: " + $message.get("line")
+  #puts "got line: " + $message.get("line")
+  $log.info "### got line: " + $message.get("line")
 end

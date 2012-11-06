@@ -40,14 +40,13 @@ public interface JexlerSuite {
     Jexler getJexler(String id);
 
     /**
-     * Start up all jexlers.
-     * LATER only ones with autostartup set
+     * Start all jexlers.
      */
-    void startup();
+    void start();
 
     /**
-     * Shutdown all jexlers.
+     * Stop all jexlers.
      */
-    void shutdown();
+    void stop();
 
 }

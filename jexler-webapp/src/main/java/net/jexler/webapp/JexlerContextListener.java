@@ -47,12 +47,12 @@ public class JexlerContextListener implements ServletContextListener    {
         log.info("ServletContextName: " + servletContext.getServletContextName());
         log.info("webappPath: " + webappPath);
         jexlerSuite = JexlerSuiteFactory.getSuite(new File(webappPath, "WEB-INF/suite"));
-        jexlerSuite.startup();
+        jexlerSuite.start();
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent event) {
-        jexlerSuite.shutdown();
+        jexlerSuite.stop();
     }
 
     public static ServletContext getServletContext() {

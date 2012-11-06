@@ -51,7 +51,7 @@ public class JexlerSuiteImpl implements JexlerSuite {
         File[] files = suiteDir.listFiles();
         for (File file : files) {
             if (JexlerImpl.isJexlerDir(file)) {
-                Jexler jexler = new JexlerImpl(file);
+                Jexler jexler = JexlerFactory.getJexler(file);
                 jexlerMap.put(jexler.getId(), jexler);
             }
         }
@@ -72,20 +72,20 @@ public class JexlerSuiteImpl implements JexlerSuite {
     }
 
     @Override
-    public void startup() {
+    public void start() {
         for (String id : jexlerMap.keySet()) {
             Jexler jexler = jexlerMap.get(id);
-            log.info("*** Jexler startup: " + jexler.getId() + " (" + jexler.getDescription() + ")");
-            jexler.startup();
+            log.info("*** Jexler start: " + jexler.getId() + " (" + jexler.getDescription() + ")");
+            jexler.start();
         }
     }
 
     @Override
-    public void shutdown() {
+    public void stop() {
         for (String id : jexlerMap.keySet()) {
             Jexler jexler = jexlerMap.get(id);
-            log.info("*** Jexler shutdown: " + jexler.getId() + " (" + jexler.getDescription() + ")");
-            jexler.shutdown();
+            log.info("*** Jexler stop: " + jexler.getId() + " (" + jexler.getDescription() + ")");
+            jexler.stop();
         }
     }
 

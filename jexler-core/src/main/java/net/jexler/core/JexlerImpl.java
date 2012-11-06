@@ -90,7 +90,7 @@ public class JexlerImpl implements Jexler {
     }
 
     @Override
-    public void startup() {
+    public void start() {
         if (isRunning()) {
             return;
         }
@@ -111,7 +111,7 @@ public class JexlerImpl implements Jexler {
         isRunning = true;
         processor.startProcessing();
 
-        log.info("Jexler '" + id + "' has started up.");
+        log.info("Jexler '" + id + "' has started.");
     }
 
     @Override
@@ -125,11 +125,11 @@ public class JexlerImpl implements Jexler {
     }
 
     @Override
-    public void shutdown() {
+    public void stop() {
         if (!isRunning()) {
             return;
         }
-        log.info("Shutting down jexler '" + id + "'...");
+        log.info("Stopping jexler '" + id + "'...");
 
         processor.stopProcessing();
         for (JexlerHandler handler : handlers) {
@@ -137,7 +137,7 @@ public class JexlerImpl implements Jexler {
         }
         handlers.clear();
 
-        log.info("Jexler '" + id + "' has shutdown.");
+        log.info("Jexler '" + id + "' has stopped.");
         synchronized (this) {
             isRunning = false;
         }
