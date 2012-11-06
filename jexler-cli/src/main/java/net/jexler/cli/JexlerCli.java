@@ -44,12 +44,7 @@ public final class JexlerCli
     /**
      * Main method for starting jexler from the command line.
      *
-     * @param args command line arguments, must be a single argument:
-     *             <ul>
-     *             <li> "-v": Show version and exit.</li>
-     *             <li> &lt;dir>: Startup jexler suite using given suite directory,
-     *                          wait for any key stroke, shutdown jexler and exit.</li>
-     *             </ul>
+     * @param args command line arguments
      * @throws IOException if an I/O error occurs while trying to read from stdin
      */
     public static void main(final String[] args) throws IOException {
@@ -69,11 +64,11 @@ public final class JexlerCli
         }
 
         if (args.length != 1) {
-            // TODO update
             System.err.println("Usage:");
             System.err.println("  -v      Show version and exit.");
-            System.err.println("  <dir>   Startup jexler suite using given suite directory,");
-            System.err.println("          wait for any key stroke, shutdown jexler and exit.");
+            System.err.println("  -s      Run silently, press any key to exit.");
+            System.err.println("  <dir>   Startup jexler suite using given suite directory");
+            System.err.println("          and wait for commands.");
             System.exit(1);
         }
 
@@ -93,6 +88,7 @@ public final class JexlerCli
             do {
                 System.out.print("jexler> ");
                 String cmd = reader.readLine().trim();
+
                 String jexlerId = null;
                 if (cmd.contains(" ")) {
                     int i = cmd.indexOf(' ');
@@ -104,66 +100,77 @@ public final class JexlerCli
                     jexler = suite.getJexler(jexlerId);
                     if (jexler == null) {
                         System.out.println("no jexler with id '" + jexlerId + "'");
-                        doSuiteInfo();
+                        doInfo(jexler);
                         continue;
                     }
                 }
 
                 if (cmd.equals("exit")) {
                     break;
+                } else if (cmd.equals("info")) {
+                    doInfo(jexler);
                 } else if (cmd.equals("start")) {
-                    if (jexler == null) {
-                        suite.start();
-                    } else {
-                        jexler.start();
-                    }
+                    doStart(jexler);
+                    doInfo(jexler);
                 } else if (cmd.equals("stop")) {
-                    if (jexler == null) {
-                        suite.stop();
-                    } else {
-                        jexler.stop();
-                    }
+                    doStop(jexler);
+                    doInfo(jexler);
                 } else if (cmd.equals("restart")) {
-                    if (jexler == null) {
-                        suite.stop();
-                        suite.start();
-                    } else {
-                        jexler.stop();
-                        jexler.start();
-                    }
-                }
-                if (cmd.equals("info") || cmd.equals("start") || cmd.equals("stop") || cmd.equals("restart")) {
-                    if (jexler == null) {
-                        doSuiteInfo();
-                    } else {
-                        doJexlerInfo(jexler);
-                    }
+                    doRestart(jexler);
+                    doInfo(jexler);
+                } else {
+                    System.out.println();
+                    System.out.println("Commands:");
+                    System.out.println("> info [id]      Show info about suite or given jexler.");
+                    System.out.println("> start [id]     Start all jexlers in suite or given jexler.");
+                    System.out.println("> stop [id]      Stop all jexlers in suite or given jexler.");
+                    System.out.println("> restart [id]   Restart all jexlers in suite or given jexler.");
+                    System.out.println("> exit           Stop all jexlers and exit.");
+                    System.out.println();
                 }
             } while (true);
-            System.out.println("Jexler done.");
         }
         suite.stop();
     }
 
-    public static void doSuiteInfo() {
-        List<Jexler> jexlers = suite.getJexlers();
-        for (Jexler jexler : jexlers) {
-            System.out.print("* ");
-            printJexlerLine(jexler, getJexlerMaxIdLen());
+    public static void doInfo(Jexler jexler) {
+        if (jexler == null) {
+            List<Jexler> jexlers = suite.getJexlers();
+            for (Jexler jex : jexlers) {
+                printJexlerLine(jex, getJexlerMaxIdLen());
+            }
+        } else {
+            printJexlerLine(jexler, jexler.getId().length());
+            if (jexler.isRunning()) {
+                int maxIdLen = getHandlerMaxIdLen(jexler);
+                int maxClassLen = getHandlerMaxClassLen(jexler);
+                for (JexlerHandler handler : jexler.getHandlers()) {
+                    System.out.printf("  - %-" + maxIdLen + "s : %-" + maxClassLen + "s - %s%n",
+                            handler.getId(), handler.getClass().getName(), handler.getDescription());
+                }
+            }
         }
     }
 
-    public static void doJexlerInfo(Jexler jexler) {
-        printJexlerLine(jexler, jexler.getId().length());
-        if (jexler.isRunning()) {
-            int maxIdLen = getHandlerMaxIdLen(jexler);
-            int maxClassLen = getHandlerMaxClassLen(jexler);
-            for (JexlerHandler handler : jexler.getHandlers()) {
-                System.out.printf("+ %-" + maxIdLen + "s : %-" + maxClassLen + "s - %s%n",
-                    handler.getId(), handler.getClass().getName(), handler.getDescription());
-            }
+    public static void doStart(Jexler jexler) {
+        if (jexler == null) {
+            suite.start();
+        } else {
+            jexler.start();
         }
+    }
 
+    public static void doStop(Jexler jexler) {
+        if (jexler == null) {
+            suite.stop();
+        } else {
+            jexler.stop();
+        }
+    }
+
+    public static void doRestart(Jexler jexler) {
+        doStop(jexler);
+        doStart(jexler);
     }
 
     private static int getJexlerMaxIdLen() {
@@ -203,7 +210,7 @@ public final class JexlerCli
     }
 
     private static void printJexlerLine(Jexler jexler, int maxIdLen) {
-        System.out.printf("%-" + maxIdLen + "s : %-7s - %s%n",
+        System.out.printf("* %-" + maxIdLen + "s : %-7s - %s%n",
                 jexler.getId(),
                 jexler.isRunning() ? "running" : "stopped",
                 jexler.getDescription());
