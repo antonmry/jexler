@@ -17,15 +17,10 @@
 package net.jexler.core;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +42,6 @@ public class JexlerImpl implements Jexler {
     private String description;
     private File jexlerDir;
     private File jexlerInitFile;
-    private String jexlerInitFileExtension;
     private SimpleMessageProcessor processor;
     private List<JexlerHandler> handlers;
     private boolean isRunning;
@@ -74,7 +68,6 @@ public class JexlerImpl implements Jexler {
         for (String filename : filenames) {
             if (filename.startsWith(JEXLER_INIT_FILE_PREFIX)) {
                 jexlerInitFile = new File(jexlerDir, filename);
-                jexlerInitFileExtension = filename.substring(JEXLER_INIT_FILE_PREFIX.length());
                 break;
             }
         }
@@ -161,34 +154,16 @@ public class JexlerImpl implements Jexler {
     }
 
     private void runJexlerInitScript() {
-        ScriptEngine engine = new ScriptEngineManager().getEngineByExtension(jexlerInitFileExtension);
-        engine.put("jexlerDir", jexlerDir.getAbsolutePath());
-        engine.put("handlers", handlers);
-        engine.put("description", description);
-        FileReader fileReader;
-        try {
-            fileReader = new FileReader(jexlerInitFile);
-        } catch (FileNotFoundException e) {
-            log.error("file '" + jexlerInitFile.getAbsolutePath() + "' not found");
-            // TODO
-            throw new RuntimeException(e);
+        Map<String,Object> variables = new HashMap<String,Object>();
+        variables.put("jexlerDir", jexlerDir.getAbsolutePath());
+        variables.put("handlers", handlers);
+        variables.put("description", description);
+        Object obj = ScriptUtil.runScriptThreadSafe(variables, jexlerInitFile);
+        if (obj != null && obj instanceof Boolean && !(Boolean)obj) {
+            // TODO handle better
+            log.error("Initialization script failed.");
         }
-        // TODO look at returned object?
-        try {
-            engine.eval(fileReader);
-        } catch (ScriptException e) {
-            log.error("script failed: " + e);
-            // TODO
-            throw new RuntimeException(e);
-        } finally {
-            try {
-                fileReader.close();
-            } catch (IOException e) {
-                log.warn("could not close file reader: " + e);
-            }
-        }
-        // need to read back since strings are immutable
-        description = (String)engine.get("description");
+        description = (String)variables.get("description");
     }
 
 }

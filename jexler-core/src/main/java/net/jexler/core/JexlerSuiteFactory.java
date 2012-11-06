@@ -33,6 +33,7 @@ public class JexlerSuiteFactory {
      * @return jexler suite
      */
     public static JexlerSuite getSuite(File suiteDir) {
+        ScriptUtil.initScripting();
         return new JexlerSuiteImpl(suiteDir);
     }
 

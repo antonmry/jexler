@@ -47,5 +47,4 @@ public final class JexlerCliTest
         JexlerCli.main(cliArgs);
     }
 
-
 }

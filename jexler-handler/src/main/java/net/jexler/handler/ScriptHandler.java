@@ -17,18 +17,13 @@
 package net.jexler.handler;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 
 import net.jexler.core.AbstractJexlerHandler;
 import net.jexler.core.JexlerMessage;
 import net.jexler.core.JexlerSubmitter;
+import net.jexler.core.ScriptUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,10 +38,7 @@ public class ScriptHandler extends AbstractJexlerHandler {
 
     static final Logger log = LoggerFactory.getLogger(ScriptHandler.class);
 
-    private static final ScriptEngineManager SCRIPT_ENGINE_MANAGER = new ScriptEngineManager();
-
     private final File scriptFile;
-    private final String scriptFileExtension;
     private final Map<String,Object> config;
 
     /**
@@ -58,9 +50,6 @@ public class ScriptHandler extends AbstractJexlerHandler {
             Map<String,Object> config) {
         super(id, description);
         scriptFile = new File(scriptFileName);
-        // LATER handle case where no extension is present
-        String[] split = scriptFile.getName().split("\\.");
-        scriptFileExtension = split[split.length-1];
         this.config = config;
     }
 
@@ -88,34 +77,13 @@ public class ScriptHandler extends AbstractJexlerHandler {
     }
 
     private Object doScript(String method, Object message) {
-        // TODO handle null? or maybe rather at startup?
-        ScriptEngine engine = SCRIPT_ENGINE_MANAGER.getEngineByExtension(scriptFileExtension);
-        engine.put("handler", this);
-        engine.put("log", log);
-        engine.put("config", config);
-        engine.put("method", method);
-        engine.put("message", message);
-        FileReader fileReader;
-        try {
-            fileReader = new FileReader(scriptFile);
-        } catch (FileNotFoundException e) {
-            log.error("file '" + scriptFile.getAbsolutePath() + "' not found");
-            return false;
-        }
-        Object result;
-        try {
-            result = engine.eval(fileReader);
-        } catch (ScriptException e) {
-            log.error("script failed: " + e);
-            return false;
-        } finally {
-            try {
-                fileReader.close();
-            } catch (IOException e) {
-                log.warn("could not close file reader: " + e);
-            }
-        }
-        return result;
+        Map<String,Object> variables = new HashMap<String,Object>();
+        variables.put("handler", this);
+        variables.put("log", log);
+        variables.put("config", config);
+        variables.put("method", method);
+        variables.put("message", message);
+        return ScriptUtil.runScriptThreadSafe(variables, scriptFile);
     }
 
 }
