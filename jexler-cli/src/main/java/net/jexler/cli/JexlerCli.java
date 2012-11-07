@@ -48,12 +48,11 @@ public final class JexlerCli
      * @throws IOException if an I/O error occurs while trying to read from stdin
      */
     public static void main(final String[] args) throws IOException {
-        boolean silent = args.length == 1 && args[0].equals("-s");
+        boolean silent = args.length == 2 && args[0].equals("-s");
 
         if (!silent) {
             String version = JexlerCli.class.getPackage().getImplementationVersion();
             // no version in eclipse/unit tests (no jar with MANIFEST.MF)
-            // TODO inject in tests (e.g. net.jexler.version system property, read build.gradle?
             System.out.println("Welcome to jexler. Version: " + (version == null ? "NONE" : version));
             System.out.println();
         }
@@ -63,73 +62,81 @@ public final class JexlerCli
             return;
         }
 
-        if (args.length != 1) {
+        if (!silent && args.length != 1) {
             System.err.println("Usage:");
-            System.err.println("  -v      Show version and exit.");
-            System.err.println("  -s      Run silently, press any key to exit.");
-            System.err.println("  <dir>   Startup jexler suite using given suite directory");
-            System.err.println("          and wait for commands.");
+            System.err.println("  -v        Show version and exit.");
+            System.err.println("  <dir>     Start jexler suite using given suite directory");
+            System.err.println("            and wait for commands.");
+            System.err.println("  -s <dir>  Start in suite silent mode, use ctrl-c to stop.");
             System.exit(1);
         }
 
-        suite = JexlerSuiteFactory.getSuite(new File(args[0]));
+        suite = JexlerSuiteFactory.getSuite(new File(args[args.length-1]));
         suite.start();
+
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
                 setName("main-shutdown");
                 suite.stop();
             }
         });
+
         if (silent) {
-            System.in.read();
-        } else {
-            // interactive mode
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
             do {
-                System.out.print("jexler> ");
-                String cmd = reader.readLine().trim();
-
-                String jexlerId = null;
-                if (cmd.contains(" ")) {
-                    int i = cmd.indexOf(' ');
-                    jexlerId = cmd.substring(i+1).trim();
-                    cmd = cmd.substring(0, i).trim();
-                }
-                Jexler jexler = null;
-                if (jexlerId != null) {
-                    jexler = suite.getJexler(jexlerId);
-                    if (jexler == null) {
-                        System.out.println("no jexler with id '" + jexlerId + "'");
-                        doInfo(jexler);
-                        continue;
-                    }
-                }
-
-                if (cmd.equals("exit")) {
-                    break;
-                } else if (cmd.equals("info")) {
-                    doInfo(jexler);
-                } else if (cmd.equals("start")) {
-                    doStart(jexler);
-                    doInfo(jexler);
-                } else if (cmd.equals("stop")) {
-                    doStop(jexler);
-                    doInfo(jexler);
-                } else if (cmd.equals("restart")) {
-                    doRestart(jexler);
-                    doInfo(jexler);
-                } else {
-                    System.out.println();
-                    System.out.println("Commands:");
-                    System.out.println("> info [id]      Show info about suite or given jexler.");
-                    System.out.println("> start [id]     Start all jexlers in suite or given jexler.");
-                    System.out.println("> stop [id]      Stop all jexlers in suite or given jexler.");
-                    System.out.println("> restart [id]   Restart all jexlers in suite or given jexler.");
-                    System.out.println("> exit           Stop all jexlers and exit.");
-                    System.out.println();
+                try {
+                    Thread.sleep(1000000);
+                } catch (InterruptedException e) {
+                    // ignore
                 }
             } while (true);
         }
+
+        // interactive mode
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        do {
+            System.out.print("jexler> ");
+            String cmd = reader.readLine().trim();
+
+            String jexlerId = null;
+            if (cmd.contains(" ")) {
+                int i = cmd.indexOf(' ');
+                jexlerId = cmd.substring(i+1).trim();
+                cmd = cmd.substring(0, i).trim();
+            }
+            Jexler jexler = null;
+            if (jexlerId != null) {
+                jexler = suite.getJexler(jexlerId);
+                if (jexler == null) {
+                    System.out.println("no jexler with id '" + jexlerId + "'");
+                    doInfo(jexler);
+                    continue;
+                }
+            }
+
+            if (cmd.equals("exit")) {
+                break;
+            } else if (cmd.equals("info")) {
+                doInfo(jexler);
+            } else if (cmd.equals("start")) {
+                doStart(jexler);
+                doInfo(null);
+            } else if (cmd.equals("stop")) {
+                doStop(jexler);
+                doInfo(null);
+            } else if (cmd.equals("restart")) {
+                doRestart(jexler);
+                doInfo(null);
+            } else {
+                System.out.println();
+                System.out.println("Commands:");
+                System.out.println("> info [id]      Show info about suite or given jexler.");
+                System.out.println("> start [id]     Start all jexlers in suite or given jexler.");
+                System.out.println("> stop [id]      Stop all jexlers in suite or given jexler.");
+                System.out.println("> restart [id]   Restart all jexlers in suite or given jexler.");
+                System.out.println("> exit           Stop all jexlers and exit.");
+                System.out.println();
+            }
+        } while (true);
         suite.stop();
     }
 
@@ -215,6 +222,5 @@ public final class JexlerCli
                 jexler.isRunning() ? "running" : "stopped",
                 jexler.getDescription());
     }
-
 
 }

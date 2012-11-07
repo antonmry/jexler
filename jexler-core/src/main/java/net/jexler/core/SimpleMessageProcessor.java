@@ -139,8 +139,10 @@ public class SimpleMessageProcessor implements JexlerSubmitter {
     public void startProcessing() {
         log.info("Starting processing...");
         canHandleThread = new CanHandleThread();
-        handleThread = new HandleThread();
+        canHandleThread.setDaemon(true);
         canHandleThread.start();
+        handleThread = new HandleThread();
+        handleThread.setDaemon(true);
         handleThread.start();
     }
 

@@ -64,7 +64,9 @@ public class CronHandler extends AbstractJexlerHandler {
     public void startup(JexlerSubmitter submitter) {
         super.startup(submitter);
         scheduler.start();
-        scheduler.schedule(cron, new CronThread());
+        CronThread cronThread = new CronThread();
+        cronThread.setDaemon(true);
+        scheduler.schedule(cron, cronThread);
     }
 
     @Override
