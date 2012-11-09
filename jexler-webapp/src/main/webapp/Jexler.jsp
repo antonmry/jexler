@@ -42,7 +42,7 @@
 
 <body>
 
-<a href='/'><img src='jexler.jpg'></a>
+<a href='.'><img src='jexler.jpg'></a>
 
 <jsp:useBean id="suite" class="net.jexler.webapp.view.JexlerSuiteView">
 
