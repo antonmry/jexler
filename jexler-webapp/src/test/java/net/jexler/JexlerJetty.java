@@ -53,12 +53,12 @@ public final class JexlerJetty {
 
         server.start();
         System.out.println("Jexler in embedded jetty running on http://localhost:"
-                + port + "/jexler ...");
+                + port + "/ ...");
 
         // let user stop server
         new Thread() {
             public void run() {
-                System.out.println("Press any key to stop...");
+                System.out.println("Press enter to stop...");
                 try {
                     System.in.read();
                 } catch (IOException e) {

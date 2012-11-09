@@ -153,6 +153,11 @@ public class JexlerImpl implements Jexler {
         return description;
     }
 
+    @Override
+    public File getDir() {
+        return jexlerDir;
+    }
+
     private void runJexlerInitScript() {
         Map<String,Object> variables = new HashMap<String,Object>();
         variables.put("jexlerDir", jexlerDir.getAbsolutePath());

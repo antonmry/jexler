@@ -1,0 +1,15 @@
+img {border:0px}
+table {
+border-width: 1px 1px 1px 1px;
+border-spacing: 1px;
+border-style: solid;
+}
+td {
+border-width: 1px 1px 1px 1px;
+padding: 2px;
+border-style: solid;
+}
+span.dim {color:gray}
+div.ok {color:green}
+div.error {color:red}
+

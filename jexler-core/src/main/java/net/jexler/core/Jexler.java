@@ -16,6 +16,7 @@
 
 package net.jexler.core;
 
+import java.io.File;
 import java.util.List;
 
 
@@ -59,5 +60,11 @@ public interface Jexler {
      * @return description, never null
      */
     String getDescription();
+
+    /**
+     * Get directory that contains jexler configuration.
+     * @return directory
+     */
+    File getDir();
 
 }
