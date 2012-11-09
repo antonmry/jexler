@@ -14,7 +14,7 @@ jexler webapp
 -------------
 
 * run JexlerJetty class in Eclipse
-* => http://localhost:8080/jexler
+* => http://localhost:8080/
 * => build/logs/jexler.log
 * or deploy jexler-webapp/build/libs/jexler-*.war
 
