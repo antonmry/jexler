@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-package net.jexler.webapp;
+package net.jexler.webapp.view;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,41 +24,40 @@ import javax.servlet.http.HttpServletRequest;
 
 import net.jexler.core.Jexler;
 import net.jexler.core.JexlerSuite;
+import net.jexler.webapp.JexlerContextListener;
 
 /**
- * Jexler suite control bean.
+ * Jexler suite view.
  *
  * @author $(whois jexler.net)
  */
-public class JexlerSuiteControl {
+public class JexlerSuiteView {
 
-    public JexlerSuiteControl() {
-        // empty
+    private final JexlerSuite suite;
+
+    public JexlerSuiteView() {
+        suite = JexlerContextListener.getJexlerSuite();
     }
 
-    public JexlerSuite getSuite() {
-        return JexlerContextListener.getJexlerSuite();
-    }
-
-    public Map<String,JexlerControl> getJexlerControls() {
-        List<Jexler> jexlers = getSuite().getJexlers();
-        Map<String,JexlerControl> jexlerControls = new HashMap<String,JexlerControl>();
+    public Map<String,JexlerView> getJexlers() {
+        List<Jexler> jexlers = suite.getJexlers();
+        Map<String,JexlerView> jexlerViews = new HashMap<String,JexlerView>();
         for (Jexler jexler : jexlers) {
-            jexlerControls.put(jexler.getId(), new JexlerControl(jexler));
+            jexlerViews.put(jexler.getId(), new JexlerView(suite, jexler));
         }
-        return jexlerControls;
+        return jexlerViews;
     }
 
     public String getStartStop() {
         boolean isAnyRunning = false;
-        for (Jexler jexler : getSuite().getJexlers()) {
+        for (Jexler jexler : suite.getJexlers()) {
             if (jexler.isRunning()) {
                 isAnyRunning = true;
                 break;
             }
         }
         if (isAnyRunning) {
-           return "<a class='stop' href='?cmd=stop'><img src='stop.gif'></a>";
+            return "<a class='stop' href='?cmd=stop'><img src='stop.gif'></a>";
         } else {
             return "<a class='start' href='?cmd=start'><img src='start.gif'></a>";
         }

@@ -40,20 +40,15 @@ public final class JexlerJetty {
     public static void main(final String[] args) throws Exception {
         int port = 8080;
         final Server server = new Server(port);
-        //Resource jettyConfig = Resource.newSystemResource("jetty.xml");
-        //XmlConfiguration configuration = new XmlConfiguration(jettyConfig.getInputStream());
-        //Server server = (Server)configuration.configure();
-
         WebAppContext wac = new WebAppContext();
         wac.setResourceBase("./src/main/webapp");
         wac.setDescriptor("WEB-INF/web.xml");
         wac.setContextPath("/");
         wac.setParentLoaderPriority(true);
         server.setHandler(wac);
-
         server.start();
-        System.out.println("Jexler in embedded jetty running on http://localhost:"
-                + port + "/ ...");
+
+        System.out.println("Jexler in embedded jetty running on http://localhost:" + port + "/ ...");
 
         // let user stop server
         new Thread() {

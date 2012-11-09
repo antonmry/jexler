@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-package net.jexler.cli;
+package net.jexler.core;
 
 import org.junit.Test;
 
@@ -26,10 +26,8 @@ import org.junit.Test;
 public class JexlerTest {
 
     @Test
-    public void testApp() {
-        // TODO test jexler...
-        // String[] args = {};
-        // JexlerMain.main(args);
+    public void testSomething() {
+        // TODO test...
     }
 
 }

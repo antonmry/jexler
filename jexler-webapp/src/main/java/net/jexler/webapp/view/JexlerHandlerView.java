@@ -14,20 +14,24 @@
    limitations under the License.
 */
 
-package net.jexler.webapp;
+package net.jexler.webapp.view;
 
+import net.jexler.core.Jexler;
 import net.jexler.core.JexlerHandler;
 
 /**
- * Jexler handler control.
+ * Jexler handler view.
  *
  * @author $(whois jexler.net)
  */
-public class JexlerHandlerControl {
+public class JexlerHandlerView {
 
+    @SuppressWarnings("unused")
+    private final Jexler jexler;
     private final JexlerHandler handler;
 
-    public JexlerHandlerControl(JexlerHandler handler) {
+    public JexlerHandlerView(Jexler jexler, JexlerHandler handler) {
+        this.jexler = jexler;
         this.handler = handler;
     }
 
@@ -37,10 +41,6 @@ public class JexlerHandlerControl {
         String pre = name.substring(0, name.length() - justName.length());
         return "<span class='dim'>" + pre + "</span>" + justName;
     }
-
-    /*public String getId() {
-        return handler.getId();
-    }*/
 
     public String getDescription() {
         return handler.getDescription();

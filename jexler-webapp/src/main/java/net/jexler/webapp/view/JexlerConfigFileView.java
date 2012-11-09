@@ -14,26 +14,33 @@
    limitations under the License.
 */
 
-package net.jexler.webapp;
+package net.jexler.webapp.view;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 import net.jexler.core.Jexler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
- * Jexler config file control.
+ * Jexler config file view.
  *
  * @author $(whois jexler.net)
  */
-public class JexlerConfigFileControl {
+public class JexlerConfigFileView {
+
+    static final Logger log = LoggerFactory.getLogger(JexlerConfigFileView.class);
 
     private final Jexler jexler;
     private final File configFile;
 
-    public JexlerConfigFileControl(Jexler jexler, File configFile) {
+    public JexlerConfigFileView(Jexler jexler, File configFile) {
         this.jexler = jexler;
         this.configFile = configFile;
     }
@@ -43,20 +50,29 @@ public class JexlerConfigFileControl {
     }
 
     public String getNameLink() {
-        // TODO urlencode name
         String name = configFile.getName();
-        return "<a href='?cmd=info&jexler=" + jexler.getId() + "&file=" + name + "'>" + name + "</a>";
+        String nameUrlEncoded;
+        try {
+            log.error("No UTF-8 ???");
+            nameUrlEncoded = URLEncoder.encode(name, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            nameUrlEncoded = name;
+        }
+        return "<a href='?cmd=info&jexler=" + jexler.getId() + "&file=" + nameUrlEncoded
+                + "'>" + name + "</a>";
     }
 
     public String getText() {
         StringBuilder builder = new StringBuilder();
 
         String[] split = configFile.getName().split("\\.");
+        String fileExtension;
         if (split.length < 2) {
-            // TODO
-            //log.error("Script file '{}' has no extension", scriptFile.getAbsolutePath());
+            log.warn("Config file '{}' has no extension", configFile.getAbsolutePath());
+            fileExtension = "txt";
+        } else {
+            fileExtension = split[split.length-1];
         }
-        String fileExtension = split[split.length-1];
 
         builder.append("<pre class='brush: " + fileExtension + "; gutter: false;'>\n");
 
@@ -73,8 +89,9 @@ public class JexlerConfigFileControl {
             } while (true);
             reader.close();
         } catch (IOException e) {
-            // TODO handle better, log
-            return ("Error reading file '" + configFile.getAbsolutePath() + "'");
+            String msg = "Error reading file '" + configFile.getAbsolutePath() + "'";
+            log.error(msg);
+            return msg;
         }
 
         builder.append("</pre>");

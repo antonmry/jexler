@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-package net.jexler.webapp;
+package net.jexler.webapp.view;
 
 import java.io.File;
 import java.util.HashMap;
@@ -23,22 +23,22 @@ import java.util.Map;
 
 import net.jexler.core.Jexler;
 import net.jexler.core.JexlerHandler;
+import net.jexler.core.JexlerSuite;
 
 /**
- * Jexler control.
+ * Jexler view.
  *
  * @author $(whois jexler.net)
  */
-public class JexlerControl {
+public class JexlerView {
 
+    @SuppressWarnings("unused")
+    private final JexlerSuite suite;
     private final Jexler jexler;
 
-    public JexlerControl(Jexler jexler) {
+    public JexlerView(JexlerSuite suite, Jexler jexler) {
+        this.suite = suite;
         this.jexler = jexler;
-    }
-
-    public Jexler getJexler() {
-        return jexler;
     }
 
     public String getId() {
@@ -54,22 +54,22 @@ public class JexlerControl {
         return jexler.getDescription();
     }
 
-    public Map<String,JexlerHandlerControl> getHandlers() {
+    public Map<String,JexlerHandlerView> getHandlers() {
         List<JexlerHandler> handlers = jexler.getHandlers();
-        Map<String,JexlerHandlerControl> handlerControls = new HashMap<String,JexlerHandlerControl>();
+        Map<String,JexlerHandlerView> handlerControls = new HashMap<String,JexlerHandlerView>();
         for (JexlerHandler handler : handlers) {
-            handlerControls.put(handler.getId(), new JexlerHandlerControl(handler));
+            handlerControls.put(handler.getId(), new JexlerHandlerView(jexler, handler));
         }
         return handlerControls;
     }
 
-    public Map<String,JexlerConfigFileControl> getConfigFiles() {
+    public Map<String,JexlerConfigFileView> getConfigFiles() {
         File dir = jexler.getDir();
         File[] allFiles = dir.listFiles();
-        Map<String,JexlerConfigFileControl> configControls = new HashMap<String,JexlerConfigFileControl>();
+        Map<String,JexlerConfigFileView> configControls = new HashMap<String,JexlerConfigFileView>();
         for (File file : allFiles) {
             if (file.isFile() && !file.isHidden()) {
-                configControls.put(file.getName(), new JexlerConfigFileControl(jexler, file));
+                configControls.put(file.getName(), new JexlerConfigFileView(jexler, file));
             }
         }
         return configControls;
@@ -78,7 +78,7 @@ public class JexlerControl {
     public String getStartStop() {
         String id = jexler.getId();
         if (jexler.isRunning()) {
-           return "<a class='stop' href='?jexler=" + id + "&cmd=stop'><img src='stop.gif'></a>";
+            return "<a class='stop' href='?jexler=" + id + "&cmd=stop'><img src='stop.gif'></a>";
         } else {
             return "<a class='start' href='?jexler=" + id + "&cmd=start'><img src='start.gif'></a>";
         }
