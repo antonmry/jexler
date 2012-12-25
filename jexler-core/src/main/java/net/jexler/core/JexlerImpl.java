@@ -159,7 +159,7 @@ public class JexlerImpl implements Jexler {
     }
 
     private void runJexlerInitScript() {
-        Map<String,Object> variables = new HashMap<String,Object>();
+        Map<String,Object> variables = new HashMap<>();
         variables.put("jexlerDir", jexlerDir.getAbsolutePath());
         variables.put("handlers", handlers);
         variables.put("description", description);

@@ -41,7 +41,7 @@ public class JexlerSuiteView {
 
     public Map<String,JexlerView> getJexlers() {
         List<Jexler> jexlers = suite.getJexlers();
-        Map<String,JexlerView> jexlerViews = new HashMap<String,JexlerView>();
+        Map<String,JexlerView> jexlerViews = new HashMap<>();
         for (Jexler jexler : jexlers) {
             jexlerViews.put(jexler.getId(), new JexlerView(suite, jexler));
         }
@@ -73,24 +73,36 @@ public class JexlerSuiteView {
             String jexlerId = request.getParameter("jexler");
             JexlerSuite suite = JexlerContextListener.getJexlerSuite();
             if (jexlerId == null) {
-                if (cmd.equals("start")) {
+                switch (cmd) {
+                case "start":
                     suite.start();
-                } else if (cmd.equals("stop")) {
+                    break;
+                case "stop":
                     suite.stop();
-                } else if (cmd.equals("restart")) {
+                    break;
+                case "restart":
                     suite.stop();
                     suite.start();
+                    break;
+                default:
+                    // TODO
                 }
             } else {
                 Jexler jexler = suite.getJexler(jexlerId);
                 if (jexler != null) {
-                    if (cmd.equals("start")) {
+                    switch (cmd) {
+                    case "start":
                         jexler.start();
-                    } else if (cmd.equals("stop")) {
+                        break;
+                    case "stop":
                         jexler.stop();
-                    } else if (cmd.equals("restart")) {
+                        break;
+                    case "restart":
                         jexler.stop();
                         jexler.start();
+                        break;
+                    default:
+                        // TODO
                     }
                 }
             }

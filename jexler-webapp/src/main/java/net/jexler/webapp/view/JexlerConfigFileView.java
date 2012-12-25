@@ -76,8 +76,7 @@ public class JexlerConfigFileView {
 
         builder.append("<pre class='brush: " + fileExtension + "; gutter: false;'>\n");
 
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(configFile));
+        try (BufferedReader reader = new BufferedReader(new FileReader(configFile))) {
             do {
                 String line = reader.readLine();
                 if (line == null) {
@@ -87,7 +86,6 @@ public class JexlerConfigFileView {
                 builder.append(line);
                 builder.append("\n");
             } while (true);
-            reader.close();
         } catch (IOException e) {
             String msg = "Error reading file '" + configFile.getAbsolutePath() + "'";
             log.error(msg);

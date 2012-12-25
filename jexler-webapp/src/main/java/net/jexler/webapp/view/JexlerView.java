@@ -56,7 +56,7 @@ public class JexlerView {
 
     public Map<String,JexlerHandlerView> getHandlers() {
         List<JexlerHandler> handlers = jexler.getHandlers();
-        Map<String,JexlerHandlerView> handlerControls = new HashMap<String,JexlerHandlerView>();
+        Map<String,JexlerHandlerView> handlerControls = new HashMap<>();
         for (JexlerHandler handler : handlers) {
             handlerControls.put(handler.getId(), new JexlerHandlerView(jexler, handler));
         }
@@ -66,7 +66,7 @@ public class JexlerView {
     public Map<String,JexlerConfigFileView> getConfigFiles() {
         File dir = jexler.getDir();
         File[] allFiles = dir.listFiles();
-        Map<String,JexlerConfigFileView> configControls = new HashMap<String,JexlerConfigFileView>();
+        Map<String,JexlerConfigFileView> configControls = new HashMap<>();
         for (File file : allFiles) {
             if (file.isFile() && !file.isHidden()) {
                 configControls.put(file.getName(), new JexlerConfigFileView(jexler, file));

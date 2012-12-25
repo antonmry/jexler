@@ -3,7 +3,7 @@
 jexler
 ======
 
-Java 6, Eclipse/Gradle, Apache License
+Java 7, Eclipse/Gradle, Apache License
 
 e.g.
 

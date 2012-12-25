@@ -116,29 +116,25 @@ public class ScriptUtil {
         for (String key : variables.keySet()) {
             engine.put(key, variables.get(key));
         }
-        FileReader fileReader;
-        try {
-            fileReader = new FileReader(scriptFile);
-        } catch (FileNotFoundException e) {
-            log.error("file '" + scriptFile.getAbsolutePath() + "' not found");
-            return false;
-        }
-        Object result;
-        try {
-            result = engine.eval(fileReader);
-        } catch (ScriptException e) {
-            log.error("script failed: " + e);
-            return false;
-        } finally {
+
+        Object result = false;
+
+        try (FileReader fileReader = new FileReader(scriptFile)) {
             try {
-                fileReader.close();
-            } catch (IOException e) {
-                log.warn("could not close file reader: " + e);
+                result = engine.eval(fileReader);
+            } catch (ScriptException e) {
+                log.error("script failed: " + e);
+                return false;
             }
+        } catch (IOException e) {
+            log.error("could not read from file '" + scriptFile.getAbsolutePath() + "': ", e);
+            return false;
         }
+
         for (String key : variables.keySet()) {
             variables.put(key, engine.get(key));
         }
+
         return result;
 
     }
