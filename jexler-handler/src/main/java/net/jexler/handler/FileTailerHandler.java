@@ -94,21 +94,20 @@ public class FileTailerHandler extends AbstractJexlerHandler {
         filters = new LinkedList<Filter>();
     }
 
-
     /**
-     * Set file name.
+     * Set file to tail by name.
      * @param fileName name of file to tail
      */
-    public void setFileName(String fileName) {
+    public void setFile(String fileName) {
         this.file = new File(fileName);
     }
 
     /**
      * Add pattern to filter.
-     * @param patternString regex pattern string, prefix with "!" to negate
+     * @param pattern regex pattern string, prefix with "!" to negate
      */
-    public void addFilterPatternString(String patternString) {
-        filters.add(new Filter(patternString));
+    public void addFilterPattern(String pattern) {
+        filters.add(new Filter(pattern));
     }
 
     @Override

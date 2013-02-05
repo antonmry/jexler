@@ -5,11 +5,11 @@ import Java::net.jexler.handler.CronHandler
 
 $description = "Cron handler demo jexler"
 
-scriptHandler = ScriptHandler.new("crontest", "Handles 'nagnag' cron message by ruby script")
-scriptHandler.setScriptFileName($jexlerDir + "/handler_cron.rb")
-scriptHandler.set("cronid", "nagnag")
-$handlers.add scriptHandler
+h = ScriptHandler.new("crontest", "Handles 'nagnag' cron message by ruby script")
+h.setScriptFile($jexlerDir + "/handler_cron.rb")
+h.set("cronid", "nagnag")
+$handlers.add h
 
-cronHandler = CronHandler.new("nagnag", "Sends every minute a cron message")
-cronHandler.setCron("* * * * *")
-$handlers.add cronHandler
+h = CronHandler.new("nagnag", "Sends every minute a cron message")
+h.setCron("* * * * *")
+$handlers.add h

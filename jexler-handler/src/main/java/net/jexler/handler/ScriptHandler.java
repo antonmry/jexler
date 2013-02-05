@@ -54,16 +54,15 @@ public class ScriptHandler extends AbstractJexlerHandler {
     }
 
     /**
-     * Set script file name.
+     * Set script file by name.
      * @param scriptFileName
      */
-    public void setScriptFileName(String scriptFileName) {
+    public void setScriptFile(String scriptFileName) {
         scriptFile = new File(scriptFileName);
     }
 
     /**
-     * Set key/value pairs in config for this handler.
-     * Calls config.put(key,value) for each pair.
+     * Set key/value pairs for this handler.
      * Example: set("id", id, "value", x.getValue())
      * @param keyValuePairs key/value pairs
      * @throws IllegalArgumentException if odd number of arguments or keys not strings
