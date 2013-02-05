@@ -19,10 +19,12 @@ package net.jexler.handler;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import net.jexler.core.AbstractJexlerHandler;
 import net.jexler.core.JexlerMessage;
 import net.jexler.core.JexlerSubmitter;
+import net.jexler.core.JexlerUtil;
 import net.jexler.core.ScriptUtil;
 
 import org.slf4j.Logger;
@@ -38,19 +40,36 @@ public class ScriptHandler extends AbstractJexlerHandler {
 
     static final Logger log = LoggerFactory.getLogger(ScriptHandler.class);
 
-    private final File scriptFile;
-    private final Map<String,Object> config;
+    private File scriptFile;
+    private Map<String,Object> config;
 
     /**
      * Constructor.
      * @param id id
-     * TODO
+     * @param description description
      */
-    public ScriptHandler(String id, String description, String scriptFileName,
-            Map<String,Object> config) {
+    public ScriptHandler(String id, String description) {
         super(id, description);
+        config = new TreeMap<String,Object>();
+    }
+
+    /**
+     * Set script file name.
+     * @param scriptFileName
+     */
+    public void setScriptFileName(String scriptFileName) {
         scriptFile = new File(scriptFileName);
-        this.config = config;
+    }
+
+    /**
+     * Set key/value pairs in config for this handler.
+     * Calls config.put(key,value) for each pair.
+     * Example: set("id", id, "value", x.getValue())
+     * @param keyValuePairs key/value pairs
+     * @throws IllegalArgumentException if odd number of arguments or keys not strings
+     */
+    public void set(Object... keyValuePairs) {
+        JexlerUtil.set(config, keyValuePairs);
     }
 
     @Override

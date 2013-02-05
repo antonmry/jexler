@@ -41,28 +41,35 @@ public class CronHandler extends AbstractJexlerHandler {
         }
     }
 
-    private final String cron;
-    private final JexlerMessage cronMessage;
-    private final Scheduler scheduler;
+    private String cron;
+    private JexlerMessage cronMessage;
+    private Scheduler scheduler;
 
     /**
      * Constructor.
      * @param id id
-     * @param cron cron string, e.g. "* * * * *"
+     * @param description description
      */
-    public CronHandler(String id, String description, String cron) {
+    public CronHandler(String id, String description) {
         super(id, description);
+    }
+
+    /**
+     * Set cron string, e.g. "* * * * *"
+     * @param cron
+     */
+    public void setCron(String cron) {
         this.cron = cron;
-        cronMessage = JexlerMessageFactory.create().put(
-                "sender", this,
-                "id", getId(),
-                "info", "cron-" + getId());
-        scheduler = new Scheduler();
     }
 
     @Override
     public void startup(JexlerSubmitter submitter) {
         super.startup(submitter);
+        cronMessage = JexlerMessageFactory.create().set(
+                "sender", this,
+                "id", getId(),
+                "info", "cron-" + getId());
+        scheduler = new Scheduler();
         scheduler.start();
         CronThread cronThread = new CronThread();
         cronThread.setDaemon(true);

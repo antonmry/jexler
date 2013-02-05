@@ -1,15 +1,15 @@
 # test
 
-import Java::java.util.HashMap
 import Java::net.jexler.handler.CronHandler
 import Java::net.jexler.handler.ScriptHandler
 
 $description="command line jexler"
 
-config = HashMap.new
-config.put("cronid", "nagnag")
-$handlers.add ScriptHandler.new("crontest", "Handles 'nagnag' cron message by ruby script",
-  $jexlerDir + "/handler_cron.rb", config)
+scriptHandler = ScriptHandler.new("crontest", "Handles 'nagnag' cron message by ruby script")
+scriptHandler.setScriptFileName($jexlerDir + "/handler_cron.rb")
+scriptHandler.set("cronid", "nagnag")
+$handlers.add scriptHandler
 
-$handlers.add CronHandler.new("nagnag", "Sends every minute a cron message",
-  "* * * * *")
+cronHandler = CronHandler.new("nagnag", "Sends every minute a cron message")
+cronHandler.setCron("* * * * *")
+$handlers.add cronHandler

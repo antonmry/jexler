@@ -70,7 +70,7 @@ public class FileTailerHandler extends AbstractJexlerHandler {
             }
             // passed all filters
             log.info("passed: " + line);
-            JexlerMessage message = JexlerMessageFactory.create().put(
+            JexlerMessage message = JexlerMessageFactory.create().set(
                     "sender", FileTailerHandler.this,
                     "id", getId(),
                     "info", "filetailer-" + getId(),
@@ -80,25 +80,35 @@ public class FileTailerHandler extends AbstractJexlerHandler {
         // LATER handle other tailer listener events?
     }
 
-    private final File file;
-    private final List<Filter> filters;
+    private File file;
+    private List<Filter> filters;
     private Tailer tailer;
 
     /**
      * Constructor.
      * @param id id
      * @param description description
-     * @param file file to tail
-     * @param filterPatternStrings regex pattern strings, prefix with "!" to negate
      */
-    public FileTailerHandler(String id, String description, String fileName,
-            List<String> filterPatternStrings) {
+    public FileTailerHandler(String id, String description) {
         super(id, description);
-        this.file = new File(fileName);
         filters = new LinkedList<Filter>();
-        for (String patternString : filterPatternStrings) {
-            filters.add(new Filter(patternString));
-        }
+    }
+
+
+    /**
+     * Set file name.
+     * @param fileName name of file to tail
+     */
+    public void setFileName(String fileName) {
+        this.file = new File(fileName);
+    }
+
+    /**
+     * Add pattern to filter.
+     * @param patternString regex pattern string, prefix with "!" to negate
+     */
+    public void addFilterPatternString(String patternString) {
+        filters.add(new Filter(patternString));
     }
 
     @Override

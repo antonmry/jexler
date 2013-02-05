@@ -1,20 +1,18 @@
 # test
 
-import Java::java.util.HashMap
-import Java::java.util.LinkedList
 import Java::net.jexler.handler.ScriptHandler
 import Java::net.jexler.handler.FileTailerHandler
 
 $description = "File tailer demo jexler"
 
-config = HashMap.new
-config.put("filetailerid", "selftailer")
-$handlers.add ScriptHandler.new("filetailertest", "Handles 'selftailer' message by ruby script",
-  $jexlerDir + "/handler_filetailer.rb", config)
+scriptHandler = ScriptHandler.new("filetailertest", "Handles 'selftailer' message by ruby script")
+scriptHandler.setScriptFileName($jexlerDir + "/handler_filetailer.rb")
+scriptHandler.set("filetailerid", "selftailer")
+$handlers.add scriptHandler
 
 fileToTail = "jexler.init.rb"
-filters = LinkedList.new
-filters.add("^import")
-filters.add("!java\.util")
-$handlers.add FileTailerHandler.new("selftailer", "Tails file " + fileToTail,
-  $jexlerDir + "/" + fileToTail, filters)
+fileTailerHandler = FileTailerHandler.new("selftailer", "Tails file " + fileToTail)
+fileTailerHandler.setFileName($jexlerDir + "/" + fileToTail)
+fileTailerHandler.addFilterPatternString("^import")
+fileTailerHandler.addFilterPatternString("!java\.util")
+$handlers.add fileTailerHandler
