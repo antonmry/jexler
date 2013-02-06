@@ -8,7 +8,7 @@ h = CronHandler.new(id, "Sends every minute a cron message")
 h.setCron("* * * * *")
 $handlers.add h
 
-h = ScriptHandler.new("cron-demo", "Handles cron message by script")
+h = ScriptHandler.new("crondemo", "Handles cron message by script")
 h.setScriptFile($jexlerDir + "/handler_cron.rb")
 h.set("id", id) # message id to handle
 $handlers.add h

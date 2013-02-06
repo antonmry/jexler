@@ -17,7 +17,8 @@
 package net.jexler.webapp.view;
 
 import java.io.File;
-import java.util.HashMap;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -56,7 +57,7 @@ public class JexlerView {
 
     public Map<String,JexlerHandlerView> getHandlers() {
         List<JexlerHandler> handlers = jexler.getHandlers();
-        Map<String,JexlerHandlerView> handlerControls = new HashMap<>();
+        Map<String,JexlerHandlerView> handlerControls = new LinkedHashMap<>();
         for (JexlerHandler handler : handlers) {
             handlerControls.put(handler.getId(), new JexlerHandlerView(jexler, handler));
         }
@@ -66,7 +67,8 @@ public class JexlerView {
     public Map<String,JexlerConfigFileView> getConfigFiles() {
         File dir = jexler.getDir();
         File[] allFiles = dir.listFiles();
-        Map<String,JexlerConfigFileView> configControls = new HashMap<>();
+        Arrays.sort(allFiles);
+        Map<String,JexlerConfigFileView> configControls = new LinkedHashMap<>();
         for (File file : allFiles) {
             if (file.isFile() && !file.isHidden()) {
                 configControls.put(file.getName(), new JexlerConfigFileView(jexler, file));

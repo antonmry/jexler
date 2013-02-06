@@ -16,7 +16,7 @@
 
 package net.jexler.webapp.view;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +41,7 @@ public class JexlerSuiteView {
 
     public Map<String,JexlerView> getJexlers() {
         List<Jexler> jexlers = suite.getJexlers();
-        Map<String,JexlerView> jexlerViews = new HashMap<>();
+        Map<String,JexlerView> jexlerViews = new LinkedHashMap<>();
         for (Jexler jexler : jexlers) {
             jexlerViews.put(jexler.getId(), new JexlerView(suite, jexler));
         }
