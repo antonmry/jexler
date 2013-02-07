@@ -40,7 +40,7 @@ public class JexlerUtil {
         }
         for (int i = 0; i<keyValuePairs.length; i+=2) {
             if (!(keyValuePairs[i] instanceof String)) {
-                throw new IllegalArgumentException("key " + i/2+1 + " is not a string");
+                throw new IllegalArgumentException("key " + (i/2+1) + " is not a string");
             }
             map.put((String)keyValuePairs[i], keyValuePairs[i+1]);
         }

@@ -53,10 +53,10 @@ public class JexlerConfigFileView {
         String name = configFile.getName();
         String nameUrlEncoded;
         try {
-            log.error("No UTF-8 ???");
             nameUrlEncoded = URLEncoder.encode(name, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            nameUrlEncoded = name;
+            // practically never happens, Java must support UTF-8
+            throw new RuntimeException(e);
         }
         return "<a href='?cmd=info&jexler=" + jexler.getId() + "&file=" + nameUrlEncoded
                 + "'>" + name + "</a>";

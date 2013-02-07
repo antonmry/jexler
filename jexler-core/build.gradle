@@ -1,5 +1,10 @@
 jar {
-    manifest {
-        attributes 'Implementation-Title': 'jexler-core', 'Implementation-Version': version
-    }
+  manifest {
+    attributes 'Implementation-Title': 'jexler-core', 'Implementation-Version': version
+  }
+}
+
+test {
+  //testLogging.showStandardStreams = true
+  exclude 'net/jexler/core/JexlerCoreSuite.class'
 }
