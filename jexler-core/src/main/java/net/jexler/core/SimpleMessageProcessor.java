@@ -121,12 +121,13 @@ public class SimpleMessageProcessor implements JexlerSubmitter {
                             + " => " + handler.getClass().getName() + ":" + handler.getId());
                     boolean passOn;
                     try {
-                        passOn = handler.handle(message);
+                        passOn = !handler.handle(message);
                     } catch (RuntimeException e) {
                         passOn = false;
                         // TODO log more info?
                         log.error("handle failed", e);
                     }
+                    System.out.println(">>> " + passOn);
                     if (passOn) {
                         context.pos++;
                         canHandleQueue.add(context);
