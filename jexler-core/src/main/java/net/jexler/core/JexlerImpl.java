@@ -120,7 +120,8 @@ public class JexlerImpl implements Jexler {
                         log.error("stopping handler failed", e2);
                     }
                 }
-                throw e;
+                handlers.clear();
+                return;
             }
         }
 

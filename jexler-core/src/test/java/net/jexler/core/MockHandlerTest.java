@@ -21,6 +21,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.List;
+
 import org.junit.Test;
 
 /**
@@ -32,16 +34,17 @@ public class MockHandlerTest {
 
     private JexlerMessage messageToHandle =
             JexlerMessageFactory.create().set("info", "msg-to-handle");
-    private JexlerMessage messsageToSubmit =
-            JexlerMessageFactory.create().set("info", "msg-to-submit");
+    private JexlerMessage messsageToSubmitAtHandle =
+            JexlerMessageFactory.create().set("info", "msg-to-submit-at-handle");
+    private JexlerMessage messsageToSubmitAtStartup =
+            JexlerMessageFactory.create().set("info", "msg-to-submit-at-startup");
     private MockSubmitter mockSubmitter = new MockSubmitter();
     private MockHandler mockHandler = new MockHandler("myid", "my description");
 
     @Test
     public void testNormalHandlingTrue() {
         // no throws, return true
-        mockHandler.calls.clear();
-        mockSubmitter.calls.clear();
+        MockHandler.clearCallList();
         mockHandler.startupAction = "nil";
         mockHandler.canHandleAction = "true";
         mockHandler.handleAction = "true";
@@ -50,20 +53,19 @@ public class MockHandlerTest {
         assertTrue("must be true", mockHandler.canHandle(messageToHandle));
         assertTrue("must be true", mockHandler.handle(messageToHandle));
         mockHandler.shutdown();
-        //mockHandler.printCalls();
-        assertEquals("must be equals", 4, mockHandler.calls.size());
-        assertEquals("must be equals", "startup : nil", mockHandler.calls.get(0));
-        assertEquals("must be equals", "canHandle msg-to-handle : true", mockHandler.calls.get(1));
-        assertEquals("must be equals", "handle msg-to-handle : true", mockHandler.calls.get(2));
-        assertEquals("must be equals", "shutdown : nil", mockHandler.calls.get(3));
-        assertEquals("must be equals", 0, mockSubmitter.calls.size());
+        //MockHandler.printCallList();
+        List<String> callList = MockHandler.getCallList();
+        assertEquals("must be equals", 4, callList.size());
+        assertEquals("must be equals", "startup : nil", callList.get(0));
+        assertEquals("must be equals", "canHandle msg-to-handle : true", callList.get(1));
+        assertEquals("must be equals", "handle msg-to-handle : true", callList.get(2));
+        assertEquals("must be equals", "shutdown : nil", callList.get(3));
     }
 
     @Test
     public void testThrow() {
         // all throw
-        mockHandler.calls.clear();
-        mockSubmitter.calls.clear();
+        MockHandler.clearCallList();
         mockHandler.startupAction = "throw";
         mockHandler.canHandleAction = "throw";
         mockHandler.handleAction = "throw";
@@ -92,37 +94,38 @@ public class MockHandlerTest {
         } catch (RuntimeException e) {
             assertEquals("must be equals", "shutdown", e.getMessage());
         }
-        //mockHandler.printCalls();
-        assertEquals("must be equals", 4, mockHandler.calls.size());
-        assertEquals("must be equals", "startup : throw", mockHandler.calls.get(0));
-        assertEquals("must be equals", "canHandle msg-to-handle : throw", mockHandler.calls.get(1));
-        assertEquals("must be equals", "handle msg-to-handle : throw", mockHandler.calls.get(2));
-        assertEquals("must be equals", "shutdown : throw", mockHandler.calls.get(3));
-        assertEquals("must be equals", 0, mockSubmitter.calls.size());
+        //MockHandler.printCallList();
+        List<String> callList = MockHandler.getCallList();
+        assertEquals("must be equals", 4, callList.size());
+        assertEquals("must be equals", "startup : throw", callList.get(0));
+        assertEquals("must be equals", "canHandle msg-to-handle : throw",callList.get(1));
+        assertEquals("must be equals", "handle msg-to-handle : throw", callList.get(2));
+        assertEquals("must be equals", "shutdown : throw", callList.get(3));
     }
 
     @Test
     public void testSubmitFalse() {
         // no throws, submit, return false
-        mockHandler.calls.clear();
-        mockSubmitter.calls.clear();
+        MockHandler.clearCallList();
         mockHandler.startupAction = "nil";
+        mockHandler.submitMessageAtStartup = messsageToSubmitAtStartup;
         mockHandler.canHandleAction = "false";
         mockHandler.handleAction = "false";
-        mockHandler.submitMessage = messsageToSubmit;
+        mockHandler.submitMessageAtHandle = messsageToSubmitAtHandle;
         mockHandler.shutdownAction = "nil";
         mockHandler.startup(mockSubmitter);
         assertFalse("must be false", mockHandler.canHandle(messageToHandle));
         assertFalse("must be false", mockHandler.handle(messageToHandle));
         mockHandler.shutdown();
-        //mockHandler.printCalls();
-        assertEquals("must be equals", 4, mockHandler.calls.size());
-        assertEquals("must be equals", "startup : nil", mockHandler.calls.get(0));
-        assertEquals("must be equals", "canHandle msg-to-handle : false", mockHandler.calls.get(1));
-        assertEquals("must be equals", "handle msg-to-handle : false, submit msg-to-submit", mockHandler.calls.get(2));
-        assertEquals("must be equals", "shutdown : nil", mockHandler.calls.get(3));
-        assertEquals("must be equals", 1, mockSubmitter.calls.size());
-        assertEquals("must be equals", "submit msg-to-submit", mockSubmitter.calls.get(0));
+        //MockHandler.printCallList();
+        List<String> callList = MockHandler.getCallList();
+        assertEquals("must be equals", 6, callList.size());
+        assertEquals("must be equals", "startup : nil, submit msg-to-submit-at-startup", callList.get(0));
+        assertEquals("must be equals", "submit msg-to-submit-at-startup", callList.get(1));
+        assertEquals("must be equals", "canHandle msg-to-handle : false", callList.get(2));
+        assertEquals("must be equals", "handle msg-to-handle : false, submit msg-to-submit-at-handle", callList.get(3));
+        assertEquals("must be equals", "submit msg-to-submit-at-handle", callList.get(4));
+        assertEquals("must be equals", "shutdown : nil", callList.get(5));
     }
 
 }

@@ -16,8 +16,6 @@
 
 package net.jexler.core;
 
-import java.util.LinkedList;
-import java.util.List;
 
 
 
@@ -29,19 +27,11 @@ import java.util.List;
  */
 public class MockSubmitter implements JexlerSubmitter {
 
-    public List<String> calls = new LinkedList<>();
-
     public MockSubmitter() {
     }
 
     public void submit(JexlerMessage message) {
-        calls.add("submit " + message.get("info"));
-    }
-
-    public void printCalls() {
-        for (String call : calls) {
-            System.out.println(call);
-        }
+        MockHandler.getCallList().add("submit " + message.get("info"));
     }
 
 }

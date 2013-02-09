@@ -18,6 +18,8 @@ package net.jexler.core;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
 import org.junit.Test;
 
 /**
@@ -33,12 +35,14 @@ public class MockSubmitterTest {
 
     @Test
     public void testSubmit() {
+        MockHandler.clearCallList();
         mockSubmitter.submit(message);
         mockSubmitter.submit(message);
-        //mockSubmitter.printCalls();
-        assertEquals("must be equals", 2, mockSubmitter.calls.size());
-        assertEquals("must be equals", "submit msg", mockSubmitter.calls.get(0));
-        assertEquals("must be equals", "submit msg", mockSubmitter.calls.get(1));
+        MockHandler.printCallList();
+        List<String> callList = MockHandler.getCallList();
+        assertEquals("must be equal", 2, callList.size());
+        assertEquals("must be equal", "submit msg", callList.get(0));
+        assertEquals("must be equal", "submit msg", callList.get(1));
     }
 
 }

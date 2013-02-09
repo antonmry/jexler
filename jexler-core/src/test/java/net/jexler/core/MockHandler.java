@@ -16,6 +16,7 @@
 
 package net.jexler.core;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,14 +29,15 @@ import java.util.List;
  */
 public class MockHandler extends AbstractJexlerHandler {
 
+    private static List<String> callList = Collections.synchronizedList(new LinkedList<String>());
+
     // actions to set for controlling behavior
     public String startupAction = "nil";
+    public JexlerMessage submitMessageAtStartup = null;
     public String canHandleAction = "false";
     public String handleAction = "false";
-    public JexlerMessage submitMessage = null;
+    public JexlerMessage submitMessageAtHandle = null;
     public String shutdownAction = "nil";
-
-    public List<String> calls = new LinkedList<>();
 
     /**
      * Constructor from id and description.
@@ -49,15 +51,19 @@ public class MockHandler extends AbstractJexlerHandler {
     @Override
     public void startup(JexlerSubmitter submitter) {
         super.startup(submitter);
-        calls.add("startup : " + startupAction);
+        callList.add("startup : " + startupAction
+                + (submitMessageAtStartup == null ? "" : ", submit " + submitMessageAtStartup.get("info")));
         if (startupAction.equals("throw")) {
             throw new RuntimeException("startup");
+        }
+        if (submitMessageAtStartup != null) {
+            submitter.submit(submitMessageAtStartup);
         }
     }
 
     @Override
     public boolean canHandle(JexlerMessage message) {
-        calls.add("canHandle " + message.get("info") + " : " + canHandleAction);
+        callList.add("canHandle " + message.get("info") + " : " + canHandleAction);
         if (canHandleAction.equals("throw")) {
             throw new RuntimeException("canHandle");
         }
@@ -66,29 +72,39 @@ public class MockHandler extends AbstractJexlerHandler {
 
     @Override
     public boolean handle(JexlerMessage message) {
-        calls.add("handle " + message.get("info") + " : " + handleAction
-                + (submitMessage == null ? "" : ", submit " + submitMessage.get("info")));
+        callList.add("handle " + message.get("info") + " : " + handleAction
+                + (submitMessageAtHandle == null ? "" : ", submit " + submitMessageAtHandle.get("info")));
         if (handleAction.equals("throw")) {
             throw new RuntimeException("handle");
         }
-        if (submitMessage != null) {
-            submitter.submit(submitMessage);
+        if (submitMessageAtHandle != null) {
+            submitter.submit(submitMessageAtHandle);
         }
         return Boolean.valueOf(handleAction);
     }
 
     @Override
     public void shutdown() {
-        calls.add("shutdown : " + shutdownAction);
+        callList.add("shutdown : " + shutdownAction);
         if (shutdownAction.equals("throw")) {
             throw new RuntimeException("shutdown");
         }
     }
 
-    public void printCalls() {
-        for (String call : calls) {
-            System.out.println(call);
+    public static List<String> getCallList() {
+        return callList;
+    }
+
+    public static void clearCallList() {
+        callList.clear();
+    }
+
+    public static void printCallList() {
+        System.out.println("Call List:");
+        for (String call : callList) {
+            System.out.println("- " + call);
         }
     }
+
 
 }
