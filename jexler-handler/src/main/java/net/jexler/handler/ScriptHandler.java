@@ -78,15 +78,9 @@ public class ScriptHandler extends AbstractJexlerHandler {
     }
 
     @Override
-    public boolean canHandle(JexlerMessage message) {
-        Object obj = doScript("canHandle", message);
-        return (obj instanceof Boolean) ? (Boolean)obj : false;
-    }
-
-    @Override
-    public boolean handle(JexlerMessage message) {
+    public JexlerMessage handle(JexlerMessage message) {
         Object obj = doScript("handle", message);
-        return (obj instanceof Boolean) ? (Boolean)obj : false;
+        return (obj instanceof JexlerMessage) ? (JexlerMessage)obj : null;
     }
 
     @Override

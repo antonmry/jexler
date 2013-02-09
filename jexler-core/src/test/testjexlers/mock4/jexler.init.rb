@@ -7,13 +7,10 @@ h1 = MockHandler.new("h1", "Mock handler 1")
 h2 = MockHandler.new("h2", "Mock handler 2")
 h3 = MockHandler.new("h3", "Mock handler 3")
 
-h1.canHandleAction = "true"
-h1.handleAction = "false" # not done, pass on
-h2.canHandleAction = "true"
-h2.handleAction = "true" # done, do not pass on
+h1.handleAction = "pass" # pass message on
+h2.handleAction = "null" # done, do not pass message on<
+h3.handleAction = "pass" # pass message on (but should not get there)
 h3.submitMessageAtStartup = JexlerMessageFactory.create.set("info", "msg")
-h3.canHandleAction = "true"
-h3.handleAction = "false" # not done, pass on
 
 $handlers.add h1
 $handlers.add h2

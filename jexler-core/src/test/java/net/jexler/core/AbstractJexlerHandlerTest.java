@@ -38,8 +38,8 @@ public class AbstractJexlerHandlerTest {
     public void testAll() {
         AbstractJexlerHandler handler = new SimpleJexlerHandler("myid", "my description");
         handler.startup(null);
-        assertFalse("must be false", handler.canHandle(null));
-        assertFalse("must be false", handler.handle(null));
+        JexlerMessage message = JexlerMessageFactory.create();
+        assertEquals("must be equals", message, handler.handle(message));
         handler.shutdown();
         assertEquals("must be equals", "myid", handler.getId());
         assertEquals("must be equals", "my description", handler.getDescription());

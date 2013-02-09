@@ -38,69 +38,10 @@ public class SimpleMessageProcessor implements JexlerSubmitter {
 
     static final Logger log = LoggerFactory.getLogger(SimpleMessageProcessor.class);
 
-    /**
-     * Context for processing message.
-     */
-    private static final class Context {
-        private final JexlerMessage message;
-        private int pos = 0;
-        private boolean canHandle = false;
-        private boolean stopProcessing = false;
-        private Context(JexlerMessage message) {
-            this.message = message;
-        }
-    }
-
     private final Jexler jexler;
     private List<JexlerHandler> handlers;
-    private BlockingQueue<Context> canHandleQueue;
-    private BlockingQueue<Context> handleQueue;
-    private Thread canHandleThread;
+    private BlockingQueue<JexlerMessage> handleQueue;
     private Thread handleThread;
-
-    /**
-     * Thread for canHandle() of messages.
-     */
-    private class CanHandleThread extends Thread {
-        public void run() {
-            setName(jexler.getId() + ":canHandle");
-            log.info("canHandleThread running.");
-            while (true) {
-                try {
-                    Context context = canHandleQueue.take();
-                    if (context.stopProcessing) {
-                        handleQueue.add(context);
-                        return;
-                    }
-                    JexlerMessage message = context.message;
-                    for ( ; context.pos < handlers.size(); context.pos++) {
-                        JexlerHandler handler = handlers.get(context.pos);
-                        boolean canHandle;
-                        try {
-                            canHandle = handler.canHandle(message);
-                        } catch (RuntimeException e) {
-                            canHandle = false;
-                            // TODO log more info?
-                            log.error("canHandle failed", e);
-                        }
-                        if (canHandle) {
-                            context.canHandle = true;
-                            log.info("CAN HANDLE " + message.get("info")
-                                    + " => " + handler.getClass().getName() + ":" + handler.getId());
-                            handleQueue.add(context);
-                            break;
-                        }
-                    }
-                    if (!context.canHandle) {
-                        log.warn("CANNOT HANDLE " + message.get("info"));
-                        // TODO create message? (one that is always handled by system?)
-                    }
-                } catch (InterruptedException e) {
-                    log.error("Could not take");
-                }
-            }
-        }
-    }
 
     /**
      * Thread for handle() of messages.
@@ -111,26 +52,23 @@ public class SimpleMessageProcessor implements JexlerSubmitter {
             log.info("handleThread running.");
             while (true) {
                 try {
-                    Context context = handleQueue.take();
-                    if (context.stopProcessing) {
+                    JexlerMessage message = handleQueue.take();
+                    if (message.get("stopProcessing") != null) {
                         return;
                     }
-                    JexlerMessage message = context.message;
-                    JexlerHandler handler = handlers.get(context.pos);
-                    log.info("HANDLE " + message.get("info")
-                            + " => " + handler.getClass().getName() + ":" + handler.getId());
-                    boolean passOn;
-                    try {
-                        passOn = !handler.handle(message);
-                    } catch (RuntimeException e) {
-                        passOn = false;
-                        // TODO log more info?
-                        log.error("handle failed", e);
-                    }
-                    System.out.println(">>> " + passOn);
-                    if (passOn) {
-                        context.pos++;
-                        canHandleQueue.add(context);
+                    for (JexlerHandler handler : handlers) {
+                        log.info("HANDLE " + message.get("info")
+                                + " => " + handler.getClass().getName() + ":" + handler.getId());
+                        try {
+                            message = handler.handle(message);
+                        } catch (RuntimeException e) {
+                            message = null;
+                            // TODO log more info?
+                            log.error("handle failed", e);
+                        }
+                        if (message == null) {
+                            break;
+                        }
                     }
                 } catch (InterruptedException e) {
                     log.error("Could not take");
@@ -145,8 +83,7 @@ public class SimpleMessageProcessor implements JexlerSubmitter {
     public SimpleMessageProcessor(Jexler jexler, List<JexlerHandler> handlers) {
         this.jexler = jexler;
         this.handlers = handlers;
-        canHandleQueue = new LinkedBlockingQueue<Context>();
-        handleQueue = new LinkedBlockingQueue<Context>();
+        handleQueue = new LinkedBlockingQueue<JexlerMessage>();
     }
 
     /**
@@ -154,9 +91,6 @@ public class SimpleMessageProcessor implements JexlerSubmitter {
      */
     public void startProcessing() {
         log.info("Starting processing...");
-        canHandleThread = new CanHandleThread();
-        canHandleThread.setDaemon(true);
-        canHandleThread.start();
         handleThread = new HandleThread();
         handleThread.setDaemon(true);
         handleThread.start();
@@ -167,15 +101,8 @@ public class SimpleMessageProcessor implements JexlerSubmitter {
      */
     public void stopProcessing() {
         log.info("Stopping processing...");
-        Context context = new Context(JexlerMessageFactory.create());
-        context.stopProcessing = true;
-        canHandleQueue.add(context);
-        try {
-            canHandleThread.join();
-            log.info("canHandleThread joined.");
-        } catch (InterruptedException e) {
-            log.error("could not join", e);
-        }
+        JexlerMessage message = JexlerMessageFactory.create().set("stopProcessing", "true");
+        submit(message);
         try {
             handleThread.join();
             log.info("handleThread joined.");
@@ -189,7 +116,7 @@ public class SimpleMessageProcessor implements JexlerSubmitter {
     @Override
     public void submit(JexlerMessage message) {
         log.info("SUBMIT " + message.get("info"));
-        canHandleQueue.add(new Context(message));
+        handleQueue.add(message);
     }
 
 }

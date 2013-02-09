@@ -49,13 +49,8 @@ public abstract class AbstractJexlerHandler implements JexlerHandler {
     }
 
     @Override
-    public boolean canHandle(JexlerMessage message) {
-        return false;
-    }
-
-    @Override
-    public boolean handle(JexlerMessage message) {
-        return false;
+    public JexlerMessage handle(JexlerMessage message) {
+        return message;
     }
 
     @Override

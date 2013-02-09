@@ -33,22 +33,12 @@ public interface JexlerHandler {
     void startup(JexlerSubmitter submitter);
 
     /**
-     * Say if can handle message or not (does nothing more).
-     * @param message message
-     * @return true if can handle
-     */
-    boolean canHandle(JexlerMessage message);
-
-    /**
      * Handle message.
-     * Called by jexler system in separate thread from canHandle()
-     * if the latter returned true.
      * Writes possibly messages to submitter given in startup().
      * @param message message
-     * @return true if handled for good, false if should be passed
-     *         on to remaining handlers (try canHandle() first).
+     * @return messsage to pass on or null
      */
-    boolean handle(JexlerMessage message);
+    JexlerMessage handle(JexlerMessage message);
 
     /**
      * Shutdown handler.

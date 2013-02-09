@@ -119,8 +119,8 @@ public class JexlerTest {
         List<JexlerHandler> handlers = jexler.getHandlers();
         assertEquals("must be equal", 3, handlers.size());
 
-        // need to wait, else processing is stopped in the middle...
-        // TODO handle better...
+        // waiting a bit because messages handled in separate thread
+        // TODO better way? (wait for entries in call list plus timeout?)
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
@@ -133,17 +133,15 @@ public class JexlerTest {
         assertEquals("must be equal", 0, handlers.size());
         MockHandler.printCallList();
         List<String> callList = MockHandler.getCallList();
-        assertEquals("must be equal", 10, callList.size());
+        assertEquals("must be equal", 8, callList.size());
         assertEquals("must be equal", "startup : nil", callList.get(0));
         assertEquals("must be equal", "startup : nil", callList.get(1));
         assertEquals("must be equal", "startup : nil, submit msg", callList.get(2));
-        assertEquals("must be equal", "canHandle msg : true", callList.get(3));
-        assertEquals("must be equal", "handle msg : false", callList.get(4));
-        assertEquals("must be equal", "canHandle msg : true", callList.get(5));
-        assertEquals("must be equal", "handle msg : true", callList.get(6));
+        assertEquals("must be equal", "handle msg : pass", callList.get(3));
+        assertEquals("must be equal", "handle msg : null", callList.get(4));
+        assertEquals("must be equal", "shutdown : nil", callList.get(5));
+        assertEquals("must be equal", "shutdown : nil", callList.get(6));
         assertEquals("must be equal", "shutdown : nil", callList.get(7));
-        assertEquals("must be equal", "shutdown : nil", callList.get(8));
-        assertEquals("must be equal", "shutdown : nil", callList.get(9));
     }
 
 }
