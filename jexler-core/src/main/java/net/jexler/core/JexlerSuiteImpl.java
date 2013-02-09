@@ -77,6 +77,10 @@ public class JexlerSuiteImpl implements JexlerSuite {
             Jexler jexler = jexlerMap.get(id);
             log.info("*** Jexler start: " + jexler.getId() + " (" + jexler.getDescription() + ")");
             jexler.start();
+            if (!jexler.isRunning()) {
+                // TODO log more info?
+                log.error("Could not start jexler " + jexler.getId());
+            }
         }
     }
 

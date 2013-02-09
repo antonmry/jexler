@@ -34,9 +34,9 @@ public abstract class AbstractJexlerHandler implements JexlerHandler {
     protected JexlerSubmitter submitter;
 
     /**
-     * Constructor from id.
-     * Info is set to <class name>:<id>.
+     * Constructor from id and description.
      * @param id id
+     * @param description description
      */
     public AbstractJexlerHandler(String id, String description) {
         this.id = id;

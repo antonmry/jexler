@@ -104,8 +104,24 @@ public class JexlerImpl implements Jexler {
                     + " -- " + handler.getDescription());
         }
 
-        for (JexlerHandler handler : handlers) {
-            handler.startup(processor);
+        for (int i=0; i<handlers.size(); i++) {
+            JexlerHandler handler = handlers.get(i);
+            try {
+                handler.startup(processor);
+            } catch (RuntimeException e) {
+                // TODO log more info?
+                log.error("starting handler failed", e);
+                for (int j=0; j<i; j++) {
+                    handler = handlers.get(j);
+                    try {
+                        handler.shutdown();
+                    } catch (RuntimeException e2) {
+                        // TODO log more info?
+                        log.error("stopping handler failed", e2);
+                    }
+                }
+                throw e;
+            }
         }
 
         isRunning = true;
@@ -133,7 +149,12 @@ public class JexlerImpl implements Jexler {
 
         processor.stopProcessing();
         for (JexlerHandler handler : handlers) {
-            handler.shutdown();
+            try {
+                handler.shutdown();
+            } catch (RuntimeException e) {
+                // TODO log more info?
+                log.error("stopping handler failed", e);
+            }
         }
         handlers.clear();
 

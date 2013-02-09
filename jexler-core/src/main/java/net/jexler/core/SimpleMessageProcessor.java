@@ -75,7 +75,15 @@ public class SimpleMessageProcessor implements JexlerSubmitter {
                     JexlerMessage message = context.message;
                     for ( ; context.pos < handlers.size(); context.pos++) {
                         JexlerHandler handler = handlers.get(context.pos);
-                        if (handler.canHandle(message)) {
+                        boolean canHandle;
+                        try {
+                            canHandle = handler.canHandle(message);
+                        } catch (RuntimeException e) {
+                            canHandle = false;
+                            // TODO log more info?
+                            log.error("canHandle failed", e);
+                        }
+                        if (canHandle) {
                             context.canHandle = true;
                             log.info("CAN HANDLE " + message.get("info")
                                     + " => " + handler.getClass().getName() + ":" + handler.getId());
@@ -111,7 +119,14 @@ public class SimpleMessageProcessor implements JexlerSubmitter {
                     JexlerHandler handler = handlers.get(context.pos);
                     log.info("HANDLE " + message.get("info")
                             + " => " + handler.getClass().getName() + ":" + handler.getId());
-                    boolean passOn = handler.handle(message);
+                    boolean passOn;
+                    try {
+                        passOn = handler.handle(message);
+                    } catch (RuntimeException e) {
+                        passOn = false;
+                        // TODO log more info?
+                        log.error("handle failed", e);
+                    }
                     if (passOn) {
                         context.pos++;
                         canHandleQueue.add(context);
