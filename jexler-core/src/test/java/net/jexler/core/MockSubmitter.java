@@ -16,23 +16,32 @@
 
 package net.jexler.core;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import java.util.LinkedList;
+import java.util.List;
+
+
+
 
 /**
- * Tests the listed classes.
+ * Mock jexler submitter for unit tests.
  *
  * @author $(whois jexler.net)
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    AbstractJexlerHandlerTest.class,
-    JexlerMessageFactoryTest.class,
-    JexlerMessageImplTest.class,
-    JexlerTest.class,
-    JexlerUtilTest.class,
-    MockHandlerTest.class,
-    MockSubmitterTest.class,
-})
-public class JexlerCoreSuite {
+public class MockSubmitter implements JexlerSubmitter {
+
+    public List<String> calls = new LinkedList<>();
+
+    public MockSubmitter() {
+    }
+
+    public void submit(JexlerMessage message) {
+        calls.add("submit " + message.get("info"));
+    }
+
+    public void printCalls() {
+        for (String call : calls) {
+            System.out.println(call);
+        }
+    }
+
 }

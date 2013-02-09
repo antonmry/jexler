@@ -1,3 +1,7 @@
+dependencies {
+  compile 'org.jruby:jruby:1.6.8'
+}
+
 jar {
   manifest {
     attributes 'Implementation-Title': 'jexler-core', 'Implementation-Version': version
