@@ -23,6 +23,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -32,20 +33,23 @@ import org.junit.Test;
  */
 public class JexlerTest {
 
-    public static void clearHandlerCalls(List<JexlerHandler> handlers) {
+    private Jexler mockJexler;
+    private List<JexlerHandler> handlers;
+
+    public void clearHandlerCalls() {
         for (JexlerHandler handler : handlers) {
             ((MockHandler)handler).calls.clear();
         }
     }
 
-    @Test
-    public void testStartStop() {
-        Jexler mockJexler = JexlerFactory.getJexler(new File("src/test/mocksuite/mock1"));
+    @Before
+    public void setup() {
+        mockJexler = JexlerFactory.getJexler(new File("src/test/mocksuite/mock1"));
         assertFalse("must be false", mockJexler.isRunning());
 
         mockJexler.start();
         assertTrue("must be true", mockJexler.isRunning());
-        List<JexlerHandler> handlers = mockJexler.getHandlers();
+        handlers = mockJexler.getHandlers();
         assertEquals("must be equal", 5, handlers.size());
         for (JexlerHandler handler : handlers) {
             List<String> calls = ((MockHandler)handler).calls;
@@ -53,8 +57,12 @@ public class JexlerTest {
             assertEquals("must be equal", "startup : nil", calls.get(0));
         }
 
-        clearHandlerCalls(handlers);
+        clearHandlerCalls();
+    }
 
+
+    @Test
+    public void testStop() {
         mockJexler.stop();
         assertFalse("must be false", mockJexler.isRunning());
         assertEquals("must be equal", 0, mockJexler.getHandlers().size());

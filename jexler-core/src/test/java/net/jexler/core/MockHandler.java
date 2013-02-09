@@ -30,10 +30,9 @@ public class MockHandler extends AbstractJexlerHandler {
 
     // actions to set for controlling behavior
     public String startupAction = "nil";
-    public JexlerMessage startupSubmitMessage = null;
     public String canHandleAction = "false";
     public String handleAction = "false";
-    public JexlerMessage handleSubmitMessage = null;
+    public JexlerMessage submitMessage = null;
     public String shutdownAction = "nil";
 
     public List<String> calls = new LinkedList<>();
@@ -50,13 +49,9 @@ public class MockHandler extends AbstractJexlerHandler {
     @Override
     public void startup(JexlerSubmitter submitter) {
         super.startup(submitter);
-        calls.add("startup : " + startupAction
-                + (startupSubmitMessage == null ? "" : ", submit " + startupSubmitMessage.get("info")));
+        calls.add("startup : " + startupAction);
         if (startupAction.equals("throw")) {
             throw new RuntimeException("startup");
-        }
-        if (startupSubmitMessage != null) {
-            submitter.submit(startupSubmitMessage);
         }
     }
 
@@ -72,12 +67,12 @@ public class MockHandler extends AbstractJexlerHandler {
     @Override
     public boolean handle(JexlerMessage message) {
         calls.add("handle " + message.get("info") + " : " + handleAction
-                + (handleSubmitMessage == null ? "" : ", submit " + handleSubmitMessage.get("info")));
+                + (submitMessage == null ? "" : ", submit " + submitMessage.get("info")));
         if (handleAction.equals("throw")) {
             throw new RuntimeException("handle");
         }
-        if (handleSubmitMessage != null) {
-            submitter.submit(handleSubmitMessage);
+        if (submitMessage != null) {
+            submitter.submit(submitMessage);
         }
         return Boolean.valueOf(handleAction);
     }
