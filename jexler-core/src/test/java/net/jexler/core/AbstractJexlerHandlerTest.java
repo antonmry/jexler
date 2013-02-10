@@ -36,10 +36,10 @@ public class AbstractJexlerHandlerTest {
     @Test
     public void testAll() {
         AbstractJexlerHandler handler = new SimpleJexlerHandler("myid", "my description");
-        handler.startup(null);
+        handler.start(null);
         JexlerMessage message = JexlerMessageFactory.create();
         assertEquals("must be equals", message, handler.handle(message));
-        handler.shutdown();
+        handler.stop();
         assertEquals("must be equals", "myid", handler.getId());
         assertEquals("must be equals", "my description", handler.getDescription());
      }

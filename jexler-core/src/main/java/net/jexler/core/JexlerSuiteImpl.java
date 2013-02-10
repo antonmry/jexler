@@ -45,8 +45,8 @@ public class JexlerSuiteImpl implements JexlerSuite {
             throw new RuntimeException("File '" + suiteDir.getAbsolutePath() +
                     "' is not a directory or does not exist");
         }
-        // LATER determine list when asked for
-        // (but keep or shutdown jexlers that have disappeared)
+        // LATER determine list when asked for it?
+        // (but keep or stop jexlers that have disappeared?)
         jexlerMap = new TreeMap<String,Jexler>();
         File[] files = suiteDir.listFiles();
         for (File file : files) {

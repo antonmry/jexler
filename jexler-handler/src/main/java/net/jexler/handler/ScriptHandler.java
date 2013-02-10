@@ -72,9 +72,9 @@ public class ScriptHandler extends AbstractJexlerHandler {
     }
 
     @Override
-    public void startup(JexlerSubmitter submitter) {
-        super.startup(submitter);
-        doScript("startup", null);
+    public void start(JexlerSubmitter submitter) {
+        super.start(submitter);
+        doScript("start", null);
     }
 
     @Override
@@ -84,8 +84,8 @@ public class ScriptHandler extends AbstractJexlerHandler {
     }
 
     @Override
-    public void shutdown() {
-            doScript("shutdown", null);
+    public void stop() {
+            doScript("stop", null);
     }
 
     private Object doScript(String method, Object message) {

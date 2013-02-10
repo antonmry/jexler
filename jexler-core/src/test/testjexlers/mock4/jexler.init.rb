@@ -10,7 +10,7 @@ h3 = MockHandler.new("h3", "Mock handler 3")
 h1.handleAction = "pass" # pass message on
 h2.handleAction = "null" # done, do not pass message on<
 h3.handleAction = "pass" # pass message on (but should not get there)
-h3.submitMessageAtStartup = JexlerMessageFactory.create.set("info", "msg")
+h3.submitMessageAtStart = JexlerMessageFactory.create.set("info", "msg")
 
 $handlers.add h1
 $handlers.add h2

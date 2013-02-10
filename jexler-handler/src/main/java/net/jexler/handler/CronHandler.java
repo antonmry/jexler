@@ -63,8 +63,8 @@ public class CronHandler extends AbstractJexlerHandler {
     }
 
     @Override
-    public void startup(JexlerSubmitter submitter) {
-        super.startup(submitter);
+    public void start(JexlerSubmitter submitter) {
+        super.start(submitter);
         cronMessage = JexlerMessageFactory.create().set(
                 "sender", this,
                 "id", getId(),
@@ -77,7 +77,7 @@ public class CronHandler extends AbstractJexlerHandler {
     }
 
     @Override
-    public void shutdown() {
+    public void stop() {
         scheduler.stop();
     }
 

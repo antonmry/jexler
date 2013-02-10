@@ -25,25 +25,25 @@ package net.jexler.core;
 public interface JexlerHandler {
 
     /**
-     * Startup handler.
+     * Start handler.
      * Writes possibly messages to submitter,
      * even after call returned.
      * @param submitter
      */
-    void startup(JexlerSubmitter submitter);
+    void start(JexlerSubmitter submitter);
 
     /**
      * Handle message.
-     * Writes possibly messages to submitter given in startup().
+     * Writes possibly messages to submitter given in start().
      * @param message message
-     * @return messsage to pass on or null
+     * @return message to pass on or null
      */
     JexlerMessage handle(JexlerMessage message);
 
     /**
-     * Shutdown handler.
+     * Stop handler and release all resources.
      */
-    void shutdown();
+    void stop();
 
     /**
      * Get id, unique per implementing class.

@@ -16,6 +16,7 @@
 
 package net.jexler.core;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -26,13 +27,18 @@ import org.junit.Test;
  *
  * @author $(whois jexler.net)
  */
-public class JexlerMessageFactoryTest {
+public class JexlerMessageTest {
 
     @Test
-    public void testCreate() {
-        JexlerMessage msg = JexlerMessageFactory.create();
+    public void testMessage() {
+        JexlerMessage msg = new JexlerMessageImpl();
+        msg.set("id", "myid");
+        assertEquals("must be equals", 1, msg.size());
+        assertEquals("must be equals", "myid", msg.get("id"));
+
+        msg = JexlerMessageFactory.create();
         assertNotNull("must not be null", msg);
         assertTrue("must be true", msg instanceof JexlerMessageImpl);
-     }
+    }
 
 }

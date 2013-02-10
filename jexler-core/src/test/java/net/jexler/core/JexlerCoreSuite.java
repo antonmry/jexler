@@ -27,8 +27,8 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     AbstractJexlerHandlerTest.class,
-    JexlerMessageFactoryTest.class,
-    JexlerMessageImplTest.class,
+    JexlerMessageTest.class,
+    JexlerSuiteTest.class,
     JexlerTest.class,
     JexlerUtilTest.class,
     MockHandlerTest.class,

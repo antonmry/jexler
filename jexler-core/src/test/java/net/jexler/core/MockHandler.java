@@ -32,11 +32,11 @@ public class MockHandler extends AbstractJexlerHandler {
     private static List<String> callList = Collections.synchronizedList(new LinkedList<String>());
 
     // actions to set for controlling behavior
-    public String startupAction = "nil";
-    public JexlerMessage submitMessageAtStartup = null;
+    public String startAction = "nil";
+    public JexlerMessage submitMessageAtStart = null;
     public String handleAction = "pass";
     public JexlerMessage submitMessageAtHandle = null;
-    public String shutdownAction = "nil";
+    public String stopAction = "nil";
 
     /**
      * Constructor from id and description.
@@ -48,15 +48,15 @@ public class MockHandler extends AbstractJexlerHandler {
     }
 
     @Override
-    public void startup(JexlerSubmitter submitter) {
-        super.startup(submitter);
-        callList.add("startup : " + startupAction
-                + (submitMessageAtStartup == null ? "" : ", submit " + submitMessageAtStartup.get("info")));
-        if (startupAction.equals("throw")) {
-            throw new RuntimeException("startup");
+    public void start(JexlerSubmitter submitter) {
+        super.start(submitter);
+        callList.add("start : " + startAction
+                + (submitMessageAtStart == null ? "" : ", submit " + submitMessageAtStart.get("info")));
+        if (startAction.equals("throw")) {
+            throw new RuntimeException("start");
         }
-        if (submitMessageAtStartup != null) {
-            submitter.submit(submitMessageAtStartup);
+        if (submitMessageAtStart != null) {
+            submitter.submit(submitMessageAtStart);
         }
     }
 
@@ -78,10 +78,10 @@ public class MockHandler extends AbstractJexlerHandler {
     }
 
     @Override
-    public void shutdown() {
-        callList.add("shutdown : " + shutdownAction);
-        if (shutdownAction.equals("throw")) {
-            throw new RuntimeException("shutdown");
+    public void stop() {
+        callList.add("stop : " + stopAction);
+        if (stopAction.equals("throw")) {
+            throw new RuntimeException("stop");
         }
     }
 

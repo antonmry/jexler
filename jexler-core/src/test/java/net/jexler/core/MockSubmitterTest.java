@@ -38,7 +38,7 @@ public class MockSubmitterTest {
         MockHandler.clearCallList();
         mockSubmitter.submit(message);
         mockSubmitter.submit(message);
-        MockHandler.printCallList();
+        //MockHandler.printCallList();
         List<String> callList = MockHandler.getCallList();
         assertEquals("must be equal", 2, callList.size());
         assertEquals("must be equal", "submit msg", callList.get(0));

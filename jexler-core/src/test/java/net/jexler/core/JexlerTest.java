@@ -46,8 +46,8 @@ public class JexlerTest {
         assertEquals("must be equal", 2, handlers.size());
         List<String> callList = MockHandler.getCallList();
         assertEquals("must be equal", 2, callList.size());
-        assertEquals("must be equal", "startup : nil", callList.get(0));
-        assertEquals("must be equal", "startup : nil", callList.get(1));
+        assertEquals("must be equal", "start : nil", callList.get(0));
+        assertEquals("must be equal", "start : nil", callList.get(1));
 
         MockHandler.clearCallList();
         jexler.stop();
@@ -55,13 +55,13 @@ public class JexlerTest {
         assertEquals("must be equal", 0, jexler.getHandlers().size());
         callList = MockHandler.getCallList();
         assertEquals("must be equal", 2, callList.size());
-        assertEquals("must be equal", "shutdown : nil", callList.get(0));
-        assertEquals("must be equal", "shutdown : nil", callList.get(1));
+        assertEquals("must be equal", "stop : nil", callList.get(0));
+        assertEquals("must be equal", "stop : nil", callList.get(1));
     }
 
     @Test
     public void testMock2() {
-        // Throws at startup and shutdown
+        // Throws at start and stop
         Jexler jexler = JexlerFactory.getJexler(new File("src/test/testjexlers/mock2"));
         assertFalse("must be false", jexler.isRunning());
 
@@ -73,16 +73,16 @@ public class JexlerTest {
         //MockHandler.printCallList();
         List<String> callList = MockHandler.getCallList();
         assertEquals("must be equal", 5, callList.size());
-        assertEquals("must be equal", "startup : nil", callList.get(0));
-        assertEquals("must be equal", "startup : nil", callList.get(1));
-        assertEquals("must be equal", "startup : throw", callList.get(2));
-        assertEquals("must be equal", "shutdown : nil", callList.get(3));
-        assertEquals("must be equal", "shutdown : throw", callList.get(4));
+        assertEquals("must be equal", "start : nil", callList.get(0));
+        assertEquals("must be equal", "start : nil", callList.get(1));
+        assertEquals("must be equal", "start : throw", callList.get(2));
+        assertEquals("must be equal", "stop : nil", callList.get(3));
+        assertEquals("must be equal", "stop : throw", callList.get(4));
     }
 
     @Test
     public void testMock3() {
-        // Throws at shutdown
+        // Throws at stop
         Jexler jexler = JexlerFactory.getJexler(new File("src/test/testjexlers/mock3"));
         assertFalse("must be false", jexler.isRunning());
 
@@ -99,12 +99,12 @@ public class JexlerTest {
         //MockHandler.printCallList();
         List<String> callList = MockHandler.getCallList();
         assertEquals("must be equal", 6, callList.size());
-        assertEquals("must be equal", "startup : nil", callList.get(0));
-        assertEquals("must be equal", "startup : nil", callList.get(1));
-        assertEquals("must be equal", "startup : nil", callList.get(2));
-        assertEquals("must be equal", "shutdown : nil", callList.get(3));
-        assertEquals("must be equal", "shutdown : throw", callList.get(4));
-        assertEquals("must be equal", "shutdown : nil", callList.get(5));
+        assertEquals("must be equal", "start : nil", callList.get(0));
+        assertEquals("must be equal", "start : nil", callList.get(1));
+        assertEquals("must be equal", "start : nil", callList.get(2));
+        assertEquals("must be equal", "stop : nil", callList.get(3));
+        assertEquals("must be equal", "stop : throw", callList.get(4));
+        assertEquals("must be equal", "stop : nil", callList.get(5));
     }
 
     @Test
@@ -131,17 +131,17 @@ public class JexlerTest {
         assertFalse("must be false", jexler.isRunning());
         handlers = jexler.getHandlers();
         assertEquals("must be equal", 0, handlers.size());
-        MockHandler.printCallList();
+        //MockHandler.printCallList();
         List<String> callList = MockHandler.getCallList();
         assertEquals("must be equal", 8, callList.size());
-        assertEquals("must be equal", "startup : nil", callList.get(0));
-        assertEquals("must be equal", "startup : nil", callList.get(1));
-        assertEquals("must be equal", "startup : nil, submit msg", callList.get(2));
+        assertEquals("must be equal", "start : nil", callList.get(0));
+        assertEquals("must be equal", "start : nil", callList.get(1));
+        assertEquals("must be equal", "start : nil, submit msg", callList.get(2));
         assertEquals("must be equal", "handle msg : pass", callList.get(3));
         assertEquals("must be equal", "handle msg : null", callList.get(4));
-        assertEquals("must be equal", "shutdown : nil", callList.get(5));
-        assertEquals("must be equal", "shutdown : nil", callList.get(6));
-        assertEquals("must be equal", "shutdown : nil", callList.get(7));
+        assertEquals("must be equal", "stop : nil", callList.get(5));
+        assertEquals("must be equal", "stop : nil", callList.get(6));
+        assertEquals("must be equal", "stop : nil", callList.get(7));
     }
 
 }

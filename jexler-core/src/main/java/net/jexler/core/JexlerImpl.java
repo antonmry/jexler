@@ -50,7 +50,7 @@ public class JexlerImpl implements Jexler {
      * Constructor.
      * The id is set to the name of the jexler directory,
      * the description is set in the jexler.init.* script
-     * at startup, here only a default is set.
+     * at start, here only a default is set.
      * @param jexlerDir
      */
     public JexlerImpl(File jexlerDir) {
@@ -107,14 +107,14 @@ public class JexlerImpl implements Jexler {
         for (int i=0; i<handlers.size(); i++) {
             JexlerHandler handler = handlers.get(i);
             try {
-                handler.startup(processor);
+                handler.start(processor);
             } catch (RuntimeException e) {
                 // TODO log more info?
                 log.error("starting handler failed", e);
                 for (int j=0; j<i; j++) {
                     handler = handlers.get(j);
                     try {
-                        handler.shutdown();
+                        handler.stop();
                     } catch (RuntimeException e2) {
                         // TODO log more info?
                         log.error("stopping handler failed", e2);
@@ -151,7 +151,7 @@ public class JexlerImpl implements Jexler {
         processor.stopProcessing();
         for (JexlerHandler handler : handlers) {
             try {
-                handler.shutdown();
+                handler.stop();
             } catch (RuntimeException e) {
                 // TODO log more info?
                 log.error("stopping handler failed", e);

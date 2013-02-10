@@ -44,7 +44,7 @@ public abstract class AbstractJexlerHandler implements JexlerHandler {
     }
 
     @Override
-    public void startup(JexlerSubmitter submitter) {
+    public void start(JexlerSubmitter submitter) {
         this.submitter = submitter;
     }
 
@@ -54,7 +54,7 @@ public abstract class AbstractJexlerHandler implements JexlerHandler {
     }
 
     @Override
-    public void shutdown() {
+    public void stop() {
     }
 
     @Override

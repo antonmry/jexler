@@ -111,15 +111,15 @@ public class FileTailerHandler extends AbstractJexlerHandler {
     }
 
     @Override
-    public void startup(JexlerSubmitter submitter) {
-        super.startup(submitter);
+    public void start(JexlerSubmitter submitter) {
+        super.start(submitter);
         TailerListener listener = new MyTailerListener();
         // LATER use configurable delay? use option to tail from end of file?
         tailer = Tailer.create(file, listener);
     }
 
     @Override
-    public void shutdown() {
+    public void stop() {
         tailer.stop();
     }
 
