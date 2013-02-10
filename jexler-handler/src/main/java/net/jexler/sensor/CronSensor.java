@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-package net.jexler.handler;
+package net.jexler.sensor;
 
 import it.sauronsoftware.cron4j.Scheduler;
 import net.jexler.core.AbstractJexlerHandler;
@@ -31,9 +31,9 @@ import org.slf4j.LoggerFactory;
  *
  * @author $(whois jexler.net)
  */
-public class CronHandler extends AbstractJexlerHandler {
+public class CronSensor extends AbstractJexlerHandler {
 
-    static final Logger log = LoggerFactory.getLogger(CronHandler.class);
+    static final Logger log = LoggerFactory.getLogger(CronSensor.class);
 
     private class CronThread extends Thread {
         public void run() {
@@ -50,7 +50,7 @@ public class CronHandler extends AbstractJexlerHandler {
      * @param id id
      * @param description description
      */
-    public CronHandler(String id, String description) {
+    public CronSensor(String id, String description) {
         super(id, description);
     }
 

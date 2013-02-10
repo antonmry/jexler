@@ -1,10 +1,10 @@
-import Java::net.jexler.handler.CronHandler
+import Java::net.jexler.sensor.CronSensor
 import Java::net.jexler.handler.ScriptHandler
 
-$description = "Cron handler demo jexler"
+$description = "Cron demo jexler"
 
 id = "cron" # handler id and id in sent messages
-h = CronHandler.new(id, "Sends every minute a cron message")
+h = CronSensor.new(id, "Sends every minute a cron message")
 h.setCron("* * * * *")
 $handlers.add h
 

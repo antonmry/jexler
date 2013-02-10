@@ -1,11 +1,11 @@
-import Java::net.jexler.handler.FileTailerHandler
+import Java::net.jexler.sensor.FileTailerSensor
 import Java::net.jexler.handler.ScriptHandler
 
 $description = "File tailer demo jexler"
 
 id = "tailer" # handler id and id in sent messages
 fileToTail = "jexler.init.rb" # tail this very file
-h = FileTailerHandler.new(id, "Tails file " + fileToTail)
+h = FileTailerSensor.new(id, "Tails file " + fileToTail)
 h.setFile($jexlerDir + "/" + fileToTail)
 h.addFilterPattern("^import")
 h.addFilterPattern("!java\.util")

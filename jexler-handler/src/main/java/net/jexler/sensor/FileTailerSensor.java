@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-package net.jexler.handler;
+package net.jexler.sensor;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -38,9 +38,9 @@ import org.slf4j.LoggerFactory;
  *
  * @author $(whois jexler.net)
  */
-public class FileTailerHandler extends AbstractJexlerHandler {
+public class FileTailerSensor extends AbstractJexlerHandler {
 
-    static final Logger log = LoggerFactory.getLogger(FileTailerHandler.class);
+    static final Logger log = LoggerFactory.getLogger(FileTailerSensor.class);
 
     private static class Filter {
         private final boolean passesIfFound;
@@ -71,7 +71,7 @@ public class FileTailerHandler extends AbstractJexlerHandler {
             // passed all filters
             log.info("passed: " + line);
             JexlerMessage message = JexlerMessageFactory.create().set(
-                    "sender", FileTailerHandler.this,
+                    "sender", FileTailerSensor.this,
                     "id", getId(),
                     "info", "filetailer-" + getId(),
                     "line", line);
@@ -89,7 +89,7 @@ public class FileTailerHandler extends AbstractJexlerHandler {
      * @param id id
      * @param description description
      */
-    public FileTailerHandler(String id, String description) {
+    public FileTailerSensor(String id, String description) {
         super(id, description);
         filters = new LinkedList<Filter>();
     }

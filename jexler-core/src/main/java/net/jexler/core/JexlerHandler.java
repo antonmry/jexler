@@ -20,6 +20,21 @@ package net.jexler.core;
 /**
  * Interface for jexler handler.
  *
+ * Convention:
+ * - "Sensor":  Handler that does not handle messages in any way, i.e. handle()
+ *              returns always the identical message, but creates and submits itself
+ *              messages, triggered by external events (file changed, HTTP Request
+ *              received, cron, whatever...).
+ * - "Actor":   Handler that handles messages it can handle "for good", i.e handle()
+ *              returns null in that case, but causes typically some outside actions
+ *              (changes file, sends HTTP Response, whatever...).
+ * - "Handler": Handler that does some generic manipulation of messages; the idea
+ *              of Jexler is that these handlers are normally written in a script
+ *              language, i.e. provide logic that can be changed without compiling.
+ * Accordingly, there is a library of sensors and actors, but practically none for
+ * generic handlers.
+ *
+ *
  * @author $(whois jexler.net)
  */
 public interface JexlerHandler {
