@@ -32,7 +32,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Jexler implements EventHandler {
 
     private File file;
-    private boolean isRunning;
+    private volatile boolean isRunning;
     private Thread scriptThread;
     private BlockingQueue<Event> events;
 
@@ -47,6 +47,9 @@ public class Jexler implements EventHandler {
     }
 
     public void start() {
+        if (isRunning) {
+            return;
+        }
         final Map<String,Object> variables = new HashMap<>();
         variables.put("jexler", this);
         variables.put("events", events);
@@ -54,23 +57,17 @@ public class Jexler implements EventHandler {
         scriptThread = new Thread(
                 new Runnable() {
                     public void run() {
-                        synchronized (this) {
-                            isRunning = true;
-                        }
-                        try {
-                            ScriptUtil.runScriptThreadSafe(variables, file);
-                            // LATER handle returned object?
-                        } finally {
-                            synchronized (this) {
-                                isRunning = false;
-                            }
-                        }
+                        ScriptUtil.runScriptThreadSafe(variables, file);
+                        // LATER handle returned object?
                     }
                 });
+        scriptThread.setDaemon(true);
         scriptThread.start();
+        // LATER make sure that really started
+        isRunning = true;
     }
 
-    public synchronized boolean isRunning() {
+    public boolean isRunning() {
         return isRunning;
     }
 
@@ -80,11 +77,16 @@ public class Jexler implements EventHandler {
     }
 
     public void stop() {
+        if (!isRunning) {
+            return;
+        }
         handle(new StopEvent());
+        // LATER make sure that really stopped
+        isRunning = false;
     }
 
-    public File getFile() {
-        return file;
+    public String getName() {
+        return file.getName();
     }
 
 }
