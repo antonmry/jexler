@@ -14,18 +14,13 @@
    limitations under the License.
 */
 
-package net.jexler.sensor;
+package net.jexler;
 
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import net.jexler.core.AbstractJexlerHandler;
-import net.jexler.core.JexlerMessage;
-import net.jexler.core.JexlerMessageFactory;
-import net.jexler.core.JexlerSubmitter;
 
 import org.apache.commons.io.input.Tailer;
 import org.apache.commons.io.input.TailerListener;
@@ -38,7 +33,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author $(whois jexler.net)
  */
-public class FileTailerSensor extends AbstractJexlerHandler {
+public class FileTailerSensor implements Sensor {
 
     static final Logger log = LoggerFactory.getLogger(FileTailerSensor.class);
 
@@ -70,16 +65,12 @@ public class FileTailerSensor extends AbstractJexlerHandler {
             }
             // passed all filters
             log.info("passed: " + line);
-            JexlerMessage message = JexlerMessageFactory.create().set(
-                    "sender", FileTailerSensor.this,
-                    "id", getId(),
-                    "info", "filetailer-" + getId(),
-                    "line", line);
-            submitter.submit(message);
+            eventHandler.handle(new FileTailerEvent(line));
         }
         // LATER handle other tailer listener events?
     }
 
+    private EventHandler eventHandler;
     private File file;
     private List<Filter> filters;
     private Tailer tailer;
@@ -89,8 +80,8 @@ public class FileTailerSensor extends AbstractJexlerHandler {
      * @param id id
      * @param description description
      */
-    public FileTailerSensor(String id, String description) {
-        super(id, description);
+    public FileTailerSensor(EventHandler eventHandler) {
+        this.eventHandler = eventHandler;
         filters = new LinkedList<Filter>();
     }
 
@@ -111,8 +102,7 @@ public class FileTailerSensor extends AbstractJexlerHandler {
     }
 
     @Override
-    public void start(JexlerSubmitter submitter) {
-        super.start(submitter);
+    public void start() {
         TailerListener listener = new MyTailerListener();
         // LATER use configurable delay? use option to tail from end of file?
         tailer = Tailer.create(file, listener);

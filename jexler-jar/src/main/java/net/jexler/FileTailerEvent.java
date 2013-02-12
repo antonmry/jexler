@@ -14,25 +14,30 @@
    limitations under the License.
 */
 
-package net.jexler.core;
+package net.jexler;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+
+
+
 
 /**
- * Tests the listed classes.
+ * A file tailer event.
  *
  * @author $(whois jexler.net)
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    AbstractJexlerHandlerTest.class,
-    JexlerMessageTest.class,
-    JexlerSuiteTest.class,
-    JexlerTest.class,
-    JexlerUtilTest.class,
-    MockHandlerTest.class,
-    MockSubmitterTest.class,
-})
-public class JexlerCoreSuite {
+public class FileTailerEvent implements Event {
+
+    private String line;
+
+    /**
+     * Constructor.
+     */
+    public FileTailerEvent(String line) {
+        this.line = line;
+    }
+
+    public String getLine() {
+        return line;
+    }
+
 }
