@@ -89,4 +89,8 @@ public class Jexler implements EventHandler {
         return file.getName();
     }
 
+    public File getFile() {
+        return file;
+    }
+
 }
