@@ -15,8 +15,6 @@ package net.jexler;
    limitations under the License.
 */
 
-
-
 import org.junit.Test;
 
 /**

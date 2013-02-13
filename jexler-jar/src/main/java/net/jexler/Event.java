@@ -16,13 +16,22 @@
 
 package net.jexler;
 
-
 /**
- * Interface for event (events sent to a jexler).
+ * Interface for an event (sent to a jexler).
  *
  * @author $(whois jexler.net)
  */
 public interface Event {
 
-    // no methods
+    /**
+     * Get sensor that sent the event.
+     * @return sensor
+     */
+    Sensor getSensor();
+
+    /**
+     * Convenience method for getting sensor id.
+     * @return id
+     */
+    String getSensorId();
 }

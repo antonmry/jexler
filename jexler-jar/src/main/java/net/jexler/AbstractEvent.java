@@ -17,27 +17,30 @@
 package net.jexler;
 
 
-
-
-
 /**
- * A file tailer event.
+ * Abstract base sensor.
  *
  * @author $(whois jexler.net)
  */
-public class FileTailerEvent implements Event {
+public abstract class AbstractEvent implements Event {
 
-    private String line;
+    protected Sensor sensor;
 
     /**
      * Constructor.
      */
-    public FileTailerEvent(String line) {
-        this.line = line;
+    public AbstractEvent(Sensor sensor) {
+        this.sensor = sensor;
     }
 
-    public String getLine() {
-        return line;
+    @Override
+    public Sensor getSensor() {
+        return sensor;
+    }
+
+    @Override
+    public String getSensorId() {
+        return sensor.getId();
     }
 
 }

@@ -33,7 +33,18 @@ import org.slf4j.LoggerFactory;
  *
  * @author $(whois jexler.net)
  */
-public class FileTailerSensor implements Sensor {
+public class FileTailerSensor extends AbstractSensor {
+
+    public class Event extends AbstractEvent {
+        private String line;
+        public Event(Sensor sensor, String line) {
+            super(sensor);
+            this.line = line;
+        }
+        public String getLine() {
+            return line;
+        }
+    }
 
     static final Logger log = LoggerFactory.getLogger(FileTailerSensor.class);
 
@@ -65,23 +76,22 @@ public class FileTailerSensor implements Sensor {
             }
             // passed all filters
             log.info("passed: " + line);
-            eventHandler.handle(new FileTailerEvent(line));
+            eventHandler.handle(new Event(thisSensor, line));
         }
         // LATER handle other tailer listener events?
     }
 
-    private EventHandler eventHandler;
+    private FileTailerSensor thisSensor;
     private File file;
     private List<Filter> filters;
     private Tailer tailer;
 
     /**
      * Constructor.
-     * @param id id
-     * @param description description
      */
-    public FileTailerSensor(EventHandler eventHandler) {
-        this.eventHandler = eventHandler;
+    public FileTailerSensor(EventHandler eventHandler, String id) {
+        super(eventHandler, id);
+        thisSensor = this;
         filters = new LinkedList<Filter>();
     }
 
@@ -89,27 +99,38 @@ public class FileTailerSensor implements Sensor {
      * Set file to tail by name.
      * @param fileName name of file to tail
      */
-    public void setFile(String fileName) {
+    public FileTailerSensor setFile(String fileName) {
         this.file = new File(fileName);
+        return this;
     }
 
     /**
      * Add pattern to filter.
      * @param pattern regex pattern string, prefix with "!" to negate
      */
-    public void addFilterPattern(String pattern) {
+    public FileTailerSensor addFilterPattern(String pattern) {
         filters.add(new Filter(pattern));
+        return this;
     }
 
     @Override
-    public void start() {
+    public Sensor start() {
+        if (isRunning) {
+            return this;
+        }
         TailerListener listener = new MyTailerListener();
         // LATER use configurable delay? use option to tail from end of file?
         tailer = Tailer.create(file, listener);
+        isRunning = true;
+        return this;
     }
 
     @Override
     public void stop() {
+        if (!isRunning) {
+            return;
+        }
+        isRunning = false;
         tailer.stop();
     }
 

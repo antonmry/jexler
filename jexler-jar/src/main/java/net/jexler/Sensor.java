@@ -16,7 +16,6 @@
 
 package net.jexler;
 
-
 /**
  * Interface for sensor (creates events for jexler).
  *
@@ -24,8 +23,21 @@ package net.jexler;
  */
 public interface Sensor {
 
-    void start();
+    /**
+     * Start sensor, must be idempotent.
+     * @return this (for chaining calls)
+     */
+    Sensor start();
 
+    /**
+     * Stop sensor, must be idempotent.
+     */
     void stop();
+
+    /**
+     * Intended to be unique per jexler.
+     * @return id
+     */
+    String getId();
 
 }

@@ -16,21 +16,38 @@
 
 package net.jexler;
 
-
-
-
-
 /**
- * A stop event, stops the running jexler.
+ * Formal sensor for stopping a jexler, triggered externally.
  *
  * @author $(whois jexler.net)
  */
-public class StopEvent implements Event {
+public class StopSensor extends AbstractSensor {
+
+    public static class Event extends AbstractEvent {
+        public Event(Sensor sensor) {
+            super(sensor);
+        }
+    }
 
     /**
      * Constructor.
      */
-    public StopEvent() {
+    public StopSensor(EventHandler eventHandler, String id) {
+        super(eventHandler, id);
+    }
+
+    public Sensor start() {
+        return this;
+    }
+
+    public void stop() {
+    }
+
+    /**
+     * Trigger event.
+     */
+    public void trigger() {
+        eventHandler.handle(new Event(this));
     }
 
 }

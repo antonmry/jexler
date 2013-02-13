@@ -1,18 +1,17 @@
+import Java::net.jexler.StopSensor
 import Java::net.jexler.FileTailerSensor
-import Java::net.jexler.FileTailerEvent
-import Java::net.jexler.StopEvent
 
-fileTailerSensor = FileTailerSensor.new($jexler)
-fileTailerSensor.setFile($file.getAbsolutePath)
-fileTailerSensor.addFilterPattern("^import")
-fileTailerSensor.start
+s = FileTailerSensor.new($jexler, "selftailer")
+s.setFile($file.getAbsolutePath)
+s.addFilterPattern("^import")
+s.start
+$sensors.add s
 
 begin
   event = $events.take
-  if event.is_a? FileTailerEvent
+  if event.is_a? FileTailerSensor::Event
     puts "Got line: " + event.getLine
-  elsif event.is_a? StopEvent
-    fileTailerSensor.stop
-    return 0
+  elsif event.is_a? StopSensor::Event
+    return
   end
 end while true

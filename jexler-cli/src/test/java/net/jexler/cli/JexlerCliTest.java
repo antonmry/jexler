@@ -43,7 +43,7 @@ public final class JexlerCliTest
 
     @Test
     public void versionTest() throws Exception {
-        String[] cliArgs = new String[] { "-v"};
+        String[] cliArgs = new String[] { "-v" };
         JexlerCli.main(cliArgs);
     }
 

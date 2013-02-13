@@ -24,6 +24,7 @@ import java.util.List;
 
 import net.jexler.Jexler;
 import net.jexler.Jexlers;
+import net.jexler.ScriptUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,8 +47,10 @@ public final class JexlerCli
      * @throws IOException if an I/O error occurs while trying to read from stdin
      */
     public static void main(final String[] args) throws IOException {
-        boolean silent = args.length == 2 && args[0].equals("-s");
+        // trace scripting engines
+        ScriptUtil.traceEngines();
 
+        boolean silent = args.length == 2 && args[0].equals("-s");
         if (!silent) {
             String version = JexlerCli.class.getPackage().getImplementationVersion();
             // no version in eclipse/unit tests (no jar with MANIFEST.MF)

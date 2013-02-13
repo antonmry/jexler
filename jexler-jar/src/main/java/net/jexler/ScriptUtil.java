@@ -30,8 +30,6 @@ import javax.script.ScriptException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-
 /**
  * Jexler scripting utilities.
  *
@@ -51,13 +49,12 @@ public class ScriptUtil {
      * @param scriptFile script file, must have a corresponding file extension
      * @return script's return value, false if script evaluation failed for some reason
      */
-    public static Object runScriptThreadSafe(Map<String,Object> variables, File scriptFile) {
-
-        // TODO better exception handling
+    public static Object runScriptThreadSafe(Map<String,Object> variables, File scriptFile)
+    throws ScriptException {
 
         // LATER similar settings for other common scripting languages?
         // NOTE for ruby the test by threading parameter seems not to work, always
-        //      returned THREAD_ISOLATED even if was experimentally not so...
+        //      returned THREAD_ISOLATED even if was experimentally not so... (1.6.8)
         System.setProperty("org.jruby.embed.localcontext.scope", "threadsafe");
 
         String[] split = scriptFile.getName().split("\\.");
@@ -68,14 +65,13 @@ public class ScriptUtil {
 
         ScriptEngine engine = SCRIPT_ENGINE_MANAGER.getEngineByExtension(scriptFileExtension);
         if (engine == null) {
-            log.error("No script engine for extension '{}'", scriptFileExtension);
-            return false;
+            throw new RuntimeException("No script engine for extension '" + scriptFileExtension + "'");
         }
 
         // LATER ensures at least "MULTITHREADED", sufficient?
         // (script languages may define their own return values, not sure if they do)
         if (engine.getFactory().getParameter(THREADING_PARAMETER) == null) {
-            throw new RuntimeException("cannot run script multithreaded");
+            throw new RuntimeException("Cannot run script multithreaded");
         }
 
         for (String key : variables.keySet()) {
@@ -85,15 +81,9 @@ public class ScriptUtil {
         Object result = false;
 
         try (FileReader fileReader = new FileReader(scriptFile)) {
-            try {
-                result = engine.eval(fileReader);
-            } catch (ScriptException e) {
-                log.error("script failed: " + e);
-                return false;
-            }
+           result = engine.eval(fileReader);
         } catch (IOException e) {
-            log.error("could not read from file '" + scriptFile.getAbsolutePath() + "': ", e);
-            return false;
+            throw new RuntimeException(e);
         }
 
         for (String key : variables.keySet()) {
@@ -111,13 +101,13 @@ public class ScriptUtil {
             log.trace("Available script engines:");
             List<ScriptEngineFactory> factories = new ScriptEngineManager().getEngineFactories();
             for (ScriptEngineFactory factory : factories) {
-                log.trace("EngineName      = " + factory.getEngineName());
-                log.trace("EngineVersion   = " + factory.getEngineVersion());
-                log.trace("LanguageName    = " + factory.getLanguageName());
-                log.trace("LanguageVersion = " + factory.getLanguageVersion());
-                log.trace("Extensions      = " + factory.getExtensions());
-                log.trace("Threading       = " + factory.getParameter(THREADING_PARAMETER));
-                StringBuilder builder = new StringBuilder("Engine Aliases  = ");
+                log.trace("* " + factory.getEngineName());
+                log.trace("  - EngineVersion   = " + factory.getEngineVersion());
+                log.trace("  - LanguageName    = " + factory.getLanguageName());
+                log.trace("  - LanguageVersion = " + factory.getLanguageVersion());
+                log.trace("  - Extensions      = " + factory.getExtensions());
+                log.trace("  - Threading       = " + factory.getParameter(THREADING_PARAMETER));
+                StringBuilder builder = new StringBuilder("  - Engine Aliases  = ");
                 List<String> names = factory.getNames();
                 for (String name : names) {
                     builder.append(name);

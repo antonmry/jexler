@@ -18,43 +18,64 @@ package net.jexler;
 
 import it.sauronsoftware.cron4j.Scheduler;
 
-
-
-
 /**
- * A cron sensor.
+ * A cron sensor, creates events at configurable times.
  *
  * @author $(whois jexler.net)
  */
-public class CronSensor implements Sensor {
+public class CronSensor extends AbstractSensor {
 
-    private class CronThread extends Thread {
-        public void run() {
-            eventHandler.handle(new CronEvent(cron));
+    public static class Event extends AbstractEvent {
+        private String cron;
+        public Event(Sensor sensor, String cron) {
+            super(sensor);
+            this.cron = cron;
+        }
+        public String getCron() {
+            return cron;
         }
     }
 
-    private Scheduler scheduler;
-    private EventHandler eventHandler;
+    private CronSensor thisSensor;
     private String cron;
+    private Scheduler scheduler;
 
     /**
      * Constructor.
      */
-    public CronSensor(EventHandler eventHandler, String cron) {
-        this.eventHandler = eventHandler;
-        this.cron = cron;
+    public CronSensor(EventHandler eventHandler, String id) {
+        super(eventHandler, id);
+        thisSensor = this;
     }
 
-    public void start() {
+    public CronSensor setCron(String cron) {
+        this.cron = cron;
+        return this;
+    }
+
+
+    public Sensor start() {
+        if (isRunning) {
+            return this;
+        }
         scheduler = new Scheduler();
         scheduler.start();
-        CronThread cronThread = new CronThread();
+        Thread cronThread = new Thread(new Runnable() {
+            public void run() {
+                eventHandler.handle(new Event(thisSensor, cron));
+            }
+        });
         cronThread.setDaemon(true);
         scheduler.schedule(cron, cronThread);
+        isRunning = true;
+        return this;
     }
 
     public void stop() {
+        if (!isRunning) {
+            return;
+        }
+        isRunning = false;
         scheduler.stop();
     }
 

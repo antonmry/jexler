@@ -17,27 +17,28 @@
 package net.jexler;
 
 
-
-
-
 /**
- * A cron event.
+ * Abstract base sensor.
  *
  * @author $(whois jexler.net)
  */
-public class CronEvent implements Event {
+public abstract class AbstractSensor implements Sensor {
 
-    private String cron;
+    protected EventHandler eventHandler;
+    protected String id;
+    protected volatile boolean isRunning;
 
     /**
      * Constructor.
      */
-    public CronEvent(String cron) {
-        this.cron = cron;
+    public AbstractSensor(EventHandler eventHandler, String id) {
+        this.eventHandler = eventHandler;
+        this.id = id;
+        isRunning = false;
     }
 
-    public String getCron() {
-        return cron;
+    @Override
+    public String getId() {
+        return id;
     }
-
 }

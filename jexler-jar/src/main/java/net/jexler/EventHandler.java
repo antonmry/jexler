@@ -16,7 +16,6 @@
 
 package net.jexler;
 
-
 /**
  * Interface for event handler (events sent to a jexler).
  *
@@ -24,12 +23,6 @@ package net.jexler;
  */
 public interface EventHandler {
 
-    /**
-     * Handle event
-     * Writes possibly messages to submitter,
-     * even after call returned.
-     * @param submitter
-     */
     void handle(Event event);
 
 }
