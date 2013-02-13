@@ -24,9 +24,9 @@ jexler command line application
 * run JexlerCliTest class in Eclipse
 * => build/logs/jexler.log
 * or do this
-  * &gt; cd jexler-jar
+  * &gt; cd jexler-cli
   * &gt; gradle installApp
-  * &gt; build/install/jexler-jar/bin/jexler-jar ../jexler-war/src/main/webapp/WEB-INF/suite
-  * => build/install/jexler-jar/logs/jexler.log
+  * &gt; build/install/jexler-cli/bin/jexler-cli ../jexler-war/src/main/webapp/WEB-INF/suite
+  * => build/install/jexler-cli/logs/jexler.log
 
 

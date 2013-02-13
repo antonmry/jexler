@@ -45,45 +45,21 @@ public class ScriptUtil {
     private static final String THREADING_PARAMETER = "THREADING";
 
     /**
-     * Init scripting.
-     */
-    public static void initScripting() {
-        // LATER similar settings for other common scripting languages?
-        // NOTE for ruby the test by threading parameter seems not to work, always
-        //      returned THREAD_ISOLATED even if was experimentally not so...
-        System.setProperty("org.jruby.embed.localcontext.scope", "threadsafe");
-
-        // trace all script engines
-        if (log.isTraceEnabled()) {
-            log.trace("Available script engines:");
-            List<ScriptEngineFactory> factories = new ScriptEngineManager().getEngineFactories();
-            for (ScriptEngineFactory factory : factories) {
-                log.trace("EngineName      = " + factory.getEngineName());
-                log.trace("EngineVersion   = " + factory.getEngineVersion());
-                log.trace("LanguageName    = " + factory.getLanguageName());
-                log.trace("LanguageVersion = " + factory.getLanguageVersion());
-                log.trace("Extensions      = " + factory.getExtensions());
-                log.trace("Threading       = " + factory.getParameter(THREADING_PARAMETER));
-                StringBuilder builder = new StringBuilder("Engine Aliases  = ");
-                List<String> names = factory.getNames();
-                for (String name : names) {
-                    builder.append(name);
-                    builder.append(" ");
-                }
-                log.trace(builder.toString());
-            }
-        }
-    }
-
-    /**
      * Run given script with given variables, thread safe.
-     * Serializes calls if the script engine is not multi-threaded.
      *
      * @param variables variables to set in engine and to read again after script returned
      * @param scriptFile script file, must have a corresponding file extension
      * @return script's return value, false if script evaluation failed for some reason
      */
-    public static Object runScriptThreadSafe(Map<String,Object> variables, File scriptFile){
+    public static Object runScriptThreadSafe(Map<String,Object> variables, File scriptFile) {
+
+        // TODO better exception handling
+
+        // LATER similar settings for other common scripting languages?
+        // NOTE for ruby the test by threading parameter seems not to work, always
+        //      returned THREAD_ISOLATED even if was experimentally not so...
+        System.setProperty("org.jruby.embed.localcontext.scope", "threadsafe");
+
         String[] split = scriptFile.getName().split("\\.");
         if (split.length < 2) {
             log.error("Script file '{}' has no extension", scriptFile.getAbsolutePath());
@@ -99,19 +75,9 @@ public class ScriptUtil {
         // LATER ensures at least "MULTITHREADED", sufficient?
         // (script languages may define their own return values, not sure if they do)
         if (engine.getFactory().getParameter(THREADING_PARAMETER) == null) {
-            // have to synchronize
-            synchronized(engine) {
-                log.trace("Running script serialized");
-                return runScript(engine, variables, scriptFile);
-            }
-        } else {
-            log.trace("Running script parallel");
-            return runScript(engine, variables, scriptFile);
+            throw new RuntimeException("cannot run script multithreaded");
         }
-    }
 
-    private static Object runScript(ScriptEngine engine,
-            Map<String,Object> variables, File scriptFile) {
         for (String key : variables.keySet()) {
             engine.put(key, variables.get(key));
         }
@@ -135,7 +101,32 @@ public class ScriptUtil {
         }
 
         return result;
-
     }
+
+    /**
+     * Trace all available script engines.
+     */
+    public static void traceEngines() {
+        if (log.isTraceEnabled()) {
+            log.trace("Available script engines:");
+            List<ScriptEngineFactory> factories = new ScriptEngineManager().getEngineFactories();
+            for (ScriptEngineFactory factory : factories) {
+                log.trace("EngineName      = " + factory.getEngineName());
+                log.trace("EngineVersion   = " + factory.getEngineVersion());
+                log.trace("LanguageName    = " + factory.getLanguageName());
+                log.trace("LanguageVersion = " + factory.getLanguageVersion());
+                log.trace("Extensions      = " + factory.getExtensions());
+                log.trace("Threading       = " + factory.getParameter(THREADING_PARAMETER));
+                StringBuilder builder = new StringBuilder("Engine Aliases  = ");
+                List<String> names = factory.getNames();
+                for (String name : names) {
+                    builder.append(name);
+                    builder.append(" ");
+                }
+                log.trace(builder.toString());
+            }
+        }
+    }
+
 
 }

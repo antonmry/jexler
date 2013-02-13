@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-package net.jexler;
+package net.jexler.cli;
 
 import java.io.IOException;
 
