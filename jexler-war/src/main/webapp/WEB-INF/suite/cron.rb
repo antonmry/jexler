@@ -7,7 +7,7 @@ $sensors.add CronSensor.new($jexler, "every-two-minutes").setCron("*/2 * * * *")
 begin
   event = $events.take
   if event.is_a? CronSensor::Event
-    puts "It is now " + Time.new.inspect + " (" + event.getSensorId + ")"
+    puts "It is now (ruby) " + Time.new.inspect + " (" + event.getSensorId + ")"
   elsif event.is_a? StopSensor::Event
     return
   end

@@ -10,7 +10,7 @@ $sensors.add s
 begin
   event = $events.take
   if event.is_a? FileTailerSensor::Event
-    puts "Got line: " + event.getLine
+    puts "Got line (ruby): " + event.getLine
   elsif event.is_a? StopSensor::Event
     return
   end

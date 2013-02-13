@@ -91,6 +91,9 @@ public class Jexler implements EventHandler {
                             // LATER handle returned object?
                         } catch (RuntimeException | ScriptException e) {
                             log.error("Jexler failed to run script {}: {}", name, e);
+                            // HACK for the moment
+                            System.out.println("--- Exception in Jexler Script ---");
+                            e.printStackTrace();
                         } finally {
                             for (Sensor sensor : sensors) {
                                 try {

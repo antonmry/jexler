@@ -37,7 +37,7 @@ public final class JexlerCliTest
      * @throws IOException if an I/O error occurs while trying to read from stdin
      */
     public static void main(final String[] args) throws IOException {
-        String[] cliArgs = new String[] { "../jexler-war/src/main/webapp/WEB-INF/suite"};
+        String[] cliArgs = new String[] { "../jexler-war/src/main/webapp/WEB-INF/suite" };
         JexlerCli.main(cliArgs);
     }
 
