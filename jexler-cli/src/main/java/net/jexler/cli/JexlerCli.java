@@ -38,7 +38,7 @@ public final class JexlerCli
 {
     static final Logger log = LoggerFactory.getLogger(JexlerCli.class);
 
-    private static Jexlers suite;
+    private static Jexlers jexlers;
 
     /**
      * Main method for starting jexler from the command line.
@@ -66,19 +66,18 @@ public final class JexlerCli
         if (!silent && args.length != 1) {
             System.err.println("Usage:");
             System.err.println("  -v        Show version and exit.");
-            System.err.println("  <dir>     Start jexler suite using given suite directory");
-            System.err.println("            and wait for commands.");
-            System.err.println("  -s <dir>  Start in suite silent mode, use ctrl-c to stop.");
+            System.err.println("  <dir>     Start jexlers in given directory and wait for commands.");
+            System.err.println("  -s <dir>  Start jexlers in silent mode, use ctrl-c to stop.");
             System.exit(1);
         }
 
-        suite = new Jexlers(new File(args[args.length-1]));
-        suite.start();
+        jexlers = new Jexlers(new File(args[args.length-1]));
+        jexlers.start();
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
                 setName("main-shutdown");
-                suite.stop();
+                jexlers.stop();
             }
         });
 
@@ -106,7 +105,7 @@ public final class JexlerCli
             }
             Jexler jexler = null;
             if (jexlerId != null) {
-                jexler = suite.getJexler(jexlerId);
+                jexler = jexlers.getJexler(jexlerId);
                 if (jexler == null) {
                     System.out.println("no jexler with id '" + jexlerId + "'");
                     doInfo(jexler);
@@ -130,21 +129,21 @@ public final class JexlerCli
             } else {
                 System.out.println();
                 System.out.println("Commands:");
-                System.out.println("> info [id]      Show info about suite or given jexler.");
-                System.out.println("> start [id]     Start all jexlers in suite or given jexler.");
-                System.out.println("> stop [id]      Stop all jexlers in suite or given jexler.");
-                System.out.println("> restart [id]   Restart all jexlers in suite or given jexler.");
-                System.out.println("> exit           Stop all jexlers and exit.");
+                System.out.println("> info [name]      Info for all/given jexler(s).");
+                System.out.println("> start [name]     Start all/given jexler(s).");
+                System.out.println("> stop [name]      Stop all/given jexler(s).");
+                System.out.println("> restart [name]   Restart all/given jexler(s).");
+                System.out.println("> exit             Stop all jexlers and exit.");
                 System.out.println();
             }
         } while (true);
-        suite.stop();
+        jexlers.stop();
     }
 
     public static void doInfo(Jexler jexler) {
         if (jexler == null) {
-            List<Jexler> jexlers = suite.getJexlers();
-            for (Jexler jex : jexlers) {
+            List<Jexler> jexlerList = jexlers.getJexlers();
+            for (Jexler jex : jexlerList) {
                 printJexlerLine(jex, getJexlerMaxIdLen());
             }
         } else {
@@ -154,7 +153,7 @@ public final class JexlerCli
 
     public static void doStart(Jexler jexler) {
         if (jexler == null) {
-            suite.start();
+            jexlers.start();
         } else {
             jexler.start();
         }
@@ -162,7 +161,7 @@ public final class JexlerCli
 
     public static void doStop(Jexler jexler) {
         if (jexler == null) {
-            suite.stop();
+            jexlers.stop();
         } else {
             jexler.stop();
         }
@@ -174,9 +173,9 @@ public final class JexlerCli
     }
 
     private static int getJexlerMaxIdLen() {
-        List<Jexler> jexlers = suite.getJexlers();
+        List<Jexler> jexlerList = jexlers.getJexlers();
         int max = 0;
-        for (Jexler jexler : jexlers) {
+        for (Jexler jexler : jexlerList) {
             int len = jexler.getName().length();
             if (len > max) {
                 max = len;

@@ -45,7 +45,7 @@ public class JexlerContextListener implements ServletContextListener    {
         String webappPath = servletContext.getRealPath("/");
         log.info("ServletContextName: " + servletContext.getServletContextName());
         log.info("webappPath: " + webappPath);
-        jexlers = new Jexlers(new File(webappPath, "WEB-INF/suite"));
+        jexlers = new Jexlers(new File(webappPath, "WEB-INF/jexlers"));
         jexlers.start();
     }
 

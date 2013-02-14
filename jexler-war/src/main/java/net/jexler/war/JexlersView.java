@@ -26,7 +26,7 @@ import net.jexler.Jexler;
 import net.jexler.Jexlers;
 
 /**
- * Jexler suite view.
+ * Jexlers view.
  *
  * @author $(whois jexler.net)
  */
@@ -70,24 +70,24 @@ public class JexlersView {
         String cmd = request.getParameter("cmd");
         if (cmd != null) {
             String jexlerId = request.getParameter("jexler");
-            Jexlers suite = JexlerContextListener.getJexlers();
+            Jexlers jexlers = JexlerContextListener.getJexlers();
             if (jexlerId == null) {
                 switch (cmd) {
                 case "start":
-                    suite.start();
+                    jexlers.start();
                     break;
                 case "stop":
-                    suite.stop();
+                    jexlers.stop();
                     break;
                 case "restart":
-                    suite.stop();
-                    suite.start();
+                    jexlers.stop();
+                    jexlers.start();
                     break;
                 default:
                     // TODO
                 }
             } else {
-                Jexler jexler = suite.getJexler(jexlerId);
+                Jexler jexler = jexlers.getJexler(jexlerId);
                 if (jexler != null) {
                     switch (cmd) {
                     case "start":

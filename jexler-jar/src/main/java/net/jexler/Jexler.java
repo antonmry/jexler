@@ -56,7 +56,6 @@ public class Jexler implements EventHandler {
 
     /**
      * Constructor.
-     * LATER pass also suite? so can be used in scripts?
      * @param file file with jexler script
      */
     public Jexler(File file) {

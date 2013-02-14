@@ -32,12 +32,12 @@ public final class JexlerCliTest
     static final Logger log = LoggerFactory.getLogger(JexlerCli.class);
 
     /**
-     * Calls main() of jexler cli with webapp suite.
+     * Calls main() of jexler cli with webapp jexlers.
      *
      * @throws IOException if an I/O error occurs while trying to read from stdin
      */
     public static void main(final String[] args) throws IOException {
-        String[] cliArgs = new String[] { "../jexler-war/src/main/webapp/WEB-INF/suite" };
+        String[] cliArgs = new String[] { "../jexler-war/src/main/webapp/WEB-INF/jexlers" };
         JexlerCli.main(cliArgs);
     }
 

@@ -26,7 +26,7 @@ jexler command line application
 * or do this
   * &gt; cd jexler-cli
   * &gt; gradle installApp
-  * &gt; build/install/jexler-cli/bin/jexler-cli ../jexler-war/src/main/webapp/WEB-INF/suite
+  * &gt; build/install/jexler-cli/bin/jexler-cli ../jexler-war/src/main/webapp/WEB-INF/jexlers
   * => build/install/jexler-cli/logs/jexler.log
 
 

@@ -26,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A suite of jexlers.
+ * All jexlers in a directory.
  *
  * @author $(whois jexler.net)
  */
