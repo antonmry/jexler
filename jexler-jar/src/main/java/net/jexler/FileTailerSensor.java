@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author $(whois jexler.net)
  */
-public class FileTailerSensor extends AbstractSensor {
+public class FileTailerSensor extends AbstractSensor<FileTailerSensor> {
 
     public class Event extends AbstractEvent {
         private String line;
@@ -76,7 +76,7 @@ public class FileTailerSensor extends AbstractSensor {
             }
             // passed all filters
             log.info("passed: " + line);
-            eventHandler.handle(new Event(thisSensor, line));
+            getEventHandler().handle(new Event(thisSensor, line));
         }
         // LATER handle other tailer listener events?
     }
@@ -114,24 +114,24 @@ public class FileTailerSensor extends AbstractSensor {
     }
 
     @Override
-    public Sensor start() {
-        if (isRunning) {
+    public FileTailerSensor start() {
+        if (isRunning()) {
             return this;
         }
         TailerListener listener = new MyTailerListener();
         // LATER use configurable delay? use option to tail from end of file?
         tailer = Tailer.create(file, listener);
-        isRunning = true;
+        setRunning(true);
         return this;
     }
 
     @Override
-    public void stop() {
-        if (!isRunning) {
+    public void stop(long timeout) {
+        if (!isRunning()) {
             return;
         }
-        isRunning = false;
         tailer.stop();
+        setRunning(false);
     }
 
 }

@@ -51,7 +51,8 @@ public class JexlerContextListener implements ServletContextListener    {
 
     @Override
     public void contextDestroyed(ServletContextEvent event) {
-        jexlers.stop();
+
+        jexlers.stop(getStopTimeout());
     }
 
     public static ServletContext getServletContext() {
@@ -60,6 +61,11 @@ public class JexlerContextListener implements ServletContextListener    {
 
     public static Jexlers getJexlers() {
         return jexlers;
+    }
+
+    public static long getStopTimeout() {
+        // TODO configurable?
+        return 10000;
     }
 
 }

@@ -17,27 +17,21 @@
 package net.jexler;
 
 /**
- * Interface for sensor (creates events for jexler).
+ * Interface for a sensor ("eyes" of a jexler).
+ *
+ * Expectation is typically that start() and stop() return
+ * only after the service has really started or stopped,
+ * and that these methods are idempotent.
+ *
+ * The id is intended to be unique per jexler.
  *
  * @author $(whois jexler.net)
  */
-public interface Sensor {
+public interface Sensor extends Service<Sensor> {
 
     /**
-     * Start sensor, must be idempotent.
-     * @return this (for chaining calls)
+     * Get event handler that this sensor sends events to.
+     * @return event handler
      */
-    Sensor start();
-
-    /**
-     * Stop sensor, must be idempotent.
-     */
-    void stop();
-
-    /**
-     * Intended to be unique per jexler.
-     * @return id
-     */
-    String getId();
-
+    EventHandler getEventHandler();
 }

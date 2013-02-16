@@ -18,21 +18,19 @@ package net.jexler;
 
 
 /**
- * Abstract base sensor.
+ * Abstract base actor.
  *
  * @author $(whois jexler.net)
  */
-public abstract class AbstractSensor<T> implements Sensor {
+public abstract class AbstractActor<T> implements Actor {
 
-    private EventHandler eventHandler;
     private String id;
     private volatile boolean isRunning;
 
     /**
      * Constructor.
      */
-    public AbstractSensor(EventHandler eventHandler, String id) {
-        this.eventHandler = eventHandler;
+    public AbstractActor(String id) {
         this.id = id;
         isRunning = false;
     }
@@ -49,11 +47,6 @@ public abstract class AbstractSensor<T> implements Sensor {
     @Override
     public String getId() {
         return id;
-    }
-
-    @Override
-    public EventHandler getEventHandler() {
-        return eventHandler;
     }
 
 }

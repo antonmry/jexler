@@ -16,31 +16,17 @@
 
 package net.jexler;
 
-
 /**
- * Abstract base sensor.
+ * Interface for an actor ("hands" of a jexler).
+ *
+ * Expectation is typically that start() and stop() return
+ * only after the service has really started or stopped,
+ * and that these methods are idempotent.
+ *
+ * The id is intended to be unique per jexler.
  *
  * @author $(whois jexler.net)
  */
-public abstract class AbstractEvent implements Event {
-
-    private Sensor sensor;
-
-    /**
-     * Constructor.
-     */
-    public AbstractEvent(Sensor sensor) {
-        this.sensor = sensor;
-    }
-
-    @Override
-    public Sensor getSensor() {
-        return sensor;
-    }
-
-    @Override
-    public String getSensorId() {
-        return sensor.getId();
-    }
+public interface Actor extends Service<Actor> {
 
 }

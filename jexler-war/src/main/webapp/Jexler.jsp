@@ -59,7 +59,7 @@
   <tr>
   <td>${jexler.value.startStop}</td>
   <td>${jexler.value.restart}</td>
-  <td>${jexler.value.nameLink}</td>
+  <td>${jexler.value.idLink}</td>
   </tr>
 </c:forEach>
 
@@ -68,7 +68,7 @@
 <c:if test="${param.cmd == 'info'}">
   <c:set var="jexler" value="${jexlers.jexlers[param.jexler]}"/>
 
-  <h3>${jexler.name}</h3>
+  <h3>${jexler.id}</h3>
 
   ${jexler.fileText}
 

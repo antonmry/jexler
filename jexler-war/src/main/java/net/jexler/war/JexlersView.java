@@ -33,16 +33,19 @@ import net.jexler.Jexlers;
 public class JexlersView {
 
     private final Jexlers jexlers;
+    private final long stopTimeout;
 
     public JexlersView() {
         jexlers = JexlerContextListener.getJexlers();
+        jexlers.refresh();
+        stopTimeout = JexlerContextListener.getStopTimeout();
     }
 
     public Map<String,JexlerView> getJexlers() {
         List<Jexler> jexlerList = jexlers.getJexlers();
         Map<String,JexlerView> jexlerViews = new LinkedHashMap<>();
         for (Jexler jexler : jexlerList) {
-            jexlerViews.put(jexler.getName(), new JexlerView(jexlers, jexler));
+            jexlerViews.put(jexler.getId(), new JexlerView(jexlers, jexler));
         }
         return jexlerViews;
     }
@@ -77,10 +80,10 @@ public class JexlersView {
                     jexlers.start();
                     break;
                 case "stop":
-                    jexlers.stop();
+                    jexlers.stop(stopTimeout);
                     break;
                 case "restart":
-                    jexlers.stop();
+                    jexlers.stop(stopTimeout);
                     jexlers.start();
                     break;
                 default:
@@ -94,10 +97,10 @@ public class JexlersView {
                         jexler.start();
                         break;
                     case "stop":
-                        jexler.stop();
+                        jexler.stop(stopTimeout);
                         break;
                     case "restart":
-                        jexler.stop();
+                        jexler.stop(stopTimeout);
                         jexler.start();
                         break;
                     default:

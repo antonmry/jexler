@@ -40,6 +40,9 @@ public final class JexlerCli
 
     private static Jexlers jexlers;
 
+    // TODO configurable?
+    private static long stopTimeout = 10000;
+
     /**
      * Main method for starting jexler from the command line.
      *
@@ -77,7 +80,7 @@ public final class JexlerCli
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
                 setName("main-shutdown");
-                jexlers.stop();
+                jexlers.stop(stopTimeout);
             }
         });
 
@@ -96,6 +99,8 @@ public final class JexlerCli
         do {
             System.out.print("jexler> ");
             String cmd = reader.readLine().trim();
+
+            jexlers.refresh();
 
             String jexlerId = null;
             if (cmd.contains(" ")) {
@@ -137,7 +142,7 @@ public final class JexlerCli
                 System.out.println();
             }
         } while (true);
-        jexlers.stop();
+        jexlers.stop(stopTimeout);
     }
 
     public static void doInfo(Jexler jexler) {
@@ -147,7 +152,7 @@ public final class JexlerCli
                 printJexlerLine(jex, getJexlerMaxIdLen());
             }
         } else {
-            printJexlerLine(jexler, jexler.getName().length());
+            printJexlerLine(jexler, jexler.getId().length());
         }
     }
 
@@ -161,9 +166,9 @@ public final class JexlerCli
 
     public static void doStop(Jexler jexler) {
         if (jexler == null) {
-            jexlers.stop();
+            jexlers.stop(stopTimeout);
         } else {
-            jexler.stop();
+            jexler.stop(stopTimeout);
         }
     }
 
@@ -176,7 +181,7 @@ public final class JexlerCli
         List<Jexler> jexlerList = jexlers.getJexlers();
         int max = 0;
         for (Jexler jexler : jexlerList) {
-            int len = jexler.getName().length();
+            int len = jexler.getId().length();
             if (len > max) {
                 max = len;
             }
@@ -186,7 +191,7 @@ public final class JexlerCli
 
     private static void printJexlerLine(Jexler jexler, int maxIdLen) {
         System.out.printf("* %-" + maxIdLen + "s : %-7s%n",
-                jexler.getName(),
+                jexler.getId(),
                 jexler.isRunning() ? "running" : "stopped");
     }
 

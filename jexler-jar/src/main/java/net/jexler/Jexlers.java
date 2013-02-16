@@ -30,13 +30,19 @@ import org.slf4j.LoggerFactory;
  *
  * @author $(whois jexler.net)
  */
-public class Jexlers {
+public class Jexlers implements Service<Jexlers> {
 
     static final Logger log = LoggerFactory.getLogger(Jexlers.class);
 
-    /** key is script file name */
-    private final  Map<String,Jexler> jexlerMap;
-    private final  List<Jexler> jexlers;
+    /** Default timeout for stopping all jexlers in ms. */
+    public static long DEFAULT_STOP_TIMEOUT = 5000;
+
+    private File dir;
+    private String id;
+
+    /** key is jexler id (script file name with extension) */
+    private final Map<String,Jexler> jexlerMap;
+    private final List<Jexler> jexlers;
 
     /**
      * Constructor.
@@ -48,52 +54,112 @@ public class Jexlers {
         } else  if (!dir.isDirectory()) {
             throw new RuntimeException("File '" + dir.getAbsolutePath() + "' is not a directory");
         }
-        // LATER determine list when asked for it?
-        // (but keep or stop jexlers that have disappeared?)
+        this.dir = dir;
+        id = dir.getName();
+
         jexlerMap = new TreeMap<String,Jexler>();
-        File[] files = dir.listFiles();
-        for (File file : files) {
-            if (file.isFile()) {
-                Jexler jexler = new Jexler(file);
-                jexlerMap.put(file.getName(), jexler);
-            }
-        }
         jexlers = new LinkedList<Jexler>();
-        for (String name : jexlerMap.keySet()) {
-            jexlers.add(jexlerMap.get(name));
-        }
-
-    }
-
-    public void start() {
-        for (String id : jexlerMap.keySet()) {
-            Jexler jexler = jexlerMap.get(id);
-            log.info("*** Jexler start: " + jexler.getName());
-            jexler.start();
-            if (!jexler.isRunning()) {
-                log.error("Could not start jexler " + jexler.getName());
-            }
-        }
-    }
-
-    public void stop() {
-        for (String id : jexlerMap.keySet()) {
-            Jexler jexler = jexlerMap.get(id);
-            log.info("*** Jexler stop: " + jexler.getName());
-            jexler.stop();
-        }
+        refresh();
     }
 
     /**
-     * Get jexlers, sorted by name.
+     * Refresh list of jexlers.
+     * Add new jexlers for new script files.
+     * Remove old jexlers if their script file is gone and they are stopped.
+     */
+    public void refresh() {
+
+        // list directory and create jexlers in map for new script files in directory
+        File[] files = dir.listFiles();
+        for (File file : files) {
+            if (file.isFile() && !file.isHidden()) {
+                String id = Jexler.getIdForFile(file);
+                if (!jexlerMap.containsKey(id)) {
+                    Jexler jexler = new Jexler(file);
+                    jexlerMap.put(jexler.getId(), jexler);
+                }
+            }
+        }
+
+        // recreate list while omitting jexlers without script file that are stopped
+        jexlers.clear();
+        for (String id : jexlerMap.keySet()) {
+            Jexler jexler = jexlerMap.get(id);
+            if (jexler.getFile().exists() || jexler.isRunning()) {
+                jexlers.add(jexler);
+            }
+        }
+
+        // recreate map with list entries
+        jexlerMap.clear();
+        for (Jexler jexler : jexlers) {
+            jexlerMap.put(jexler.getId(), jexler);
+        }
+    }
+
+    @Override
+    public Jexlers start() {
+        for (Jexler jexler : jexlers) {
+            log.info("*** Jexler start: " + jexler.getId());
+            jexler.start();
+        }
+        return this;
+    }
+
+    /**
+     * Returns true if at least one jexler is running.
+     */
+    @Override
+    public boolean isRunning() {
+        for (Jexler jexler : jexlers) {
+            if (jexler.isRunning()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void stop(long timeout) {
+        for (Jexler jexler : jexlers) {
+            log.info("*** Jexler stop: " + jexler.getId());
+            jexler.stop(0);
+        }
+
+        long t0 = System.currentTimeMillis();
+        while (isRunning() && System.currentTimeMillis() - t0 < timeout) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+            }
+        }
+
+    }
+
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    public File getDir() {
+        return dir;
+    }
+
+    /**
+     * Get jexlers, sorted by id (script file name).
      * @return
      */
     public List<Jexler> getJexlers() {
         return jexlers;
     }
 
-    public Jexler getJexler(String name) {
-        return jexlerMap.get(name);
+    /**
+     * Get jexler for given id (script file name).
+     * @param id
+     * @return jexler for given id or null if none
+     */
+    public Jexler getJexler(String id) {
+        return jexlerMap.get(id);
     }
 
 }

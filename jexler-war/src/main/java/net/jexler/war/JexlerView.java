@@ -41,15 +41,15 @@ public class JexlerView {
     @SuppressWarnings("unused")
     private final Jexlers jexlers;
     private final Jexler jexler;
-    private final String name;
-    private final String nameUrlEncoded;
+    private final String id;
+    private final String idUrlEncoded;
 
     public JexlerView(Jexlers jexlers, Jexler jexler) {
         this.jexlers = jexlers;
         this.jexler = jexler;
-        name = jexler.getName();
+        id = jexler.getId();
         try {
-            nameUrlEncoded = URLEncoder.encode(name, "UTF-8");
+            idUrlEncoded = URLEncoder.encode(id, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             // practically never happens, Java must support UTF-8
             throw new RuntimeException(e);
@@ -57,24 +57,24 @@ public class JexlerView {
 
     }
 
-    public String getName() {
-        return name;
+    public String getId() {
+        return id;
     }
 
-    public String getNameLink() {
-        return "<a href='?jexler=" + nameUrlEncoded + "&cmd=info'>" + name + "</a>";
+    public String getIdLink() {
+        return "<a href='?jexler=" + idUrlEncoded + "&cmd=info'>" + id + "</a>";
     }
 
     public String getStartStop() {
         if (jexler.isRunning()) {
-            return "<a class='stop' href='?jexler=" + nameUrlEncoded + "&cmd=stop'><img src='stop.gif'></a>";
+            return "<a class='stop' href='?jexler=" + idUrlEncoded + "&cmd=stop'><img src='stop.gif'></a>";
         } else {
-            return "<a class='start' href='?jexler=" + nameUrlEncoded + "&cmd=start'><img src='start.gif'></a>";
+            return "<a class='start' href='?jexler=" + idUrlEncoded + "&cmd=start'><img src='start.gif'></a>";
         }
     }
 
     public String getRestart() {
-        return "<a class='restart' href='?jexler=" + nameUrlEncoded + "&cmd=restart'><img src='restart.gif'></a>";
+        return "<a class='restart' href='?jexler=" + idUrlEncoded + "&cmd=restart'><img src='restart.gif'></a>";
     }
 
     public String getFileText() {

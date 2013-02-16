@@ -17,41 +17,35 @@
 package net.jexler;
 
 /**
- * Formal sensor for stopping a jexler, triggered externally.
+ * Interface for a service.
+ * Implemented by Jexler(s), Sensor and Actor.
  *
  * @author $(whois jexler.net)
  */
-public class StopSensor extends AbstractSensor<StopSensor> {
-
-    public static class Event extends AbstractEvent {
-        public Event(Sensor sensor) {
-            super(sensor);
-        }
-    }
+public interface Service<T> {
 
     /**
-     * Constructor.
+     * Start service.
+     * @return this (for chaining calls)
      */
-    public StopSensor(EventHandler eventHandler, String id) {
-        super(eventHandler, id);
-    }
-
-    @Override
-    public StopSensor start() {
-        setRunning(true);
-        return this;
-    }
-
-    @Override
-    public void stop(long timeout) {
-        setRunning(false);
-    }
+    T start();
 
     /**
-     * Trigger event.
+     * Get info if service is running or not.
+     * @return
      */
-    public void trigger() {
-        getEventHandler().handle(new Event(this));
-    }
+    boolean isRunning();
+
+    /**
+     * Initiates service stop and waits until service has stopped
+     * or timeout occurs.
+     */
+    void stop(long timeout);
+
+    /**
+     * Get id.
+     * @return id
+     */
+    String getId();
 
 }
