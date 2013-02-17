@@ -24,14 +24,14 @@ package net.jexler;
  */
 public abstract class AbstractService<T> implements Service<T> {
 
-    private EventHandler<T> eventHandler;
+    private EventHandler eventHandler;
     private String id;
     private volatile boolean isRunning;
 
     /**
      * Constructor.
      */
-    public AbstractService(EventHandler<T> eventHandler, String id) {
+    public AbstractService(EventHandler eventHandler, String id) {
         this.eventHandler = eventHandler;
         this.id = id;
         isRunning = false;
@@ -51,7 +51,7 @@ public abstract class AbstractService<T> implements Service<T> {
         return id;
     }
 
-    protected EventHandler<T> getEventHandler() {
+    protected EventHandler getEventHandler() {
         return eventHandler;
     }
 

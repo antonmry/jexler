@@ -18,7 +18,7 @@ package net.jexler;
 
 /**
  * Interface for a service.
- * Implemented by Jexler(s), Sensor and Actor.
+ * Implemented by Jexler(s) themselves and various services used by jexlers.
  *
  * @author $(whois jexler.net)
  */

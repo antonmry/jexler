@@ -18,23 +18,23 @@ package net.jexler;
 
 
 /**
- * Abstract base sensor.
+ * Abstract base event.
  *
  * @author $(whois jexler.net)
  */
-public abstract class AbstractEvent<T> implements Event<T> {
+public abstract class AbstractEvent implements Event {
 
-    private Service<T> service;
+    private Service<?> service;
 
     /**
      * Constructor.
      */
-    public AbstractEvent(Service<T> service) {
+    public AbstractEvent(Service<?> service) {
         this.service = service;
     }
 
     @Override
-    public Service<T> getService() {
+    public Service<?> getService() {
         return service;
     }
 

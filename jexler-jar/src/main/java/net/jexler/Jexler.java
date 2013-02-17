@@ -56,7 +56,7 @@ public class Jexler implements Service<Jexler>, EventHandler {
      * services are automatically stopped by jexler after the script exits
      * (regularly or throws).
      */
-    private List<Service> services;
+    private List<Service<?>> services;
 
     private StopService stopService;
 
@@ -69,7 +69,7 @@ public class Jexler implements Service<Jexler>, EventHandler {
         id = file.getName();
         isRunning = false;
         events = new LinkedBlockingQueue<Event>();
-        services = new LinkedList<Service>();
+        services = new LinkedList<Service<?>>();
         stopService = new StopService(this, "stop-jexler");
     }
 
@@ -112,7 +112,7 @@ public class Jexler implements Service<Jexler>, EventHandler {
                             System.out.println("--- Exception in Jexler Script ---");
                             e.printStackTrace();
                         } finally {
-                            for (Service service : services) {
+                            for (Service<?> service : services) {
                                 try {
                                     service.stop(0);
                                 } catch (RuntimeException e) {

@@ -35,9 +35,9 @@ import org.slf4j.LoggerFactory;
  */
 public class FileTailerService extends AbstractService<FileTailerService> {
 
-    public class Event extends AbstractEvent<FileTailerService> {
+    public class Event extends AbstractEvent {
         private String line;
-        public Event(Service<FileTailerService> service, String line) {
+        public Event(FileTailerService service, String line) {
             super(service);
             this.line = line;
         }
@@ -89,7 +89,7 @@ public class FileTailerService extends AbstractService<FileTailerService> {
     /**
      * Constructor.
      */
-    public FileTailerService(EventHandler<FileTailerService> eventHandler, String id) {
+    public FileTailerService(EventHandler eventHandler, String id) {
         super(eventHandler, id);
         thisService = this;
         filters = new LinkedList<Filter>();

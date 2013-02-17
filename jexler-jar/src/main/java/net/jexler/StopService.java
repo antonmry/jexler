@@ -17,14 +17,14 @@
 package net.jexler;
 
 /**
- * Formal sensor for stopping a jexler, triggered externally.
+ * Formal service for stopping a jexler, triggered externally.
  *
  * @author $(whois jexler.net)
  */
 public class StopService extends AbstractService<StopService> {
 
-    public static class Event extends AbstractEvent<StopService> {
-        public Event(Service<StopService> service) {
+    public static class Event extends AbstractEvent {
+        public Event(StopService service) {
             super(service);
         }
     }
@@ -32,7 +32,7 @@ public class StopService extends AbstractService<StopService> {
     /**
      * Constructor.
      */
-    public StopService(EventHandler<StopService> eventHandler, String id) {
+    public StopService(EventHandler eventHandler, String id) {
         super(eventHandler, id);
     }
 

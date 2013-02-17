@@ -21,13 +21,13 @@ package net.jexler;
  *
  * @author $(whois jexler.net)
  */
-public interface Event<T> {
+public interface Event {
 
     /**
      * Get service that sent the event.
      * @return sensor
      */
-    Service<T> getService();
+    Service<?> getService();
 
     /**
      * Convenience method for getting service id.

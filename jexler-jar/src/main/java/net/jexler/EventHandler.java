@@ -21,8 +21,8 @@ package net.jexler;
  *
  * @author $(whois jexler.net)
  */
-public interface EventHandler<T> {
+public interface EventHandler {
 
-    void handle(Event<T> event);
+    void handle(Event event);
 
 }

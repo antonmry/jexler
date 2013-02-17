@@ -19,15 +19,15 @@ package net.jexler;
 import it.sauronsoftware.cron4j.Scheduler;
 
 /**
- * A cron sensor, creates events at configurable times.
+ * A cron service, creates events at configurable times.
  *
  * @author $(whois jexler.net)
  */
 public class CronService extends AbstractService<CronService> {
 
-    public static class Event extends AbstractEvent<CronService> {
+    public static class Event extends AbstractEvent {
         private String cron;
-        public Event(Service<CronService> service, String cron) {
+        public Event(CronService service, String cron) {
             super(service);
             this.cron = cron;
         }
@@ -43,7 +43,7 @@ public class CronService extends AbstractService<CronService> {
     /**
      * Constructor.
      */
-    public CronService(EventHandler<CronService> eventHandler, String id) {
+    public CronService(EventHandler eventHandler, String id) {
         super(eventHandler, id);
         thisService = this;
     }
