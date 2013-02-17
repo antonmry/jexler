@@ -21,23 +21,23 @@ package net.jexler;
  *
  * @author $(whois jexler.net)
  */
-public class StopSensor extends AbstractSensor<StopSensor> {
+public class StopService extends AbstractService<StopService> {
 
-    public static class Event extends AbstractEvent {
-        public Event(Sensor sensor) {
-            super(sensor);
+    public static class Event extends AbstractEvent<StopService> {
+        public Event(Service<StopService> service) {
+            super(service);
         }
     }
 
     /**
      * Constructor.
      */
-    public StopSensor(EventHandler eventHandler, String id) {
+    public StopService(EventHandler<StopService> eventHandler, String id) {
         super(eventHandler, id);
     }
 
     @Override
-    public StopSensor start() {
+    public StopService start() {
         setRunning(true);
         return this;
     }

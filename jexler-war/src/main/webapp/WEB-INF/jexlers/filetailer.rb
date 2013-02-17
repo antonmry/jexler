@@ -1,17 +1,17 @@
-import Java::net.jexler.StopSensor
-import Java::net.jexler.FileTailerSensor
+import Java::net.jexler.StopService
+import Java::net.jexler.FileTailerService
 
-s = FileTailerSensor.new($jexler, "selftailer")
+s = FileTailerService.new($jexler, "selftailer")
 s.setFile($file.getAbsolutePath)
 s.addFilterPattern("^import")
 s.start
-$sensors.add s
+$services.add s
 
 begin
   event = $events.take
-  if event.is_a? FileTailerSensor::Event
+  if event.is_a? FileTailerService::Event
     puts "Got line (ruby): " + event.getLine
-  elsif event.is_a? StopSensor::Event
+  elsif event.is_a? StopService::Event
     return
   end
 end while true

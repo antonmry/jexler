@@ -21,17 +21,17 @@ package net.jexler;
  *
  * @author $(whois jexler.net)
  */
-public interface Event {
+public interface Event<T> {
 
     /**
-     * Get sensor that sent the event.
+     * Get service that sent the event.
      * @return sensor
      */
-    Sensor getSensor();
+    Service<T> getService();
 
     /**
-     * Convenience method for getting sensor id.
+     * Convenience method for getting service id.
      * @return id
      */
-    String getSensorId();
+    String getServiceId();
 }

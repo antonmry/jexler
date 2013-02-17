@@ -1,17 +1,17 @@
-import net.jexler.StopSensor;
-import net.jexler.FileTailerSensor;
+import net.jexler.StopService;
+import net.jexler.FileTailerService;
 
-s = new FileTailerSensor(jexler, "selftailer");
+s = new FileTailerService(jexler, "selftailer");
 s.setFile(file.getAbsolutePath());
 s.addFilterPattern("^import");
 s.start();
-sensors.add(s);
+services.add(s);
 
 while (true) {
   event = events.take();
-  if (event instanceof FileTailerSensor.Event) {
+  if (event instanceof FileTailerService.Event) {
     println ("Got line (groovy) " + event.getLine());
-  } else if (event instanceof StopSensor.Event) {
+  } else if (event instanceof StopService.Event) {
     return;
   }
 }

@@ -29,16 +29,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * File tailer handler.
+ * File tailer service.
  *
  * @author $(whois jexler.net)
  */
-public class FileTailerSensor extends AbstractSensor<FileTailerSensor> {
+public class FileTailerService extends AbstractService<FileTailerService> {
 
-    public class Event extends AbstractEvent {
+    public class Event extends AbstractEvent<FileTailerService> {
         private String line;
-        public Event(Sensor sensor, String line) {
-            super(sensor);
+        public Event(Service<FileTailerService> service, String line) {
+            super(service);
             this.line = line;
         }
         public String getLine() {
@@ -46,7 +46,7 @@ public class FileTailerSensor extends AbstractSensor<FileTailerSensor> {
         }
     }
 
-    static final Logger log = LoggerFactory.getLogger(FileTailerSensor.class);
+    static final Logger log = LoggerFactory.getLogger(FileTailerService.class);
 
     private static class Filter {
         private final boolean passesIfFound;
@@ -76,12 +76,12 @@ public class FileTailerSensor extends AbstractSensor<FileTailerSensor> {
             }
             // passed all filters
             log.info("passed: " + line);
-            getEventHandler().handle(new Event(thisSensor, line));
+            getEventHandler().handle(new Event(thisService, line));
         }
         // LATER handle other tailer listener events?
     }
 
-    private FileTailerSensor thisSensor;
+    private FileTailerService thisService;
     private File file;
     private List<Filter> filters;
     private Tailer tailer;
@@ -89,9 +89,9 @@ public class FileTailerSensor extends AbstractSensor<FileTailerSensor> {
     /**
      * Constructor.
      */
-    public FileTailerSensor(EventHandler eventHandler, String id) {
+    public FileTailerService(EventHandler<FileTailerService> eventHandler, String id) {
         super(eventHandler, id);
-        thisSensor = this;
+        thisService = this;
         filters = new LinkedList<Filter>();
     }
 
@@ -99,7 +99,7 @@ public class FileTailerSensor extends AbstractSensor<FileTailerSensor> {
      * Set file to tail by name.
      * @param fileName name of file to tail
      */
-    public FileTailerSensor setFile(String fileName) {
+    public FileTailerService setFile(String fileName) {
         this.file = new File(fileName);
         return this;
     }
@@ -108,13 +108,13 @@ public class FileTailerSensor extends AbstractSensor<FileTailerSensor> {
      * Add pattern to filter.
      * @param pattern regex pattern string, prefix with "!" to negate
      */
-    public FileTailerSensor addFilterPattern(String pattern) {
+    public FileTailerService addFilterPattern(String pattern) {
         filters.add(new Filter(pattern));
         return this;
     }
 
     @Override
-    public FileTailerSensor start() {
+    public FileTailerService start() {
         if (isRunning()) {
             return this;
         }

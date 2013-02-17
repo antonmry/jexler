@@ -51,22 +51,14 @@ public class Jexler implements Service<Jexler>, EventHandler {
     private BlockingQueue<Event> events;
 
     /**
-     * List of sensors.
-     * Scripts are free to add sensors to this list or not - if they do,
-     * sensors are automatically stopped by jexler after the script exits
+     * List of services.
+     * Scripts are free to add services to this list or not - if they do,
+     * services are automatically stopped by jexler after the script exits
      * (regularly or throws).
      */
-    private List<Sensor> sensors;
+    private List<Service> services;
 
-    /**
-     * List of actors.
-     * Scripts are free to add actors to this list or not - if they do,
-     * actors are automatically stopped by jexler after the script exits
-     * (regularly or throws).
-     */
-    private List<Actor> actors;
-
-    private StopSensor stopSensor;
+    private StopService stopService;
 
     /**
      * Constructor.
@@ -77,9 +69,8 @@ public class Jexler implements Service<Jexler>, EventHandler {
         id = file.getName();
         isRunning = false;
         events = new LinkedBlockingQueue<Event>();
-        sensors = new LinkedList<Sensor>();
-        actors = new LinkedList<Actor>();
-        stopSensor = new StopSensor(this, "stop-jexler");
+        services = new LinkedList<Service>();
+        stopService = new StopService(this, "stop-jexler");
     }
 
     /**
@@ -101,15 +92,14 @@ public class Jexler implements Service<Jexler>, EventHandler {
 
         isRunning = true;
 
-        sensors.add(stopSensor);
+        services.add(stopService);
 
         final Map<String,Object> variables = new HashMap<>();
         variables.put("jexler", this);
         variables.put("file", file);
         variables.put("id", id);
         variables.put("events", events);
-        variables.put("sensors", sensors);
-        variables.put("actors", actors);
+        variables.put("services", services);
         scriptThread = new Thread(
                 new Runnable() {
                     public void run() {
@@ -122,25 +112,16 @@ public class Jexler implements Service<Jexler>, EventHandler {
                             System.out.println("--- Exception in Jexler Script ---");
                             e.printStackTrace();
                         } finally {
-                            for (Sensor sensor : sensors) {
+                            for (Service service : services) {
                                 try {
-                                    sensor.stop(0);
+                                    service.stop(0);
                                 } catch (RuntimeException e) {
-                                    log.error("Could not stop sensor {} {}: {}",
-                                            sensor.getClass(), sensor.getId(), e);
-                                }
-                            }
-                            for (Actor actor : actors) {
-                                try {
-                                    actor.stop(0);
-                                } catch (RuntimeException e) {
-                                    log.error("Could not stop actor {} {}: {}",
-                                            actor.getClass(), actor.getId(), e);
+                                    log.error("Could not stop service {} {}: {}",
+                                            service.getClass(), service.getId(), e);
                                 }
                             }
                             events.clear();
-                            sensors.clear();
-                            actors.clear();
+                            services.clear();
                             isRunning = false;
                         }
                     }
@@ -170,7 +151,7 @@ public class Jexler implements Service<Jexler>, EventHandler {
             return;
         }
 
-        stopSensor.trigger();
+        stopService.trigger();
 
         long t0 = System.currentTimeMillis();
         while (isRunning && System.currentTimeMillis() - t0 < timeout) {

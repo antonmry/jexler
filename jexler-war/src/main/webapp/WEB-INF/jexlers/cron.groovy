@@ -1,14 +1,14 @@
-import net.jexler.StopSensor;
-import net.jexler.CronSensor;
+import net.jexler.StopService;
+import net.jexler.CronService;
 
-sensors.add(new CronSensor(jexler, "every-minute").setCron("* * * * *").start());
-sensors.add(new CronSensor(jexler, "every-two-minutes").setCron("*/2 * * * *").start());
+services.add(new CronService(jexler, "every-minute").setCron("* * * * *").start());
+services.add(new CronService(jexler, "every-two-minutes").setCron("*/2 * * * *").start());
 
 while (true) {
   event = events.take();
-  if (event instanceof CronSensor.Event) {
-    println ("It is now (groovy) " + new Date() + " (" + event.getSensorId() + ")");
-  } else if (event instanceof StopSensor.Event) {
+  if (event instanceof CronService.Event) {
+    println ("It is now (groovy) " + new Date() + " (" + event.getServiceId() + ")");
+  } else if (event instanceof StopService.Event) {
     return;
   }
 }

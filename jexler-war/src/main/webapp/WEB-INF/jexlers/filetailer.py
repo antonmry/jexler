@@ -1,15 +1,15 @@
-from net.jexler import StopSensor
-from net.jexler import FileTailerSensor
+from net.jexler import StopService
+from net.jexler import FileTailerService
 
-s = FileTailerSensor(jexler, "selftailer")
+s = FileTailerService(jexler, "selftailer")
 s.setFile(file.getAbsolutePath())
 s.addFilterPattern("^from")
 s.start()
-sensors.add(s)
+services.add(s)
 
 while True:
     event = events.take()
-    if isinstance(event, FileTailerSensor.Event):
+    if isinstance(event, FileTailerService.Event):
         print "Got line (jython): %s" % event.getLine()
-    elif isinstance(event, StopSensor.Event):
+    elif isinstance(event, StopService.Event):
         break

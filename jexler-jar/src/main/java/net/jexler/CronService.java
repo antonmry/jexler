@@ -23,12 +23,12 @@ import it.sauronsoftware.cron4j.Scheduler;
  *
  * @author $(whois jexler.net)
  */
-public class CronSensor extends AbstractSensor<CronSensor> {
+public class CronService extends AbstractService<CronService> {
 
-    public static class Event extends AbstractEvent {
+    public static class Event extends AbstractEvent<CronService> {
         private String cron;
-        public Event(Sensor sensor, String cron) {
-            super(sensor);
+        public Event(Service<CronService> service, String cron) {
+            super(service);
             this.cron = cron;
         }
         public String getCron() {
@@ -36,25 +36,25 @@ public class CronSensor extends AbstractSensor<CronSensor> {
         }
     }
 
-    private CronSensor thisSensor;
+    private CronService thisService;
     private String cron;
     private Scheduler scheduler;
 
     /**
      * Constructor.
      */
-    public CronSensor(EventHandler eventHandler, String id) {
+    public CronService(EventHandler<CronService> eventHandler, String id) {
         super(eventHandler, id);
-        thisSensor = this;
+        thisService = this;
     }
 
-    public CronSensor setCron(String cron) {
+    public CronService setCron(String cron) {
         this.cron = cron;
         return this;
     }
 
     @Override
-    public CronSensor start() {
+    public CronService start() {
         if (isRunning()) {
             return this;
         }
@@ -62,7 +62,7 @@ public class CronSensor extends AbstractSensor<CronSensor> {
         scheduler.start();
         Thread cronThread = new Thread(new Runnable() {
             public void run() {
-                getEventHandler().handle(new Event(thisSensor, cron));
+                getEventHandler().handle(new Event(thisService, cron));
             }
         });
         cronThread.setDaemon(true);

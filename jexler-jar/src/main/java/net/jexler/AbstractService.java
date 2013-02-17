@@ -18,20 +18,20 @@ package net.jexler;
 
 
 /**
- * Abstract base sensor.
+ * Abstract base service.
  *
  * @author $(whois jexler.net)
  */
-public abstract class AbstractSensor<T> implements Sensor {
+public abstract class AbstractService<T> implements Service<T> {
 
-    private EventHandler eventHandler;
+    private EventHandler<T> eventHandler;
     private String id;
     private volatile boolean isRunning;
 
     /**
      * Constructor.
      */
-    public AbstractSensor(EventHandler eventHandler, String id) {
+    public AbstractService(EventHandler<T> eventHandler, String id) {
         this.eventHandler = eventHandler;
         this.id = id;
         isRunning = false;
@@ -51,8 +51,7 @@ public abstract class AbstractSensor<T> implements Sensor {
         return id;
     }
 
-    @Override
-    public EventHandler getEventHandler() {
+    protected EventHandler<T> getEventHandler() {
         return eventHandler;
     }
 
