@@ -1,6 +1,6 @@
 import Java::net.jexler.StopService
 import Java::net.jexler.CronService
-import Java::net.jexler.ShellUtil
+import Java::net.jexler.ShellTool
 
 $services.add CronService.new($jexler, "every-minute").setCron("* * * * *").start
 $services.add CronService.new($jexler, "every-two-minutes").setCron("*/2 * * * *").start
@@ -10,8 +10,8 @@ begin
   if event.is_a? CronService::Event
     puts "It is now (ruby) " + Time.new.inspect + " (" + event.getServiceId + ")"
 
-    shell = ShellUtil.new
-    result = shell.run "echo 'hello world'"
+    shellTool = ShellTool.new
+    result = shellTool.run "echo 'hello world'"
     puts "rc = " + result.rc.to_s
     puts "stdout = " + result.stdout
     puts "stderr = " + result.stderr

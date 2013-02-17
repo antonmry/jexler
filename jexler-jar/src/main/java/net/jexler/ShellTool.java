@@ -28,11 +28,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Shell util.
+ * Tool for running shell commands.
  *
  * @author $(whois jexler.net)
  */
-public class ShellUtil {
+public class ShellTool {
 
     public class Result {
         public int rc;
@@ -40,7 +40,7 @@ public class ShellUtil {
         public String stderr;
     }
 
-    static final Logger log = LoggerFactory.getLogger(ShellUtil.class);
+    static final Logger log = LoggerFactory.getLogger(ShellTool.class);
 
     private File workingDirectory;
     private String[] environment;
@@ -48,7 +48,7 @@ public class ShellUtil {
     /**
      * Constructor.
      */
-    public ShellUtil() {
+    public ShellTool() {
     }
 
     /**
@@ -56,7 +56,7 @@ public class ShellUtil {
      * If not set inherit from parent process.
      * @param workingDirectory
      */
-    public ShellUtil setWorkingDirectory(File workingDirectory) {
+    public ShellTool setWorkingDirectory(File workingDirectory) {
         this.workingDirectory = workingDirectory;
         return this;
     }
@@ -67,7 +67,7 @@ public class ShellUtil {
      * If not set inherit from parent process.
      * @param environment
      */
-    public ShellUtil setEnvironment(String[] environment) {
+    public ShellTool setEnvironment(String[] environment) {
         // LATER use map, allow to add to system environment
         this.environment = environment;
         return this;

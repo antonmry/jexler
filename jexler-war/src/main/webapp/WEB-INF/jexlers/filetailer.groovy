@@ -10,7 +10,7 @@ services.add(s);
 while (true) {
   event = events.take();
   if (event instanceof FileTailerService.Event) {
-    println ("Got line (groovy) " + event.getLine());
+    println ("Got line (groovy): " + event.getLine());
   } else if (event instanceof StopService.Event) {
     return;
   }
