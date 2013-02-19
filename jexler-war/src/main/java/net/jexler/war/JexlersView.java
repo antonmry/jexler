@@ -16,6 +16,10 @@
 
 package net.jexler.war;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,26 +95,56 @@ public class JexlersView {
                 }
             } else {
                 Jexler jexler = jexlers.getJexler(jexlerId);
-                if (jexler != null) {
-                    switch (cmd) {
-                    case "start":
+                switch (cmd) {
+                case "start":
+                    if (jexler != null) {
                         jexler.start();
-                        break;
-                    case "stop":
-                        jexler.stop(stopTimeout);
-                        break;
-                    case "restart":
-                        jexler.stop(stopTimeout);
-                        jexler.start();
-                        break;
-                    default:
-                        // TODO
                     }
+                    break;
+                case "stop":
+                    if (jexler != null) {
+                        jexler.stop(stopTimeout);
+                    }
+                    break;
+                case "restart":
+                    if (jexler != null) {
+                        jexler.stop(stopTimeout);
+                        jexler.start();
+                    }
+                    break;
+                case "Save as...":
+                    handleSaveAs(request, jexlerId);
+                    jexlers.refresh();
+                    break;
+                case "Delete...":
+                    handleDelete(request, jexlerId);
+                    jexlers.refresh();
+                    break;
+                default:
+                    // TODO
                 }
             }
         }
+
         // LATER return success/error message?
         return "";
+    }
+
+    private void handleSaveAs(HttpServletRequest request, String jexlerId) {
+        String source = request.getParameter("source");
+        if (source != null) {
+            File file = new File(jexlers.getDir(), jexlerId);
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                writer.write(source);
+            } catch (IOException e) {
+                // LATER handle
+            }
+        }
+    }
+
+    private void handleDelete(HttpServletRequest request, String jexlerId) {
+        File file = new File(jexlers.getDir(), jexlerId);
+        file.delete();
     }
 
 }

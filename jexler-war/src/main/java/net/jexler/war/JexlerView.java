@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import javax.activation.MimetypesFileTypeMap;
+
 import net.jexler.Jexler;
 import net.jexler.Jexlers;
 
@@ -77,20 +79,9 @@ public class JexlerView {
         return "<a class='restart' href='?jexler=" + idUrlEncoded + "&cmd=restart'><img src='restart.gif'></a>";
     }
 
-    public String getFileText() {
+    public String getSource() {
         StringBuilder builder = new StringBuilder();
         File file = jexler.getFile();
-
-        String[] split = file.getName().split("\\.");
-        String fileExtension;
-        if (split.length < 2) {
-            log.warn("File '{}' has no extension", file.getAbsolutePath());
-            fileExtension = "txt";
-        } else {
-            fileExtension = split[split.length-1];
-        }
-
-        builder.append("<pre class='brush: " + fileExtension + "; gutter: false;'>\n");
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             do {
@@ -108,8 +99,16 @@ public class JexlerView {
             return msg;
         }
 
-        builder.append("</pre>");
         return builder.toString();
+    }
+
+    public String getMimeType() {
+        MimetypesFileTypeMap map = new MimetypesFileTypeMap();
+        map.addMimeTypes("text/x-ruby rb");
+        map.addMimeTypes("text/x-python py");
+        map.addMimeTypes("text/x-groovy groovy");
+        String mimeType = map.getContentType(jexler.getFile());
+        return mimeType;
     }
 
 }

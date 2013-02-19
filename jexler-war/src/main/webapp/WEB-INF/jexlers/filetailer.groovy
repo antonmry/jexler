@@ -1,3 +1,4 @@
+// autostart
 import net.jexler.StopService;
 import net.jexler.FileTailerService;
 

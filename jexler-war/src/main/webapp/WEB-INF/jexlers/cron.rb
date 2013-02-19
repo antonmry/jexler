@@ -1,3 +1,4 @@
+# autostart
 import Java::net.jexler.StopService
 import Java::net.jexler.CronService
 import Java::net.jexler.ShellTool

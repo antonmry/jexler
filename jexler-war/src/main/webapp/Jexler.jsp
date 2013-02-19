@@ -11,31 +11,13 @@
 <link rel="icon" href="favicon.ico"/>
 <link rel="stylesheet" type="text/css" href="jexler.css"/>
 
-<!-- SyntaxHighlighter -->
-<script type="text/javascript" src="sh/scripts/shCore.js"></script>
-<script type="text/javascript" src="sh/scripts/shBrushBash.js"></script>
-<script type="text/javascript" src="sh/scripts/shBrushCpp.js"></script>
-<script type="text/javascript" src="sh/scripts/shBrushCSharp.js"></script>
-<script type="text/javascript" src="sh/scripts/shBrushCss.js"></script>
-<script type="text/javascript" src="sh/scripts/shBrushDelphi.js"></script>
-<script type="text/javascript" src="sh/scripts/shBrushDiff.js"></script>
-<script type="text/javascript" src="sh/scripts/shBrushGroovy.js"></script>
-<script type="text/javascript" src="sh/scripts/shBrushJava.js"></script>
-<script type="text/javascript" src="sh/scripts/shBrushJScript.js"></script>
-<script type="text/javascript" src="sh/scripts/shBrushPhp.js"></script>
-<script type="text/javascript" src="sh/scripts/shBrushPlain.js"></script>
-<script type="text/javascript" src="sh/scripts/shBrushPython.js"></script>
-<script type="text/javascript" src="sh/scripts/shBrushRuby.js"></script>
-<script type="text/javascript" src="sh/scripts/shBrushScala.js"></script>
-<script type="text/javascript" src="sh/scripts/shBrushSql.js"></script>
-<script type="text/javascript" src="sh/scripts/shBrushVb.js"></script>
-<script type="text/javascript" src="sh/scripts/shBrushXml.js"></script>
-<link type="text/css" rel="stylesheet" href="sh/styles/shCore.css"/>
-<link type="text/css" rel="stylesheet" href="sh/styles/shThemeEclipse.css"/>
-<script type="text/javascript">
-  SyntaxHighlighter.config.clipboardSwf = 'sh/scripts/clipboard.swf';
-  SyntaxHighlighter.all();
-</script>
+<script src="cm/lib/codemirror.js"></script>
+<link rel="stylesheet" href="cm/lib/codemirror.css">
+<script src="cm/addon/edit/matchbrackets.js"></script>
+<script src="cm/mode/ruby/ruby.js"></script>
+<script src="cm/mode/python/python.js"></script>
+<script src="cm/mode/groovy/groovy.js"></script>
+<style type="text/css">.CodeMirror { border: 1px solid #eee; height: auto; } </style>
 
 </head>
 
@@ -65,14 +47,27 @@
 
 </table>
 
-<c:if test="${param.cmd == 'info'}">
+<%-- <c:if test="${param.cmd == 'info'}"> --%>
   <c:set var="jexler" value="${jexlers.jexlers[param.jexler]}"/>
+  <p></p>
+  <form method="get">
+    <input type="submit" name="cmd" value="Save as...">
+    <input type="submit" name="cmd" value="Delete...">
+    <input type="text" name="jexler" value="${jexler.id}">
+    <p></p>
+  <textarea id="source" name="source">${jexler.source}</textarea>
+  </form>
+  <script>
+    var editor = CodeMirror.fromTextArea(document.getElementById("source"), {
+      lineNumbers: true,
+      mode: "${jexler.mimeType}",
+      tabMode: "indent",
+      matchBrackets: true,
+      indentUnit: 2
+    });
+  </script>
 
-  <h3>${jexler.id}</h3>
-
-  ${jexler.fileText}
-
-</c:if>
+<%-- </c:if> --%>
 
 </jsp:useBean>
 

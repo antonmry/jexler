@@ -16,7 +16,10 @@
 
 package net.jexler;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -71,6 +74,22 @@ public class Jexler implements Service<Jexler>, EventHandler {
         events = new LinkedBlockingQueue<Event>();
         services = new LinkedList<Service<?>>();
         stopService = new StopService(this, "stop-jexler");
+    }
+
+    /**
+     * Start if marked as autostart.
+     */
+    public Jexler autostart() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+           String line = reader.readLine();
+           if (line != null && line.contains("autostart")) {
+               start();
+           }
+        } catch (IOException e) {
+            String msg = "Error reading file '" + file.getAbsolutePath() + "'";
+            log.error(msg);
+        }
+        return this;
     }
 
     /**

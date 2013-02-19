@@ -1,3 +1,4 @@
+# autostart
 from net.jexler import StopService
 from net.jexler import FileTailerService
 

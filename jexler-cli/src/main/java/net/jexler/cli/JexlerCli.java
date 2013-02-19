@@ -75,7 +75,7 @@ public final class JexlerCli
         }
 
         jexlers = new Jexlers(new File(args[args.length-1]));
-        jexlers.start();
+        jexlers.autostart();
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {

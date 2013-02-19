@@ -46,7 +46,7 @@ public class JexlerContextListener implements ServletContextListener    {
         log.info("ServletContextName: " + servletContext.getServletContextName());
         log.info("webappPath: " + webappPath);
         jexlers = new Jexlers(new File(webappPath, "WEB-INF/jexlers"));
-        jexlers.start();
+        jexlers.autostart();
     }
 
     @Override

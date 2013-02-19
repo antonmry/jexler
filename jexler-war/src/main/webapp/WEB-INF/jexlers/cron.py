@@ -1,3 +1,4 @@
+# autostart
 import time
 from net.jexler import StopService
 from net.jexler import CronService

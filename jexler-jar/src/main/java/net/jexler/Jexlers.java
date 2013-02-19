@@ -97,6 +97,17 @@ public class Jexlers implements Service<Jexlers> {
         }
     }
 
+    /**
+     * Start jexlers that are marked as autostart.
+     */
+    public Jexlers autostart() {
+        for (Jexler jexler : jexlers) {
+            log.info("*** Jexler autostart: " + jexler.getId());
+            jexler.autostart();
+        }
+        return this;
+    }
+
     @Override
     public Jexlers start() {
         for (Jexler jexler : jexlers) {
