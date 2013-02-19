@@ -114,17 +114,17 @@ public class JexlersView {
                     break;
                 case "Save as...":
                     handleSaveAs(request, jexlerId);
-                    jexlers.refresh();
                     break;
                 case "Delete...":
                     handleDelete(request, jexlerId);
-                    jexlers.refresh();
                     break;
                 default:
                     // TODO
                 }
             }
         }
+
+        jexlers.refresh();
 
         // LATER return success/error message?
         return "";
