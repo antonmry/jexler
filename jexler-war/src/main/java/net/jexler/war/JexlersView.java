@@ -112,10 +112,10 @@ public class JexlersView {
                         jexler.start();
                     }
                     break;
-                case "Save as...":
+                case "save":
                     handleSaveAs(request, jexlerId);
                     break;
-                case "Delete...":
+                case "delete":
                     handleDelete(request, jexlerId);
                     break;
                 default:

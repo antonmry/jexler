@@ -47,27 +47,24 @@
 
 </table>
 
-<%-- <c:if test="${param.cmd == 'info'}"> --%>
-  <c:set var="jexler" value="${jexlers.jexlers[param.jexler]}"/>
+<c:set var="jexler" value="${jexlers.jexlers[param.jexler]}"/>
+<p></p>
+<form method="get">
+  <button type="submit" name="cmd" value="save">Save as...</button>
+  <button type="submit" name="cmd" value="delete">Delete...</button>
+  <input type="text" name="jexler" value="${jexler.id}">
   <p></p>
-  <form method="get">
-    <input type="submit" name="cmd" value="Save as...">
-    <input type="submit" name="cmd" value="Delete...">
-    <input type="text" name="jexler" value="${jexler.id}">
-    <p></p>
   <textarea id="source" name="source">${jexler.source}</textarea>
-  </form>
-  <script>
-    var editor = CodeMirror.fromTextArea(document.getElementById("source"), {
-      lineNumbers: true,
-      mode: "${jexler.mimeType}",
-      tabMode: "indent",
-      matchBrackets: true,
-      indentUnit: 2
-    });
-  </script>
-
-<%-- </c:if> --%>
+</form>
+<script>
+  var editor = CodeMirror.fromTextArea(document.getElementById("source"), {
+    lineNumbers: true,
+    mode: "${jexler.mimeType}",
+    tabMode: "indent",
+    matchBrackets: true,
+    indentUnit: 2
+  });
+</script>
 
 </jsp:useBean>
 
