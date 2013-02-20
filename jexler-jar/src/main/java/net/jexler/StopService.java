@@ -32,8 +32,8 @@ public class StopService extends AbstractService<StopService> {
     /**
      * Constructor.
      */
-    public StopService(EventHandler eventHandler, String id) {
-        super(eventHandler, id);
+    public StopService(Jexler jexler, String id) {
+        super(jexler, id);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class StopService extends AbstractService<StopService> {
      * Trigger event.
      */
     public void trigger() {
-        getEventHandler().handle(new Event(this));
+        getJexler().handle(new Event(this));
     }
 
 }

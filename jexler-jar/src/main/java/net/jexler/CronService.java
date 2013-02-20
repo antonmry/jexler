@@ -16,6 +16,9 @@
 
 package net.jexler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import it.sauronsoftware.cron4j.Scheduler;
 
 /**
@@ -36,6 +39,8 @@ public class CronService extends AbstractService<CronService> {
         }
     }
 
+    static final Logger log = LoggerFactory.getLogger(CronService.class);
+
     private CronService thisService;
     private String cron;
     private Scheduler scheduler;
@@ -43,8 +48,8 @@ public class CronService extends AbstractService<CronService> {
     /**
      * Constructor.
      */
-    public CronService(EventHandler eventHandler, String id) {
-        super(eventHandler, id);
+    public CronService(Jexler jexler, String id) {
+        super(jexler, id);
         thisService = this;
     }
 
@@ -62,7 +67,9 @@ public class CronService extends AbstractService<CronService> {
         scheduler.start();
         Thread cronThread = new Thread(new Runnable() {
             public void run() {
-                getEventHandler().handle(new Event(thisService, cron));
+                Thread.currentThread().setName(getJexler().getId() + "|" + getId());
+                log.trace("new cron event: " + cron);
+                getJexler().handle(new Event(thisService, cron));
             }
         });
         cronThread.setDaemon(true);

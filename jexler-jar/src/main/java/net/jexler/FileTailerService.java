@@ -75,8 +75,9 @@ public class FileTailerService extends AbstractService<FileTailerService> {
                 }
             }
             // passed all filters
-            log.info("passed: " + line);
-            getEventHandler().handle(new Event(thisService, line));
+            Thread.currentThread().setName(getJexler().getId() + "|" + getId());
+            log.trace("passed: " + line);
+            getJexler().handle(new Event(thisService, line));
         }
         // LATER handle other tailer listener events?
     }
@@ -89,8 +90,8 @@ public class FileTailerService extends AbstractService<FileTailerService> {
     /**
      * Constructor.
      */
-    public FileTailerService(EventHandler eventHandler, String id) {
-        super(eventHandler, id);
+    public FileTailerService(Jexler jexler, String id) {
+        super(jexler, id);
         thisService = this;
         filters = new LinkedList<Filter>();
     }

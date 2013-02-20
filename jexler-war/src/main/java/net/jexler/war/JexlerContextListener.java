@@ -41,18 +41,19 @@ public class JexlerContextListener implements ServletContextListener    {
 
     @Override
     public void contextInitialized(ServletContextEvent event) {
+        String version = JexlerContextListener.class.getPackage().getImplementationVersion();
+        // no version in eclipse/unit tests (no jar with MANIFEST.MF)
+        log.info("Welcome to jexler. Version: " + (version == null ? "NONE" : version));
         servletContext = event.getServletContext();
         String webappPath = servletContext.getRealPath("/");
-        log.info("ServletContextName: " + servletContext.getServletContextName());
-        log.info("webappPath: " + webappPath);
         jexlers = new Jexlers(new File(webappPath, "WEB-INF/jexlers"));
         jexlers.autostart();
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent event) {
-
         jexlers.stop(getStopTimeout());
+        log.info("Jexler done.");
     }
 
     public static ServletContext getServletContext() {

@@ -82,7 +82,9 @@ public class JexlerView {
     public String getSource() {
         StringBuilder builder = new StringBuilder();
         File file = jexler.getFile();
-
+        if (!file.exists()) {
+            return "";
+        }
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             do {
                 String line = reader.readLine();
@@ -95,7 +97,7 @@ public class JexlerView {
             } while (true);
         } catch (IOException e) {
             String msg = "Error reading file '" + file.getAbsolutePath() + "'";
-            log.error(msg);
+            log.error(msg, e);
             return msg;
         }
 

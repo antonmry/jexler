@@ -102,7 +102,6 @@ public class Jexlers implements Service<Jexlers> {
      */
     public Jexlers autostart() {
         for (Jexler jexler : jexlers) {
-            log.info("*** Jexler autostart: " + jexler.getId());
             jexler.autostart();
         }
         return this;
@@ -111,7 +110,6 @@ public class Jexlers implements Service<Jexlers> {
     @Override
     public Jexlers start() {
         for (Jexler jexler : jexlers) {
-            log.info("*** Jexler start: " + jexler.getId());
             jexler.start();
         }
         return this;
@@ -133,7 +131,6 @@ public class Jexlers implements Service<Jexlers> {
     @Override
     public void stop(long timeout) {
         for (Jexler jexler : jexlers) {
-            log.info("*** Jexler stop: " + jexler.getId());
             jexler.stop(0);
         }
 

@@ -59,7 +59,7 @@ public class ScriptUtil {
 
         String[] split = scriptFile.getName().split("\\.");
         if (split.length < 2) {
-            log.error("Script file '{}' has no extension", scriptFile.getAbsolutePath());
+            throw new RuntimeException("Script file '" + scriptFile.getAbsolutePath() + " has no extension");
         }
         String scriptFileExtension = split[split.length-1];
 

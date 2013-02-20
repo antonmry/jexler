@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author $(whois jexler.net)
  */
-public class Jexler implements Service<Jexler>, EventHandler {
+public class Jexler implements Service<Jexler> {
 
     static final Logger log = LoggerFactory.getLogger(Jexler.class);
 
@@ -105,6 +105,7 @@ public class Jexler implements Service<Jexler>, EventHandler {
      */
     @Override
     public Jexler start() {
+        log.info("*** Jexler start: " + id);
         if (isRunning) {
             return this;
         }
@@ -119,6 +120,7 @@ public class Jexler implements Service<Jexler>, EventHandler {
         variables.put("id", id);
         variables.put("events", events);
         variables.put("services", services);
+        variables.put("log", log);
         scriptThread = new Thread(
                 new Runnable() {
                     public void run() {
@@ -126,17 +128,17 @@ public class Jexler implements Service<Jexler>, EventHandler {
                             ScriptUtil.runScriptThreadSafe(variables, file);
                             // LATER log returned object?
                         } catch (RuntimeException | ScriptException e) {
-                            log.error("Jexler failed to run script {}: {}", id, e);
+                            log.error("Script failed.", e);
                             // HACK for the moment
-                            System.out.println("--- Exception in Jexler Script ---");
+                            System.out.println("--- Script '" + id + "' failed ---");
                             e.printStackTrace();
                         } finally {
                             for (Service<?> service : services) {
                                 try {
                                     service.stop(0);
                                 } catch (RuntimeException e) {
-                                    log.error("Could not stop service {} {}: {}",
-                                            service.getClass(), service.getId(), e);
+                                    log.error("Could not stop service " +
+                                            service.getClass() + " " + service.getId(), e);
                                 }
                             }
                             events.clear();
@@ -146,6 +148,7 @@ public class Jexler implements Service<Jexler>, EventHandler {
                     }
                 });
         scriptThread.setDaemon(true);
+        scriptThread.setName(id);
         scriptThread.start();
 
         return this;
@@ -156,7 +159,10 @@ public class Jexler implements Service<Jexler>, EventHandler {
         return isRunning;
     }
 
-    @Override
+    /**
+     * Handle given event.
+     * @param event
+     */
     public void handle(Event event) {
         events.add(event);
     }
@@ -166,6 +172,7 @@ public class Jexler implements Service<Jexler>, EventHandler {
      */
     @Override
     public void stop(long timeout) {
+        log.info("*** Jexler stop: " + id);
         if (!isRunning) {
             return;
         }
