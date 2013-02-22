@@ -16,9 +16,7 @@
 
 package net.jexler.war;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -26,6 +24,7 @@ import java.net.URLEncoder;
 import javax.activation.MimetypesFileTypeMap;
 
 import net.jexler.Jexler;
+import net.jexler.JexlerUtil;
 import net.jexler.Jexlers;
 
 import org.slf4j.Logger;
@@ -69,39 +68,30 @@ public class JexlerView {
 
     public String getStartStop() {
         if (jexler.isRunning()) {
-            return "<a class='stop' href='?jexler=" + idUrlEncoded + "&cmd=stop'><img src='stop.gif'></a>";
+            return "<a href='?jexler=" + idUrlEncoded + "&cmd=stop'><img src='stop.gif'></a>";
         } else {
-            return "<a class='start' href='?jexler=" + idUrlEncoded + "&cmd=start'><img src='start.gif'></a>";
+            return "<a href='?jexler=" + idUrlEncoded + "&cmd=start'><img src='start.gif'></a>";
         }
     }
 
     public String getRestart() {
-        return "<a class='restart' href='?jexler=" + idUrlEncoded + "&cmd=restart'><img src='restart.gif'></a>";
+        return "<a href='?jexler=" + idUrlEncoded + "&cmd=restart'><img src='restart.gif'></a>";
+    }
+
+    public String getLog() {
+        // TODO ok or error?
+        return "<a href='?jexler=" + idUrlEncoded + "&cmd=log'><img src='ok.gif'></a>";
     }
 
     public String getSource() {
-        StringBuilder builder = new StringBuilder();
         File file = jexler.getFile();
-        if (!file.exists()) {
-            return "";
-        }
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            do {
-                String line = reader.readLine();
-                if (line == null) {
-                    break;
-                }
-                line = line.replace("<", "&lt;");
-                builder.append(line);
-                builder.append("\n");
-            } while (true);
+        try {
+            return JexlerUtil.readTextFile(file);
         } catch (IOException e) {
             String msg = "Error reading file '" + file.getAbsolutePath() + "'";
             log.error(msg, e);
             return msg;
         }
-
-        return builder.toString();
     }
 
     public String getMimeType() {

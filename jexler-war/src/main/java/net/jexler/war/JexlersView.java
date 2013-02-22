@@ -26,7 +26,11 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.jexler.Jexler;
+import net.jexler.JexlerUtil;
 import net.jexler.Jexlers;
 
 /**
@@ -36,12 +40,16 @@ import net.jexler.Jexlers;
  */
 public class JexlersView {
 
+    static final Logger log = LoggerFactory.getLogger(JexlersView.class);
+
     private final Jexlers jexlers;
+    private final File logfile;
     private final long stopTimeout;
 
     public JexlersView() {
         jexlers = JexlerContextListener.getJexlers();
         jexlers.refresh();
+        logfile = JexlerContextListener.getLogfile();
         stopTimeout = JexlerContextListener.getStopTimeout();
     }
 
@@ -63,14 +71,30 @@ public class JexlersView {
             }
         }
         if (isAnyRunning) {
-            return "<a class='stop' href='?cmd=stop'><img src='stop.gif'></a>";
+            return "<a href='?cmd=stop'><img src='stop.gif'></a>";
         } else {
-            return "<a class='start' href='?cmd=start'><img src='start.gif'></a>";
+            return "<a href='?cmd=start'><img src='start.gif'></a>";
         }
     }
 
     public String getRestart() {
-        return "<a class='restart' href='?cmd=restart'><img src='restart.gif'></a>";
+        return "<a href='?cmd=restart'><img src='restart.gif'></a>";
+    }
+
+    public String getLog() {
+        return "<a href='?cmd=log'><img src='log.gif'></a>";
+    }
+
+    public String getLogData() {
+        try {
+            String logData = JexlerUtil.readTextFileReversedLines(logfile);
+            logData = logData.replace("<", "&lt;");
+            return logData;
+        } catch (IOException e) {
+            String msg = "Error reading logfile '" + logfile.getAbsolutePath() + "'";
+            log.error(msg, e);
+            return msg;
+        }
     }
 
     public String handleCommands(HttpServletRequest request) {

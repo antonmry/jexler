@@ -5,6 +5,7 @@
 <html>
 
 <head>
+
 <title>Jexler</title>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="shortcut icon" href="favicon.ico"/>
@@ -34,6 +35,7 @@
 <tr>
 <td>${jexlers.startStop}</td>
 <td>${jexlers.restart}</td>
+<td>${jexlers.log}</td>
 <td><strong>Name</strong></td>
 </tr>
 
@@ -41,6 +43,7 @@
   <tr>
   <td>${jexler.value.startStop}</td>
   <td>${jexler.value.restart}</td>
+  <td>${jexler.value.log}</td>
   <td>${jexler.value.idLink}</td>
   </tr>
 </c:forEach>
@@ -48,23 +51,34 @@
 </table>
 
 <c:set var="jexler" value="${jexlers.jexlers[param.jexler]}"/>
-<p></p>
-<form method="get">
-  <button type="submit" name="cmd" value="save">Save as...</button>
-  <button type="submit" name="cmd" value="delete">Delete...</button>
-  <input type="text" name="jexler" value="${jexler.id}">
-  <p></p>
-  <textarea id="source" name="source">${jexler.source}</textarea>
-</form>
-<script>
-  var editor = CodeMirror.fromTextArea(document.getElementById("source"), {
-    lineNumbers: true,
-    mode: "${jexler.mimeType}",
-    tabMode: "indent",
-    matchBrackets: true,
-    indentUnit: 2
-  });
-</script>
+
+<c:choose>
+  <c:when test="${param.cmd == 'log'}">
+    <pre>
+
+${jexlers.logData}
+    </pre>
+  </c:when>
+  <c:otherwise>
+    <p></p>
+    <form method="get">
+      <button type="submit" name="cmd" value="save">Save as...</button>
+      <button type="submit" name="cmd" value="delete">Delete...</button>
+      <input type="text" name="jexler" value="${jexler.id}">
+      <p></p>
+      <textarea id="source" name="source">${jexler.source}</textarea>
+    </form>
+    <script>
+      var editor = CodeMirror.fromTextArea(document.getElementById("source"), {
+        lineNumbers: true,
+        mode: "${jexler.mimeType}",
+        tabMode: "indent",
+        matchBrackets: true,
+        indentUnit: 2
+      });
+    </script>
+  </c:otherwise>
+</c:choose>
 
 </jsp:useBean>
 

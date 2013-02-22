@@ -17,6 +17,7 @@
 package net.jexler.war;
 
 import java.io.File;
+import java.util.Iterator;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -26,6 +27,10 @@ import net.jexler.Jexlers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.Appender;
 
 /**
  * Jexler context listener.
@@ -38,6 +43,7 @@ public class JexlerContextListener implements ServletContextListener    {
 
     private static ServletContext servletContext;
     private static Jexlers jexlers;
+    private static File logfile;
 
     @Override
     public void contextInitialized(ServletContextEvent event) {
@@ -48,6 +54,23 @@ public class JexlerContextListener implements ServletContextListener    {
         String webappPath = servletContext.getRealPath("/");
         jexlers = new Jexlers(new File(webappPath, "WEB-INF/jexlers"));
         jexlers.autostart();
+
+        // LATER determine logfile more generally or simply configure in web.xml?
+        logfile = null;
+        LoggerContext context = (LoggerContext)LoggerFactory.getILoggerFactory();
+        for (Logger logger : context.getLoggerList()) {
+            if (logger instanceof ch.qos.logback.classic.Logger) {
+                ch.qos.logback.classic.Logger classicLogger = (ch.qos.logback.classic.Logger)logger;
+                for (Iterator<Appender<ILoggingEvent>> index = classicLogger.iteratorForAppenders(); index.hasNext();) {
+                    Appender<ILoggingEvent> appender = index.next();
+                    System.out.println("- " + appender.getClass().getName());
+                    if (appender instanceof ch.qos.logback.core.FileAppender) {
+                        ch.qos.logback.core.FileAppender<?> fileAppender = (ch.qos.logback.core.FileAppender<?>)appender;
+                        logfile = new File(fileAppender.getFile());
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -62,6 +85,10 @@ public class JexlerContextListener implements ServletContextListener    {
 
     public static Jexlers getJexlers() {
         return jexlers;
+    }
+
+    public static File getLogfile() {
+        return logfile;
     }
 
     public static long getStopTimeout() {
