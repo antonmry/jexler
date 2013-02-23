@@ -18,7 +18,7 @@ begin
     puts "stderr = " + result.stderr
 
     #$log.debug "hello"
-    #raise "something goes wrong"
+    raise "something goes wrong"
 
   elsif event.is_a? StopService::Event
     return

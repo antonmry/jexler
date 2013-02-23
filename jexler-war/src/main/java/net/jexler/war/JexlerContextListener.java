@@ -63,7 +63,6 @@ public class JexlerContextListener implements ServletContextListener    {
                 ch.qos.logback.classic.Logger classicLogger = (ch.qos.logback.classic.Logger)logger;
                 for (Iterator<Appender<ILoggingEvent>> index = classicLogger.iteratorForAppenders(); index.hasNext();) {
                     Appender<ILoggingEvent> appender = index.next();
-                    System.out.println("- " + appender.getClass().getName());
                     if (appender instanceof ch.qos.logback.core.FileAppender) {
                         ch.qos.logback.core.FileAppender<?> fileAppender = (ch.qos.logback.core.FileAppender<?>)appender;
                         logfile = new File(fileAppender.getFile());

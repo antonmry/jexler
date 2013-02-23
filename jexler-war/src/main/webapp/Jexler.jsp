@@ -44,27 +44,33 @@
   <td>${jexler.value.startStop}</td>
   <td>${jexler.value.restart}</td>
   <td>${jexler.value.log}</td>
-  <td>${jexler.value.idLink}</td>
+  <td>${jexler.value.jexlerIdLink}</td>
   </tr>
 </c:forEach>
 
 </table>
 
 <c:set var="jexler" value="${jexlers.jexlers[param.jexler]}"/>
+<c:set var="jexler" value="${jexler != null ? jexler : jexlers }"/>
 
 <c:choose>
-  <c:when test="${param.cmd == 'log'}">
-    <pre>
-
-${jexlers.logData}
-    </pre>
+  <c:when test="${param.cmd == 'log' || param.cmd == 'clearissues'}">
+    <p></p>
+    <form action="/" method="post">
+      <button type="submit" name="cmd" value="forget">Forget</button>
+      <button type="submit" name="cmd" value="forgetall">Forget All</button>
+      <input type="hidden" name="jexler" value="${jexler.jexlerId}">
+      ${jexler.issues}
+      <p></p>
+      ${jexler.logfile}
+    </form>
   </c:when>
   <c:otherwise>
     <p></p>
-    <form method="get">
+    <form action="/" method="post">
       <button type="submit" name="cmd" value="save">Save as...</button>
       <button type="submit" name="cmd" value="delete">Delete...</button>
-      <input type="text" name="jexler" value="${jexler.id}">
+      <input type="text" name="jexler" value="${jexler.jexlerId}">
       <p></p>
       <textarea id="source" name="source">${jexler.source}</textarea>
     </form>

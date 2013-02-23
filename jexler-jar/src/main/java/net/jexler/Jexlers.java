@@ -17,6 +17,7 @@
 package net.jexler;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author $(whois jexler.net)
  */
-public class Jexlers implements Service<Jexlers> {
+public class Jexlers implements Service<Jexlers>, IssueTracker {
 
     static final Logger log = LoggerFactory.getLogger(Jexlers.class);
 
@@ -44,6 +45,8 @@ public class Jexlers implements Service<Jexlers> {
     private final Map<String,Jexler> jexlerMap;
     private final List<Jexler> jexlers;
 
+    private List<Issue> issues;
+
     /**
      * Constructor.
      * @param dir directory which contains jexler scripts
@@ -56,9 +59,9 @@ public class Jexlers implements Service<Jexlers> {
         }
         this.dir = dir;
         id = dir.getName();
-
         jexlerMap = new TreeMap<String,Jexler>();
         jexlers = new LinkedList<Jexler>();
+        issues = Collections.synchronizedList(new LinkedList<Issue>());
         refresh();
     }
 
@@ -143,6 +146,24 @@ public class Jexlers implements Service<Jexlers> {
         }
 
     }
+
+    @Override
+    public void trackIssue(Issue issue) {
+        log.error(issue.toString());
+        issues.add(issue);
+    }
+
+    @Override
+    public List<Issue> getIssues() {
+        Collections.sort(issues);
+        return issues;
+    }
+
+    @Override
+    public void forgetIssues() {
+        issues.clear();
+    }
+
 
     @Override
     public String getId() {

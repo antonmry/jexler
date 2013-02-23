@@ -20,6 +20,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 
 /**
  * Jexler utilities.
@@ -64,6 +67,20 @@ public class JexlerUtil {
         return builder.toString();
     }
 
-
+    /**
+     * Get stack trace as a string.
+     * @param t
+     * @return stack trace or null if there is none
+     */
+    public static String getStackTrace(Throwable throwable) {
+        final Writer result = new StringWriter();
+        try {
+            throwable.printStackTrace(new PrintWriter(result));
+        } catch (RuntimeException e) {
+            // no stack trace
+            return null;
+        }
+        return result.toString();
+    }
 
 }

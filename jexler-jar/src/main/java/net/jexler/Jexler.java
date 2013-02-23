@@ -20,6 +20,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,7 +38,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author $(whois jexler.net)
  */
-public class Jexler implements Service<Jexler> {
+public class Jexler implements Service<Jexler>, IssueTracker {
 
     static final Logger log = LoggerFactory.getLogger(Jexler.class);
 
@@ -63,6 +64,8 @@ public class Jexler implements Service<Jexler> {
 
     private StopService stopService;
 
+    private List<Issue> issues;
+
     /**
      * Constructor.
      * @param file file with jexler script
@@ -74,6 +77,7 @@ public class Jexler implements Service<Jexler> {
         events = new LinkedBlockingQueue<Event>();
         services = new LinkedList<Service<?>>();
         stopService = new StopService(this, "stop-jexler");
+        issues = Collections.synchronizedList(new LinkedList<Issue>());
     }
 
     /**
@@ -87,7 +91,7 @@ public class Jexler implements Service<Jexler> {
            }
         } catch (IOException e) {
             String msg = "Error reading file '" + file.getAbsolutePath() + "'";
-            log.error(msg);
+            trackIssue(new Issue(null, msg, e));
         }
         return this;
     }
@@ -128,17 +132,13 @@ public class Jexler implements Service<Jexler> {
                             ScriptUtil.runScriptThreadSafe(variables, file);
                             // LATER log returned object?
                         } catch (RuntimeException | ScriptException e) {
-                            log.error("Script failed.", e);
-                            // HACK for the moment
-                            System.out.println("--- Script '" + id + "' failed ---");
-                            e.printStackTrace();
+                            trackIssue(new Issue(null, "Script failed.", e));
                         } finally {
                             for (Service<?> service : services) {
                                 try {
                                     service.stop(0);
                                 } catch (RuntimeException e) {
-                                    log.error("Could not stop service " +
-                                            service.getClass() + " " + service.getId(), e);
+                                    trackIssue(new Issue(service, "Could not stop service.", e));
                                 }
                             }
                             events.clear();
@@ -186,6 +186,23 @@ public class Jexler implements Service<Jexler> {
             } catch (InterruptedException e) {
             }
         }
+    }
+
+    @Override
+    public void trackIssue(Issue issue) {
+        log.error(issue.toString());
+        issues.add(issue);
+    }
+
+    @Override
+    public List<Issue> getIssues() {
+        Collections.sort(issues);
+        return issues;
+    }
+
+    @Override
+    public void forgetIssues() {
+        issues.clear();
     }
 
     /**

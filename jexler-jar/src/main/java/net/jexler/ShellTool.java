@@ -19,9 +19,6 @@ package net.jexler;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.util.Scanner;
 
 import org.slf4j.Logger;
@@ -88,7 +85,7 @@ public class ShellTool {
         } catch (IOException | InterruptedException | RuntimeException e ) {
             result.rc = -1;
             result.stdout = "";
-            result.stderr = getStackTrace(e);
+            result.stderr = JexlerUtil.getStackTrace(e);
         }
         return result;
     }
@@ -98,13 +95,6 @@ public class ShellTool {
             s.useDelimiter("\\A");
             return s.hasNext() ? s.next() : "";
         }
-    }
-
-    private String getStackTrace(Throwable t) {
-        final Writer result = new StringWriter();
-        final PrintWriter printWriter = new PrintWriter(result);
-        t.printStackTrace(printWriter);
-        return result.toString();
     }
 
 }
