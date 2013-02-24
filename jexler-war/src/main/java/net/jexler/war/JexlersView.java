@@ -42,6 +42,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Jexler(s) view.
  *
+ * TODO refactor/explain (mix of jexler and jexlers in one view)
+ *
  * @author $(whois jexler.net)
  */
 public class JexlersView {
@@ -186,8 +188,9 @@ public class JexlersView {
             return "";
         }
         StringBuilder builder = new StringBuilder();
-        builder.append("<pre>\n");
+        builder.append("<pre>");
         for (Issue issue : issues) {
+            builder.append("\n");
             // LATER: get date format from logback?
             SimpleDateFormat format = new SimpleDateFormat("EEE dd MMM yyyy HH:mm:ss.SSS");
             builder.append("<strong>Date:      </strong>" + format.format(issue.getDate()) + "\n");
@@ -224,8 +227,8 @@ public class JexlersView {
             logData = logData.replace("<", "&lt;");
             builder.append(logData);
         } catch (IOException e) {
-            String msg = "Error reading logfile '" + logfile.getAbsolutePath() + "'";
-            log.error(msg, e);
+            String msg = "Could not read logfile '" + logfile.getAbsolutePath() + "'.";
+            jexlers.trackIssue(new Issue(null, msg, e));
             builder.append(msg);
         }
         builder.append("</pre>\n");
@@ -292,13 +295,6 @@ public class JexlersView {
                     jexlers.trackIssue(new Issue(null, msg, e));
                 }
             }
-            // TEST
-            String msg = "Could not save script file '" + file.getAbsolutePath() + "'";
-            if (targetJexler != null) {
-                targetJexler.trackIssue(new Issue(null, msg, null));
-            } else {
-                jexlers.trackIssue(new Issue(null, msg, null));
-            }
         }
     }
 
@@ -308,10 +304,10 @@ public class JexlersView {
     }
 
     private void handleForget() {
-        if (jexlerId == null) {
-            jexlers.forgetIssues();
+        if (targetJexler != null) {
+            targetJexler.forgetIssues();
         } else {
-            jexler.forgetIssues();
+            jexlers.forgetIssues();
         }
     }
 

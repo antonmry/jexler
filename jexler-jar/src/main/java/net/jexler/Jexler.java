@@ -90,7 +90,7 @@ public class Jexler implements Service<Jexler>, IssueTracker {
                start();
            }
         } catch (IOException e) {
-            String msg = "Error reading file '" + file.getAbsolutePath() + "'";
+            String msg = "Could not read file '" + file.getAbsolutePath() + "'.";
             trackIssue(new Issue(null, msg, e));
         }
         return this;
