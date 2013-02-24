@@ -56,7 +56,7 @@
 <c:choose>
   <c:when test="${param.cmd == 'log' || param.cmd == 'clearissues'}">
     <p></p>
-    <form action="/" method="post">
+    <form action="request.contextPath" method="post">
       <button type="submit" name="cmd" value="forget">Forget</button>
       <button type="submit" name="cmd" value="forgetall">Forget All</button>
       <input type="hidden" name="jexler" value="${jexler.jexlerId}">
@@ -67,7 +67,7 @@
   </c:when>
   <c:otherwise>
     <p></p>
-    <form action="/" method="post">
+    <form action="request.contextPath" method="post">
       <button type="submit" name="cmd" value="save">Save as...</button>
       <button type="submit" name="cmd" value="delete">Delete...</button>
       <input type="text" name="jexler" value="${jexler.jexlerId}">
