@@ -38,6 +38,7 @@ public final class JexlerJetty {
      * @param args command line arguments
      */
     public static void main(final String[] args) throws Exception {
+    	System.setProperty("groovy.grape.report.downloads", "true");
         int port = 8080;
         final Server server = new Server(port);
         WebAppContext wac = new WebAppContext();
