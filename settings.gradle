@@ -1,1 +1,1 @@
-include "jexler-jar", "jexler-cli", "jexler-war"
+include "jexler-core", "jexler"

@@ -35,6 +35,9 @@ while (true) {
     responseBody = httpclient.execute(httpget, responseHandler)
     println(responseBody)
     
+    throw new RuntimeException("Demo RuntimeException")
+
+	/*
     new FTPClient().with {
       connect "some-server.some-domain.com"
       enterLocalPassiveMode()
@@ -43,10 +46,8 @@ while (true) {
       def incomingFile = new File("some-file-to-retrieve.log")
       incomingFile.withOutputStream { ostream -> retrieveFile "some-file-to-retrieve.log", ostream }
       disconnect()
-    }
-    
-    //throw new RuntimeException("Demo RuntimeException")
-    
+    }*/
+        
   } else if (event instanceof StopService.Event) {
     return
   }
