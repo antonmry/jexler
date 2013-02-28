@@ -16,19 +16,18 @@
 
 package net.jexler;
 
+import groovy.lang.Binding;
+import groovy.lang.GroovyShell;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-
-import javax.script.ScriptException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -118,32 +117,36 @@ public class Jexler implements Service<Jexler>, IssueTracker {
 
         services.add(stopService);
 
-        final Map<String,Object> variables = new HashMap<>();
-        variables.put("jexler", this);
-        variables.put("file", file);
-        variables.put("id", id);
-        variables.put("events", events);
-        variables.put("services", services);
-        variables.put("log", log);
+    	Binding binding = new Binding();
+    	binding.setVariable("jexler", this);
+    	binding.setVariable("file", file);
+    	binding.setVariable("id", id);
+    	binding.setVariable("events", events);
+    	binding.setVariable("services", services);
+    	binding.setVariable("log", log);
+    	
+    	final GroovyShell shell = new GroovyShell(binding);
+
         scriptThread = new Thread(
                 new Runnable() {
                     public void run() {
                         try {
-                            ScriptUtil.runScriptThreadSafe(variables, file);
-                            // LATER log returned object?
-                        } catch (RuntimeException | ScriptException e) {
-                            trackIssue(new Issue(null, "Script failed.", e));
+                        	shell.evaluate(file);
+                            // LATER use/log returned object?
+                        	// LATER handle CompilationFailedException specifically?
+                        } catch (RuntimeException | IOException e) {
+                        	trackIssue(new Issue(null, "Script failed.", e));
                         } finally {
-                            for (Service<?> service : services) {
-                                try {
-                                    service.stop(0);
-                                } catch (RuntimeException e) {
-                                    trackIssue(new Issue(service, "Could not stop service.", e));
-                                }
-                            }
-                            events.clear();
-                            services.clear();
-                            isRunning = false;
+                        	for (Service<?> service : services) {
+                        		try {
+                        			service.stop(0);
+                        		} catch (RuntimeException e) {
+                        			trackIssue(new Issue(service, "Could not stop service.", e));
+                        		}
+                        	}
+                        	events.clear();
+                        	services.clear();
+                        	isRunning = false;
                         }
                     }
                 });

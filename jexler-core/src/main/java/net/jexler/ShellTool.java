@@ -17,7 +17,6 @@
 package net.jexler;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
 
@@ -82,7 +81,7 @@ public class ShellTool {
             result.rc = proc.waitFor();
             result.stdout = readInputStream(proc.getInputStream());
             result.stderr = readInputStream(proc.getErrorStream());
-        } catch (IOException | InterruptedException | RuntimeException e ) {
+        } catch (Exception e ) {
             result.rc = -1;
             result.stdout = "";
             result.stderr = JexlerUtil.getStackTrace(e);
