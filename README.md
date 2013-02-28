@@ -3,7 +3,7 @@
 jexler
 ======
 
-Java 7, Eclipse/Gradle, Apache License
+Java 7 (with Groovy), Eclipse/Gradle, Apache License
 
 e.g.
 
@@ -15,7 +15,6 @@ jexler webapp
 
 * run JexlerJetty class in Eclipse
 * => http://localhost:8080/
-* => build/logs/jexler.log
 * or deploy jexler/build/libs/jexler-*.war
 
 
