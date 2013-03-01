@@ -284,7 +284,7 @@ public class JexlersView {
     private void handleSaveAs() {
         String source = request.getParameter("source");
         if (source != null) {
-            File file = new File(jexlers.getDir(), targetJexlerId);
+            File file = new File(jexlers.getDir(), targetJexlerId + ".groovy");
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
                 writer.write(source);
             } catch (IOException e) {
@@ -299,7 +299,7 @@ public class JexlersView {
     }
 
     private void handleDelete() {
-        File file = new File(jexlers.getDir(), targetJexlerId);
+        File file = new File(jexlers.getDir(), targetJexlerId + ".groovy");
         file.delete();
     }
 
