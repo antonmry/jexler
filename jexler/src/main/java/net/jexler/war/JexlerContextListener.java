@@ -39,7 +39,7 @@ import ch.qos.logback.core.Appender;
  */
 public class JexlerContextListener implements ServletContextListener    {
 
-    static final Logger log = LoggerFactory.getLogger(JexlerContextListener.class);
+	static final Logger log = LoggerFactory.getLogger(JexlerContextListener.class);
 
     private static ServletContext servletContext;
     private static Jexlers jexlers;

@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class JexlerJetty {
 
-    static final Logger log = LoggerFactory.getLogger(JexlerJetty.class);
+	static final Logger log = LoggerFactory.getLogger(JexlerJetty.class);
 
     /**
      * Main method.

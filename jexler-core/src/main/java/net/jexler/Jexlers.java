@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Jexlers implements Service<Jexlers>, IssueTracker {
 
-    static final Logger log = LoggerFactory.getLogger(Jexlers.class);
+	static final Logger log = LoggerFactory.getLogger(Jexlers.class);
 
     /** Default timeout for stopping all jexlers in ms. */
     public static long DEFAULT_STOP_TIMEOUT = 5000;
@@ -41,7 +41,7 @@ public class Jexlers implements Service<Jexlers>, IssueTracker {
     private File dir;
     private String id;
 
-    /** key is jexler id (script file name with extension) */
+    /** key is jexler id */
     private final Map<String,Jexler> jexlerMap;
     private final List<Jexler> jexlers;
 
@@ -77,7 +77,7 @@ public class Jexlers implements Service<Jexlers>, IssueTracker {
         for (File file : files) {
             if (file.isFile() && !file.isHidden()) {
                 String id = Jexler.getIdForFile(file);
-                if (!jexlerMap.containsKey(id)) {
+                if (id != null && !jexlerMap.containsKey(id)) {
                     Jexler jexler = new Jexler(file);
                     jexlerMap.put(jexler.getId(), jexler);
                 }
@@ -175,7 +175,7 @@ public class Jexlers implements Service<Jexlers>, IssueTracker {
     }
 
     /**
-     * Get jexlers, sorted by id (script file name).
+     * Get jexlers, sorted by id.
      * @return
      */
     public List<Jexler> getJexlers() {
@@ -183,7 +183,7 @@ public class Jexlers implements Service<Jexlers>, IssueTracker {
     }
 
     /**
-     * Get jexler for given id (script file name).
+     * Get jexler for given id.
      * @param id
      * @return jexler for given id or null if none
      */

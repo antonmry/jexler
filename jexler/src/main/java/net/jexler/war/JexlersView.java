@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
  */
 public class JexlersView {
 
-    static final Logger log = LoggerFactory.getLogger(JexlersView.class);
+	static final Logger log = LoggerFactory.getLogger(JexlersView.class);
 
     private final Jexlers jexlers;
     private final File logfile;

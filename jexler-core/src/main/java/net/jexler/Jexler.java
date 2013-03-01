@@ -71,7 +71,7 @@ public class Jexler implements Service<Jexler>, IssueTracker {
      */
     public Jexler(File file) {
         this.file = file;
-        id = file.getName();
+        id = getIdForFile(file);
         isRunning = false;
         events = new LinkedBlockingQueue<Event>();
         services = new LinkedList<Service<?>>();
@@ -209,7 +209,7 @@ public class Jexler implements Service<Jexler>, IssueTracker {
     }
 
     /**
-     * Get id (script file name with extension).
+     * Get id.
      */
     public String getId() {
         return id;
@@ -221,14 +221,20 @@ public class Jexler implements Service<Jexler>, IssueTracker {
     public File getFile() {
         return file;
     }
-
-    /**
-     * Get id for given file (file name).
-     * @param file file
-     * @return id
+    
+    /** Get jexler id for file or null if not a jexler script
+     * @param file
+     * @return
      */
     public static String getIdForFile(File file) {
-        return file.getName();
+    	String name = file.getName();
+    	String ext = ".groovy";
+    	if (name.endsWith(ext)) {
+    		return name.substring(0, name.length() - ext.length());
+    	} else {
+    		return null;
+    	}
     }
+
 
 }
