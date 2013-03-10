@@ -231,7 +231,8 @@ public class Jexler implements Service<Jexler>, IssueTracker {
     	String name = file.getName();
     	String ext = ".groovy";
     	if (name.endsWith(ext)) {
-    		return name.substring(0, name.length() - ext.length());
+    		return name;
+    		//return name.substring(0, name.length() - ext.length());
     	} else {
     		return null;
     	}
