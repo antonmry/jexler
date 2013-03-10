@@ -9,6 +9,7 @@ while (true) {
   event = events.take();
   if (event instanceof CronService.Event) {
     println ("It is now (groovy): " + new Date() + " (" + event.getServiceId() + ")")
+	println ("Util.hello(): " + Util.hello())
   } else if (event instanceof StopService.Event) {
     return
   }

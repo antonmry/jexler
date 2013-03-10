@@ -126,6 +126,7 @@ public class Jexler implements Service<Jexler>, IssueTracker {
     	binding.setVariable("log", log);
     	
     	final GroovyShell shell = new GroovyShell(binding);
+    	shell.getClassLoader().addClasspath(file.getParent());
 
         scriptThread = new Thread(
                 new Runnable() {
