@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Jexler(s) view.
  *
- * TODO refactor/explain (mix of jexler and jexlers in one view)
+ * LATER refactor/explain (mix of jexler and jexlers in one view)?
  *
  * @author $(whois jexler.net)
  */
@@ -107,7 +107,7 @@ public class JexlersView {
                 handleForgetAll();
                 break;
             default:
-                // TODO
+                // ignore
             }
         }
 
@@ -160,8 +160,7 @@ public class JexlersView {
     }
 
     public String getLog() {
-        // TODO handle better
-        if (jexlerId == null) {
+         if (jexlerId == null) {
             if (jexlers.getIssues().size() == 0) {
                 return "<a href='?cmd=log" + getJexlerParam() + "'><img src='log.gif'></a>";
             } else {
@@ -208,8 +207,7 @@ public class JexlersView {
             builder.append("<strong>Exception: </strong>" + s.replace("<", "&lt;") + "\n");
             s = issue.getStackTrace();
             if (s != null) {
-                // TODO css
-                builder.append(s.isEmpty() ? "" : "<font color='gray' size='-3'>"+ s.replace("<", "&lt;") + "</font>\n");
+                builder.append(s.isEmpty() ? "" : "<span class='trace'>"+ s.replace("<", "&lt;") + "</span>\n");
             }
         }
         builder.append("</pre>");
@@ -284,7 +282,7 @@ public class JexlersView {
     private void handleSaveAs() {
         String source = request.getParameter("source");
         if (source != null) {
-            File file = new File(jexlers.getDir(), targetJexlerId);
+            File file = new File(jexlers.getDir(), Jexler.getFilenameForId(targetJexlerId));
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
                 writer.write(source);
             } catch (IOException e) {
@@ -299,7 +297,7 @@ public class JexlersView {
     }
 
     private void handleDelete() {
-        File file = new File(jexlers.getDir(), targetJexlerId);
+        File file = new File(jexlers.getDir(), Jexler.getFilenameForId(targetJexlerId));
         file.delete();
     }
 

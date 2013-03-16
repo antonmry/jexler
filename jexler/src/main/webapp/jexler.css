@@ -11,5 +11,6 @@ td {
   border-style: solid;
 }
 span.dim {color:gray}
+span.trace {color:gray; font-size:65%;}
 div.ok {color:green}
 div.error {color:red}

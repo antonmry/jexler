@@ -223,20 +223,25 @@ public class Jexler implements Service<Jexler>, IssueTracker {
         return file;
     }
     
-    /** Get jexler id for file or null if not a jexler script
-     * @param file
-     * @return
+    /**
+     * Get jexler id for file or null if not a jexler script
      */
     public static String getIdForFile(File file) {
     	String name = file.getName();
     	String ext = ".groovy";
     	if (name.endsWith(ext)) {
-    		return name;
-    		//return name.substring(0, name.length() - ext.length());
+    		return name.substring(0, name.length() - ext.length());
     	} else {
     		return null;
     	}
     }
-
+    
+    /**
+     * Get file name for jexler id
+     */
+    public static String getFilenameForId(String id) {
+    	String ext = ".groovy";
+    	return id + ext;
+    }
 
 }
