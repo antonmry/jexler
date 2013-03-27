@@ -102,9 +102,6 @@ public class Jexler implements Service<Jexler>, IssueTracker {
      * The jexler remains in the running state until the script exits in
      * any way, after it has been tried to stop all registered services
      * (sensors and actors).
-     *
-     * LATER stash() method to put hanging jexlers away? and maybe try to
-     * stop all services even when the script is still running?
      */
     @Override
     public Jexler start() {
@@ -131,8 +128,6 @@ public class Jexler implements Service<Jexler>, IssueTracker {
                     public void run() {
                         try {
                         	shell.evaluate(file);
-                            // LATER use/log returned object?
-                        	// LATER handle CompilationFailedException specifically?
                         } catch (RuntimeException | IOException e) {
                         	trackIssue(new Issue(null, "Script failed.", e));
                         } finally {

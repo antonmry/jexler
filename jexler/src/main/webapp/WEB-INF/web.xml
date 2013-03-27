@@ -5,6 +5,17 @@
    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
    version="2.5">
 
+  <context-param>
+  	<description>Timeout for stopping a jexler in seconds</description>
+    <param-name>jexler.stop.timeout</param-name>
+    <param-value>10</param-value>
+  </context-param>
+  <context-param>
+  	<description>Edit jexler scripts in web gui or not</description>
+    <param-name>jexler.script.readonly</param-name>
+    <param-value>false</param-value>
+  </context-param>
+
   <servlet>
     <servlet-name>jexler</servlet-name>
     <jsp-file>/Jexler.jsp</jsp-file>

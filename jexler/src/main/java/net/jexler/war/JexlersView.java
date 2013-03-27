@@ -42,8 +42,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Jexler(s) view.
  *
- * LATER refactor/explain (mix of jexler and jexlers in one view)?
- *
  * @author $(whois jexler.net)
  */
 public class JexlersView {
@@ -113,10 +111,13 @@ public class JexlersView {
 
         jexlers.refresh();
 
-        // LATER return success/error message?
         return "";
     }
 
+    public String getVersion() {
+    	return JexlerContextListener.getVersion();
+    }
+    
     public Map<String,JexlersView> getJexlers() {
         List<Jexler> jexlerList = jexlers.getJexlers();
         Map<String,JexlersView> jexlersViews = new LinkedHashMap<>();
@@ -190,7 +191,6 @@ public class JexlersView {
         builder.append("<pre>");
         for (Issue issue : issues) {
             builder.append("\n");
-            // LATER: get date format from logback?
             SimpleDateFormat format = new SimpleDateFormat("EEE dd MMM yyyy HH:mm:ss.SSS");
             builder.append("<strong>Date:      </strong>" + format.format(issue.getDate()) + "\n");
             builder.append("<strong>Message:   </strong>" + issue.getMessage() + "\n");
@@ -262,6 +262,19 @@ public class JexlersView {
         String mimeType = map.getContentType(jexler.getFile());
         return mimeType;
     }
+    
+    public String getScriptReadonly() {
+    	return Boolean.toString(JexlerContextListener.isScriptReadonly());
+    }
+    
+    public String getDisabledIfReadonly() {
+    	boolean readonly = JexlerContextListener.isScriptReadonly();
+    	if (readonly) {
+    		return " disabled='disabled'";
+    	} else {
+    		return "";
+    	}
+    }
 
     private void handleStart() {
         if (targetJexlerId == null) {
@@ -280,6 +293,9 @@ public class JexlersView {
     }
 
     private void handleSaveAs() {
+    	if (JexlerContextListener.isScriptReadonly()) {
+    		return;
+    	}
         String source = request.getParameter("source");
         if (source != null) {
             File file = new File(jexlers.getDir(), Jexler.getFilenameForId(targetJexlerId));
@@ -297,6 +313,9 @@ public class JexlersView {
     }
 
     private void handleDelete() {
+    	if (JexlerContextListener.isScriptReadonly()) {
+    		return;
+    	}
         File file = new File(jexlers.getDir(), Jexler.getFilenameForId(targetJexlerId));
         file.delete();
     }

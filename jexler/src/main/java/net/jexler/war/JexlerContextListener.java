@@ -40,22 +40,26 @@ import ch.qos.logback.core.Appender;
 public class JexlerContextListener implements ServletContextListener    {
 
 	static final Logger log = LoggerFactory.getLogger(JexlerContextListener.class);
-
+	
+	private static String version;
     private static ServletContext servletContext;
     private static Jexlers jexlers;
     private static File logfile;
+    private static long stopTimeout;
+    private static boolean isScriptReadonly;
 
     @Override
     public void contextInitialized(ServletContextEvent event) {
-        String version = JexlerContextListener.class.getPackage().getImplementationVersion();
+        version = JexlerContextListener.class.getPackage().getImplementationVersion();
         // no version in eclipse/unit tests (no jar with MANIFEST.MF)
-        log.info("Welcome to jexler. Version: " + (version == null ? "NONE" : version));
+        version = (version == null) ? "(DEVELOP)" : version;
+        log.info("Welcome to jexler. Version: " + version);
         servletContext = event.getServletContext();
         String webappPath = servletContext.getRealPath("/");
         jexlers = new Jexlers(new File(webappPath, "WEB-INF/jexlers"));
         jexlers.autostart();
 
-        // LATER determine logfile more generally or simply configure in web.xml?
+        // determine log file
         logfile = null;
         LoggerContext context = (LoggerContext)LoggerFactory.getILoggerFactory();
         for (Logger logger : context.getLoggerList()) {
@@ -70,12 +74,28 @@ public class JexlerContextListener implements ServletContextListener    {
                 }
             }
         }
+        log.trace("logfile: '" + logfile.getAbsolutePath() + "'");
+        
+    	String param = servletContext.getInitParameter("jexler.stop.timeout");
+    	stopTimeout = 10000;
+    	if (param != null) {
+    		stopTimeout = 1000 * Long.parseLong(param);
+    	}
+    	log.trace("jexler stop timeout: " + stopTimeout + " ms");
+
+    	param = servletContext.getInitParameter("jexler.script.readonly");
+    	isScriptReadonly = Boolean.parseBoolean(param);
+    	log.trace("jexler scripts read only: " + isScriptReadonly);
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent event) {
         jexlers.stop(getStopTimeout());
         log.info("Jexler done.");
+    }
+
+    public static String getVersion() {
+        return version;
     }
 
     public static ServletContext getServletContext() {
@@ -91,8 +111,11 @@ public class JexlerContextListener implements ServletContextListener    {
     }
 
     public static long getStopTimeout() {
-        // LATER configurable?
-        return 10000;
+    	return stopTimeout;
+    }
+    
+    public static boolean isScriptReadonly() {
+    	return isScriptReadonly;
     }
 
 }

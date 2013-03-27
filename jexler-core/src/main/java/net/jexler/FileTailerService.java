@@ -79,7 +79,6 @@ public class FileTailerService extends AbstractService<FileTailerService> {
             log.trace("passed: " + line);
             getJexler().handle(new Event(thisService, line));
         }
-        // LATER handle other tailer listener events?
     }
 
     private FileTailerService thisService;
@@ -120,7 +119,6 @@ public class FileTailerService extends AbstractService<FileTailerService> {
             return this;
         }
         TailerListener listener = new MyTailerListener();
-        // LATER use configurable delay? use option to tail from end of file?
         tailer = Tailer.create(file, listener);
         setRunning(true);
         return this;

@@ -24,9 +24,9 @@
 
 <body>
 
-<a href='.'><img src='jexler.jpg'></a>
-
 <jsp:useBean id="jexlers" class="net.jexler.war.JexlersView">
+
+<a href='.'><img src='jexler.jpg' title='${jexlers.version}'></a>
 
 <%= jexlers.handleCommands(request) %>
 
@@ -68,9 +68,9 @@
   <c:otherwise>
     <p></p>
     <form action="request.contextPath" method="post">
-      <button type="submit" name="cmd" value="save">Save as...</button>
-      <button type="submit" name="cmd" value="delete">Delete...</button>
-      <input type="text" name="jexler" value="${jexler.jexlerId}">
+      <button type="submit" name="cmd" value="save" ${jexlers.disabledIfReadonly}>Save as...</button>
+      <button type="submit" name="cmd" value="delete" ${jexlers.disabledIfReadonly}>Delete...</button>
+      <input type="text" name="jexler" value="${jexler.jexlerId}" ${jexlers.disabledIfReadonly}>
       <p></p>
       <textarea id="source" name="source">${jexler.source}</textarea>
     </form>
@@ -80,7 +80,8 @@
         mode: "${jexler.mimeType}",
         tabMode: "indent",
         matchBrackets: true,
-        indentUnit: 2
+        indentUnit: 2,
+        readOnly: ${jexlers.scriptReadonly}
       });
     </script>
   </c:otherwise>

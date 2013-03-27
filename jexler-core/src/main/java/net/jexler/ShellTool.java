@@ -64,7 +64,6 @@ public class ShellTool {
      * @param environment
      */
     public ShellTool setEnvironment(String[] environment) {
-        // LATER use map, allow to add to system environment
         this.environment = environment;
         return this;
     }
