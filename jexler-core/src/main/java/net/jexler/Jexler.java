@@ -98,7 +98,7 @@ public class Jexler implements Service<Jexler>, IssueTracker {
     /**
      * Immediately sets isRunning to true, then tries to start the script.
      * Typically returns before the jexler script has started or completed
-     * to initialize all its services.
+     * to initialize all of its services.
      * The jexler remains in the running state until the script exits in
      * any way, after it has been tried to stop all registered services
      * (sensors and actors).
@@ -119,8 +119,6 @@ public class Jexler implements Service<Jexler>, IssueTracker {
 
     	Binding binding = new Binding();
     	binding.setVariable("jexler", this);
-    	binding.setVariable("file", file);
-    	binding.setVariable("id", id);
     	binding.setVariable("events", events);
     	binding.setVariable("services", services);
     	binding.setVariable("log", log);
