@@ -9,11 +9,8 @@ dependencies {
   runtime files('src/main/resources')
 }
 
-jar {
+war {
   manifest {
     attributes 'Implementation-Title': 'jexler', 'Implementation-Version': version
   }
-}
-
-war {
 }
