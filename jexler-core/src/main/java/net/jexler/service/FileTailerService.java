@@ -14,13 +14,17 @@
    limitations under the License.
 */
 
-package net.jexler;
+package net.jexler.service;
 
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import net.jexler.AbstractEvent;
+import net.jexler.AbstractService;
+import net.jexler.Jexler;
 
 import org.apache.commons.io.input.Tailer;
 import org.apache.commons.io.input.TailerListener;

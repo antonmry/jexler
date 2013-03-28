@@ -14,7 +14,11 @@
    limitations under the License.
 */
 
-package net.jexler;
+package net.jexler.service;
+
+import net.jexler.AbstractEvent;
+import net.jexler.AbstractService;
+import net.jexler.Jexler;
 
 /**
  * Formal service for stopping a jexler, triggered externally.

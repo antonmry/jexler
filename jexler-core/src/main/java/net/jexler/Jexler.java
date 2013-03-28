@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import net.jexler.service.StopService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -111,7 +113,7 @@ public class Jexler implements Service<Jexler>, IssueTracker {
         }
 
         isRunning = true;
-
+        forgetIssues();
         services.add(stopService);
 
     	Binding binding = new Binding();
@@ -214,6 +216,13 @@ public class Jexler implements Service<Jexler>, IssueTracker {
       */
     public File getFile() {
         return file;
+    }
+    
+    /**
+     * Get directory that contains script file.
+      */
+    public File getDir() {
+        return file.getParentFile();
     }
     
     /**

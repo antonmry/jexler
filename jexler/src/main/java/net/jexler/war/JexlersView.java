@@ -139,15 +139,15 @@ public class JexlersView {
 
     public String getStartStop() {
         boolean isRunning = false;
-        if (jexlerId != null) {
-            isRunning = jexler.isRunning();
-        } else {
+        if (jexlerId == null) {
             for (Jexler jexler : jexlers.getJexlers()) {
                 if (jexler.isRunning()) {
                     isRunning = true;
                     break;
                 }
             }
+        } else {
+            isRunning = jexler.isRunning();
         }
         if (isRunning) {
             return "<a href='?cmd=stop" + getJexlerParam() + "'><img src='stop.gif'></a>";
@@ -231,9 +231,6 @@ public class JexlersView {
         }
         builder.append("</pre>\n");
         String s = builder.toString();
-        if (jexlerId != null) {
-            s = s.replace(jexlerId, "<strong>" + jexlerId + "</strong>");
-        }
         return s;
     }
 

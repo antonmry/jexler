@@ -14,11 +14,13 @@
    limitations under the License.
 */
 
-package net.jexler;
+package net.jexler.tool;
 
 import java.io.File;
 import java.io.InputStream;
 import java.util.Scanner;
+
+import net.jexler.JexlerUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
