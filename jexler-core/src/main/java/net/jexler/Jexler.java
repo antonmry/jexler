@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import net.jexler.service.StopService;
@@ -39,9 +38,35 @@ import org.slf4j.LoggerFactory;
  *
  * @author $(whois jexler.net)
  */
-public class Jexler implements Service<Jexler>, IssueTracker {
+public class Jexler implements Service, IssueTracker {
 
     static final Logger log = LoggerFactory.getLogger(Jexler.class);
+    
+    @SuppressWarnings("serial")
+    public class Services extends LinkedList<Service> {
+        public void start() {
+        	for (Service service : this) {
+        		service.start();
+        	}
+        }
+    }
+    
+    @SuppressWarnings("serial")
+	public class Events extends LinkedBlockingQueue<Event> {
+    	@Override
+    	public Event take() {
+    		runState = RunState.IDLE;
+    		do {
+    			try {
+    				Event event = super.take();
+    				runState = RunState.BUSY_EVENT;
+    				return event;
+    			} catch (InterruptedException e) {
+    				trackIssue(new Issue(Jexler.this, "Could not take event.", e));
+    			}
+    		} while (true);
+    	}
+    }
 
     private File file;
     private String id;
@@ -52,8 +77,9 @@ public class Jexler implements Service<Jexler>, IssueTracker {
      * stop all sensors and actors.
      */
     private volatile boolean isRunning;
+    private volatile RunState runState;
     private Thread scriptThread;
-    private BlockingQueue<Event> events;
+    private Events events;
 
     /**
      * List of services.
@@ -61,7 +87,7 @@ public class Jexler implements Service<Jexler>, IssueTracker {
      * services are automatically stopped by jexler after the script exits
      * (regularly or throws).
      */
-    private List<Service<?>> services;
+    private Services services;
 
     private StopService stopService;
 
@@ -75,8 +101,9 @@ public class Jexler implements Service<Jexler>, IssueTracker {
         this.file = file;
         id = getIdForFile(file);
         isRunning = false;
-        events = new LinkedBlockingQueue<Event>();
-        services = new LinkedList<Service<?>>();
+        runState = RunState.OFF;
+        events = new Events();
+        services = new Services();
         stopService = new StopService(this, "stop-jexler");
         issues = Collections.synchronizedList(new LinkedList<Issue>());
     }
@@ -96,7 +123,7 @@ public class Jexler implements Service<Jexler>, IssueTracker {
         }
         return this;
     }
-
+    
     /**
      * Immediately sets isRunning to true, then tries to start the script.
      * Typically returns before the jexler script has started or completed
@@ -106,13 +133,14 @@ public class Jexler implements Service<Jexler>, IssueTracker {
      * (sensors and actors).
      */
     @Override
-    public Jexler start() {
+    public void start() {
         log.info("*** Jexler start: " + id);
         if (isRunning) {
-            return this;
+            return;
         }
 
         isRunning = true;
+        runState = RunState.BUSY_STARTING;
         forgetIssues();
         services.add(stopService);
 
@@ -133,9 +161,10 @@ public class Jexler implements Service<Jexler>, IssueTracker {
                         } catch (RuntimeException | IOException e) {
                         	trackIssue(new Issue(null, "Script failed.", e));
                         } finally {
-                        	for (Service<?> service : services) {
+                        	runState = RunState.BUSY_STOPPING;
+                        	for (Service service : services) {
                         		try {
-                        			service.stop(0);
+                        			service.stop();
                         		} catch (RuntimeException e) {
                         			trackIssue(new Issue(service, "Could not stop service.", e));
                         		}
@@ -143,19 +172,39 @@ public class Jexler implements Service<Jexler>, IssueTracker {
                         	events.clear();
                         	services.clear();
                         	isRunning = false;
+                        	runState = RunState.OFF;
                         }
                     }
                 });
         scriptThread.setDaemon(true);
         scriptThread.setName(id);
         scriptThread.start();
-
-        return this;
     }
-
+    
     @Override
     public boolean isRunning() {
         return isRunning;
+    }
+    
+    public RunState getRunState() {
+    	return this.runState;
+    }
+    
+    public void waitForStartup(long timeout) {
+    	long t0 = System.currentTimeMillis();
+    	do {
+    		if (runState != RunState.BUSY_STARTING) {
+    			return;
+    		}
+    		if (System.currentTimeMillis() - t0 > timeout) {
+    			trackIssue(new Issue(this, "Timeout waiting for jexler startup.", null));
+    			return;
+    		}
+    		try {
+    			Thread.sleep(10);
+    		} catch (InterruptedException e) {
+    		}
+    	} while (true);
     }
 
     /**
@@ -167,24 +216,37 @@ public class Jexler implements Service<Jexler>, IssueTracker {
     }
 
     /**
-     * Sends stop event to jexler and waits until stopped or timeout.
+     * Sends stop event to jexler.
      */
     @Override
-    public void stop(long timeout) {
+    public void stop() {
         log.info("*** Jexler stop: " + id);
         if (!isRunning) {
             return;
         }
-
         stopService.trigger();
-
-        long t0 = System.currentTimeMillis();
-        while (isRunning && System.currentTimeMillis() - t0 < timeout) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-            }
-        }
+    }
+    
+    public void waitForShutdown(long timeout) {
+       	long t0 = System.currentTimeMillis();
+    	do {
+    		if (runState == RunState.OFF) {
+    			return;
+    		}
+    		if (System.currentTimeMillis() - t0 > timeout) {
+    			trackIssue(new Issue(this, "Timeout waiting for jexler shutdown.", null));
+    			return;
+    		}
+    		try {
+    			Thread.sleep(10);
+    		} catch (InterruptedException e) {
+    		}
+    	} while (true);
+    }
+      
+    @Override
+    public void addTo(List<Service> services) {
+    	services.add(this);
     }
 
     @Override

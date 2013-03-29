@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author $(whois jexler.net)
  */
-public class FileTailerService extends AbstractService<FileTailerService> {
+public class FileTailerService extends AbstractService {
 
     public class Event extends AbstractEvent {
         private String line;
@@ -118,18 +118,17 @@ public class FileTailerService extends AbstractService<FileTailerService> {
     }
 
     @Override
-    public FileTailerService start() {
+    public void start() {
         if (isRunning()) {
-            return this;
+            return;
         }
         TailerListener listener = new MyTailerListener();
         tailer = Tailer.create(file, listener);
         setRunning(true);
-        return this;
     }
 
     @Override
-    public void stop(long timeout) {
+    public void stop() {
         if (!isRunning()) {
             return;
         }

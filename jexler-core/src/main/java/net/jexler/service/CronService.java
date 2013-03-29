@@ -30,7 +30,7 @@ import it.sauronsoftware.cron4j.Scheduler;
  *
  * @author $(whois jexler.net)
  */
-public class CronService extends AbstractService<CronService> {
+public class CronService extends AbstractService {
 
     public static class Event extends AbstractEvent {
         private String cron;
@@ -63,9 +63,9 @@ public class CronService extends AbstractService<CronService> {
     }
 
     @Override
-    public CronService start() {
+    public void start() {
         if (isRunning()) {
-            return this;
+            return;
         }
         scheduler = new Scheduler();
         scheduler.start();
@@ -79,11 +79,10 @@ public class CronService extends AbstractService<CronService> {
         cronThread.setDaemon(true);
         scheduler.schedule(cron, cronThread);
         setRunning(true);
-        return this;
     }
 
     @Override
-    public void stop(long timeout) {
+    public void stop() {
         if (!isRunning()) {
             return;
         }

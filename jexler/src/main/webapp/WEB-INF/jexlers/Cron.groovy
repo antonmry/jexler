@@ -2,8 +2,9 @@
 import net.jexler.service.StopService
 import net.jexler.service.CronService
 
-services.add(new CronService(jexler, "every-minute").setCron("* * * * *").start())
-services.add(new CronService(jexler, "every-two-minutes").setCron("*/2 * * * *").start())
+services.add(new CronService(jexler, "every-minute").setCron("* * * * *"))
+services.add(new CronService(jexler, "every-two-minutes").setCron("*/2 * * * *"))
+services.start()
 
 while (true) {
   event = events.take();

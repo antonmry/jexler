@@ -16,22 +16,28 @@
 
 package net.jexler;
 
+
 /**
- * Interface for an event (sent to a jexler).
+ * State of a running jexler.
  *
  * @author $(whois jexler.net)
  */
-public interface Event {
+public enum RunState  {
 
-    /**
-     * Get service that sent the event.
-     * @return sensor
-     */
-    Service getService();
-
-    /**
-     * Convenience method for getting service id.
-     * @return id
-     */
-    String getServiceId();
+	OFF ("off"),
+	BUSY_STARTING("busy (starting)"),
+	IDLE("idle"),
+	BUSY_EVENT("busy (event)"),
+	BUSY_STOPPING("busy (stopping)");
+	
+	private String info;
+	
+	RunState(String info) {
+		this.info = info;
+	}
+	
+	public String getInfo() {
+		return info;
+	}
 }
+

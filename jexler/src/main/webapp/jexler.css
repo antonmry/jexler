@@ -10,7 +10,8 @@ td {
   padding: 2px;
   border-style: solid;
 }
+td.busy {background-color:#DFD}
 span.dim {color:gray}
-span.trace {color:gray; font-size:65%;}
+span.trace {color:gray; font-size:65%}
 div.ok {color:green}
 div.error {color:red}

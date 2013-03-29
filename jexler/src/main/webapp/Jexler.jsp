@@ -44,7 +44,7 @@
   <td>${jexler.value.startStop}</td>
   <td>${jexler.value.restart}</td>
   <td>${jexler.value.log}</td>
-  <td>${jexler.value.jexlerIdLink}</td>
+  <td title='${jexler.value.runStateInfo}'>${jexler.value.jexlerIdLink}</td>
   </tr>
 </c:forEach>
 
@@ -81,7 +81,7 @@
         tabMode: "indent",
         matchBrackets: true,
         indentUnit: 2,
-        readOnly: ${jexlers.scriptReadonly}
+        readOnly: ${!jexlers.allowScriptEdit}
       });
     </script>
   </c:otherwise>

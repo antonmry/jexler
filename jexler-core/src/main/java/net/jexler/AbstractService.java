@@ -16,13 +16,15 @@
 
 package net.jexler;
 
+import java.util.List;
+
 
 /**
  * Abstract base service.
  *
  * @author $(whois jexler.net)
  */
-public abstract class AbstractService<T> implements Service<T> {
+public abstract class AbstractService implements Service {
 
     private final Jexler jexler;
     private final String id;
@@ -49,6 +51,11 @@ public abstract class AbstractService<T> implements Service<T> {
     @Override
     public String getId() {
         return id;
+    }
+    
+    @Override
+    public void addTo(List<Service> services) {
+    	services.add(this);
     }
 
     protected Jexler getJexler() {

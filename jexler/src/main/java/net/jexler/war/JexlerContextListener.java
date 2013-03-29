@@ -46,8 +46,10 @@ public class JexlerContextListener implements ServletContextListener    {
     private static ServletContext servletContext;
     private static Jexlers jexlers;
     private static File logfile;
+    
+    private static long startTimeout;
     private static long stopTimeout;
-    private static boolean isScriptReadonly;
+    private static boolean allowScriptEdit;
 
     @Override
     public void contextInitialized(ServletContextEvent event) {
@@ -77,21 +79,28 @@ public class JexlerContextListener implements ServletContextListener    {
         }
         log.trace("logfile: '" + logfile.getAbsolutePath() + "'");
         
-    	String param = servletContext.getInitParameter("jexler.stop.timeout");
+    	String param = servletContext.getInitParameter("jexler.start.timeout");
+    	startTimeout = 10000;
+    	if (param != null) {
+    		startTimeout = Long.parseLong(param);
+    	}
+    	log.trace("jexler start timeout: " + startTimeout + " ms");
+        
+    	param = servletContext.getInitParameter("jexler.stop.timeout");
     	stopTimeout = 10000;
     	if (param != null) {
-    		stopTimeout = 1000 * Long.parseLong(param);
+    		stopTimeout = Long.parseLong(param);
     	}
     	log.trace("jexler stop timeout: " + stopTimeout + " ms");
 
-    	param = servletContext.getInitParameter("jexler.script.readonly");
-    	isScriptReadonly = Boolean.parseBoolean(param);
-    	log.trace("jexler scripts read only: " + isScriptReadonly);
+    	param = servletContext.getInitParameter("jexler.security.script.allowEdit");
+    	allowScriptEdit = Boolean.parseBoolean(param);
+    	log.trace("allow to edit jexler scripts: " + allowScriptEdit);
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent event) {
-        jexlers.stop(getStopTimeout());
+        jexlers.stop();
         log.info("Jexler done.");
     }
 
@@ -111,12 +120,16 @@ public class JexlerContextListener implements ServletContextListener    {
         return logfile;
     }
 
+    public static long getStartTimeout() {
+    	return startTimeout;
+    }
+
     public static long getStopTimeout() {
     	return stopTimeout;
     }
     
-    public static boolean isScriptReadonly() {
-    	return isScriptReadonly;
+    public static boolean allowScriptEdit() {
+    	return allowScriptEdit;
     }
 
 }

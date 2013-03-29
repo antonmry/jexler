@@ -16,36 +16,44 @@
 
 package net.jexler;
 
+import java.util.List;
+
 /**
  * Interface for a service.
  * Implemented by Jexler(s) themselves and various services used by jexlers.
  *
  * @author $(whois jexler.net)
  */
-public interface Service<T> {
+public interface Service {
 
     /**
-     * Start service.
-     * @return this (for chaining calls)
+     * Initiates service start.
      */
-    T start();
+    void start();
 
     /**
      * Get info if service is running or not.
+     * Service is running between sometime during start()
+     * and sometime during or after stop().
      * @return
      */
     boolean isRunning();
 
     /**
-     * Initiates service stop and waits until service has stopped
-     * or timeout occurs.
+     * Initiates service stop.
      */
-    void stop(long timeout);
+    void stop();
 
     /**
      * Get id.
      * @return id
      */
     String getId();
+    
+    /**
+     * Add to list of services.
+     * @param services
+     */
+    void addTo(List<Service> services);
 
 }

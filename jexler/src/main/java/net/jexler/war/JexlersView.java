@@ -34,6 +34,7 @@ import net.jexler.Issue;
 import net.jexler.Jexler;
 import net.jexler.JexlerUtil;
 import net.jexler.Jexlers;
+import net.jexler.RunState;
 import net.jexler.Service;
 
 import org.slf4j.Logger;
@@ -50,6 +51,7 @@ public class JexlersView {
 
     private final Jexlers jexlers;
     private final File logfile;
+    private final long startTimeout;
     private final long stopTimeout;
 
     private String jexlerId;
@@ -62,6 +64,7 @@ public class JexlersView {
     public JexlersView() {
         jexlers = JexlerContextListener.getJexlers();
         logfile = JexlerContextListener.getLogfile();
+        startTimeout = JexlerContextListener.getStartTimeout();
         stopTimeout = JexlerContextListener.getStopTimeout();
     }
 
@@ -134,7 +137,16 @@ public class JexlersView {
     }
 
     public String getJexlerIdLink() {
-        return "<a href='?cmd=info" + getJexlerParam() + "'>" + jexlerId + "</a>";
+    	// italic if busy ("running")
+    	RunState runState = jexler.getRunState();
+    	boolean isBusy = (runState == RunState.BUSY_STARTING
+    			|| runState == RunState.BUSY_EVENT
+    			|| runState == RunState.BUSY_STOPPING);
+    	String id = jexlerId;
+    	if (isBusy) {
+    		id = "<em>" + id + "</em>";
+    	}
+        return "<a href='?cmd=info" + getJexlerParam() + "'>" + id + "</a>";
     }
 
     public String getStartStop() {
@@ -158,6 +170,10 @@ public class JexlersView {
 
     public String getRestart() {
         return "<a href='?cmd=restart" + getJexlerParam() + "'><img src='restart.gif'></a>";
+    }
+    
+    public String getRunStateInfo() {
+    	return jexler.getRunState().getInfo();
     }
 
     public String getLog() {
@@ -194,7 +210,7 @@ public class JexlersView {
             SimpleDateFormat format = new SimpleDateFormat("EEE dd MMM yyyy HH:mm:ss.SSS");
             builder.append("<strong>Date:      </strong>" + format.format(issue.getDate()) + "\n");
             builder.append("<strong>Message:   </strong>" + issue.getMessage() + "\n");
-            Service<?> service = issue.getService();
+            Service service = issue.getService();
             String s;
             if (service == null) {
                 s = "-";
@@ -260,37 +276,41 @@ public class JexlersView {
         return mimeType;
     }
     
-    public String getScriptReadonly() {
-    	return Boolean.toString(JexlerContextListener.isScriptReadonly());
+    public String getAllowScriptEdit() {
+    	return Boolean.toString(JexlerContextListener.allowScriptEdit());
     }
     
     public String getDisabledIfReadonly() {
-    	boolean readonly = JexlerContextListener.isScriptReadonly();
-    	if (readonly) {
-    		return " disabled='disabled'";
-    	} else {
+    	boolean allowEdit = JexlerContextListener.allowScriptEdit();
+    	if (allowEdit) {
     		return "";
+    	} else {
+    		return " disabled='disabled'";
     	}
     }
 
     private void handleStart() {
         if (targetJexlerId == null) {
             jexlers.start();
+            jexlers.waitForStartup(startTimeout);
         } else if (targetJexler != null) {
             targetJexler.start();
+            targetJexler.waitForStartup(startTimeout);
         }
     }
 
     private void handleStop() {
         if (targetJexlerId == null) {
-            jexlers.stop(stopTimeout);
+            jexlers.stop();
+            jexlers.waitForShutdown(stopTimeout);
         } else if (targetJexler != null) {
-            targetJexler.stop(stopTimeout);
+            targetJexler.stop();
+            targetJexler.waitForShutdown(stopTimeout);
         }
     }
 
     private void handleSaveAs() {
-    	if (JexlerContextListener.isScriptReadonly()) {
+    	if (!JexlerContextListener.allowScriptEdit()) {
     		return;
     	}
         String source = request.getParameter("source");
@@ -310,7 +330,7 @@ public class JexlersView {
     }
 
     private void handleDelete() {
-    	if (JexlerContextListener.isScriptReadonly()) {
+    	if (!JexlerContextListener.allowScriptEdit()) {
     		return;
     	}
         File file = new File(jexlers.getDir(), Jexler.getFilenameForId(targetJexlerId));

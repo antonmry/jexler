@@ -24,17 +24,17 @@ package net.jexler;
  */
 public abstract class AbstractEvent implements Event {
 
-    private Service<?> service;
+    private Service service;
 
     /**
      * Constructor.
      */
-    public AbstractEvent(Service<?> service) {
+    public AbstractEvent(Service service) {
         this.service = service;
     }
 
     @Override
-    public Service<?> getService() {
+    public Service getService() {
         return service;
     }
 

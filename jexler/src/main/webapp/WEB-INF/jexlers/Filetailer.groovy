@@ -3,11 +3,12 @@ import net.jexler.Jexler;
 import net.jexler.service.StopService
 import net.jexler.service.FileTailerService
 
-s = new FileTailerService(jexler, "selftailer")
-s.setFile(jexler.file.absolutePath)
-s.addFilterPattern("^import")
-s.start()
-services.add(s)
+new FileTailerService(jexler, "selftailer").with {
+  setFile jexler.file.absolutePath
+  addFilterPattern "^import"
+  addTo services
+}
+services.start()
 
 while (true) {
   event = events.take();

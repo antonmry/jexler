@@ -25,7 +25,7 @@ import net.jexler.Jexler;
  *
  * @author $(whois jexler.net)
  */
-public class StopService extends AbstractService<StopService> {
+public class StopService extends AbstractService {
 
     public static class Event extends AbstractEvent {
         public Event(StopService service) {
@@ -41,13 +41,12 @@ public class StopService extends AbstractService<StopService> {
     }
 
     @Override
-    public StopService start() {
+    public void start() {
         setRunning(true);
-        return this;
     }
 
     @Override
-    public void stop(long timeout) {
+    public void stop() {
         setRunning(false);
     }
 

@@ -26,12 +26,12 @@ import java.util.Date;
 public class Issue implements Comparable<Issue> {
 
     private Date date;
-    private Service<?> service;
+    private Service service;
     private String message;
     private Exception exception;
     private String stackTrace;
 
-    public Issue(Service<?> service, String message, Exception exception) {
+    public Issue(Service service, String message, Exception exception) {
         date = new Date();
         this.service = service;
         this.message = message;
@@ -45,7 +45,7 @@ public class Issue implements Comparable<Issue> {
         return date;
     }
 
-    public Service<?> getService() {
+    public Service getService() {
         return service;
     }
 

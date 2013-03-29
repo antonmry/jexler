@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author $(whois jexler.net)
  */
-public class Jexlers implements Service<Jexlers>, IssueTracker {
+public class Jexlers implements Service, IssueTracker {
 
 	static final Logger log = LoggerFactory.getLogger(Jexlers.class);
 
@@ -111,11 +111,34 @@ public class Jexlers implements Service<Jexlers>, IssueTracker {
     }
 
     @Override
-    public Jexlers start() {
+    public void start() {
         for (Jexler jexler : jexlers) {
             jexler.start();
         }
-        return this;
+    }
+
+    public void waitForStartup(long timeout) {
+        long t0 = System.currentTimeMillis();
+        do {
+        	boolean hasTimedOut = (System.currentTimeMillis() - t0 > timeout);
+        	boolean isNoneBusyStarting = true;
+        	for (Jexler jexler : jexlers) {
+        		RunState runState = jexler.getRunState();
+                if (runState == RunState.BUSY_STARTING) {
+                	if (hasTimedOut) {
+                		trackIssue(new Issue(jexler, "Timeout waiting for jexler startup", null));
+                	}
+                	isNoneBusyStarting = false;
+                }
+            }
+        	if (isNoneBusyStarting || hasTimedOut) {
+        		return;
+        	}
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+            }
+        } while (true);
     }
 
     /**
@@ -132,19 +155,39 @@ public class Jexlers implements Service<Jexlers>, IssueTracker {
     }
 
     @Override
-    public void stop(long timeout) {
+    public void stop() {
         for (Jexler jexler : jexlers) {
-            jexler.stop(0);
+            jexler.stop();
         }
+    }
 
+    public void waitForShutdown(long timeout) {
         long t0 = System.currentTimeMillis();
-        while (isRunning() && System.currentTimeMillis() - t0 < timeout) {
+        do {
+        	boolean hasTimedOut = (System.currentTimeMillis() - t0 > timeout);
+        	boolean areAllOff = true;
+        	for (Jexler jexler : jexlers) {
+        		RunState runState = jexler.getRunState();
+                if (runState != RunState.OFF) {
+                	if (hasTimedOut) {
+                		trackIssue(new Issue(jexler, "Timeout waiting for jexler shutdown", null));
+                	}
+                	areAllOff = false;
+                }
+            }
+        	if (areAllOff || hasTimedOut) {
+        		return;
+        	}
             try {
-                Thread.sleep(100);
+                Thread.sleep(10);
             } catch (InterruptedException e) {
             }
-        }
+        } while (true);
+    }
 
+    @Override
+    public void addTo(List<Service> services) {
+    	services.add(this);
     }
 
     @Override
