@@ -3,7 +3,7 @@
 jexler releases
 ===============
 
-Version 0.1.1 (early prototype, 2012-03-28)
+Version 0.1.2 (early prototype, 2012-03-29)
 -------------------------------------------
 
 * Some refinements after using it a bit.
