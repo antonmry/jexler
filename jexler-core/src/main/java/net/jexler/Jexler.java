@@ -68,7 +68,8 @@ public class Jexler implements Service, IssueTracker {
     	}
     }
 
-    private File file;
+    private final File file;
+    private final Jexlers jexlers;
     private String id;
 
     /**
@@ -96,9 +97,11 @@ public class Jexler implements Service, IssueTracker {
     /**
      * Constructor.
      * @param file file with jexler script
+     * @param jexlers
      */
-    public Jexler(File file) {
+    public Jexler(File file, Jexlers jexlers) {
         this.file = file;
+        this.jexlers = jexlers;
         id = getIdForFile(file);
         isRunning = false;
         runState = RunState.OFF;
@@ -107,21 +110,19 @@ public class Jexler implements Service, IssueTracker {
         stopService = new StopService(this, "stop-jexler");
         issues = Collections.synchronizedList(new LinkedList<Issue>());
     }
-
-    /**
-     * Start if marked as autostart.
-     */
-    public Jexler autostart() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-           String line = reader.readLine();
-           if (line != null && line.contains("autostart")) {
-               start();
-           }
-        } catch (IOException e) {
-            String msg = "Could not read file '" + file.getAbsolutePath() + "'.";
-            trackIssue(new Issue(null, msg, e));
-        }
-        return this;
+    
+    public boolean isAutostart() {
+    	if (!file.exists()) {
+    		return false;
+    	}
+    	try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+    		String line = reader.readLine();
+    		return line != null && line.contains("autostart");
+    	} catch (IOException e) {
+    		String msg = "Could not read file '" + file.getAbsolutePath() + "'.";
+    		trackIssue(new Issue(null, msg, e));
+    		return false;
+    	}
     }
     
     /**
@@ -146,6 +147,7 @@ public class Jexler implements Service, IssueTracker {
 
     	Binding binding = new Binding();
     	binding.setVariable("jexler", this);
+    	binding.setVariable("jexlers", jexlers);
     	binding.setVariable("events", events);
     	binding.setVariable("services", services);
     	binding.setVariable("log", log);

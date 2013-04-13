@@ -35,9 +35,6 @@ public class Jexlers implements Service, IssueTracker {
 
 	static final Logger log = LoggerFactory.getLogger(Jexlers.class);
 
-    /** Default timeout for stopping all jexlers in ms. */
-    public static long DEFAULT_STOP_TIMEOUT = 5000;
-
     private File dir;
     private String id;
 
@@ -78,7 +75,7 @@ public class Jexlers implements Service, IssueTracker {
             if (file.isFile() && !file.isHidden()) {
                 String id = Jexler.getIdForFile(file);
                 if (id != null && !jexlerMap.containsKey(id)) {
-                    Jexler jexler = new Jexler(file);
+                    Jexler jexler = new Jexler(file, this);
                     jexlerMap.put(jexler.getId(), jexler);
                 }
             }
@@ -103,11 +100,12 @@ public class Jexlers implements Service, IssueTracker {
     /**
      * Start jexlers that are marked as autostart.
      */
-    public Jexlers autostart() {
+    public void autostart() {
         for (Jexler jexler : jexlers) {
-            jexler.autostart();
+            if (jexler.isAutostart()) {
+            	jexler.start();
+            }
         }
-        return this;
     }
 
     @Override
