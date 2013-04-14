@@ -69,7 +69,7 @@ public class JexlerUtil {
 
     /**
      * Get stack trace as a string.
-     * @param t
+     * @param throwable
      * @return stack trace or null if there is none
      */
     public static String getStackTrace(Throwable throwable) {

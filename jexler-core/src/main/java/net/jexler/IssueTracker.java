@@ -33,7 +33,7 @@ public interface IssueTracker {
 
     /**
      * Get remembered issues, most recent issue first.
-     * @return
+     * @return issues
      */
     List<Issue> getIssues();
 

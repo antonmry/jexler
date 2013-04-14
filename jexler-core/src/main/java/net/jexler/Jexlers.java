@@ -212,7 +212,7 @@ public class Jexlers implements Service, IssueTracker {
 
     /**
      * Get jexlers, sorted by id.
-     * @return
+     * @return jexlers
      */
     public List<Jexler> getJexlers() {
         return jexlers;

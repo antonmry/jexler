@@ -34,7 +34,7 @@ public interface Service {
      * Get info if service is running or not.
      * Service is running between sometime during start()
      * and sometime during or after stop().
-     * @return
+     * @return true or false
      */
     boolean isRunning();
 
