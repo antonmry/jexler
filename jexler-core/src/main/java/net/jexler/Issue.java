@@ -78,11 +78,11 @@ public class Issue implements Comparable<Issue> {
         StringBuilder builder = new StringBuilder();
         builder.append("Issue: [message='");
         builder.append(message);
-        builder.append("','service=");
+        builder.append("',service='");
         builder.append(service != null ? service.getClass().getName() + ":" + service.getId() : null);
-        builder.append("','exception=");
-        builder.append(exception != null ? exception.toString() : null);
-        builder.append("','stackTrace=");
+        builder.append("',exception='");
+        builder.append(exception != null ? exception.toString().replace("\n", "\\n") : null);
+        builder.append("',stackTrace='");
         builder.append(stackTrace != null ? stackTrace.replace("\n", "\\n") : null);
         builder.append(']');
         return builder.toString();
