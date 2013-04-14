@@ -1,16 +1,20 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<%@ page contentType="text/html;charset=UTF-8" %>
+
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="java.util.*" %>
 <%@ page import="net.jexler.war.*" %>
 
-<html>
+<htmL>
 
 <head>
 
 <title>Jexler</title>
-<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
 <link rel="shortcut icon" href="favicon.ico"/>
 <link rel="icon" href="favicon.ico"/>
-<link rel="stylesheet" type="text/css" href="jexler.css"/>
+<link rel="stylesheet" href="jexler.css"/>
 
 <script src="cm/lib/codemirror.js"></script>
 <link rel="stylesheet" href="cm/lib/codemirror.css">
@@ -26,7 +30,7 @@
 
 <jsp:useBean id="jexlers" class="net.jexler.war.JexlersView">
 
-<a href='.'><img src='jexler.jpg' title='${jexlers.version}'></a>
+<a href="."><img src="jexler.jpg" title="${jexlers.version}"></a>
 
 <%= jexlers.handleCommands(request) %>
 
@@ -44,7 +48,7 @@
   <td>${jexler.value.startStop}</td>
   <td>${jexler.value.restart}</td>
   <td>${jexler.value.log}</td>
-  <td title='${jexler.value.runStateInfo}'>${jexler.value.jexlerIdLink}</td>
+  <td title="${jexler.value.runStateInfo}">${jexler.value.jexlerIdLink}</td>
   </tr>
 </c:forEach>
 

@@ -70,7 +70,7 @@ public class Jexler implements Service, IssueTracker {
 
     private final File file;
     private final Jexlers jexlers;
-    private String id;
+    private final String id;
 
     /**
      * Set to true just at the beginning of start() and set to false
@@ -80,7 +80,8 @@ public class Jexler implements Service, IssueTracker {
     private volatile boolean isRunning;
     private volatile RunState runState;
     private Thread scriptThread;
-    private Events events;
+    
+    private final Events events;
 
     /**
      * List of services.
@@ -88,11 +89,11 @@ public class Jexler implements Service, IssueTracker {
      * services are automatically stopped by jexler after the script exits
      * (regularly or throws).
      */
-    private Services services;
+    private final Services services;
 
-    private StopService stopService;
+    private final StopService stopService;
 
-    private List<Issue> issues;
+    private final List<Issue> issues;
 
     /**
      * Constructor.
@@ -244,11 +245,6 @@ public class Jexler implements Service, IssueTracker {
     		} catch (InterruptedException e) {
     		}
     	} while (true);
-    }
-      
-    @Override
-    public void addTo(List<Service> services) {
-    	services.add(this);
     }
 
     @Override

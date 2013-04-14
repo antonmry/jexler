@@ -30,7 +30,7 @@ public enum RunState  {
 	BUSY_EVENT("busy (event)"),
 	BUSY_STOPPING("busy (stopping)");
 	
-	private String info;
+	private final String info;
 	
 	RunState(String info) {
 		this.info = info;

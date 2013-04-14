@@ -16,7 +16,6 @@
 
 package net.jexler;
 
-import java.util.List;
 
 
 /**
@@ -51,11 +50,6 @@ public abstract class AbstractService implements Service {
     @Override
     public String getId() {
         return id;
-    }
-    
-    @Override
-    public void addTo(List<Service> services) {
-    	services.add(this);
     }
 
     protected Jexler getJexler() {

@@ -25,11 +25,11 @@ import java.util.Date;
  */
 public class Issue implements Comparable<Issue> {
 
-    private Date date;
-    private Service service;
-    private String message;
-    private Exception exception;
-    private String stackTrace;
+    private final Date date;
+    private final Service service;
+    private final String message;
+    private final Exception exception;
+    private final String stackTrace;
 
     public Issue(Service service, String message, Exception exception) {
         date = new Date();
@@ -38,6 +38,8 @@ public class Issue implements Comparable<Issue> {
         this.exception = exception;
         if (exception != null) {
             stackTrace = JexlerUtil.getStackTrace(exception);
+        } else {
+        	stackTrace = null;
         }
     }
 

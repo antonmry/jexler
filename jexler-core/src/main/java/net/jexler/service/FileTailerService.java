@@ -85,9 +85,9 @@ public class FileTailerService extends AbstractService {
         }
     }
 
-    private FileTailerService thisService;
+    private final FileTailerService thisService;
     private File file;
-    private List<Filter> filters;
+    private final List<Filter> filters;
     private Tailer tailer;
 
     /**

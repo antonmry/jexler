@@ -35,14 +35,14 @@ public class Jexlers implements Service, IssueTracker {
 
 	static final Logger log = LoggerFactory.getLogger(Jexlers.class);
 
-    private File dir;
-    private String id;
+    private final File dir;
+    private final String id;
 
     /** key is jexler id */
     private final Map<String,Jexler> jexlerMap;
     private final List<Jexler> jexlers;
 
-    private List<Issue> issues;
+    private final List<Issue> issues;
 
     /**
      * Constructor.
@@ -181,11 +181,6 @@ public class Jexlers implements Service, IssueTracker {
             } catch (InterruptedException e) {
             }
         } while (true);
-    }
-
-    @Override
-    public void addTo(List<Service> services) {
-    	services.add(this);
     }
 
     @Override

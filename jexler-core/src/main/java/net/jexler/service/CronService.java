@@ -45,7 +45,7 @@ public class CronService extends AbstractService {
 
     static final Logger log = LoggerFactory.getLogger(CronService.class);
 
-    private CronService thisService;
+    private final CronService thisService;
     private String cron;
     private Scheduler scheduler;
 

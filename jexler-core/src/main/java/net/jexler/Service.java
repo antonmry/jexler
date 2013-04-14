@@ -16,11 +16,10 @@
 
 package net.jexler;
 
-import java.util.List;
 
 /**
  * Interface for a service.
- * Implemented by Jexler(s) themselves and various services used by jexlers.
+ * Implemented by Jexler(s) themselves and services used by jexlers.
  *
  * @author $(whois jexler.net)
  */
@@ -49,11 +48,5 @@ public interface Service {
      * @return id
      */
     String getId();
-    
-    /**
-     * Add to list of services.
-     * @param services
-     */
-    void addTo(List<Service> services);
 
 }

@@ -91,7 +91,8 @@ public class ShellTool {
     }
 
     private String readInputStream(InputStream is) {
-        try (Scanner s = new Scanner(is, "UTF-8")) {
+    	// (assume default platform character encoding)
+        try (Scanner s = new Scanner(is)) {
             s.useDelimiter("\\A");
             return s.hasNext() ? s.next() : "";
         }

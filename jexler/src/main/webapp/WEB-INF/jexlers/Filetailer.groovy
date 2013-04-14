@@ -6,7 +6,7 @@ import net.jexler.service.FileTailerService
 new FileTailerService(jexler, "selftailer").with {
   setFile jexler.file.absolutePath
   addFilterPattern "^import"
-  addTo services
+  services.add(it)
 }
 services.start()
 
