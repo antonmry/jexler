@@ -189,7 +189,7 @@ public class Jexler implements Service, IssueTracker {
     }
     
     public RunState getRunState() {
-    	return this.runState;
+    	return runState;
     }
     
     public void waitForStartup(long timeout) {
