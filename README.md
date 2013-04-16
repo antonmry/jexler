@@ -1,4 +1,4 @@
-![jexler logo](http://www.jexler.net/jexler.jpg)
+[![jexler logo](http://www.jexler.net/jexler.jpg)](http:www.jexler.net/)
 
 jexler
 ======
@@ -17,4 +17,7 @@ jexler webapp
 * => http://localhost:8080/
 * or deploy jexler/build/libs/jexler-*.war
 
+Downloads
+---------
 
+* [jexler-1.0.0.war](http://www.jexler.net/jexler-1.0.0.war) (Java 7, Servlet 2.5 (Tomcat 6 or later))
