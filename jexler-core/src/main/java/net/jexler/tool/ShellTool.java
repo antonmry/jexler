@@ -90,6 +90,26 @@ public class ShellTool {
         return result;
     }
 
+    /**
+     * Run shell command and return result.
+     * @param cmdarray array containing the command and its arguments
+     * @return result
+     */
+    public Result run(String[] cmdarray) {
+        Result result = new Result();
+        try {
+            Process proc = Runtime.getRuntime().exec(cmdarray, environment, workingDirectory);
+            result.rc = proc.waitFor();
+            result.stdout = readInputStream(proc.getInputStream());
+            result.stderr = readInputStream(proc.getErrorStream());
+        } catch (Exception e ) {
+            result.rc = -1;
+            result.stdout = "";
+            result.stderr = JexlerUtil.getStackTrace(e);
+        }
+        return result;
+    }
+
     private String readInputStream(InputStream is) {
     	// (assume default platform character encoding)
         try (Scanner s = new Scanner(is)) {
