@@ -19,8 +19,6 @@ package net.jexler.impl;
 import net.jexler.Jexler;
 import net.jexler.Service;
 
-
-
 /**
  * Abstract base service.
  *

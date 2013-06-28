@@ -19,26 +19,22 @@ package net.jexler.impl;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import net.jexler.Event;
 import net.jexler.Issue;
 import net.jexler.Jexler;
 import net.jexler.Jexlers;
+import net.jexler.Metadata;
 import net.jexler.RunState;
 import net.jexler.Service;
 import net.jexler.service.StopService;
 
-import org.codehaus.groovy.control.CompilationFailedException;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import org.slf4j.Logger;
@@ -90,7 +86,6 @@ public class JexlerImpl implements Jexler {
      */
     private volatile boolean isRunning;
     private volatile RunState runState;
-    private volatile Map<String,Object> flags;
     private Thread scriptThread;
     
     private final Events events;
@@ -106,6 +101,8 @@ public class JexlerImpl implements Jexler {
     private final StopService stopService;
 
     private final List<Issue> issues;
+    
+    private final Metadata metadata;
 
     /**
      * Constructor.
@@ -118,11 +115,11 @@ public class JexlerImpl implements Jexler {
         id = JexlerUtil.getJexlerIdForFile(file);
         isRunning = false;
         runState = RunState.OFF;
-        flags = null;
         events = new Events();
         services = new Services();
         stopService = new StopService(this, "stop-jexler");
         issues = Collections.synchronizedList(new LinkedList<Issue>());
+        metadata = new Metadata(this);
     }
 
     /**
@@ -153,7 +150,7 @@ public class JexlerImpl implements Jexler {
     	binding.setVariable("log", log);
     	
     	ImportCustomizer importCustomizer = new ImportCustomizer();
-    	if (getMetaFlag("autoimport", true)) {
+    	if (metadata.isOn("autoimport", true)) {
     		importCustomizer.addStarImports(
     				"net.jexler", "net.jexler.service", "net.jexler.tool");
     	}
@@ -183,7 +180,6 @@ public class JexlerImpl implements Jexler {
                         	services.clear();
                         	isRunning = false;
                         	runState = RunState.OFF;
-                        	flags = null;
                         }
                     }
                 });
@@ -288,61 +284,8 @@ public class JexlerImpl implements Jexler {
     }
     
     @Override
-    public boolean getMetaFlag(String name, boolean def) {
-    	if (flags == null) {
-    		flags = readFlags();
-    	}
-    	Object o = flags.get(name);
-    	if (o == null || !(o instanceof Boolean)) {
-    		return def;
-    	} else {
-    		return (Boolean)o;
-    	}
-     }
-
-    /**
-     * Read flags from first line of jexler script.
-     * @return flags, never null, empty if could not obtain
-     */
-    private Map<String,Object> readFlags() {
-    	Map<String,Object> newMap = new HashMap<>();
-    	
-    	if (!file.exists()) {
-    		 return newMap;
-    	}
-    	
-    	try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-    		// read first line of jexler script
-    		String line = reader.readLine();
-    		if (line == null) {
-    			return newMap;
-    		}
-    		
-    		// evaluate first line as groovy script
-    		Binding binding = new Binding();
-            GroovyShell shell = new GroovyShell(binding);
-            Object o;
-        	try {
-        		o = shell.evaluate(line);
-        	} catch (CompilationFailedException e) {
-        		return newMap;
-        	}
-        	
-        	// evaluated to a map?
-        	if (o == null || !(o instanceof Map)) {
-        		return newMap;
-        	}
-        	
-        	// return flags
-        	@SuppressWarnings("unchecked")
-			Map<String,Object> map = (Map<String,Object>)o;
-         	return map;
-         	
-    	} catch (IOException e) {
-    		String msg = "Could not read file '" + file.getAbsolutePath() + "'.";
-    		trackIssue(new Issue(null, msg, e));
-    		return newMap;
-    	}
+    public Metadata getMetadata() {
+    	return metadata;
     }
 
 }

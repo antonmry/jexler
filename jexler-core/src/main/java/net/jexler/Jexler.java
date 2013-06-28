@@ -51,18 +51,10 @@ public interface Jexler extends Service, IssueTracker {
      * Get directory that contains script file.
       */
     File getDir();
-
-	/**
-	 * Get meta flag set in first line of jexler script.
-	 * 
-	 * All flags are read at the first call to this method and are reset
-	 * each time after stopping the jexler (to ensure flags do not change
-	 * while a jexler is running but its file is changed or deleted).
-	 * 
-	 * @param name variable name
-	 * @param def default value to use if variable is not defined
-	 * @return
-	 */
-    public boolean getMetaFlag(String name, boolean def);
+    
+    /**
+     * Get metadata (stored as part of jexler file).
+     */
+    Metadata getMetadata();
 
 }

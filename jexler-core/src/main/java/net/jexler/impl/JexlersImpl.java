@@ -106,7 +106,7 @@ public class JexlersImpl implements Jexlers {
     @Override
     public void autostart() {
         for (Jexler jexler : jexlers) {
-            if (jexler.getMetaFlag("autostart", false)) {
+            if (jexler.getMetadata().isOn("autostart", false)) {
             	jexler.start();
             }
         }
