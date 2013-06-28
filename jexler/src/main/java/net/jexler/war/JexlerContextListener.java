@@ -25,6 +25,7 @@ import javax.servlet.ServletContextListener;
 
 import net.jexler.Jexler;
 import net.jexler.Jexlers;
+import net.jexler.impl.JexlersImpl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +60,7 @@ public class JexlerContextListener implements ServletContextListener    {
         log.info("Welcome to jexler. Version: " + version);
         servletContext = event.getServletContext();
         String webappPath = servletContext.getRealPath("/");
-        jexlers = new Jexlers(new File(webappPath, "WEB-INF/jexlers"));
+        jexlers = new JexlersImpl(new File(webappPath, "WEB-INF/jexlers"));
         jexlers.autostart();
 
         // determine log file

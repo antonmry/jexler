@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-package net.jexler;
+package net.jexler.impl;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -81,6 +81,27 @@ public class JexlerUtil {
             return null;
         }
         return result.toString();
+    }
+    
+    /**
+     * Get jexler id for file or null if not a jexler script
+     */
+    public static String getJexlerIdForFile(File file) {
+    	String name = file.getName();
+    	String ext = ".groovy";
+    	if (name.endsWith(ext)) {
+    		return name.substring(0, name.length() - ext.length());
+    	} else {
+    		return null;
+    	}
+    }
+    
+    /**
+     * Get file name for jexler id
+     */
+    public static String getFilenameForJexlerId(String id) {
+    	String ext = ".groovy";
+    	return id + ext;
     }
 
 }

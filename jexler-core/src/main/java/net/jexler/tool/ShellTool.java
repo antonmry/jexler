@@ -20,7 +20,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.Scanner;
 
-import net.jexler.JexlerUtil;
+import net.jexler.impl.JexlerUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

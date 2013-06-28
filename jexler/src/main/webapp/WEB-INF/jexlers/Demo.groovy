@@ -1,13 +1,7 @@
-// autostart
+[ "autostart" : true ]
+
 import groovy.grape.Grape
-
-@Grab(group='org.apache.httpcomponents', module='httpclient', version='4.2.3')
-//@Grab('org.apache.httpcomponents:httpclient:4.2.3')
-
-import net.jexler.service.StopService
-import net.jexler.service.CronService
-import net.jexler.tool.ShellTool
-
+@Grab('org.apache.httpcomponents:httpclient:4.2.3')
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.impl.client.BasicResponseHandler
 import org.apache.http.impl.client.DefaultHttpClient

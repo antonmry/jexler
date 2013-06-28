@@ -1,7 +1,7 @@
-// autostart
-import net.jexler.Jexler;
-import net.jexler.service.StopService
+[ "autostart" : true, "autoimport" : false ]
+
 import net.jexler.service.FileTailerService
+import net.jexler.service.StopService
 
 new FileTailerService(jexler, "selftailer").with {
   setFile jexler.file.absolutePath

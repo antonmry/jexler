@@ -18,6 +18,8 @@ package net.jexler;
 
 import java.util.Date;
 
+import net.jexler.impl.JexlerUtil;
+
 /**
  * Issue.
  *

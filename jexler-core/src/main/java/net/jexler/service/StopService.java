@@ -16,9 +16,9 @@
 
 package net.jexler.service;
 
-import net.jexler.AbstractEvent;
-import net.jexler.AbstractService;
 import net.jexler.Jexler;
+import net.jexler.impl.AbstractEvent;
+import net.jexler.impl.AbstractService;
 
 /**
  * Formal service for stopping a jexler, triggered externally.

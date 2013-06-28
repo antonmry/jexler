@@ -32,10 +32,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import net.jexler.Issue;
 import net.jexler.Jexler;
-import net.jexler.JexlerUtil;
 import net.jexler.Jexlers;
 import net.jexler.RunState;
 import net.jexler.Service;
+import net.jexler.impl.JexlerUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -315,7 +315,7 @@ public class JexlersView {
     	}
         String source = request.getParameter("source");
         if (source != null) {
-            File file = new File(jexlers.getDir(), Jexler.getFilenameForId(targetJexlerId));
+            File file = new File(jexlers.getDir(), JexlerUtil.getFilenameForJexlerId(targetJexlerId));
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
                 writer.write(source);
             } catch (IOException e) {
@@ -333,7 +333,7 @@ public class JexlersView {
     	if (!JexlerContextListener.allowScriptEdit()) {
     		return;
     	}
-        File file = new File(jexlers.getDir(), Jexler.getFilenameForId(targetJexlerId));
+        File file = new File(jexlers.getDir(), JexlerUtil.getFilenameForJexlerId(targetJexlerId));
         file.delete();
     }
 

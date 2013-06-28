@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.jexler.AbstractEvent;
-import net.jexler.AbstractService;
 import net.jexler.Jexler;
+import net.jexler.impl.AbstractEvent;
+import net.jexler.impl.AbstractService;
 
 import org.apache.commons.io.input.Tailer;
 import org.apache.commons.io.input.TailerListener;

@@ -29,9 +29,4 @@ public interface Event {
      */
     Service getService();
 
-    /**
-     * Convenience method for getting service id.
-     * @return id
-     */
-    String getServiceId();
 }

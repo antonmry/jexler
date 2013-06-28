@@ -14,46 +14,31 @@
    limitations under the License.
 */
 
-package net.jexler;
+package net.jexler.impl;
 
+import net.jexler.Event;
+import net.jexler.Service;
 
 
 /**
- * Abstract base service.
+ * Abstract base event.
  *
  * @author $(whois jexler.net)
  */
-public abstract class AbstractService implements Service {
+public abstract class AbstractEvent implements Event {
 
-    private final Jexler jexler;
-    private final String id;
-    private volatile boolean isRunning;
+    private Service service;
 
     /**
      * Constructor.
      */
-    public AbstractService(Jexler jexler, String id) {
-        this.jexler = jexler;
-        this.id = id;
-        isRunning = false;
-    }
-
-    public void setRunning(boolean isRunning) {
-        this.isRunning = isRunning;
+    public AbstractEvent(Service service) {
+        this.service = service;
     }
 
     @Override
-    public boolean isRunning() {
-        return isRunning;
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    protected Jexler getJexler() {
-        return jexler;
+    public Service getService() {
+        return service;
     }
 
 }
