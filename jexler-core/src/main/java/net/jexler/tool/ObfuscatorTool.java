@@ -60,23 +60,26 @@ public class ObfuscatorTool {
     /**
      * Set custom key.
      */
-    public void setKey(String algorithm, byte[] keyBytes) {
+    public ObfuscatorTool setKey(String algorithm, byte[] keyBytes) {
     	key = new SecretKeySpec(keyBytes, algorithm);
+    	return this;
     }
     
     /**
      * Set custom iv.
      */
-    public void setIv(byte[] ivBytes) {
+    public ObfuscatorTool setIv(byte[] ivBytes) {
     	iv = new IvParameterSpec(ivBytes);
+    	return this;
     }
     
     /**
      * Set custom cipher
      */
-    public void setCipher(String transformation)
+    public ObfuscatorTool setCipher(String transformation)
     		throws NoSuchAlgorithmException, NoSuchPaddingException {
     	cipher = Cipher.getInstance(transformation);
+    	return this;
     }
     
     /**
