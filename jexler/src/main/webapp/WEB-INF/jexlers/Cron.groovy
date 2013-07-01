@@ -7,8 +7,8 @@ services.start()
 while (true) {
   event = events.take();
   if (event instanceof CronService.Event) {
-    println ("It is now: " + new Date() + " (" + event.service.id + ")")
-	println ("Util.hello(): " + Util.hello())
+    log.trace("It is now: " + new Date() + " (" + event.service.id + ")")
+	log.trace("Util.hello(): " + Util.hello())
   } else if (event instanceof StopService.Event) {
     return
   }

@@ -33,15 +33,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * File tailer service.
+ * File tail service.
  *
  * @author $(whois jexler.net)
  */
-public class FileTailerService extends AbstractService {
+public class FileTailService extends AbstractService {
 
     public class Event extends AbstractEvent {
         private String line;
-        public Event(FileTailerService service, String line) {
+        public Event(FileTailService service, String line) {
             super(service);
             this.line = line;
         }
@@ -50,7 +50,7 @@ public class FileTailerService extends AbstractService {
         }
     }
 
-    static final Logger log = LoggerFactory.getLogger(FileTailerService.class);
+    static final Logger log = LoggerFactory.getLogger(FileTailService.class);
 
     private static class Filter {
         private final boolean passesIfFound;
@@ -85,7 +85,7 @@ public class FileTailerService extends AbstractService {
         }
     }
 
-    private final FileTailerService thisService;
+    private final FileTailService thisService;
     private File file;
     private final List<Filter> filters;
     private Tailer tailer;
@@ -93,7 +93,7 @@ public class FileTailerService extends AbstractService {
     /**
      * Constructor.
      */
-    public FileTailerService(Jexler jexler, String id) {
+    public FileTailService(Jexler jexler, String id) {
         super(jexler, id);
         thisService = this;
         filters = new LinkedList<Filter>();
@@ -101,10 +101,10 @@ public class FileTailerService extends AbstractService {
 
     /**
      * Set file to tail by name.
-     * @param fileName name of file to tail
+     * @param file file to tail
      */
-    public FileTailerService setFile(String fileName) {
-        this.file = new File(fileName);
+    public FileTailService setFile(File file) {
+        this.file = file;
         return this;
     }
 
@@ -112,7 +112,7 @@ public class FileTailerService extends AbstractService {
      * Add pattern to filter.
      * @param pattern regex pattern string, prefix with "!" to negate
      */
-    public FileTailerService addFilterPattern(String pattern) {
+    public FileTailService addFilterPattern(String pattern) {
         filters.add(new Filter(pattern));
         return this;
     }

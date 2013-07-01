@@ -25,7 +25,7 @@ while (true) {
     httpget = new HttpGet("http://www.google.com/")
     responseHandler = new BasicResponseHandler()
     responseBody = httpclient.execute(httpget, responseHandler)
-    println(responseBody)
+    log.trace(responseBody)
     
     Thread.sleep(30000)
     
