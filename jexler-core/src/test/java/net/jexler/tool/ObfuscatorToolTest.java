@@ -1,4 +1,3 @@
-package net.jexler.tool;
 /*
    Copyright 2012-now $(whois jexler.net)
 
@@ -15,18 +14,24 @@ package net.jexler.tool;
    limitations under the License.
 */
 
+package net.jexler.tool;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import javax.xml.bind.DatatypeConverter;
 
+import net.jexler.FastTests;
+
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * Tests the respective class.
  *
  * @author $(whois jexler.net)
  */
+@Category(FastTests.class)
 public final class ObfuscatorToolTest
 {
 

@@ -1,4 +1,3 @@
-package net.jexler;
 /*
    Copyright 2012-now $(whois jexler.net)
 
@@ -15,18 +14,11 @@ package net.jexler;
    limitations under the License.
 */
 
-import org.junit.Test;
+package net.jexler;
 
 /**
- * Tests the respective class.
+ * Very slow (~minutes) JUnit tests category marker.
  *
  * @author $(whois jexler.net)
  */
-public final class JexlerTest
-{
-    @Test
-    public void testAny() throws Exception {
-        // ...
-    }
-
-}
+public interface VerySlowTests {}

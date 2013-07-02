@@ -17,8 +17,9 @@
 package net.jexler.service;
 
 import java.io.File;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.jexler.Event;
 import net.jexler.Issue;
@@ -33,12 +34,12 @@ import net.jexler.RunState;
  */
 public class ServiceMockJexler implements Jexler {
 	
-	private List<Event> events;
+	private Queue<Event> events;
 	private File jexlerFile;
 	private File jexlerDir;
 	
 	public ServiceMockJexler() {
-		events = new LinkedList<Event>();
+		events = new ConcurrentLinkedQueue<Event>();
 	}
 
 	@Override
@@ -81,13 +82,30 @@ public class ServiceMockJexler implements Jexler {
 		throw new RuntimeException("Not implemented");
 	}
 	
-	public void clearEvents() {
-		events.clear();
-	}
-
 	@Override
 	public void handle(Event event) {
 		events.add(event);
+	}
+
+	/**
+	 * Wait at most timeout ms for event, return
+	 * event if got one in time, null otherwise.
+	 */
+	public Event takeEvent(long timeout) {
+    	long t0 = System.currentTimeMillis();
+    	do {
+    		Event event = events.poll();
+    		if (event != null) {
+    			return event;
+    		}
+    		if (System.currentTimeMillis() - t0 > timeout) {
+    			return null;
+    		}
+    		try {
+    			Thread.sleep(10);
+    		} catch (InterruptedException e) {
+    		}
+    	} while (true);
 	}
 
 	@Override
@@ -97,7 +115,7 @@ public class ServiceMockJexler implements Jexler {
 
 	@Override
 	public String getId() {
-		throw new RuntimeException("Not implemented");
+		return "mockId";
 	}
 
 	
