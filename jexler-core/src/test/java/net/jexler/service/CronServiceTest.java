@@ -37,12 +37,16 @@ public final class CronServiceTest
 	private final static long MS_1_MIN_10_SEC = 70000;
 	private final static String CRON_EVERY_MIN = "* * * * *";
 
+	/**
+	 * Takes about 5 minutes to complete.
+	 */
 	@Test
     public void testCron() throws Exception {
     	
     	ServiceMockJexler jexler = new ServiceMockJexler();
     	CronService cron = new CronService(jexler, "cronid");
     	cron.setCron(CRON_EVERY_MIN);
+    	assertEquals("must be same", "cronid", cron.getId());
     	
     	cron.start();
     	
