@@ -50,7 +50,6 @@ public final class DirWatchServiceTest
     public void testDirWatch() throws Exception {
 		
 		File watchDir = Files.createTempDirectory(null).toFile();
-		watchDir.deleteOnExit();
     	
     	ServiceMockJexler jexler = new ServiceMockJexler();
     	DirWatchService dirWatchService = new DirWatchService(jexler, "watchid");
@@ -76,7 +75,6 @@ public final class DirWatchServiceTest
 
     	// different watch directory
     	watchDir = Files.createTempDirectory(null).toFile();
-    	watchDir.deleteOnExit();
 		dirWatchService.setDir(watchDir);
 		
 		dirWatchService.start();	
