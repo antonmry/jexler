@@ -61,6 +61,7 @@ public class DirWatchService extends AbstractService {
     private final DirWatchService thisService;
     private File watchDir;
     private long sleepTimeMs;
+    private volatile boolean stopWatching;
 
     /**
      * Constructor.
@@ -115,8 +116,7 @@ public class DirWatchService extends AbstractService {
         Thread watchThread = new Thread(new Runnable() {
             public void run() {
                 Thread.currentThread().setName(getJexler().getId() + "|" + getId());
-                while (isRunning()) {
-                	long t0 = System.currentTimeMillis();
+                while (!stopWatching) {
                     for (WatchEvent<?> event : watchKey.pollEvents()) {
                 		Path path = ((Path)event.context());
                 		File file = new File(watchDir, path.toFile().getName());
@@ -124,29 +124,25 @@ public class DirWatchService extends AbstractService {
                 		log.trace("event " + kind + " '" + file.getAbsolutePath() + "'");
                 		getJexler().handle(new Event(thisService, file, kind));
                 	}
-                    long t1 = System.currentTimeMillis();
-                    log.trace("polling time: " + (t1-t0));
-                	if (!isRunning()) {
+                	if (stopWatching) {
                 		break;
                 	}
                 	try {
     					Thread.sleep(sleepTimeMs);
     				} catch (InterruptedException e) {
-    					// ignore
     				}
-                	if (!isRunning()) {
-                		break;
-                	}
                 }
                 try {
 					watchService.close();
 				} catch (IOException e) {
 					log.trace("failed to close watch service", e);
 				}
+                setRunning(false);
             }
         });
         watchThread.setDaemon(true);
         setRunning(true);
+        stopWatching = false;
         watchThread.start();
     }
 
@@ -155,7 +151,7 @@ public class DirWatchService extends AbstractService {
         if (!isRunning()) {
             return;
         }
-        setRunning(false);
+        stopWatching = true;
     }
 
 }

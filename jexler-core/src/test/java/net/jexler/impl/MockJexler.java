@@ -113,7 +113,7 @@ public class MockJexler implements Jexler {
 
 	@Override
 	public File getDir() {
-		return file.getParentFile();
+		return (file == null) ? null : file.getParentFile();
 	}
 
 	@Override
@@ -141,6 +141,5 @@ public class MockJexler implements Jexler {
     		}
     	} while (true);
 	}
-
 
 }

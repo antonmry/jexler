@@ -77,8 +77,8 @@ public class CronService extends AbstractService {
             }
         });
         cronThread.setDaemon(true);
-        scheduler.schedule(cron, cronThread);
         setRunning(true);
+        scheduler.schedule(cron, cronThread);
     }
 
     @Override
