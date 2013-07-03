@@ -22,6 +22,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import net.jexler.Event;
 import net.jexler.VerySlowTests;
+import net.jexler.impl.MockJexler;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -43,7 +44,7 @@ public final class CronServiceTest
 	@Test
     public void testCron() throws Exception {
     	
-    	ServiceMockJexler jexler = new ServiceMockJexler();
+    	MockJexler jexler = new MockJexler();
     	CronService cronService = new CronService(jexler, "cronid");
     	cronService.setCron(CRON_EVERY_MIN);
     	assertEquals("must be same", "cronid", cronService.getId());

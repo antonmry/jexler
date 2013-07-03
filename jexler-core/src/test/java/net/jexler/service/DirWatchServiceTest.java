@@ -28,6 +28,7 @@ import java.nio.file.StandardWatchEventKinds;
 
 import net.jexler.Event;
 import net.jexler.VerySlowTests;
+import net.jexler.impl.MockJexler;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -51,7 +52,7 @@ public final class DirWatchServiceTest
         
         File watchDir = Files.createTempDirectory(null).toFile();
         
-        ServiceMockJexler jexler = new ServiceMockJexler();
+        MockJexler jexler = new MockJexler();
         DirWatchService dirWatchService = new DirWatchService(jexler, "watchid");
         dirWatchService.setDir(watchDir);
         dirWatchService.setSleepTimeMs(MS_1_SEC);
@@ -89,7 +90,7 @@ public final class DirWatchServiceTest
         dirWatchService.stop();
     }
         
-    private void checkEvents(ServiceMockJexler jexler, DirWatchService dirWatchService,
+    private void checkEvents(MockJexler jexler, DirWatchService dirWatchService,
             File watchDir) throws Exception {
 
         // create file

@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-package net.jexler.service;
+package net.jexler.impl;
 
 import java.io.File;
 import java.util.List;
@@ -28,17 +28,17 @@ import net.jexler.Metadata;
 import net.jexler.RunState;
 
 /**
- * Mock jexler for unit testing services.
+ * Mock jexler for unit tests.
  *
  * @author $(whois jexler.net)
  */
-public class ServiceMockJexler implements Jexler {
+public class MockJexler implements Jexler {
 	
 	private Queue<Event> events;
 	private File jexlerFile;
 	private File jexlerDir;
 	
-	public ServiceMockJexler() {
+	public MockJexler() {
 		events = new ConcurrentLinkedQueue<Event>();
 	}
 
@@ -87,6 +87,42 @@ public class ServiceMockJexler implements Jexler {
 		events.add(event);
 	}
 
+	@Override
+	public void waitForShutdown(long timeout) {
+		throw new RuntimeException("Not implemented");
+	}
+
+	@Override
+	public String getId() {
+		return "mockId";
+	}
+
+	
+	public MockJexler setFile(File jexlerFile) {
+		this.jexlerFile = jexlerFile;
+		return this;
+	}
+
+	@Override
+	public File getFile() {
+		return jexlerFile;
+	}
+	
+	public MockJexler setDir(File jexlerDir) {
+		this.jexlerDir = jexlerDir;
+		return this;
+	}
+
+	@Override
+	public File getDir() {
+		return jexlerDir;
+	}
+
+	@Override
+	public Metadata getMetadata() {
+		throw new RuntimeException("Not implemented");
+	}
+	
 	/**
 	 * Wait at most timeout ms for event, return
 	 * event if got one in time, null otherwise.
@@ -108,40 +144,5 @@ public class ServiceMockJexler implements Jexler {
     	} while (true);
 	}
 
-	@Override
-	public void waitForShutdown(long timeout) {
-		throw new RuntimeException("Not implemented");
-	}
-
-	@Override
-	public String getId() {
-		return "mockId";
-	}
-
-	
-	public ServiceMockJexler setFile(File jexlerFile) {
-		this.jexlerFile = jexlerFile;
-		return this;
-	}
-
-	@Override
-	public File getFile() {
-		return jexlerFile;
-	}
-	
-	public ServiceMockJexler setDir(File jexlerDir) {
-		this.jexlerDir = jexlerDir;
-		return this;
-	}
-
-	@Override
-	public File getDir() {
-		return jexlerDir;
-	}
-
-	@Override
-	public Metadata getMetadata() {
-		throw new RuntimeException("Not implemented");
-	}
 
 }

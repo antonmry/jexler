@@ -17,7 +17,7 @@
 package net.jexler;
 
 /**
- * Very slow (~minutes) JUnit tests category marker.
+ * Very slow (~minutes) unit tests category marker.
  *
  * @author $(whois jexler.net)
  */
