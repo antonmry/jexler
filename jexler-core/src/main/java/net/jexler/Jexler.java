@@ -44,12 +44,12 @@ public interface Jexler extends Service, IssueTracker {
 
     /**
      * Get script file.
-      */
+     */
     File getFile();
     
     /**
      * Get directory that contains script file.
-      */
+     */
     File getDir();
     
     /**
