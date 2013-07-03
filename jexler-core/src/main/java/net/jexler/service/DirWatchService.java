@@ -118,7 +118,8 @@ public class DirWatchService extends AbstractService {
                 while (isRunning()) {
                 	long t0 = System.currentTimeMillis();
                     for (WatchEvent<?> event : watchKey.pollEvents()) {
-                		File file = ((Path)event.context()).toFile();
+                		Path path = ((Path)event.context());
+                		File file = new File(watchDir, path.toFile().getName());
                 		WatchEvent.Kind<?> kind = event.kind();
                 		log.trace("event " + kind + " '" + file.getAbsolutePath() + "'");
                 		getJexler().handle(new Event(thisService, file, kind));
