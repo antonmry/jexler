@@ -81,7 +81,7 @@ public class JexlersImpl implements Jexlers {
             if (file.isFile() && !file.isHidden()) {
                 String id = JexlerUtil.getJexlerIdForFile(file);
                 if (id != null && !jexlerMap.containsKey(id)) {
-                    Jexler jexler = new JexlerImpl(file, this);
+                    Jexler jexler = JexlerFactory.newJexler(file, this);
                     jexlerMap.put(jexler.getId(), jexler);
                 }
             }

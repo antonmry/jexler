@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import net.jexler.Event;
 import net.jexler.Issue;
 import net.jexler.Jexler;
+import net.jexler.Jexlers;
 import net.jexler.Metadata;
 import net.jexler.RunState;
 
@@ -34,12 +35,18 @@ import net.jexler.RunState;
  */
 public class MockJexler implements Jexler {
 	
+	private File file;
+	//private Jexlers jexlers;
 	private Queue<Event> events;
-	private File jexlerFile;
-	private File jexlerDir;
+	
+	public MockJexler(File file, Jexlers jexlers) {
+		this.file = file;
+		//this.jexlers = jexlers;
+		events = new ConcurrentLinkedQueue<Event>();
+	}
 	
 	public MockJexler() {
-		events = new ConcurrentLinkedQueue<Event>();
+		this(null, null);
 	}
 
 	@Override
@@ -97,25 +104,16 @@ public class MockJexler implements Jexler {
 		return "mockId";
 	}
 
-	
-	public MockJexler setFile(File jexlerFile) {
-		this.jexlerFile = jexlerFile;
-		return this;
-	}
 
 	@Override
 	public File getFile() {
-		return jexlerFile;
+		return file;
 	}
 	
-	public MockJexler setDir(File jexlerDir) {
-		this.jexlerDir = jexlerDir;
-		return this;
-	}
 
 	@Override
 	public File getDir() {
-		return jexlerDir;
+		return file.getParentFile();
 	}
 
 	@Override
