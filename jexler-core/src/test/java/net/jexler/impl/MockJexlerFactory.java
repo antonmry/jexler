@@ -19,32 +19,22 @@ package net.jexler.impl;
 import java.io.File;
 
 import net.jexler.Jexler;
+import net.jexler.JexlerFactory;
 import net.jexler.Jexlers;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
- * A jexler factory.
+ * Mock jexler factory implementation for unit tests.
  *
  * @author $(whois jexler.net)
  */
-public class JexlerFactory  {
+public class MockJexlerFactory implements JexlerFactory  {
 
-    static final Logger log = LoggerFactory.getLogger(JexlerFactory.class);
-    
-    static private boolean giveMock = false;
-    
-    static Jexler newJexler(File file, Jexlers jexlers) {
-    	if (giveMock) {
-    		return new MockJexler(file, jexlers);
-    	} else {
-    		return new JexlerImpl(file, jexlers);
-    	}
+    public MockJexlerFactory() {
     }
-    
-    static void setGiveMock(boolean giveMock) {
-        JexlerFactory.giveMock = giveMock;
-    }
+
+	@Override
+	public Jexler getInstance(File file, Jexlers jexlers) {
+		return new MockJexler(file, jexlers);
+	}
 
 }

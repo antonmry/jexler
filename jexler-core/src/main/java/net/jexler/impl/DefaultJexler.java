@@ -41,13 +41,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A jexler, runs a script that handles events.
+ * Default jexler implementation.
  *
  * @author $(whois jexler.net)
  */
-public class JexlerImpl implements Jexler {
+public class DefaultJexler implements Jexler {
 
-    static final Logger log = LoggerFactory.getLogger(JexlerImpl.class);
+    static final Logger log = LoggerFactory.getLogger(DefaultJexler.class);
     
     @SuppressWarnings("serial")
     public class Services extends LinkedList<Service> {
@@ -69,7 +69,7 @@ public class JexlerImpl implements Jexler {
     				runState = RunState.BUSY_EVENT;
     				return event;
     			} catch (InterruptedException e) {
-    				trackIssue(new Issue(JexlerImpl.this, "Could not take event.", e));
+    				trackIssue(new Issue(DefaultJexler.this, "Could not take event.", e));
     			}
     		} while (true);
     	}
@@ -109,7 +109,7 @@ public class JexlerImpl implements Jexler {
      * @param file file with jexler script
      * @param jexlers
      */
-    public JexlerImpl(File file, Jexlers jexlers) {
+    public DefaultJexler(File file, Jexlers jexlers) {
         this.file = file;
         this.jexlers = jexlers;
         id = JexlerUtil.getJexlerIdForFile(file);
