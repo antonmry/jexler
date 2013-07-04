@@ -29,7 +29,7 @@ import net.jexler.Metadata;
 import net.jexler.RunState;
 
 /**
- * Mock jexler for unit tests.
+ * Mock jexler implementation for unit tests.
  *
  * @author $(whois jexler.net)
  */

@@ -25,6 +25,7 @@ import java.util.TreeMap;
 
 import net.jexler.Issue;
 import net.jexler.Jexler;
+import net.jexler.JexlerFactory;
 import net.jexler.Jexlers;
 import net.jexler.RunState;
 
@@ -32,16 +33,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * All jexlers in a directory.
+ * Default jexlers implementation.
  *
  * @author $(whois jexler.net)
  */
-public class JexlersImpl implements Jexlers {
+public class DefaultJexlers implements Jexlers {
 
-	static final Logger log = LoggerFactory.getLogger(JexlersImpl.class);
+	static final Logger log = LoggerFactory.getLogger(DefaultJexlers.class);
 
     private final File dir;
     private final String id;
+    private final JexlerFactory jexlerFactory;
 
     /** key is jexler id */
     private final Map<String,Jexler> jexlerMap;
@@ -53,7 +55,7 @@ public class JexlersImpl implements Jexlers {
      * Constructor.
      * @param dir directory which contains jexler scripts
      */
-    public JexlersImpl(File dir) {
+    public DefaultJexlers(File dir, JexlerFactory jexlerFactory) {
         if (!dir.exists()) {
             throw new RuntimeException("Directory '" + dir.getAbsolutePath() + "' does not exist");
         } else  if (!dir.isDirectory()) {
@@ -61,6 +63,7 @@ public class JexlersImpl implements Jexlers {
         }
         this.dir = dir;
         id = dir.getName();
+        this.jexlerFactory = jexlerFactory;
         jexlerMap = new TreeMap<String,Jexler>();
         jexlers = new LinkedList<Jexler>();
         issues = Collections.synchronizedList(new LinkedList<Issue>());
@@ -81,7 +84,7 @@ public class JexlersImpl implements Jexlers {
             if (file.isFile() && !file.isHidden()) {
                 String id = JexlerUtil.getJexlerIdForFile(file);
                 if (id != null && !jexlerMap.containsKey(id)) {
-                    Jexler jexler = JexlerFactory.newJexler(file, this);
+                    Jexler jexler = jexlerFactory.getInstance(file, this);
                     jexlerMap.put(jexler.getId(), jexler);
                 }
             }
