@@ -16,9 +16,9 @@
 
 package net.jexler.service;
 
+import net.jexler.EventBase;
 import net.jexler.Jexler;
 import net.jexler.RunState;
-import net.jexler.impl.AbstractEvent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,9 +30,9 @@ import it.sauronsoftware.cron4j.Scheduler;
  *
  * @author $(whois jexler.net)
  */
-public class CronService extends AbstractService {
+public class CronService extends ServiceBase {
 
-    public static class Event extends AbstractEvent {
+    public static class Event extends EventBase {
         private String cron;
         public Event(CronService service, String cron) {
             super(service);

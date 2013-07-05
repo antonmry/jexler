@@ -24,9 +24,9 @@ import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 
+import net.jexler.EventBase;
 import net.jexler.Jexler;
 import net.jexler.RunState;
-import net.jexler.impl.AbstractEvent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,9 +37,9 @@ import org.slf4j.LoggerFactory;
  *
  * @author $(whois jexler.net)
  */
-public class DirWatchService extends AbstractService {
+public class DirWatchService extends ServiceBase {
 
-    public class Event extends AbstractEvent {
+    public class Event extends EventBase {
         private File file;
         private WatchEvent.Kind<?> kind;
         public Event(DirWatchService service, File file, WatchEvent.Kind<?> kind) {

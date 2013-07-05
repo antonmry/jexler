@@ -14,24 +14,24 @@
    limitations under the License.
 */
 
-package net.jexler.impl;
+package net.jexler;
 
-import net.jexler.Event;
 import net.jexler.service.Service;
 
+
 /**
- * Abstract base event.
+ * Abstract event base implementation.
  *
  * @author $(whois jexler.net)
  */
-public abstract class AbstractEvent implements Event {
+public abstract class EventBase implements Event {
 
     private Service service;
 
     /**
      * Constructor.
      */
-    public AbstractEvent(Service service) {
+    public EventBase(Service service) {
         this.service = service;
     }
 

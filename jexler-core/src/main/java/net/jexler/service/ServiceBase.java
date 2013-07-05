@@ -20,11 +20,11 @@ import net.jexler.Jexler;
 import net.jexler.RunState;
 
 /**
- * Abstract base service.
+ * Abstract service base implementation.
  *
  * @author $(whois jexler.net)
  */
-public abstract class AbstractService implements Service {
+public abstract class ServiceBase implements Service {
 
     private final Jexler jexler;
     private final String id;
@@ -33,7 +33,7 @@ public abstract class AbstractService implements Service {
     /**
      * Constructor.
      */
-    public AbstractService(Jexler jexler, String id) {
+    public ServiceBase(Jexler jexler, String id) {
         this.jexler = jexler;
         this.id = id;
         runState = RunState.OFF;

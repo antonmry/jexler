@@ -16,18 +16,18 @@
 
 package net.jexler.service;
 
+import net.jexler.EventBase;
 import net.jexler.Jexler;
 import net.jexler.RunState;
-import net.jexler.impl.AbstractEvent;
 
 /**
  * Formal service for stopping a jexler, triggered externally.
  *
  * @author $(whois jexler.net)
  */
-public class StopService extends AbstractService {
+public class StopService extends ServiceBase {
 
-    public static class Event extends AbstractEvent {
+    public static class Event extends EventBase {
         public Event(StopService service) {
             super(service);
         }
