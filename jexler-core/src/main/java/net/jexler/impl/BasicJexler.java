@@ -135,7 +135,7 @@ public class BasicJexler implements Jexler {
     	binding.setVariable("log", log);
     	
     	ImportCustomizer importCustomizer = new ImportCustomizer();
-    	if (metaInfoAtStart.isOn("autoimport", true)) {
+    	if (getMetaInfo().isOn("autoimport", true)) {
     		importCustomizer.addStarImports(
     				"net.jexler", "net.jexler.service", "net.jexler.tool");
     	}
