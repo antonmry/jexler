@@ -242,7 +242,7 @@ public class JexlersView {
             builder.append(logData);
         } catch (IOException e) {
             String msg = "Could not read logfile '" + logfile.getAbsolutePath() + "'.";
-            jexlers.trackIssue(new Issue(null, msg, e));
+            jexlers.trackIssue(null, msg, e);
             builder.append(msg);
         }
         builder.append("</pre>\n");
@@ -259,7 +259,7 @@ public class JexlersView {
             return JexlerUtil.readTextFile(file);
         } catch (IOException e) {
             String msg = "Could not read jexler script file '" + file.getAbsolutePath() + "'.";
-            jexler.trackIssue(new Issue(null, msg, e));
+            jexler.trackIssue(null, msg, e);
             return msg;
         }
     }
@@ -321,9 +321,9 @@ public class JexlersView {
             } catch (IOException e) {
                 String msg = "Could not save script file '" + file.getAbsolutePath() + "'";
                 if (targetJexler != null) {
-                    targetJexler.trackIssue(new Issue(null, msg, e));
+                    targetJexler.trackIssue(null, msg, e);
                 } else {
-                    jexlers.trackIssue(new Issue(null, msg, e));
+                    jexlers.trackIssue(null, msg, e);
                 }
             }
         }

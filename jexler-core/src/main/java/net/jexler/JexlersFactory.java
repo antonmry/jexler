@@ -14,27 +14,24 @@
    limitations under the License.
 */
 
-package net.jexler.impl;
+package net.jexler;
 
 import java.io.File;
 
-import net.jexler.Jexler;
-import net.jexler.JexlerFactory;
-import net.jexler.Jexlers;
+import net.jexler.impl.DefaultJexlers;
 
 /**
- * Default jexler factory implementation.
+ * Jexlers factory.
  *
  * @author $(whois jexler.net)
  */
-public class DefaultJexlerFactory implements JexlerFactory  {
+public class JexlersFactory  {
 
-    public DefaultJexlerFactory() {
+    public JexlersFactory() {
     }
 
-	@Override
-	public Jexler getInstance(File file, Jexlers jexlers) {
-		return new DefaultJexler(file, jexlers);
+	public Jexlers get(File dir) {
+		return new DefaultJexlers(dir, new JexlerFactory());
 	}
 
 }

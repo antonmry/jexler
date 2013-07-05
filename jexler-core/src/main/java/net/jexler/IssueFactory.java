@@ -16,30 +16,21 @@
 
 package net.jexler;
 
-import java.util.Date;
+import net.jexler.impl.DefaultIssue;
+
 
 /**
- * Issue.
+ * Issue factory.
  *
  * @author $(whois jexler.net)
  */
-public interface Issue extends Comparable<Issue> {
+public class IssueFactory  {
 
-    public Date getDate();
+    public IssueFactory() {
+    }
 
-    public Service getService();
-
-    public String getMessage();
-
-    public Exception getException();
-
-    /**
-     * Get stack trace as a multi-line string.
-     * @return stack trace or null if none
-     */
-    public String getStackTrace();
-
-    public int compareTo(Issue issue);
+	public Issue get(Service service, String message, Exception exception) {
+		return new DefaultIssue(service, message, exception);
+	}
 
 }
-

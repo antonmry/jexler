@@ -23,17 +23,17 @@ import net.jexler.JexlerFactory;
 import net.jexler.Jexlers;
 
 /**
- * Mock jexler factory implementation for unit tests.
+ * Default jexler factory implementation.
  *
  * @author $(whois jexler.net)
  */
-public class MockJexlerFactory implements JexlerFactory  {
+public class MockJexlerFactory extends JexlerFactory  {
 
     public MockJexlerFactory() {
     }
 
-	@Override
-	public Jexler getInstance(File file, Jexlers jexlers) {
+    @Override
+	public Jexler get(File file, Jexlers jexlers) {
 		return new MockJexler(file, jexlers);
 	}
 

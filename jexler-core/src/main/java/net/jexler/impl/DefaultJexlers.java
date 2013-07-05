@@ -28,6 +28,7 @@ import net.jexler.Jexler;
 import net.jexler.JexlerFactory;
 import net.jexler.Jexlers;
 import net.jexler.RunState;
+import net.jexler.Service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +85,7 @@ public class DefaultJexlers implements Jexlers {
             if (file.isFile() && !file.isHidden()) {
                 String id = JexlerUtil.getJexlerIdForFile(file);
                 if (id != null && !jexlerMap.containsKey(id)) {
-                    Jexler jexler = jexlerFactory.getInstance(file, this);
+                    Jexler jexler = jexlerFactory.get(file, this);
                     jexlerMap.put(jexler.getId(), jexler);
                 }
             }
@@ -109,7 +110,7 @@ public class DefaultJexlers implements Jexlers {
     @Override
     public void autostart() {
         for (Jexler jexler : jexlers) {
-            if (jexler.getMetadata().isOn("autostart", false)) {
+            if (jexler.getMetaInfo().isOn("autostart", false)) {
             	jexler.start();
             }
         }
@@ -132,7 +133,7 @@ public class DefaultJexlers implements Jexlers {
         		RunState runState = jexler.getRunState();
                 if (runState == RunState.BUSY_STARTING) {
                 	if (hasTimedOut) {
-                		trackIssue(new Issue(jexler, "Timeout waiting for jexler startup", null));
+                		trackIssue(jexler, "Timeout waiting for jexler startup", null);
                 	}
                 	isNoneBusyStarting = false;
                 }
@@ -177,7 +178,7 @@ public class DefaultJexlers implements Jexlers {
         		RunState runState = jexler.getRunState();
                 if (runState != RunState.OFF) {
                 	if (hasTimedOut) {
-                		trackIssue(new Issue(jexler, "Timeout waiting for jexler shutdown", null));
+                		trackIssue(jexler, "Timeout waiting for jexler shutdown", null);
                 	}
                 	areAllOff = false;
                 }
@@ -196,6 +197,11 @@ public class DefaultJexlers implements Jexlers {
     public void trackIssue(Issue issue) {
         log.error(issue.toString());
         issues.add(issue);
+    }
+
+    @Override
+    public void trackIssue(Service service, String message, Exception exception) {
+    	trackIssue(new DefaultIssue(service, message, exception));
     }
 
     @Override

@@ -19,7 +19,7 @@ package net.jexler;
 import java.io.File;
 
 /**
- * A jexler, runs a script that handles events.
+ * Interface for a jexler, runs a script that handles events.
  *
  * @author $(whois jexler.net)
  */
@@ -38,11 +38,6 @@ public interface Jexler extends Service, IssueTracker {
     void waitForShutdown(long timeout);
 
     /**
-     * Get id.
-     */
-    String getId();
-
-    /**
      * Get script file.
      */
     File getFile();
@@ -53,8 +48,11 @@ public interface Jexler extends Service, IssueTracker {
     File getDir();
     
     /**
-     * Get metadata (stored as part of jexler file).
+     * Get meta info.
+     * If the jexler is not running, read from jexler file.
+     * If the jexler is running, meta info read from jexler
+     * file when the jexler was started.
      */
-    Metadata getMetadata();
+    MetaInfo getMetaInfo();
 
 }

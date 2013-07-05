@@ -30,7 +30,7 @@ import net.jexler.Event;
 import net.jexler.Issue;
 import net.jexler.Jexler;
 import net.jexler.Jexlers;
-import net.jexler.Metadata;
+import net.jexler.MetaInfo;
 import net.jexler.RunState;
 import net.jexler.Service;
 import net.jexler.service.StopService;
@@ -69,7 +69,7 @@ public class DefaultJexler implements Jexler {
     				runState = RunState.BUSY_EVENT;
     				return event;
     			} catch (InterruptedException e) {
-    				trackIssue(new Issue(DefaultJexler.this, "Could not take event.", e));
+    				trackIssue(DefaultJexler.this, "Could not take event.", e);
     			}
     		} while (true);
     	}
@@ -102,7 +102,7 @@ public class DefaultJexler implements Jexler {
 
     private final List<Issue> issues;
     
-    private final Metadata metadata;
+    private MetaInfo metaInfoAtStart;
 
     /**
      * Constructor.
@@ -119,7 +119,6 @@ public class DefaultJexler implements Jexler {
         services = new Services();
         stopService = new StopService(this, "stop-jexler");
         issues = Collections.synchronizedList(new LinkedList<Issue>());
-        metadata = new Metadata(this);
     }
 
     /**
@@ -137,12 +136,13 @@ public class DefaultJexler implements Jexler {
             return;
         }
 
+        forgetIssues();
+        setMetaInfoAtStart();
         isRunning = true;
         runState = RunState.BUSY_STARTING;
-        forgetIssues();
         services.add(stopService);
-
-    	Binding binding = new Binding();
+        
+    	final Binding binding = new Binding();
     	binding.setVariable("jexler", this);
     	binding.setVariable("jexlers", jexlers);
     	binding.setVariable("events", events);
@@ -150,7 +150,7 @@ public class DefaultJexler implements Jexler {
     	binding.setVariable("log", log);
     	
     	ImportCustomizer importCustomizer = new ImportCustomizer();
-    	if (metadata.isOn("autoimport", true)) {
+    	if (metaInfoAtStart.isOn("autoimport", true)) {
     		importCustomizer.addStarImports(
     				"net.jexler", "net.jexler.service", "net.jexler.tool");
     	}
@@ -166,14 +166,14 @@ public class DefaultJexler implements Jexler {
                         try {
                         	shell.evaluate(file);
                         } catch (RuntimeException | IOException e) {
-                        	trackIssue(new Issue(null, "Script failed.", e));
+                        	trackIssue(null, "Script failed.", e);
                         } finally {
                         	runState = RunState.BUSY_STOPPING;
                         	for (Service service : services) {
                         		try {
                         			service.stop();
                         		} catch (RuntimeException e) {
-                        			trackIssue(new Issue(service, "Could not stop service.", e));
+                        			trackIssue(service, "Could not stop service.", e);
                         		}
                         	}
                         	events.clear();
@@ -206,7 +206,7 @@ public class DefaultJexler implements Jexler {
     			return;
     		}
     		if (System.currentTimeMillis() - t0 > timeout) {
-    			trackIssue(new Issue(this, "Timeout waiting for jexler startup.", null));
+    			trackIssue(this, "Timeout waiting for jexler startup.", null);
     			return;
     		}
     		try {
@@ -241,7 +241,7 @@ public class DefaultJexler implements Jexler {
     			return;
     		}
     		if (System.currentTimeMillis() - t0 > timeout) {
-    			trackIssue(new Issue(this, "Timeout waiting for jexler shutdown.", null));
+    			trackIssue(this, "Timeout waiting for jexler shutdown.", null);
     			return;
     		}
     		try {
@@ -255,6 +255,11 @@ public class DefaultJexler implements Jexler {
     public void trackIssue(Issue issue) {
         log.error(issue.toString());
         issues.add(issue);
+    }
+    
+    @Override
+    public void trackIssue(Service service, String message, Exception exception) {
+    	trackIssue(new DefaultIssue(service, message, exception));
     }
 
     @Override
@@ -283,9 +288,34 @@ public class DefaultJexler implements Jexler {
         return file.getParentFile();
     }
     
+    /**
+     * Read meta info from jexler file an store it in member variable.
+     */
+    private void setMetaInfoAtStart() {
+    	try {
+    		metaInfoAtStart = new DefaultMetaInfo(file);
+    	} catch (IOException e) {
+    		String msg = "Could not read meta info from existing jexler file '" 
+    				+ file.getAbsolutePath() + "'.";
+    		trackIssue(null, msg, e);
+    		metaInfoAtStart = DefaultMetaInfo.EMPTY;
+    	}
+    }
+    
     @Override
-    public Metadata getMetadata() {
-    	return metadata;
+    public MetaInfo getMetaInfo() {
+    	if (isRunning) {
+    		return metaInfoAtStart;
+    	} else {
+    		try {
+    			return new DefaultMetaInfo(file);
+    		} catch (IOException e) {
+    			String msg = "Could not read meta info from existing jexler file '" 
+    					+ file.getAbsolutePath() + "'.";
+    			trackIssue(null, msg, e);
+    			return DefaultMetaInfo.EMPTY;
+    		}
+    	}
     }
 
 }

@@ -18,13 +18,20 @@ package net.jexler;
 
 import java.io.File;
 
+import net.jexler.impl.DefaultJexler;
+
 /**
- * A jexler factory.
+ * Jexler factory.
  *
  * @author $(whois jexler.net)
  */
-public interface JexlerFactory {
+public class JexlerFactory  {
 
-    Jexler getInstance(File file, Jexlers jexlers);
+    public JexlerFactory() {
+    }
+
+	public Jexler get(File file, Jexlers jexlers) {
+		return new DefaultJexler(file, jexlers);
+	}
 
 }

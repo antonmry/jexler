@@ -14,32 +14,27 @@
    limitations under the License.
 */
 
-package net.jexler;
+package net.jexler.impl;
 
-import java.util.Date;
+import java.io.File;
+
+import net.jexler.Jexlers;
+import net.jexler.JexlersFactory;
+import net.jexler.impl.MockJexlers;
 
 /**
- * Issue.
+ * Default jexler factory implementation.
  *
  * @author $(whois jexler.net)
  */
-public interface Issue extends Comparable<Issue> {
+public class MockJexlersFactory extends JexlersFactory  {
 
-    public Date getDate();
+    public MockJexlersFactory() {
+    }
 
-    public Service getService();
-
-    public String getMessage();
-
-    public Exception getException();
-
-    /**
-     * Get stack trace as a multi-line string.
-     * @return stack trace or null if none
-     */
-    public String getStackTrace();
-
-    public int compareTo(Issue issue);
+    @Override
+	public Jexlers get(File dir) {
+		return new MockJexlers(dir, new MockJexlerFactory());
+	}
 
 }
-
