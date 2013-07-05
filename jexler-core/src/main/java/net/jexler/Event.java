@@ -16,6 +16,8 @@
 
 package net.jexler;
 
+import net.jexler.service.Service;
+
 /**
  * Interface for an event (sent to a jexler).
  *

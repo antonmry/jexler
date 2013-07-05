@@ -28,7 +28,6 @@ import java.nio.file.StandardWatchEventKinds;
 
 import net.jexler.Event;
 import net.jexler.VerySlowTests;
-import net.jexler.impl.JexlerTestUtil;
 import net.jexler.impl.MockJexler;
 
 import org.junit.Test;
@@ -60,13 +59,13 @@ public final class DirWatchServiceTest
         assertEquals("must be same", "watchid", dirWatchService.getId());
         
         dirWatchService.start();
-    	assertTrue("must be true", dirWatchService.isRunning());
+    	assertTrue("must be true", dirWatchService.isOn());
         assertNull("must be null", jexler.takeEvent(MS_30_SEC));
                 
         checkEvents(jexler, dirWatchService, watchDir);
         
         dirWatchService.stop();
-    	assertTrue("must be true", JexlerTestUtil.stopsWithin(dirWatchService, MS_30_SEC));
+    	assertTrue("must be true", dirWatchService.waitForShutdown(MS_30_SEC));
         
         // create file after service stop
         File tempFile = new File(watchDir, "temp2");
@@ -81,7 +80,7 @@ public final class DirWatchServiceTest
         dirWatchService.setDir(watchDir);
         
         dirWatchService.start();    
-    	assertTrue("must be true", dirWatchService.isRunning());
+    	assertTrue("must be true", dirWatchService.isOn());
         assertNull("must be null", jexler.takeEvent(MS_30_SEC));
         
         checkEvents(jexler, dirWatchService, watchDir);
@@ -91,7 +90,7 @@ public final class DirWatchServiceTest
         assertNull("must be null", jexler.takeEvent(MS_30_SEC));
         
         dirWatchService.stop();
-    	assertTrue("must be true", JexlerTestUtil.stopsWithin(dirWatchService, MS_30_SEC));
+    	assertTrue("must be true", dirWatchService.waitForShutdown(MS_30_SEC));
     }
         
     private void checkEvents(MockJexler jexler, DirWatchService dirWatchService,

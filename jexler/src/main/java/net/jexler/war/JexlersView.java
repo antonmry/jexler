@@ -34,8 +34,8 @@ import net.jexler.Issue;
 import net.jexler.Jexler;
 import net.jexler.Jexlers;
 import net.jexler.RunState;
-import net.jexler.Service;
 import net.jexler.impl.JexlerUtil;
+import net.jexler.service.Service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -150,18 +150,13 @@ public class JexlersView {
     }
 
     public String getStartStop() {
-        boolean isRunning = false;
+        boolean isOn = false;
         if (jexlerId == null) {
-            for (Jexler jexler : jexlers.getJexlers()) {
-                if (jexler.isRunning()) {
-                    isRunning = true;
-                    break;
-                }
-            }
+        	isOn = jexlers.isOn();
         } else {
-            isRunning = jexler.isRunning();
+        	isOn = jexler.isOn();
         }
-        if (isRunning) {
+        if (isOn) {
             return "<a href='?cmd=stop" + getJexlerParam() + "'><img src='stop.gif'></a>";
         } else {
             return "<a href='?cmd=start" + getJexlerParam() + "'><img src='start.gif'></a>";

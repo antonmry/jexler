@@ -14,25 +14,21 @@
    limitations under the License.
 */
 
-package net.jexler.impl;
+package net.jexler.service;
 
-import net.jexler.Service;
 
 
 /**
- * Jexler unit test utilities.
+ * Service utilities.
  *
  * @author $(whois jexler.net)
  */
-public class JexlerTestUtil {
-
-	/**
-	 * Wait at most timeout ms for service to stop.
-	 */
-	public static boolean stopsWithin(Service service, long timeout) {
+public class ServiceUtil {
+		
+    public static boolean waitForStartup(Service service, long timeout) {
     	long t0 = System.currentTimeMillis();
     	do {
-    		if (!service.isRunning()) {
+    		if (!service.getRunState().isBusyStarting()) {
     			return true;
     		}
     		if (System.currentTimeMillis() - t0 > timeout) {
@@ -43,6 +39,22 @@ public class JexlerTestUtil {
     		} catch (InterruptedException e) {
     		}
     	} while (true);
-	}
+    }
+    
+    public static boolean waitForShutdown(Service service, long timeout) {
+       	long t0 = System.currentTimeMillis();
+    	do {
+    		if (service.isOff()) {
+    			return true;
+    		}
+    		if (System.currentTimeMillis() - t0 > timeout) {
+    			return false;
+    		}
+    		try {
+    			Thread.sleep(10);
+    		} catch (InterruptedException e) {
+    		}
+    	} while (true);
+    }
 
 }

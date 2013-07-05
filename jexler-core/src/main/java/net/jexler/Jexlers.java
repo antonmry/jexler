@@ -19,6 +19,8 @@ package net.jexler;
 import java.io.File;
 import java.util.List;
 
+import net.jexler.service.Service;
+
 /**
  * All jexlers in a directory.
  *
@@ -35,10 +37,6 @@ public interface Jexlers extends Service, IssueTracker {
      * Start jexlers that are marked as autostart.
      */
     void autostart();
-
-    void waitForStartup(long timeout);
-
-    void waitForShutdown(long timeout);
 
     File getDir();
 

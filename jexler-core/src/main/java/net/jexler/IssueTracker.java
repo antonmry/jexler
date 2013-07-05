@@ -18,6 +18,8 @@ package net.jexler;
 
 import java.util.List;
 
+import net.jexler.service.Service;
+
 /**
  * Interface for tracking issues (errors).
  *

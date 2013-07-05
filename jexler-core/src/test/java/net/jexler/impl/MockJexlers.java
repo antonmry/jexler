@@ -23,7 +23,8 @@ import net.jexler.Issue;
 import net.jexler.Jexler;
 import net.jexler.JexlerFactory;
 import net.jexler.Jexlers;
-import net.jexler.Service;
+import net.jexler.RunState;
+import net.jexler.service.Service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +43,6 @@ public class MockJexlers implements Jexlers {
      * @param dir directory which contains jexler scripts
      */
     public MockJexlers(File dir, JexlerFactory jexlerFactory) {
-		// TODO
     }
 
 	@Override
@@ -51,7 +51,7 @@ public class MockJexlers implements Jexlers {
 	}
 
 	@Override
-	public boolean isRunning() {
+	public boolean waitForStartup(long timeout) {
 		throw new RuntimeException("Not implemented");
 	}
 
@@ -59,9 +59,24 @@ public class MockJexlers implements Jexlers {
 	public void stop() {
 		throw new RuntimeException("Not implemented");
 	}
+	
+	@Override
+	public boolean waitForShutdown(long timeout) {
+		throw new RuntimeException("Not implemented");
+	}
 
 	@Override
-	public String getId() {
+	public RunState getRunState() {
+		throw new RuntimeException("Not implemented");
+	}
+
+	@Override
+	public boolean isOn() {
+		throw new RuntimeException("Not implemented");
+	}
+
+	@Override
+	public boolean isOff() {
 		throw new RuntimeException("Not implemented");
 	}
 
@@ -96,12 +111,7 @@ public class MockJexlers implements Jexlers {
 	}
 
 	@Override
-	public void waitForStartup(long timeout) {
-		throw new RuntimeException("Not implemented");
-	}
-
-	@Override
-	public void waitForShutdown(long timeout) {
+	public String getId() {
 		throw new RuntimeException("Not implemented");
 	}
 

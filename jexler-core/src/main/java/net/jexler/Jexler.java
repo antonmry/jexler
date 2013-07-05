@@ -18,6 +18,8 @@ package net.jexler;
 
 import java.io.File;
 
+import net.jexler.service.Service;
+
 /**
  * Interface for a jexler, runs a script that handles events.
  *
@@ -25,18 +27,12 @@ import java.io.File;
  */
 public interface Jexler extends Service, IssueTracker {
 	            
-    RunState getRunState();
-    
-    void waitForStartup(long timeout);
-
     /**
      * Handle given event.
      * @param event
      */
     public void handle(Event event);
     
-    void waitForShutdown(long timeout);
-
     /**
      * Get script file.
      */

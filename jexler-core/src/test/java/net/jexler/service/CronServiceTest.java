@@ -22,7 +22,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import net.jexler.Event;
 import net.jexler.VerySlowTests;
-import net.jexler.impl.JexlerTestUtil;
 import net.jexler.impl.MockJexler;
 
 import org.junit.Test;
@@ -52,7 +51,7 @@ public final class CronServiceTest
     	assertEquals("must be same", "cronid", cronService.getId());
     	
     	cronService.start();
-    	assertTrue("must be true", cronService.isRunning());
+    	assertTrue("must be true", cronService.isOn());
     	
     	Event event = jexler.takeEvent(MS_1_MIN_10_SEC);
     	assertNotNull("must not be null", event);
@@ -69,11 +68,11 @@ public final class CronServiceTest
     	assertEquals("must be same", CRON_EVERY_MIN, cronEvent.getCron());
     	
     	cronService.stop();
-    	assertTrue("must be true", JexlerTestUtil.stopsWithin(cronService, MS_30_SEC));
+    	assertTrue("must be true", cronService.waitForShutdown(MS_30_SEC));
     	assertNull("must be null", jexler.takeEvent(MS_1_MIN_10_SEC));
     	
     	cronService.start();
-    	assertTrue("must be true", cronService.isRunning());
+    	assertTrue("must be true", cronService.isOn());
     	
     	event = jexler.takeEvent(MS_1_MIN_10_SEC);
     	assertNotNull("must not be null", event);
@@ -83,7 +82,7 @@ public final class CronServiceTest
     	assertEquals("must be same", CRON_EVERY_MIN, cronEvent.getCron());
     	
     	cronService.stop();
-    	assertTrue("must be true", JexlerTestUtil.stopsWithin(cronService, MS_30_SEC));
+    	assertTrue("must be true", cronService.waitForShutdown(MS_30_SEC));
     	assertNull("must be null", jexler.takeEvent(MS_1_MIN_10_SEC));
 	}
 }

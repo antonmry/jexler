@@ -17,8 +17,8 @@
 package net.jexler.service;
 
 import net.jexler.Jexler;
+import net.jexler.RunState;
 import net.jexler.impl.AbstractEvent;
-import net.jexler.impl.AbstractService;
 
 /**
  * Formal service for stopping a jexler, triggered externally.
@@ -42,12 +42,12 @@ public class StopService extends AbstractService {
 
     @Override
     public void start() {
-        setRunning(true);
+        setRunState(RunState.IDLE);
     }
 
     @Override
     public void stop() {
-        setRunning(false);
+    	setRunState(RunState.OFF);
     }
 
     /**

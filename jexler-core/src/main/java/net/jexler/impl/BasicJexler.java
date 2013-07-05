@@ -21,18 +21,20 @@ import groovy.lang.GroovyShell;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import net.jexler.Event;
 import net.jexler.Issue;
+import net.jexler.IssueTracker;
 import net.jexler.Jexler;
 import net.jexler.Jexlers;
 import net.jexler.MetaInfo;
 import net.jexler.RunState;
-import net.jexler.Service;
+import net.jexler.service.BasicServiceGroup;
+import net.jexler.service.Service;
+import net.jexler.service.ServiceGroup;
+import net.jexler.service.ServiceUtil;
 import net.jexler.service.StopService;
 
 import org.codehaus.groovy.control.CompilerConfiguration;
@@ -41,23 +43,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Default jexler implementation.
+ * Basic default implementation of jexler interface.
  *
  * @author $(whois jexler.net)
  */
-public class DefaultJexler implements Jexler {
+public class BasicJexler implements Jexler {
 
-    static final Logger log = LoggerFactory.getLogger(DefaultJexler.class);
-    
-    @SuppressWarnings("serial")
-    public class Services extends LinkedList<Service> {
-        public void start() {
-        	for (Service service : this) {
-        		service.start();
-        	}
-        }
-    }
-    
+    static final Logger log = LoggerFactory.getLogger(BasicJexler.class);
+        
     @SuppressWarnings("serial")
 	public class Events extends LinkedBlockingQueue<Event> {
     	@Override
@@ -69,7 +62,7 @@ public class DefaultJexler implements Jexler {
     				runState = RunState.BUSY_EVENT;
     				return event;
     			} catch (InterruptedException e) {
-    				trackIssue(DefaultJexler.this, "Could not take event.", e);
+    				trackIssue(BasicJexler.this, "Could not take event.", e);
     			}
     		} while (true);
     	}
@@ -79,28 +72,22 @@ public class DefaultJexler implements Jexler {
     private final Jexlers jexlers;
     private final String id;
 
-    /**
-     * Set to true just at the beginning of start() and set to false
-     * once the script exits in any way, after it has been tried to
-     * stop all sensors and actors.
-     */
-    private volatile boolean isRunning;
     private volatile RunState runState;
     private Thread scriptThread;
     
     private final Events events;
 
     /**
-     * List of services.
+     * Group of services.
      * Scripts are free to add services to this list or not - if they do,
      * services are automatically stopped by jexler after the script exits
      * (regularly or throws).
      */
-    private final Services services;
+    private final ServiceGroup services;
 
     private final StopService stopService;
 
-    private final List<Issue> issues;
+    private final IssueTracker issueTracker;
     
     private MetaInfo metaInfoAtStart;
 
@@ -109,20 +96,19 @@ public class DefaultJexler implements Jexler {
      * @param file file with jexler script
      * @param jexlers
      */
-    public DefaultJexler(File file, Jexlers jexlers) {
+    public BasicJexler(File file, Jexlers jexlers) {
         this.file = file;
         this.jexlers = jexlers;
         id = JexlerUtil.getJexlerIdForFile(file);
-        isRunning = false;
         runState = RunState.OFF;
         events = new Events();
-        services = new Services();
+        services = new BasicServiceGroup(id + ".services");
         stopService = new StopService(this, "stop-jexler");
-        issues = Collections.synchronizedList(new LinkedList<Issue>());
+        issueTracker = new BasicIssueTracker();
     }
 
     /**
-     * Immediately sets isRunning to true, then tries to start the script.
+     * Immediately marks jexler service as on, then tries to start the script.
      * Typically returns before the jexler script has started or completed
      * to initialize all of its services.
      * The jexler remains in the running state until the script exits in
@@ -132,13 +118,12 @@ public class DefaultJexler implements Jexler {
     @Override
     public void start() {
         log.info("*** Jexler start: " + id);
-        if (isRunning) {
+        if (isOn()) {
             return;
         }
 
         forgetIssues();
         setMetaInfoAtStart();
-        isRunning = true;
         runState = RunState.BUSY_STARTING;
         services.add(stopService);
         
@@ -169,16 +154,13 @@ public class DefaultJexler implements Jexler {
                         	trackIssue(null, "Script failed.", e);
                         } finally {
                         	runState = RunState.BUSY_STOPPING;
-                        	for (Service service : services) {
-                        		try {
-                        			service.stop();
-                        		} catch (RuntimeException e) {
-                        			trackIssue(service, "Could not stop service.", e);
-                        		}
+                        	try {
+                        		services.stop();
+                        	} catch (RuntimeException e) {
+                        		trackIssue(services, "Could not stop services.", e);
                         	}
                         	events.clear();
-                        	services.clear();
-                        	isRunning = false;
+                        	services.getServiceList().clear();
                         	runState = RunState.OFF;
                         }
                     }
@@ -189,31 +171,12 @@ public class DefaultJexler implements Jexler {
     }
         
     @Override
-    public boolean isRunning() {
-        return isRunning;
-    }
-    
-    @Override
-    public RunState getRunState() {
-    	return runState;
-    }
-    
-    @Override
-    public void waitForStartup(long timeout) {
-    	long t0 = System.currentTimeMillis();
-    	do {
-    		if (runState != RunState.BUSY_STARTING) {
-    			return;
-    		}
-    		if (System.currentTimeMillis() - t0 > timeout) {
-    			trackIssue(this, "Timeout waiting for jexler startup.", null);
-    			return;
-    		}
-    		try {
-    			Thread.sleep(10);
-    		} catch (InterruptedException e) {
-    		}
-    	} while (true);
+    public boolean waitForStartup(long timeout) {
+    	boolean ok = ServiceUtil.waitForStartup(this, timeout);
+    	if (!ok) {
+    		trackIssue(this, "Timeout waiting for jexler startup.", null);
+    	}
+    	return ok;
     }
 
     @Override
@@ -227,50 +190,54 @@ public class DefaultJexler implements Jexler {
     @Override
     public void stop() {
         log.info("*** Jexler stop: " + id);
-        if (!isRunning) {
+        if (isOff()) {
             return;
         }
         stopService.trigger();
     }
     
     @Override
-    public void waitForShutdown(long timeout) {
-       	long t0 = System.currentTimeMillis();
-    	do {
-    		if (runState == RunState.OFF) {
-    			return;
-    		}
-    		if (System.currentTimeMillis() - t0 > timeout) {
-    			trackIssue(this, "Timeout waiting for jexler shutdown.", null);
-    			return;
-    		}
-    		try {
-    			Thread.sleep(10);
-    		} catch (InterruptedException e) {
-    		}
-    	} while (true);
+    public boolean waitForShutdown(long timeout) {
+    	boolean ok = ServiceUtil.waitForShutdown(this, timeout);
+    	if (!ok) {
+    		trackIssue(this, "Timeout waiting for jexler shutdown.", null);
+    	}
+    	return ok;
+    }
+
+    @Override
+    public RunState getRunState() {
+        return runState;
+    }
+
+    @Override
+    public boolean isOn() {
+        return runState.isOn();
+    }
+
+    @Override
+    public boolean isOff() {
+        return runState.isOff();
     }
 
     @Override
     public void trackIssue(Issue issue) {
-        log.error(issue.toString());
-        issues.add(issue);
+        issueTracker.trackIssue(issue);
     }
-    
+
     @Override
     public void trackIssue(Service service, String message, Exception exception) {
-    	trackIssue(new DefaultIssue(service, message, exception));
+    	issueTracker.trackIssue(service, message, exception);
     }
 
     @Override
     public List<Issue> getIssues() {
-        Collections.sort(issues);
-        return issues;
+        return issueTracker.getIssues();
     }
 
     @Override
     public void forgetIssues() {
-        issues.clear();
+    	issueTracker.forgetIssues();
     }
 
     @Override
@@ -293,27 +260,27 @@ public class DefaultJexler implements Jexler {
      */
     private void setMetaInfoAtStart() {
     	try {
-    		metaInfoAtStart = new DefaultMetaInfo(file);
+    		metaInfoAtStart = new BasicMetaInfo(file);
     	} catch (IOException e) {
     		String msg = "Could not read meta info from existing jexler file '" 
     				+ file.getAbsolutePath() + "'.";
     		trackIssue(null, msg, e);
-    		metaInfoAtStart = DefaultMetaInfo.EMPTY;
+    		metaInfoAtStart = BasicMetaInfo.EMPTY;
     	}
     }
     
     @Override
     public MetaInfo getMetaInfo() {
-    	if (isRunning) {
+    	if (isOn()) {
     		return metaInfoAtStart;
     	} else {
     		try {
-    			return new DefaultMetaInfo(file);
+    			return new BasicMetaInfo(file);
     		} catch (IOException e) {
     			String msg = "Could not read meta info from existing jexler file '" 
     					+ file.getAbsolutePath() + "'.";
     			trackIssue(null, msg, e);
-    			return DefaultMetaInfo.EMPTY;
+    			return BasicMetaInfo.EMPTY;
     		}
     	}
     }

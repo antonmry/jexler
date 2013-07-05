@@ -17,8 +17,8 @@
 package net.jexler.service;
 
 import net.jexler.Jexler;
+import net.jexler.RunState;
 import net.jexler.impl.AbstractEvent;
-import net.jexler.impl.AbstractService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +64,7 @@ public class CronService extends AbstractService {
 
     @Override
     public void start() {
-        if (isRunning()) {
+        if (!isOff()) {
             return;
         }
         scheduler = new Scheduler();
@@ -77,17 +77,17 @@ public class CronService extends AbstractService {
             }
         });
         cronThread.setDaemon(true);
-        setRunning(true);
+        setRunState(RunState.IDLE);
         scheduler.schedule(cron, cronThread);
     }
 
     @Override
     public void stop() {
-        if (!isRunning()) {
+        if (isOff()) {
             return;
         }
         scheduler.stop();
-        setRunning(false);
+        setRunState(RunState.OFF);
     }
 
 }

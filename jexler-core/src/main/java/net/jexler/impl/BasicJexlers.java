@@ -17,30 +17,30 @@
 package net.jexler.impl;
 
 import java.io.File;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import net.jexler.Issue;
+import net.jexler.IssueTracker;
 import net.jexler.Jexler;
 import net.jexler.JexlerFactory;
 import net.jexler.Jexlers;
 import net.jexler.RunState;
-import net.jexler.Service;
+import net.jexler.service.BasicServiceGroup;
+import net.jexler.service.Service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Default jexlers implementation.
+ * Basic default implementation of jexlers interface.
  *
  * @author $(whois jexler.net)
  */
-public class DefaultJexlers implements Jexlers {
+public class BasicJexlers extends BasicServiceGroup implements Jexlers {
 
-	static final Logger log = LoggerFactory.getLogger(DefaultJexlers.class);
+	static final Logger log = LoggerFactory.getLogger(BasicJexlers.class);
 
     private final File dir;
     private final String id;
@@ -48,26 +48,25 @@ public class DefaultJexlers implements Jexlers {
 
     /** key is jexler id */
     private final Map<String,Jexler> jexlerMap;
-    private final List<Jexler> jexlers;
 
-    private final List<Issue> issues;
+    private final IssueTracker issueTracker;
 
     /**
      * Constructor.
      * @param dir directory which contains jexler scripts
      */
-    public DefaultJexlers(File dir, JexlerFactory jexlerFactory) {
+    public BasicJexlers(File dir, JexlerFactory jexlerFactory) {
+    	super(dir.exists() ? dir.getName() : null);
         if (!dir.exists()) {
             throw new RuntimeException("Directory '" + dir.getAbsolutePath() + "' does not exist");
         } else  if (!dir.isDirectory()) {
             throw new RuntimeException("File '" + dir.getAbsolutePath() + "' is not a directory");
         }
         this.dir = dir;
-        id = dir.getName();
+        id = super.getId();
         this.jexlerFactory = jexlerFactory;
         jexlerMap = new TreeMap<String,Jexler>();
-        jexlers = new LinkedList<Jexler>();
-        issues = Collections.synchronizedList(new LinkedList<Issue>());
+        issueTracker = new BasicIssueTracker();
         refresh();
     }
 
@@ -92,24 +91,24 @@ public class DefaultJexlers implements Jexlers {
         }
 
         // recreate list while omitting jexlers without script file that are stopped
-        jexlers.clear();
+        getJexlers().clear();
         for (String id : jexlerMap.keySet()) {
             Jexler jexler = jexlerMap.get(id);
-            if (jexler.getFile().exists() || jexler.isRunning()) {
-                jexlers.add(jexler);
+            if (jexler.getFile().exists() || jexler.isOn()) {
+            	getJexlers().add(jexler);
             }
         }
 
         // recreate map with list entries
         jexlerMap.clear();
-        for (Jexler jexler : jexlers) {
+        for (Jexler jexler : getJexlers()) {
             jexlerMap.put(jexler.getId(), jexler);
         }
     }
 
     @Override
     public void autostart() {
-        for (Jexler jexler : jexlers) {
+        for (Jexler jexler : getJexlers()) {
             if (jexler.getMetaInfo().isOn("autostart", false)) {
             	jexler.start();
             }
@@ -117,104 +116,50 @@ public class DefaultJexlers implements Jexlers {
     }
 
     @Override
-    public void start() {
-        for (Jexler jexler : jexlers) {
-            jexler.start();
-        }
-    }
-
-    @Override
-    public void waitForStartup(long timeout) {
-        long t0 = System.currentTimeMillis();
-        do {
-        	boolean hasTimedOut = (System.currentTimeMillis() - t0 > timeout);
-        	boolean isNoneBusyStarting = true;
-        	for (Jexler jexler : jexlers) {
-        		RunState runState = jexler.getRunState();
-                if (runState == RunState.BUSY_STARTING) {
-                	if (hasTimedOut) {
-                		trackIssue(jexler, "Timeout waiting for jexler startup", null);
-                	}
-                	isNoneBusyStarting = false;
+    public boolean waitForStartup(long timeout) {
+    	boolean ok = super.waitForStartup(timeout);
+    	if (!ok) {
+    		for (Jexler jexler : getJexlers()) {
+                if (jexler.getRunState() == RunState.BUSY_STARTING) {
+                	trackIssue(jexler, "Timeout waiting for jexler startup", null);
                 }
             }
-        	if (isNoneBusyStarting || hasTimedOut) {
-        		return;
-        	}
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-            }
-        } while (true);
+    	}
+    	return ok;
     }
-
-    /**
-     * Returns true if at least one jexler is running.
-     */
+    
     @Override
-    public boolean isRunning() {
-        for (Jexler jexler : jexlers) {
-            if (jexler.isRunning()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public void stop() {
-        for (Jexler jexler : jexlers) {
-            jexler.stop();
-        }
-    }
-
-    @Override
-    public void waitForShutdown(long timeout) {
-        long t0 = System.currentTimeMillis();
-        do {
-        	boolean hasTimedOut = (System.currentTimeMillis() - t0 > timeout);
-        	boolean areAllOff = true;
-        	for (Jexler jexler : jexlers) {
-        		RunState runState = jexler.getRunState();
-                if (runState != RunState.OFF) {
-                	if (hasTimedOut) {
-                		trackIssue(jexler, "Timeout waiting for jexler shutdown", null);
-                	}
-                	areAllOff = false;
+    public boolean waitForShutdown(long timeout) {
+    	boolean ok = super.waitForShutdown(timeout);
+    	if (!ok) {
+    		for (Jexler jexler : getJexlers()) {
+                if (jexler.getRunState() != RunState.OFF) {
+                	trackIssue(jexler, "Timeout waiting for jexler shutdown", null);
                 }
             }
-        	if (areAllOff || hasTimedOut) {
-        		return;
-        	}
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-            }
-        } while (true);
+    	}
+    	return ok;
     }
 
     @Override
     public void trackIssue(Issue issue) {
-        log.error(issue.toString());
-        issues.add(issue);
+        issueTracker.trackIssue(issue);
     }
 
     @Override
     public void trackIssue(Service service, String message, Exception exception) {
-    	trackIssue(new DefaultIssue(service, message, exception));
+    	issueTracker.trackIssue(service, message, exception);
     }
 
     @Override
     public List<Issue> getIssues() {
-        Collections.sort(issues);
-        return issues;
+        return issueTracker.getIssues();
     }
 
     @Override
     public void forgetIssues() {
-        issues.clear();
+    	issueTracker.forgetIssues();
     }
-
 
     @Override
     public String getId() {
@@ -225,9 +170,10 @@ public class DefaultJexlers implements Jexlers {
         return dir;
     }
 
-    @Override
+	@Override
+    @SuppressWarnings("unchecked")
     public List<Jexler> getJexlers() {
-        return jexlers;
+    	return (List<Jexler>)(List<?>)getServiceList();
     }
 
     @Override

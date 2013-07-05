@@ -39,5 +39,43 @@ public enum RunState  {
 	public String getInfo() {
 		return info;
 	}
+		
+	public boolean isOff() {
+		return this == OFF;
+	}
+	
+	public boolean isBusyStarting() {
+		return this == BUSY_STARTING;
+	}
+	
+	public boolean isIdle() {
+		return this == IDLE;
+	}
+	
+	public boolean isBusyEvent() {
+		return this == BUSY_EVENT;
+	}
+		
+	public boolean isBusyStopping() {
+		return this == BUSY_STOPPING;
+	}
+	
+	/**
+	 * Convenience method, returns true if not OFF.
+	 * @return
+	 */
+	public boolean isOn() {
+		return this != OFF;
+	}
+	
+	/**
+	 * Convenience method, returns true if IDLE or BUSY_EVENT,
+	 * i.e. the service up and doing what it should do.
+	 * @return
+	 */
+	public boolean isOperational() {
+		return this == IDLE || this == BUSY_EVENT;
+	}
+	
 }
 

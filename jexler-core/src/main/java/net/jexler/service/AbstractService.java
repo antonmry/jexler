@@ -14,10 +14,10 @@
    limitations under the License.
 */
 
-package net.jexler.impl;
+package net.jexler.service;
 
 import net.jexler.Jexler;
-import net.jexler.Service;
+import net.jexler.RunState;
 
 /**
  * Abstract base service.
@@ -28,7 +28,7 @@ public abstract class AbstractService implements Service {
 
     private final Jexler jexler;
     private final String id;
-    private volatile boolean isRunning;
+    private volatile RunState runState;
 
     /**
      * Constructor.
@@ -36,16 +36,36 @@ public abstract class AbstractService implements Service {
     public AbstractService(Jexler jexler, String id) {
         this.jexler = jexler;
         this.id = id;
-        isRunning = false;
+        runState = RunState.OFF;
     }
 
-    public void setRunning(boolean isRunning) {
-        this.isRunning = isRunning;
+    public void setRunState(RunState runState) {
+        this.runState = runState;
+    }
+        
+    @Override
+    public boolean waitForStartup(long timeout) {
+       	return ServiceUtil.waitForStartup(this, timeout);
+    }
+    
+    @Override
+    public boolean waitForShutdown(long timeout) {
+       	return ServiceUtil.waitForShutdown(this, timeout);
+    }
+    
+    @Override
+    public RunState getRunState() {
+        return runState;
     }
 
     @Override
-    public boolean isRunning() {
-        return isRunning;
+    public boolean isOn() {
+        return runState.isOn();
+    }
+
+    @Override
+    public boolean isOff() {
+        return runState.isOff();
     }
 
     @Override

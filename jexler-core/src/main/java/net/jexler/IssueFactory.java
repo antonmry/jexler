@@ -16,7 +16,8 @@
 
 package net.jexler;
 
-import net.jexler.impl.DefaultIssue;
+import net.jexler.impl.BasicIssue;
+import net.jexler.service.Service;
 
 
 /**
@@ -30,7 +31,7 @@ public class IssueFactory  {
     }
 
 	public Issue get(Service service, String message, Exception exception) {
-		return new DefaultIssue(service, message, exception);
+		return new BasicIssue(service, message, exception);
 	}
 
 }

@@ -27,7 +27,7 @@ import net.jexler.Jexler;
 import net.jexler.Jexlers;
 import net.jexler.MetaInfo;
 import net.jexler.RunState;
-import net.jexler.Service;
+import net.jexler.service.Service;
 
 /**
  * Mock jexler implementation for unit tests.
@@ -56,12 +56,32 @@ public class MockJexler implements Jexler {
 	}
 
 	@Override
-	public boolean isRunning() {
+	public boolean waitForStartup(long timeout) {
+		throw new RuntimeException("Not implemented");
+	}
+	
+	@Override
+	public void stop() {
+		throw new RuntimeException("Not implemented");
+	}
+	
+	@Override
+	public boolean waitForShutdown(long timeout) {
 		throw new RuntimeException("Not implemented");
 	}
 
 	@Override
-	public void stop() {
+	public RunState getRunState() {
+		throw new RuntimeException("Not implemented");
+	}
+
+	@Override
+	public boolean isOn() {
+		throw new RuntimeException("Not implemented");
+	}
+
+	@Override
+	public boolean isOff() {
 		throw new RuntimeException("Not implemented");
 	}
 
@@ -84,25 +104,10 @@ public class MockJexler implements Jexler {
 	public void forgetIssues() {
 		throw new RuntimeException("Not implemented");
 	}
-
-	@Override
-	public RunState getRunState() {
-		throw new RuntimeException("Not implemented");
-	}
-
-	@Override
-	public void waitForStartup(long timeout) {
-		throw new RuntimeException("Not implemented");
-	}
 	
 	@Override
 	public void handle(Event event) {
 		events.add(event);
-	}
-
-	@Override
-	public void waitForShutdown(long timeout) {
-		throw new RuntimeException("Not implemented");
 	}
 
 	@Override

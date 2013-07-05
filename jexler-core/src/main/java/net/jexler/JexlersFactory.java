@@ -18,7 +18,7 @@ package net.jexler;
 
 import java.io.File;
 
-import net.jexler.impl.DefaultJexlers;
+import net.jexler.impl.BasicJexlers;
 
 /**
  * Jexlers factory.
@@ -31,7 +31,7 @@ public class JexlersFactory  {
     }
 
 	public Jexlers get(File dir) {
-		return new DefaultJexlers(dir, new JexlerFactory());
+		return new BasicJexlers(dir, new JexlerFactory());
 	}
 
 }

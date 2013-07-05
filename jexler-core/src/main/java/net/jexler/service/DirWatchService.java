@@ -25,8 +25,8 @@ import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 
 import net.jexler.Jexler;
+import net.jexler.RunState;
 import net.jexler.impl.AbstractEvent;
-import net.jexler.impl.AbstractService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +60,6 @@ public class DirWatchService extends AbstractService {
     private final DirWatchService thisService;
     private File watchDir;
     private long sleepTimeMs;
-    private volatile boolean stopWatching;
 
     /**
      * Constructor.
@@ -94,7 +93,7 @@ public class DirWatchService extends AbstractService {
 
     @Override
     public void start() {
-        if (isRunning()) {
+        if (!isOff()) {
             return;
         }
         Path path = watchDir.toPath();
@@ -114,7 +113,7 @@ public class DirWatchService extends AbstractService {
         Thread watchThread = new Thread(new Runnable() {
             public void run() {
                 Thread.currentThread().setName(getJexler().getId() + "|" + getId());
-                while (!stopWatching) {
+                while (getRunState() == RunState.IDLE) {
                     for (WatchEvent<?> event : watchKey.pollEvents()) {
                 		Path path = ((Path)event.context());
                 		File file = new File(watchDir, path.toFile().getName());
@@ -122,7 +121,7 @@ public class DirWatchService extends AbstractService {
                 		log.trace("event " + kind + " '" + file.getAbsolutePath() + "'");
                 		getJexler().handle(new Event(thisService, file, kind));
                 	}
-                	if (stopWatching) {
+                	if (getRunState() != RunState.IDLE) {
                 		break;
                 	}
                 	try {
@@ -135,21 +134,20 @@ public class DirWatchService extends AbstractService {
 				} catch (IOException e) {
 					log.trace("failed to close watch service", e);
 				}
-                setRunning(false);
+                setRunState(RunState.OFF);
             }
         });
         watchThread.setDaemon(true);
-        setRunning(true);
-        stopWatching = false;
+        setRunState(RunState.IDLE);
         watchThread.start();
     }
 
     @Override
     public void stop() {
-        if (!isRunning()) {
+        if (isOff()) {
             return;
         }
-        stopWatching = true;
+        setRunState(RunState.BUSY_STOPPING);
     }
 
 }

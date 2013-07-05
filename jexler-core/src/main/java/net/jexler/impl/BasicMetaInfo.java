@@ -31,20 +31,20 @@ import net.jexler.MetaInfo;
 import org.codehaus.groovy.control.CompilationFailedException;
 
 /**
- * Default meta info implementation.
+ * Basic default implementation of meta info interface.
  *
  * @author $(whois jexler.net)
  */
-public class DefaultMetaInfo extends HashMap<String,Object> implements MetaInfo {
+public class BasicMetaInfo extends HashMap<String,Object> implements MetaInfo {
 
 	private static final long serialVersionUID = 125418652799853484L;
 
-	public static MetaInfo EMPTY = new DefaultMetaInfo();
+	public static MetaInfo EMPTY = new BasicMetaInfo();
 	
 	/**
 	 * Constructor for empty meta info.
 	 */
-	public DefaultMetaInfo() {
+	public BasicMetaInfo() {
 		// empty map
 	}
 	
@@ -53,7 +53,7 @@ public class DefaultMetaInfo extends HashMap<String,Object> implements MetaInfo 
 	 * @param file file to read meta info from
 	 * 
 	 */
-	public DefaultMetaInfo(File file) throws IOException {
+	public BasicMetaInfo(File file) throws IOException {
 		if (file == null || !file.exists()) {
 			return;
 		}

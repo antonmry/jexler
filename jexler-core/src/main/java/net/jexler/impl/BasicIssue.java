@@ -19,14 +19,14 @@ package net.jexler.impl;
 import java.util.Date;
 
 import net.jexler.Issue;
-import net.jexler.Service;
+import net.jexler.service.Service;
 
 /**
- * Issue.
+ * Basic default implementation of issue interface.
  *
  * @author $(whois jexler.net)
  */
-public class DefaultIssue implements Issue {
+public class BasicIssue implements Issue {
 
     private final Date date;
     private final Service service;
@@ -34,7 +34,7 @@ public class DefaultIssue implements Issue {
     private final Exception exception;
     private final String stackTrace;
 
-    public DefaultIssue(Service service, String message, Exception exception) {
+    public BasicIssue(Service service, String message, Exception exception) {
         date = new Date();
         this.service = service;
         this.message = message;

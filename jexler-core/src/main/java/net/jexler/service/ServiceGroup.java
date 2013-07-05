@@ -14,39 +14,30 @@
    limitations under the License.
 */
 
-package net.jexler;
+package net.jexler.service;
+
+import java.util.List;
 
 
 /**
- * Interface for a service.
- * Implemented by Jexler(s) themselves and services used by jexlers.
+ * Interface for a service which is a group of services.
+ * Starting starts all, stopping stops all.
  *
  * @author $(whois jexler.net)
  */
-public interface Service {
-
-    /**
-     * Initiates service start.
-     */
-    void start();
-
-    /**
-     * Get info if service is running or not.
-     * Service is running between sometime during start()
-     * and sometime during or after stop().
-     * @return true or false
-     */
-    boolean isRunning();
-
-    /**
-     * Initiates service stop.
-     */
-    void stop();
-
-    /**
-     * Get id.
-     * @return id
-     */
-    String getId();
+public interface ServiceGroup extends Service {
+	
+	/**
+	 * Add a service to the group of services.
+	 * @param service
+	 */
+	void add(Service service);
+	
+	/**
+	 * Get the list of services.
+	 * Use to read and modify the group of services.
+	 * @return list of services, never null
+	 */
+	List<Service> getServiceList();
 
 }

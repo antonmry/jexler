@@ -17,7 +17,7 @@
 package net.jexler.impl;
 
 import net.jexler.Event;
-import net.jexler.Service;
+import net.jexler.service.Service;
 
 /**
  * Abstract base event.
