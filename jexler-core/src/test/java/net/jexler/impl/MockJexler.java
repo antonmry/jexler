@@ -21,12 +21,12 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import net.jexler.Event;
 import net.jexler.Issue;
 import net.jexler.Jexler;
 import net.jexler.Jexlers;
 import net.jexler.MetaInfo;
 import net.jexler.RunState;
+import net.jexler.service.Event;
 import net.jexler.service.Service;
 
 /**

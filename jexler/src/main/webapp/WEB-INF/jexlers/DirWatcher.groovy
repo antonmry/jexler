@@ -5,9 +5,9 @@ services.start()
 
 while (true) {
   event = events.take();
-  if (event instanceof DirWatchService.Event) {
+  if (event instanceof DirWatchEvent) {
     log.trace("Got file change: ${event.kind} '${event.file.name}'")
-  } else if (event instanceof StopService.Event) {
+  } else if (event instanceof StopEvent) {
     return
   }
 }

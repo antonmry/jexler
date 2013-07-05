@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import net.jexler.Event;
 import net.jexler.Issue;
 import net.jexler.IssueTracker;
 import net.jexler.Jexler;
@@ -32,10 +31,11 @@ import net.jexler.Jexlers;
 import net.jexler.MetaInfo;
 import net.jexler.RunState;
 import net.jexler.service.BasicServiceGroup;
+import net.jexler.service.Event;
 import net.jexler.service.Service;
 import net.jexler.service.ServiceGroup;
 import net.jexler.service.ServiceUtil;
-import net.jexler.service.StopService;
+import net.jexler.service.StopEvent;
 
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
@@ -85,8 +85,6 @@ public class BasicJexler implements Jexler {
      */
     private final ServiceGroup services;
 
-    private final StopService stopService;
-
     private final IssueTracker issueTracker;
     
     private MetaInfo metaInfoAtStart;
@@ -103,7 +101,6 @@ public class BasicJexler implements Jexler {
         runState = RunState.OFF;
         events = new Events();
         services = new BasicServiceGroup(id + ".services");
-        stopService = new StopService(this, "stop-jexler");
         issueTracker = new BasicIssueTracker();
     }
 
@@ -125,7 +122,6 @@ public class BasicJexler implements Jexler {
         forgetIssues();
         setMetaInfoAtStart();
         runState = RunState.BUSY_STARTING;
-        services.add(stopService);
         
     	final Binding binding = new Binding();
     	binding.setVariable("jexler", this);
@@ -193,7 +189,7 @@ public class BasicJexler implements Jexler {
         if (isOff()) {
             return;
         }
-        stopService.trigger();
+        handle(new StopEvent(this));
     }
     
     @Override

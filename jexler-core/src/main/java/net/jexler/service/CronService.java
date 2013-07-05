@@ -16,14 +16,12 @@
 
 package net.jexler.service;
 
-import net.jexler.EventBase;
+import it.sauronsoftware.cron4j.Scheduler;
 import net.jexler.Jexler;
 import net.jexler.RunState;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import it.sauronsoftware.cron4j.Scheduler;
 
 /**
  * A cron service, creates events at configurable times.
@@ -31,17 +29,6 @@ import it.sauronsoftware.cron4j.Scheduler;
  * @author $(whois jexler.net)
  */
 public class CronService extends ServiceBase {
-
-    public static class Event extends EventBase {
-        private String cron;
-        public Event(CronService service, String cron) {
-            super(service);
-            this.cron = cron;
-        }
-        public String getCron() {
-            return cron;
-        }
-    }
 
     static final Logger log = LoggerFactory.getLogger(CronService.class);
 
@@ -73,7 +60,7 @@ public class CronService extends ServiceBase {
             public void run() {
                 Thread.currentThread().setName(getJexler().getId() + "|" + getId());
                 log.trace("new cron event: " + cron);
-                getJexler().handle(new Event(thisService, cron));
+                getJexler().handle(new CronEvent(thisService, cron));
             }
         });
         cronThread.setDaemon(true);

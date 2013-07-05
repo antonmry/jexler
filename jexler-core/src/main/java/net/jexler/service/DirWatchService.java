@@ -24,7 +24,6 @@ import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 
-import net.jexler.EventBase;
 import net.jexler.Jexler;
 import net.jexler.RunState;
 
@@ -38,22 +37,6 @@ import org.slf4j.LoggerFactory;
  * @author $(whois jexler.net)
  */
 public class DirWatchService extends ServiceBase {
-
-    public class Event extends EventBase {
-        private File file;
-        private WatchEvent.Kind<?> kind;
-        public Event(DirWatchService service, File file, WatchEvent.Kind<?> kind) {
-            super(service);
-            this.file = file;
-            this.kind = kind;
-        }
-        public File getFile() {
-            return file;
-        }
-        public WatchEvent.Kind<?> getKind() {
-            return kind;
-        }
-    }
 
     static final Logger log = LoggerFactory.getLogger(DirWatchService.class);
 
@@ -119,7 +102,7 @@ public class DirWatchService extends ServiceBase {
                 		File file = new File(watchDir, path.toFile().getName());
                 		WatchEvent.Kind<?> kind = event.kind();
                 		log.trace("event " + kind + " '" + file.getAbsolutePath() + "'");
-                		getJexler().handle(new Event(thisService, file, kind));
+                		getJexler().handle(new DirWatchEvent(thisService, file, kind));
                 	}
                 	if (getRunState() != RunState.IDLE) {
                 		break;

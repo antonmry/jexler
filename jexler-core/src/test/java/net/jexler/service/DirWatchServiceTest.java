@@ -26,7 +26,6 @@ import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.StandardWatchEventKinds;
 
-import net.jexler.Event;
 import net.jexler.VerySlowTests;
 import net.jexler.impl.MockJexler;
 
@@ -103,8 +102,8 @@ public final class DirWatchServiceTest
         Event event = jexler.takeEvent(MS_30_SEC);
         assertNotNull("must not be null", event);
         assertEquals("must be same", dirWatchService, event.getService());
-        assertTrue("must be true", event instanceof DirWatchService.Event);
-        DirWatchService.Event dirWatchEvent = (DirWatchService.Event)event;
+        assertTrue("must be true", event instanceof DirWatchEvent);
+        DirWatchEvent dirWatchEvent = (DirWatchEvent)event;
         assertEquals("must be same", tempFile.getCanonicalPath(),
                 dirWatchEvent.getFile().getCanonicalPath());
         assertEquals("must be same", StandardWatchEventKinds.ENTRY_CREATE,
@@ -120,8 +119,8 @@ public final class DirWatchServiceTest
         event = jexler.takeEvent(MS_30_SEC);
         assertNotNull("must not be null", event);
         assertEquals("must be same", dirWatchService, event.getService());
-        assertTrue("must be true", event instanceof DirWatchService.Event);
-        dirWatchEvent = (DirWatchService.Event)event;
+        assertTrue("must be true", event instanceof DirWatchEvent);
+        dirWatchEvent = (DirWatchEvent)event;
         assertEquals("must be same", tempFile.getCanonicalPath(),
                 dirWatchEvent.getFile().getCanonicalPath());
         assertEquals("must be same", StandardWatchEventKinds.ENTRY_MODIFY,
@@ -135,8 +134,8 @@ public final class DirWatchServiceTest
         event = jexler.takeEvent(MS_30_SEC);
         assertNotNull("must not be null", event);
         assertEquals("must be same", dirWatchService, event.getService());
-        assertTrue("must be true", event instanceof DirWatchService.Event);
-        dirWatchEvent = (DirWatchService.Event)event;
+        assertTrue("must be true", event instanceof DirWatchEvent);
+        dirWatchEvent = (DirWatchEvent)event;
         assertEquals("must be same", tempFile.getCanonicalPath(),
                 dirWatchEvent.getFile().getCanonicalPath());
         assertEquals("must be same", StandardWatchEventKinds.ENTRY_DELETE,

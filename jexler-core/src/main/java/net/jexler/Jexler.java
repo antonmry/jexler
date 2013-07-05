@@ -18,6 +18,7 @@ package net.jexler;
 
 import java.io.File;
 
+import net.jexler.service.Event;
 import net.jexler.service.Service;
 
 /**

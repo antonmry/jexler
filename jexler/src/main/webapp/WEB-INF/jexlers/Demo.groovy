@@ -11,7 +11,7 @@ services.start()
 
 while (true) {
   event = events.take()
-  if (event instanceof CronService.Event) {
+  if (event instanceof CronEvent) {
     
     // run shell command
     shellTool = new ShellTool()
@@ -31,7 +31,7 @@ while (true) {
     
     throw new RuntimeException("Demo RuntimeException")
         
-  } else if (event instanceof StopService.Event) {
+  } else if (event instanceof StopEvent) {
     return
   }
 }

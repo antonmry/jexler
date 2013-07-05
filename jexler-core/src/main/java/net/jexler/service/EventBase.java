@@ -14,22 +14,29 @@
    limitations under the License.
 */
 
-package net.jexler;
+package net.jexler.service;
 
-import net.jexler.service.Service;
 
 
 /**
- * Interface for an event (sent by a service to a jexler).
+ * Abstract event base implementation.
  *
  * @author $(whois jexler.net)
  */
-public interface Event {
+public abstract class EventBase implements Event {
+
+    private Service service;
 
     /**
-     * Get service that sent the event.
-     * @return sensor
+     * Constructor.
      */
-    Service getService();
+    public EventBase(Service service) {
+        this.service = service;
+    }
+
+    @Override
+    public Service getService() {
+        return service;
+    }
 
 }

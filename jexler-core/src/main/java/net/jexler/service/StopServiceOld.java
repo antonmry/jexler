@@ -14,30 +14,46 @@
    limitations under the License.
 */
 
-package net.jexler;
+package net.jexler.service;
 
-import net.jexler.service.Service;
-
+import net.jexler.Jexler;
+import net.jexler.RunState;
 
 /**
- * Abstract event base implementation.
+ * Formal service for stopping a jexler, triggered externally.
  *
  * @author $(whois jexler.net)
  */
-public abstract class EventBase implements Event {
+public class StopServiceOld extends ServiceBase {
 
-    private Service service;
+    public static class Event extends EventBase {
+        public Event(StopServiceOld service) {
+            super(service);
+        }
+    }
 
     /**
      * Constructor.
      */
-    public EventBase(Service service) {
-        this.service = service;
+    public StopServiceOld(Jexler jexler, String id) {
+        super(jexler, id);
     }
 
     @Override
-    public Service getService() {
-        return service;
+    public void start() {
+        setRunState(RunState.IDLE);
+    }
+
+    @Override
+    public void stop() {
+    	setRunState(RunState.OFF);
+    }
+
+    /**
+     * Trigger event.
+     */
+    public void trigger() {
+        getJexler().handle(new Event(this));
     }
 
 }
