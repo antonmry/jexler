@@ -9,6 +9,10 @@ dependencies {
   runtime files('src/main/resources')
 }
 
+project.ext {
+  pkg = 'war'
+}
+
 war {
   manifest {
     attributes 'Implementation-Title': 'jexler', 'Implementation-Version': version

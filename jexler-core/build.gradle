@@ -4,6 +4,10 @@ dependencies {
   compile files('jars/cron4j-2.2.5.jar')
 }
 
+project.ext {
+  pkg = 'jar'
+}
+
 jar {
   manifest {
     attributes 'Implementation-Title': 'jexler-core', 'Implementation-Version': version

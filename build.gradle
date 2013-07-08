@@ -1,11 +1,14 @@
 subprojects {
   apply plugin: 'java'
   apply plugin: 'eclipse'
+  apply plugin: 'maven'
 
   sourceCompatibility = 1.7
   targetCompatibility = 1.7
 
   version = '1.0.3-SNAPSHOT'
+
+  project.group = 'net.jexler'
 
   jar {
     manifest.attributes provider: 'gradle'
@@ -46,4 +49,34 @@ subprojects {
     }
   }
   
+  task writePom << {
+    pom {
+	  project {
+		name 'jexler'
+		description 'to do (java and groovy)'
+		url 'http://www.jexler.net/'
+		packaging project.ext.pkg
+        licenses {
+          license {
+            name 'The Apache Software License, Version 2.0'
+            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+            distribution 'repo'
+          }
+        }
+		scm {
+		  url 'https://github.com/jexler/jexler'
+		  connection 'https://github.com/jexler/jexler.git'
+		  developerConnection 'https://github.com/jexler/jexler.git'
+		}
+        developers {
+          developer {
+            id 'jexler'
+            name '$(whois jexler.net)'
+            email 'jex@jexler.net'
+          }
+        }
+	  }
+    }.writeTo("$buildDir/pom.xml")
+  }
+
 }
