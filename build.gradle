@@ -28,6 +28,11 @@ subprojects {
     source = sourceSets.main.allJava
   }
   
+  task jarSources(type:Jar){
+    from sourceSets.main.allSource
+    classifier = 'source'
+  }
+  
   test {
 	  //testLogging.showStandardStreams = true
 	  useJUnit {
@@ -53,9 +58,9 @@ subprojects {
     pom {
 	  project {
 		name 'jexler'
-		description 'to do (java and groovy)'
+		description project.description
 		url 'http://www.jexler.net/'
-		packaging project.ext.pkg
+        packaging project.ext.pkg
         licenses {
           license {
             name 'The Apache Software License, Version 2.0'
@@ -76,7 +81,7 @@ subprojects {
           }
         }
 	  }
-    }.writeTo("$buildDir/pom.xml")
+    }.writeTo("$buildDir/libs/${project.name}-${project.version}.pom")
   }
 
 }

@@ -1,8 +1,4 @@
-dependencies {
-  compile 'org.codehaus.groovy:groovy-all:2.1.5'
-  compile 'org.apache.ivy:ivy:2.3.0'
-  compile files('jars/cron4j-2.2.5.jar')
-}
+description = 'jexler core libary'
 
 project.ext {
   pkg = 'jar'
@@ -13,3 +9,10 @@ jar {
     attributes 'Implementation-Title': 'jexler-core', 'Implementation-Version': version
   }
 }
+
+dependencies {
+  compile 'org.codehaus.groovy:groovy-all:2.1.5'
+  compile 'org.apache.ivy:ivy:2.3.0'
+  compile files('jars/cron4j-2.2.5.jar')
+}
+  
