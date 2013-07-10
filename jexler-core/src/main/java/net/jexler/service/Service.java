@@ -56,7 +56,7 @@ public interface Service {
 
 	/**
 	 * Get run state of the service.
-	 * @return
+	 * @return state
 	 */
 	RunState getRunState();    
 

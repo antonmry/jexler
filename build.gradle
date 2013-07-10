@@ -24,37 +24,43 @@ subprojects {
     testCompile 'junit:junit:4.11'
   }
 
-  task myJavadocs(type: Javadoc) {
-    source = sourceSets.main.allJava
+  task sourcesJar(type: Jar, dependsOn:classes) { 
+    classifier = 'sources' 
+    from sourceSets.main.allSource 
+  } 
+
+  task javadocJar(type: Jar, dependsOn:javadoc) { 
+    classifier = 'javadoc' 
+    from javadoc.destinationDir 
+  } 
+
+  artifacts {
+    archives sourcesJar 
+    archives javadocJar 
   }
-  
-  task jarSources(type:Jar){
-    from sourceSets.main.allSource
-    classifier = 'source'
-  }
-  
+   
   test {
-	  //testLogging.showStandardStreams = true
-	  useJUnit {
-        includeCategories 'net.jexler.FastTests'
+	//testLogging.showStandardStreams = true
+	useJUnit {
+      includeCategories 'net.jexler.FastTests'
     }
   }
 
   task slowTests(type: Test, dependsOn: 'test') {
 	//testLogging.showStandardStreams = true
     useJUnit {
-        includeCategories 'net.jexler.SlowTests'
+      includeCategories 'net.jexler.SlowTests'
     }
   }
   
   task verySlowTests(type: Test, dependsOn: 'slowTests') {
 	//testLogging.showStandardStreams = true
     useJUnit {
-        includeCategories 'net.jexler.VerySlowTests'
+      includeCategories 'net.jexler.VerySlowTests'
     }
   }
   
-  task writePom << {
+  task pom << {
     pom {
 	  project {
 		name 'jexler'

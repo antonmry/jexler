@@ -62,7 +62,7 @@ public enum RunState  {
 	
 	/**
 	 * Convenience method, returns true if not OFF.
-	 * @return
+	 * @return true or false
 	 */
 	public boolean isOn() {
 		return this != OFF;
@@ -71,7 +71,7 @@ public enum RunState  {
 	/**
 	 * Convenience method, returns true if IDLE or BUSY_EVENT,
 	 * i.e. the service up and doing what it should do.
-	 * @return
+	 * @return true or false
 	 */
 	public boolean isOperational() {
 		return this == IDLE || this == BUSY_EVENT;

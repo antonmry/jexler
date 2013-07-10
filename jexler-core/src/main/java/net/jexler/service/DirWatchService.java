@@ -57,7 +57,7 @@ public class DirWatchService extends ServiceBase {
     /**
      * Set directory to watch.
      * Default if not set is jexler directory.
-     * @param fileName name of file to tail
+     * @param watchDir directory to watch
      */
     public DirWatchService setDir(File watchDir) {
         this.watchDir = watchDir;
