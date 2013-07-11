@@ -18,7 +18,7 @@ package net.jexler;
 
 
 /**
- * State of a running jexler.
+ * Run state of a service.
  *
  * @author $(whois jexler.net)
  */

@@ -27,7 +27,7 @@ import net.jexler.service.Service;
  * @author $(whois jexler.net)
  */
 public class BasicIssue implements Issue {
-
+	
     private final Date date;
     private final Service service;
     private final String message;
@@ -79,16 +79,36 @@ public class BasicIssue implements Issue {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("Issue: [message='");
-        builder.append(message);
-        builder.append("',service='");
-        builder.append(service != null ? service.getClass().getName() + ":" + service.getId() : null);
-        builder.append("',exception='");
-        builder.append(exception != null ? exception.toString().replace("\n", "\\n") : null);
-        builder.append("',stackTrace='");
-        builder.append(stackTrace != null ? stackTrace.replace("\n", "\\n") : null);
+        builder.append("Issue: [message=");
+        if (message == null) {
+        	builder.append(message);
+        } else {
+        	builder.append("'" + toSingleLine(message) + "'");
+        }
+        builder.append(",service=");
+        if (service == null) {
+        	builder.append(service);
+        } else {
+        	builder.append("'" + service.getClass().getName() + ":" + service.getId() + "'");
+        }
+        builder.append(",exception=");
+        if (exception == null) {
+        	builder.append(exception);
+        } else {
+        	builder.append("'" + toSingleLine(exception.toString()) + "'");
+        }
+        builder.append(",stackTrace=");
+        if (stackTrace == null) {
+        	builder.append(stackTrace);
+        } else {
+        	builder.append("'" + toSingleLine(stackTrace.toString()) + "'");
+        }
         builder.append(']');
         return builder.toString();
+    }
+    
+    private static String toSingleLine(String in) {
+    	return in.replace("\r\n", "\\n").replace("\r", "\\n").replace("\n", "\\n");
     }
 }
 
