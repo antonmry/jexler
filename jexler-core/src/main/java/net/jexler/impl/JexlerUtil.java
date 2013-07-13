@@ -58,9 +58,9 @@ public class JexlerUtil {
                     break;
                 }
                 if (reverseLines) {
-                    builder.insert(0, line + "\n");
+                    builder.insert(0, line + System.lineSeparator());
                 } else {
-                    builder.append(line + "\n");
+                    builder.append(line + System.lineSeparator());
                 }
             } while (true);
         }
