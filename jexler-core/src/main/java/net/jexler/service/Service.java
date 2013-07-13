@@ -36,7 +36,7 @@ public interface Service {
 
     /**
      * Waits until run state is not BUSY_STARTING or timeout.
-     * @param timeout timeout in seconds
+     * @param timeout timeout in ms
      * @return true if no timeout, false otherwise
      */
     boolean waitForStartup(long timeout);
@@ -49,7 +49,7 @@ public interface Service {
     
     /**
      * Waits until run state is not OFF or timeout.
-     * @param timeout timeout in seconds
+     * @param timeout timeout in ms
      * @return true if no timeout, false otherwise
      */
     boolean waitForShutdown(long timeout);
