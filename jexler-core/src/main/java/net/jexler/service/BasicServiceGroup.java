@@ -127,7 +127,7 @@ public class BasicServiceGroup implements ServiceGroup {
 	 */
 	@Override
     public boolean isOff() {
-		return !isOff();
+		return !isOn();
     }
 
 	@Override
