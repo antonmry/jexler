@@ -31,7 +31,7 @@ public class ServiceUtil {
     		if (!service.getRunState().isBusyStarting()) {
     			return true;
     		}
-    		if (System.currentTimeMillis() - t0 > timeout) {
+    		if (System.currentTimeMillis() - t0 >= timeout) {
     			return false;
     		}
     		try {
@@ -47,7 +47,7 @@ public class ServiceUtil {
     		if (service.isOff()) {
     			return true;
     		}
-    		if (System.currentTimeMillis() - t0 > timeout) {
+    		if (System.currentTimeMillis() - t0 >= timeout) {
     			return false;
     		}
     		try {

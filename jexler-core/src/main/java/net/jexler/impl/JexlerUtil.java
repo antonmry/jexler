@@ -84,6 +84,22 @@ public class JexlerUtil {
     }
     
     /**
+     * @param timeout time to wait in ms
+     */
+    public static void waitAtLeast(long timeout) {
+    	long t0 = System.currentTimeMillis();
+    	do {
+    		if (System.currentTimeMillis() - t0 >= timeout) {
+    			return;
+    		}
+    		try {
+    			Thread.sleep(10);
+    		} catch (InterruptedException e) {
+    		}
+    	} while (true);
+    }
+    
+    /**
      * Get jexler id for file or null if not a jexler script
      */
     public static String getJexlerIdForFile(File file) {

@@ -164,15 +164,24 @@ public class BasicJexler implements Jexler {
         scriptThread.setDaemon(true);
         scriptThread.setName(id);
         scriptThread.start();
+
     	/*
-    	 * heuristic temporary fix for grape/ivy not thread safe
+    	 * heuristic workaround for grape/ivy not thread safe
     	 * (when starting several jexlers in a loop which grab dependencies
     	 * using groovy grape, concurrent access to ivy can result in all
-    	 * jexlers failing to start up from then on)
+    	 * jexlers failing to start up from then on - observed only on mac
+    	 * in tomcat, could not reproduce in a test case so far...)
     	 */
-    	try {
-    		Thread.sleep(300);
-    	} catch (InterruptedException e) {
+        final String name = "net.jexler.start.wait.ms";
+        String value = System.getProperty(name);
+        if (value != null) {
+        	long ms = 0;
+        	try {
+        		ms = Long.parseLong(value);
+        	} catch (NumberFormatException e) {
+        		trackIssue(this, "Property '" + name + "' value '" + value + "' is not a number.", e);
+        	}
+        	JexlerUtil.waitAtLeast(ms);
     	}
     }
         
