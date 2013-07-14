@@ -16,7 +16,7 @@
 
 package net.jexler.internal;
 
-import java.nio.file.Path;
+import java.io.File;
 import java.util.List;
 
 import net.jexler.Issue;
@@ -42,7 +42,7 @@ public class MockJexlers implements Jexlers {
      * Constructor.
      * @param dir directory which contains jexler scripts
      */
-    public MockJexlers(Path path, JexlerFactory jexlerFactory) {
+    public MockJexlers(File dir, JexlerFactory jexlerFactory) {
     }
 
 	@Override
@@ -116,7 +116,7 @@ public class MockJexlers implements Jexlers {
 	}
 
 	@Override
-	public Path getPath() {
+	public File getDir() {
 		throw new RuntimeException("Not implemented");
 	}
 
@@ -131,12 +131,12 @@ public class MockJexlers implements Jexlers {
 	}
 
 	@Override
-	public Path getJexlerPath(String id) {
+	public File getJexlerFile(String id) {
 		throw new RuntimeException("Not implemented");
 	}
 
 	@Override
-	public String getJexlerId(Path jexlerPath) {
+	public String getJexlerId(File jexlerFile) {
 		throw new RuntimeException("Not implemented");
 	}
 

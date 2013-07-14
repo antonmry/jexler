@@ -16,7 +16,7 @@
 
 package net.jexler.internal;
 
-import java.nio.file.Path;
+import java.io.File;
 
 import net.jexler.Jexler;
 import net.jexler.JexlerFactory;
@@ -33,8 +33,8 @@ public class MockJexlerFactory extends JexlerFactory  {
     }
 
     @Override
-	public Jexler get(Path path, Jexlers jexlers) {
-		return new MockJexler(path, jexlers);
+	public Jexler get(File file, Jexlers jexlers) {
+		return new MockJexler(file, jexlers);
 	}
 
 }

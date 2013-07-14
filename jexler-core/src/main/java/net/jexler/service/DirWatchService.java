@@ -41,7 +41,7 @@ public class DirWatchService extends ServiceBase {
     static final Logger log = LoggerFactory.getLogger(DirWatchService.class);
 
     private final DirWatchService thisService;
-    private Path watchDirPath;
+    private File watchDir;
     private long sleepTimeMs;
 
     /**
@@ -50,16 +50,17 @@ public class DirWatchService extends ServiceBase {
     public DirWatchService(Jexler jexler, String id) {
         super(jexler, id);
         thisService = this;
-        this.watchDirPath = null;
+        this.watchDir = jexler.getFile().getParentFile();
         this.sleepTimeMs = 1000;
     }
 
     /**
      * Set directory to watch.
-     * @param watchDirPath path to directory to watch
+     * Default if not set is jexler directory.
+     * @param watchDir directory to watch
      */
-    public DirWatchService setDirPath(Path watchDirPath) {
-        this.watchDirPath = watchDirPath;
+    public DirWatchService setDir(File watchDir) {
+        this.watchDir = watchDir;
         return this;
     }
 
@@ -78,17 +79,18 @@ public class DirWatchService extends ServiceBase {
         if (!isOff()) {
             return;
         }
+        Path path = watchDir.toPath();
         final WatchService watchService;
         final WatchKey watchKey;
         try {
-        	watchService = watchDirPath.getFileSystem().newWatchService();
-        	watchKey = watchDirPath.register(watchService,
+        	watchService = path.getFileSystem().newWatchService();
+        	watchKey = path.register(watchService,
         			StandardWatchEventKinds.ENTRY_CREATE,
         			StandardWatchEventKinds.ENTRY_MODIFY,
         			StandardWatchEventKinds.ENTRY_DELETE);
         } catch (IOException e) {
-        	getJexler().trackIssue(this, "Could not create watch service or key for directory '"
-        			+ watchDirPath.toUri() + "'", e);
+        	getJexler().trackIssue(this, "could not create watch service or key for directory '"
+        			+ watchDir.getAbsolutePath() + "'", e);
         	return;
         }
         Thread watchThread = new Thread(new Runnable() {
@@ -97,10 +99,10 @@ public class DirWatchService extends ServiceBase {
                 while (getRunState() == RunState.IDLE) {
                     for (WatchEvent<?> event : watchKey.pollEvents()) {
                 		Path path = ((Path)event.context());
-                		Path filePath = new File(watchDirPath.toFile(), path.toFile().getName()).toPath();
+                		File file = new File(watchDir, path.toFile().getName());
                 		WatchEvent.Kind<?> kind = event.kind();
-                		log.trace("event " + kind + " '" + filePath.toUri() + "'");
-                		getJexler().handle(new DirWatchEvent(thisService, filePath, kind));
+                		log.trace("event " + kind + " '" + file.getAbsolutePath() + "'");
+                		getJexler().handle(new DirWatchEvent(thisService, file, kind));
                 	}
                 	if (getRunState() != RunState.IDLE) {
                 		break;

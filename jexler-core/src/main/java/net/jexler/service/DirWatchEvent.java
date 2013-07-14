@@ -16,7 +16,7 @@
 
 package net.jexler.service;
 
-import java.nio.file.Path;
+import java.io.File;
 import java.nio.file.WatchEvent;
 
 
@@ -28,21 +28,17 @@ import java.nio.file.WatchEvent;
  */
 public class DirWatchEvent extends EventBase {
 
-    private Path filePath;
+    private File file;
     private WatchEvent.Kind<?> kind;
     
-    public DirWatchEvent(Service service, Path filePath, WatchEvent.Kind<?> kind) {
+    public DirWatchEvent(Service service, File file, WatchEvent.Kind<?> kind) {
         super(service);
-        this.filePath = filePath;
+        this.file = file;
         this.kind = kind;
     }
     
-    /**
-     * Path to file that been created, modified or deleted.
-     * @return path
-     */
-    public Path getFilePath() {
-        return filePath;
+    public File getFile() {
+        return file;
     }
     
     public WatchEvent.Kind<?> getKind() {

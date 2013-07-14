@@ -24,7 +24,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.StandardWatchEventKinds;
 
 import net.jexler.VerySlowTests;
@@ -50,12 +49,11 @@ public final class DirWatchServiceTest
     @Test
     public void testDirWatch() throws Exception {
         
-        Path watchDirPath = Files.createTempDirectory(null);
-        System.out.println(watchDirPath.toUri());
+        File watchDir = Files.createTempDirectory(null).toFile();
         
         MockJexler jexler = new MockJexler();
         DirWatchService dirWatchService = new DirWatchService(jexler, "watchid");
-        dirWatchService.setDirPath(watchDirPath);
+        dirWatchService.setDir(watchDir);
         dirWatchService.setSleepTimeMs(MS_1_SEC);
         assertEquals("must be same", "watchid", dirWatchService.getId());
         
@@ -63,13 +61,13 @@ public final class DirWatchServiceTest
     	assertTrue("must be true", dirWatchService.isOn());
         assertNull("must be null", jexler.takeEvent(MS_30_SEC));
                 
-        checkEvents(jexler, dirWatchService, watchDirPath);
+        checkEvents(jexler, dirWatchService, watchDir);
         
         dirWatchService.stop();
     	assertTrue("must be true", dirWatchService.waitForShutdown(MS_30_SEC));
         
         // create file after service stop
-        File tempFile = new File(watchDirPath.toFile(), "temp2");
+        File tempFile = new File(watchDir, "temp2");
         FileWriter writer = new FileWriter(tempFile);
         writer.append("hello too");
         writer.close();
@@ -77,17 +75,17 @@ public final class DirWatchServiceTest
         assertNull("must be null", jexler.takeEvent(MS_30_SEC));
 
         // different watch directory
-        watchDirPath = Files.createTempDirectory(null);
-        dirWatchService.setDirPath(watchDirPath);
+        watchDir = Files.createTempDirectory(null).toFile();
+        dirWatchService.setDir(watchDir);
         
         dirWatchService.start();    
     	assertTrue("must be true", dirWatchService.isOn());
         assertNull("must be null", jexler.takeEvent(MS_30_SEC));
         
-        checkEvents(jexler, dirWatchService, watchDirPath);
+        checkEvents(jexler, dirWatchService, watchDir);
         
         // delete watch directory
-        Files.delete(watchDirPath);
+        assertTrue("must be true", watchDir.delete());
         assertNull("must be null", jexler.takeEvent(MS_30_SEC));
         
         dirWatchService.stop();
@@ -95,51 +93,51 @@ public final class DirWatchServiceTest
     }
         
     private void checkEvents(MockJexler jexler, DirWatchService dirWatchService,
-            Path watchDirPath) throws Exception {
+            File watchDir) throws Exception {
 
         // create file
-        Path tempFilePath = new File(watchDirPath.toFile(), "temp").toPath();
-        Files.createFile(tempFilePath);
-        System.out.println(watchDirPath.toUri());
-        System.out.println(tempFilePath.toUri());
+        File tempFile = new File(watchDir, "temp");
+        Files.createFile(tempFile.toPath());
 
         Event event = jexler.takeEvent(MS_30_SEC);
         assertNotNull("must not be null", event);
         assertEquals("must be same", dirWatchService, event.getService());
         assertTrue("must be true", event instanceof DirWatchEvent);
         DirWatchEvent dirWatchEvent = (DirWatchEvent)event;
-        assertEquals("must be same", tempFilePath.toUri(),
-                dirWatchEvent.getFilePath().toUri());
+        assertEquals("must be same", tempFile.getCanonicalPath(),
+                dirWatchEvent.getFile().getCanonicalPath());
         assertEquals("must be same", StandardWatchEventKinds.ENTRY_CREATE,
                 dirWatchEvent.getKind());
 
         assertNull("must be null", jexler.takeEvent(MS_30_SEC));
 
         // modify file
-        Files.write(tempFilePath, "hello there".getBytes());
+        FileWriter writer = new FileWriter(tempFile);
+        writer.append("hello there");
+        writer.close();
 
         event = jexler.takeEvent(MS_30_SEC);
         assertNotNull("must not be null", event);
         assertEquals("must be same", dirWatchService, event.getService());
         assertTrue("must be true", event instanceof DirWatchEvent);
         dirWatchEvent = (DirWatchEvent)event;
-        assertEquals("must be same", tempFilePath.toUri(),
-                dirWatchEvent.getFilePath().toUri());
+        assertEquals("must be same", tempFile.getCanonicalPath(),
+                dirWatchEvent.getFile().getCanonicalPath());
         assertEquals("must be same", StandardWatchEventKinds.ENTRY_MODIFY,
                 dirWatchEvent.getKind());
 
         assertNull("must be null", jexler.takeEvent(MS_30_SEC));
 
         // delete file
-        Files.delete(tempFilePath);
+        Files.delete(tempFile.toPath());
 
         event = jexler.takeEvent(MS_30_SEC);
         assertNotNull("must not be null", event);
         assertEquals("must be same", dirWatchService, event.getService());
         assertTrue("must be true", event instanceof DirWatchEvent);
         dirWatchEvent = (DirWatchEvent)event;
-        assertEquals("must be same", tempFilePath.toUri(),
-                dirWatchEvent.getFilePath().toUri());
+        assertEquals("must be same", tempFile.getCanonicalPath(),
+                dirWatchEvent.getFile().getCanonicalPath());
         assertEquals("must be same", StandardWatchEventKinds.ENTRY_DELETE,
                 dirWatchEvent.getKind());
 

@@ -20,10 +20,9 @@ import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,16 +49,16 @@ public class BasicMetaInfo extends HashMap<String,Object> implements MetaInfo {
 	}
 	
 	/**
-	 * Constructor from path for file.
-	 * @param path path for file to read meta info from
+	 * Constructor from file.
+	 * @param file file to read meta info from
 	 * 
 	 */
-	public BasicMetaInfo(Path path) throws IOException {
-		if (path == null || !Files.exists(path)) {
+	public BasicMetaInfo(File file) throws IOException {
+		if (file == null || !file.exists()) {
 			return;
 		}
 
-		try (BufferedReader reader = Files.newBufferedReader(path, Charset.defaultCharset())) {
+		try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
 			// read first line of jexler script
 			String line = reader.readLine();
 			if (line == null) {
