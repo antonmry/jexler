@@ -44,7 +44,7 @@ public class BasicMetaInfo extends HashMap<String,Object> implements MetaInfo {
 	/**
 	 * Constructor for empty meta info.
 	 */
-	public BasicMetaInfo() {
+	private BasicMetaInfo() {
 		// empty map
 	}
 	

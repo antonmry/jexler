@@ -73,14 +73,14 @@ public class JexlerUtil {
      * @return stack trace or null if there is none
      */
     public static String getStackTrace(Throwable throwable) {
-        final Writer result = new StringWriter();
         try {
+        	Writer result = new StringWriter();
             throwable.printStackTrace(new PrintWriter(result));
+            return result.toString();
         } catch (RuntimeException e) {
             // no stack trace
             return null;
         }
-        return result.toString();
     }
     
     /**
