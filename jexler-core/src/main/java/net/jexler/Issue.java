@@ -37,7 +37,7 @@ public interface Issue extends Comparable<Issue> {
 
     /**
      * Get stack trace as a multi-line string.
-     * @return stack trace or null if none
+     * @return stack trace or empty if none or could not obtain it
      */
     public String getStackTrace();
 

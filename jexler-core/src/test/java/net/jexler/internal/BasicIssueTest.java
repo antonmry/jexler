@@ -46,23 +46,24 @@ public final class BasicIssueTest
 		assertNull("must be null", issue.getService());
 		assertNull("must be null", issue.getMessage());
 		assertNull("must be null", issue.getException());
-		assertNull("must be null", issue.getStackTrace());
+		assertEquals("must be same", "", issue.getStackTrace());
 		assertEquals("must be same",
-				"Issue: [message=null,service=null,exception=null,stackTrace=null]",
+				"Issue: [message=null,service=null,exception=null,stackTrace='']",
 				issue.toString());
 
 		Service service = new MockService(null,"mockid");
+		String serviceClass = MockService.class.getName();
 		String message = "hi";
 		Exception exception = null;
 		issue = new BasicIssue(service, message, exception);
 		assertEquals("must be same", service, issue.getService());
 		assertEquals("must be same", message, issue.getMessage());
 		assertNull("must be null", issue.getException());
-		assertNull("must be null", issue.getStackTrace());
+		assertEquals("must be same", "", issue.getStackTrace());
 		//System.out.println(issue);
 		assertEquals("must be same",
-				"Issue: [message='hi',service='net.jexler.service.MockService:mockid',"
-						+ "exception=null,stackTrace=null]", issue.toString());
+				"Issue: [message='hi',service='" + serviceClass + ":mockid',"
+						+ "exception=null,stackTrace='']", issue.toString());
 		
 		exception = new RuntimeException("run");
 		issue = new BasicIssue(service, message, exception);
@@ -72,8 +73,8 @@ public final class BasicIssueTest
 		assertNotNull("must not be null", issue.getStackTrace());
 		//System.out.println(issue);
 		assertTrue("must be true", issue.toString().startsWith(
-				"Issue: [message='hi',service='net.jexler.service.MockService:mockid',"
-						+ "exception='java.lang.RuntimeException: run',stackTrace='"));
+				"Issue: [message='hi',service='" + serviceClass + ":mockid',"
+						+ "exception='java.lang.RuntimeException: run',stackTrace='java.lang"));
 		assertFalse("must be false", issue.toString().contains("\r"));
 		assertFalse("must be false", issue.toString().contains("\n"));
 
@@ -82,6 +83,6 @@ public final class BasicIssueTest
 		System.out.println(issue);
 		assertEquals("must be same", message, issue.getMessage());
 		assertTrue("must be true", issue.toString().startsWith(
-				"Issue: [message='got \\n this \\n and \\n that \\n\\n\\n .'"));
+				"Issue: [message='got %n this %n and %n that %n%n%n .'"));
 	}
 }

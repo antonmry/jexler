@@ -19,6 +19,7 @@ package net.jexler.internal;
 import java.util.Date;
 
 import net.jexler.Issue;
+import net.jexler.JexlerUtil;
 import net.jexler.service.Service;
 
 /**
@@ -39,11 +40,7 @@ public class BasicIssue implements Issue {
         this.service = service;
         this.message = message;
         this.exception = exception;
-        if (exception != null) {
-            stackTrace = JexlerUtil.getStackTrace(exception);
-        } else {
-        	stackTrace = null;
-        }
+        stackTrace = JexlerUtil.getStackTrace(exception);
     }
 
     public Date getDate() {
@@ -83,7 +80,7 @@ public class BasicIssue implements Issue {
         if (message == null) {
         	builder.append(message);
         } else {
-        	builder.append("'" + toSingleLine(message) + "'");
+        	builder.append("'" + JexlerUtil.toSingleLine(message) + "'");
         }
         builder.append(",service=");
         if (service == null) {
@@ -95,20 +92,16 @@ public class BasicIssue implements Issue {
         if (exception == null) {
         	builder.append(exception);
         } else {
-        	builder.append("'" + toSingleLine(exception.toString()) + "'");
+        	builder.append("'" + JexlerUtil.toSingleLine(exception.toString()) + "'");
         }
         builder.append(",stackTrace=");
         if (stackTrace == null) {
         	builder.append(stackTrace);
         } else {
-        	builder.append("'" + toSingleLine(stackTrace.toString()) + "'");
+        	builder.append("'" + JexlerUtil.toSingleLine(stackTrace.toString()) + "'");
         }
         builder.append(']');
         return builder.toString();
-    }
-    
-    private static String toSingleLine(String in) {
-    	return in.replace("\r\n", "\\n").replace("\r", "\\n").replace("\n", "\\n");
     }
 }
 

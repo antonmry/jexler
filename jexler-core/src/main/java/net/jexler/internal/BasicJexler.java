@@ -27,6 +27,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import net.jexler.Issue;
 import net.jexler.IssueTracker;
 import net.jexler.Jexler;
+import net.jexler.JexlerUtil;
 import net.jexler.Jexlers;
 import net.jexler.MetaInfo;
 import net.jexler.RunState;

@@ -16,12 +16,15 @@
 
 package net.jexler.war;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -34,7 +37,6 @@ import net.jexler.Issue;
 import net.jexler.Jexler;
 import net.jexler.Jexlers;
 import net.jexler.RunState;
-import net.jexler.internal.JexlerUtil;
 import net.jexler.service.Service;
 
 import org.slf4j.Logger;
@@ -232,7 +234,7 @@ public class JexlersView {
         StringBuilder builder = new StringBuilder();
         builder.append("<pre>\n\n");
         try {
-            String logData = JexlerUtil.readTextFileReversedLines(logfile);
+            String logData = readTextFileReversedLines(logfile);
             logData = logData.replace("<", "&lt;");
             builder.append(logData);
         } catch (IOException e) {
@@ -251,7 +253,7 @@ public class JexlersView {
         }
         File file = jexler.getFile();
         try {
-            return JexlerUtil.readTextFile(file);
+    		return new String(Files.readAllBytes(file.toPath()));
         } catch (IOException e) {
             String msg = "Could not read jexler script file '" + file.getAbsolutePath() + "'.";
             jexler.trackIssue(null, msg, e);
@@ -361,5 +363,26 @@ public class JexlersView {
             return "&jexler=" + urlEncode(jexlerId);
         }
     }
+    
+    /**
+     * Read log file into string while reversing the order of lines.
+     * @param file
+     * @return file contents (platform default charset and line separator)
+     * @throws IOException if reading failed
+     */
+    private static String readTextFileReversedLines(File file) throws IOException {
+        StringBuilder builder = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            do {
+                String line = reader.readLine();
+                if (line == null) {
+                    break;
+                }
+                builder.insert(0, line + System.lineSeparator());
+            } while (true);
+        }
+        return builder.toString();
+    }
+
 
 }
