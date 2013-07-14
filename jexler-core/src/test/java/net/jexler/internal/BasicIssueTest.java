@@ -51,7 +51,8 @@ public final class BasicIssueTest
 				"Issue: [message=null,service=null,exception=null,stackTrace='']",
 				issue.toString());
 
-		Service service = new MockService(null,"mockid");
+		MockService.setTestInstance(null,"mockid");
+		Service service = MockService.getTestInstance();
 		String serviceClass = MockService.class.getName();
 		String message = "hi";
 		Exception exception = null;

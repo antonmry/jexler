@@ -91,8 +91,8 @@ public class BasicServiceGroup implements ServiceGroup {
      * Get run state for the group.
      * If there is no service in the group, OFF is returned;
      * if all services are in the same state, that state is returned;
-     * otherwise IDLE is returned, since at least one service must
-     * then have been not OFF.
+     * if a least one service is starting up  BUSY_STARTING is returned;
+     * else IDLE is returned.
      */
     @Override
     public RunState getRunState() {
@@ -103,7 +103,12 @@ public class BasicServiceGroup implements ServiceGroup {
     	switch (set.size()) {
     	case 0: return RunState.OFF;
     	case 1: return set.iterator().next();
-    	default: return RunState.IDLE;
+    	default:
+    		if (set.contains(RunState.BUSY_STARTING)) {
+    			return RunState.BUSY_STARTING;
+    		} else {
+    			return RunState.IDLE;
+    		}
     	}
     }
 

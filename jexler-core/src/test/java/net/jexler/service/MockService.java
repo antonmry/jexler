@@ -17,6 +17,7 @@
 package net.jexler.service;
 
 import net.jexler.Jexler;
+import net.jexler.RunState;
 
 
 /**
@@ -27,18 +28,61 @@ import net.jexler.Jexler;
 public final class MockService extends ServiceBase
 {
 
-	public MockService(Jexler jexler, String id) {
+	private static MockService instance;
+	
+	private volatile int nStarted = 0;
+	private volatile int nStopped = 0;
+	private volatile int nEventsSent = 0;
+	private volatile int nEventsGotBack = 0;
+	
+	public static void setTestInstance(Jexler jexler, String id) {
+		instance = new MockService(jexler, id);
+	}
+
+	public static MockService getTestInstance() {
+		return instance;
+	}
+	
+	private MockService(Jexler jexler, String id) {
 		super(jexler,id);
 	}
 
 	@Override
 	public void start() {
-		throw new RuntimeException("Not implemented");
+		nStarted++;
+		this.setRunState(RunState.IDLE);
 	}
 
 	@Override
 	public void stop() {
-		throw new RuntimeException("Not implemented");
+		nStopped++;
+		this.setRunState(RunState.IDLE);
 	}
+	
+	public int getNStarted() {
+		return nStarted;
+	}
+	
+	public int getNStopped() {
+		return nStopped;
+	}
+	
+	public void notifyGotEvent() {
+		nEventsGotBack++;
+	}
+	
+	public int getNEventsGotBack() {
+		return nEventsGotBack;
+	}
+	
+	public void notifyJexler() {
+		getJexler().handle(new MockEvent(this, "mock-event-id"));
+		nEventsSent++;
+	}
+	
+	public int getNEventsSent() {
+		return nEventsSent;
+	}
+	
 
 }
