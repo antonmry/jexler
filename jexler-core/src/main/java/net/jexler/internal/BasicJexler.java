@@ -265,7 +265,12 @@ public class BasicJexler implements Jexler {
     public File getFile() {
         return file;
     }
-        
+    
+    @Override
+    public File getDir() {
+        return file.getParentFile();
+    }
+    
     /**
      * Read meta info from jexler file an store it in member variable.
      */

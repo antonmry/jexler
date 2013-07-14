@@ -40,6 +40,11 @@ public interface Jexler extends Service, IssueTracker {
     File getFile();
     
     /**
+     * Get directory that contains script file.
+     */
+    File getDir();
+    
+    /**
      * Get meta info.
      * If the jexler is not running, read from jexler file.
      * If the jexler is running, meta info read from jexler
