@@ -50,7 +50,7 @@ public class DirWatchService extends ServiceBase {
     public DirWatchService(Jexler jexler, String id) {
         super(jexler, id);
         thisService = this;
-        this.watchDir = jexler.getDir();
+        this.watchDir = jexler.getFile().getParentFile();
         this.sleepTimeMs = 1000;
     }
 
