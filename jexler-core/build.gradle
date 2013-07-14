@@ -1,4 +1,6 @@
-description = 'jexler core libary'
+
+description = 'jexler core libary - simple Java 7 framework for starting/stopping' +
+  ' Groovy scripts as services and enabling them to react to events of their choice.'
 
 project.ext {
   pkg = 'jar'
