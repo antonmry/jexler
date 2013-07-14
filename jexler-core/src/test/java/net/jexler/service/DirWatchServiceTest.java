@@ -51,7 +51,6 @@ public final class DirWatchServiceTest
     public void testDirWatch() throws Exception {
         
         Path watchDirPath = Files.createTempDirectory(null);
-        System.out.println(watchDirPath.toUri());
         
         MockJexler jexler = new MockJexler();
         DirWatchService dirWatchService = new DirWatchService(jexler, "watchid");
@@ -100,8 +99,6 @@ public final class DirWatchServiceTest
         // create file
         Path tempFilePath = new File(watchDirPath.toFile(), "temp").toPath();
         Files.createFile(tempFilePath);
-        System.out.println(watchDirPath.toUri());
-        System.out.println(tempFilePath.toUri());
 
         Event event = jexler.takeEvent(MS_30_SEC);
         assertNotNull("must not be null", event);
