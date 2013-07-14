@@ -20,13 +20,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 import net.jexler.FastTests;
 import net.jexler.MetaInfo;
-import net.jexler.internal.BasicMetaInfo;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -49,26 +50,26 @@ public final class BasicMetaInfoTest
 		info = new BasicMetaInfo(null);
 		assertTrue("must be true", info.isEmpty());
 
-		info = new BasicMetaInfo(new File("/does/not/exist/5092749"));
+		info = new BasicMetaInfo(new File("/does/not/exist/5092749").toPath());
 		assertTrue("must be true", info.isEmpty());
 		
-		File testFile = Files.createTempFile(null, null).toFile();
-        FileWriter writer = new FileWriter(testFile);
+		Path testPath = Files.createTempFile(null, null);
+        BufferedWriter writer = Files.newBufferedWriter(testPath, Charset.defaultCharset());
         writer.append("// some comment");
         writer.close();
-        info = new BasicMetaInfo(testFile);
+        info = new BasicMetaInfo(testPath);
 		assertTrue("must be true", info.isEmpty());
 		
-        writer = new FileWriter(testFile);
+        writer = Files.newBufferedWriter(testPath, Charset.defaultCharset());
         writer.append("import java.io.File");
         writer.close();
-        info = new BasicMetaInfo(testFile);
+        info = new BasicMetaInfo(testPath);
 		assertTrue("must be true", info.isEmpty());
 		
-        writer = new FileWriter(testFile);
+        writer = Files.newBufferedWriter(testPath, Charset.defaultCharset());
         writer.append("[ 'autostart' : true, 'foo' : 'bar' ]");
         writer.close();
-        info = new BasicMetaInfo(testFile);
+        info = new BasicMetaInfo(testPath);
 		assertEquals("must be same", 2, info.size());
 		assertEquals("must be same", true, info.get("autostart"));
 		assertEquals("must be same", "bar", info.get("foo"));

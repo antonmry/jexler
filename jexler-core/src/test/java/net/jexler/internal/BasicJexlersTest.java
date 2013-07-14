@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNull;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 import net.jexler.FastTests;
 import net.jexler.JexlerFactory;
@@ -40,29 +41,29 @@ public final class BasicJexlersTest
 	@Test
     public void getJexlerIdTest() throws Exception {
 	
-		File dir = Files.createTempDirectory(null).toFile();
-		BasicJexlers jexlers = new BasicJexlers(dir, new JexlerFactory());
+		Path jexlersPath = Files.createTempDirectory(null);
+		BasicJexlers jexlers = new BasicJexlers(jexlersPath, new JexlerFactory());
 		
-		String id = jexlers.getJexlerId(new File(dir, "foo.groovy"));
+		String id = jexlers.getJexlerId(new File(jexlersPath.toFile(), "foo.groovy").toPath());
 		assertEquals("must be same", "foo", id);
 		
-		id = jexlers.getJexlerId(new File("foo.groovy"));
+		id = jexlers.getJexlerId(new File("foo.groovy").toPath());
 		assertEquals("must be same", "foo", id);
 
-		id = jexlers.getJexlerId(new File("foo.java"));
+		id = jexlers.getJexlerId(new File("foo.java").toPath());
 		assertNull("must be null", id);
 	}
 	
 	@Test
     public void getJexlerFileTest() throws Exception {
 		
-		File dir = Files.createTempDirectory(null).toFile();
-		BasicJexlers jexlers = new BasicJexlers(dir, new JexlerFactory());
+		Path jexlersPath = Files.createTempDirectory(null);
+		BasicJexlers jexlers = new BasicJexlers(jexlersPath, new JexlerFactory());
 
-		File file = jexlers.getJexlerFile("foo");
+		Path jexlerPath = jexlers.getJexlerPath("foo");
 		assertEquals("must be same",
-				new File(dir, "foo.groovy").getCanonicalPath(),
-				file.getCanonicalPath());
+				new File(jexlersPath.toFile(), "foo.groovy").toPath().toUri(),
+				jexlerPath.toUri());
 	}
 	
 }

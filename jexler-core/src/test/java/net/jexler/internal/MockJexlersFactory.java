@@ -16,11 +16,10 @@
 
 package net.jexler.internal;
 
-import java.io.File;
+import java.nio.file.Path;
 
 import net.jexler.Jexlers;
 import net.jexler.JexlersFactory;
-import net.jexler.internal.MockJexlers;
 
 /**
  * Default jexler factory implementation.
@@ -33,8 +32,8 @@ public class MockJexlersFactory extends JexlersFactory  {
     }
 
     @Override
-	public Jexlers get(File dir) {
-		return new MockJexlers(dir, new MockJexlerFactory());
+	public Jexlers get(Path path) {
+		return new MockJexlers(path, new MockJexlerFactory());
 	}
 
 }

@@ -19,8 +19,9 @@ package net.jexler.internal;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 
-import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -69,7 +70,7 @@ public class BasicJexler implements Jexler {
     	}
     }
     
-    private final File file;
+    private final Path path;
     private final Jexlers jexlers;
     private final String id;
 
@@ -92,13 +93,13 @@ public class BasicJexler implements Jexler {
 
     /**
      * Constructor.
-     * @param file file with jexler script
+     * @param path jexler script file path
      * @param jexlers
      */
-    public BasicJexler(File file, Jexlers jexlers) {
-        this.file = file;
+    public BasicJexler(Path path, Jexlers jexlers) {
+        this.path = path;
         this.jexlers = jexlers;
-        id = jexlers.getJexlerId(file);
+        id = jexlers.getJexlerId(path);
         runState = RunState.OFF;
         events = new Events();
         services = new BasicServiceGroup(id + ".services");
@@ -140,13 +141,21 @@ public class BasicJexler implements Jexler {
     	configuration.addCompilationCustomizers(importCustomizer);
 
     	final GroovyShell shell = new GroovyShell(binding, configuration);
-    	shell.getClassLoader().addClasspath(file.getParent());
+    	Path jexlersPath = jexlers.getPath();
+    	try {
+    		shell.getClassLoader().addURL(jexlersPath.toUri().toURL());
+    	} catch (MalformedURLException e) {
+    		trackIssue(null, "Could not add jexlers directory '" + 
+    				jexlersPath.toUri() + "' to groovy classpath.", e);
+    		runState = RunState.OFF;
+    		return;
+    	}
 
         scriptThread = new Thread(
                 new Runnable() {
                     public void run() {
                         try {
-                        	shell.evaluate(file);
+                        	shell.evaluate(path.toFile());
                         } catch (RuntimeException | IOException e) {
                         	trackIssue(null, "Script failed.", e);
                         } finally {
@@ -262,8 +271,8 @@ public class BasicJexler implements Jexler {
     }
 
     @Override
-    public File getFile() {
-        return file;
+    public Path getPath() {
+        return path;
     }
         
     /**
@@ -271,10 +280,10 @@ public class BasicJexler implements Jexler {
      */
     private void setMetaInfoAtStart() {
     	try {
-    		metaInfoAtStart = new BasicMetaInfo(file);
+    		metaInfoAtStart = new BasicMetaInfo(path);
     	} catch (IOException e) {
-    		String msg = "Could not read meta info from existing jexler file '" 
-    				+ file.getAbsolutePath() + "'.";
+    		String msg = "Could not read meta info from existing jexler file '"
+    				+ path.toUri() + "'.";
     		trackIssue(null, msg, e);
     		metaInfoAtStart = BasicMetaInfo.EMPTY;
     	}
@@ -286,10 +295,10 @@ public class BasicJexler implements Jexler {
     		return metaInfoAtStart;
     	} else {
     		try {
-    			return new BasicMetaInfo(file);
+    			return new BasicMetaInfo(path);
     		} catch (IOException e) {
     			String msg = "Could not read meta info from existing jexler file '" 
-    					+ file.getAbsolutePath() + "'.";
+    					+ path.toUri() + "'.";
     			trackIssue(null, msg, e);
     			return BasicMetaInfo.EMPTY;
     		}

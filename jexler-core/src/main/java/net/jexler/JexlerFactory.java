@@ -16,7 +16,7 @@
 
 package net.jexler;
 
-import java.io.File;
+import java.nio.file.Path;
 
 import net.jexler.internal.BasicJexler;
 
@@ -30,8 +30,8 @@ public class JexlerFactory  {
     public JexlerFactory() {
     }
 
-	public Jexler get(File file, Jexlers jexlers) {
-		return new BasicJexler(file, jexlers);
+	public Jexler get(Path path, Jexlers jexlers) {
+		return new BasicJexler(path, jexlers);
 	}
 
 }

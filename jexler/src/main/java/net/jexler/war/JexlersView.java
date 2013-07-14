@@ -17,14 +17,13 @@
 package net.jexler.war;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -251,11 +250,11 @@ public class JexlersView {
         if (jexler == null) {
             return "";
         }
-        File file = jexler.getFile();
+        Path path = jexler.getPath();
         try {
-    		return new String(Files.readAllBytes(file.toPath()));
+    		return new String(Files.readAllBytes(path));
         } catch (IOException e) {
-            String msg = "Could not read jexler script file '" + file.getAbsolutePath() + "'.";
+            String msg = "Could not read jexler script file '" + path.toUri() + "'.";
             jexler.trackIssue(null, msg, e);
             return msg;
         }
@@ -267,7 +266,7 @@ public class JexlersView {
         }
         MimetypesFileTypeMap map = new MimetypesFileTypeMap();
         map.addMimeTypes("text/x-groovy groovy");
-        String mimeType = map.getContentType(jexler.getFile());
+        String mimeType = map.getContentType(jexler.getPath().toFile());
         return mimeType;
     }
     
@@ -310,11 +309,11 @@ public class JexlersView {
     	}
         String source = request.getParameter("source");
         if (source != null) {
-            File file = jexlers.getJexlerFile(targetJexlerId);
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-                writer.write(source);
+            Path path = jexlers.getJexlerPath(targetJexlerId);
+            try {
+            	Files.write(path, source.getBytes());
             } catch (IOException e) {
-                String msg = "Could not save script file '" + file.getAbsolutePath() + "'";
+                String msg = "Could not save script file '" + path.toUri() + "'";
                 if (targetJexler != null) {
                     targetJexler.trackIssue(null, msg, e);
                 } else {
@@ -328,8 +327,17 @@ public class JexlersView {
     	if (!JexlerContextListener.allowScriptEdit()) {
     		return;
     	}
-        File file = jexlers.getJexlerFile(targetJexlerId);
-        file.delete();
+        Path path = jexlers.getJexlerPath(targetJexlerId);
+        try {
+        	Files.delete(path);
+        } catch (IOException e) {
+            String msg = "Could not delete script file '" + path.toUri() + "'";
+            if (targetJexler != null) {
+                targetJexler.trackIssue(null, msg, e);
+            } else {
+                jexlers.trackIssue(null, msg, e);
+            }
+        }
     }
 
     private void handleForget() {

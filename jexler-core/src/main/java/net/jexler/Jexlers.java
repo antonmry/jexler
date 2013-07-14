@@ -16,7 +16,7 @@
 
 package net.jexler;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 
 import net.jexler.service.Service;
@@ -38,7 +38,10 @@ public interface Jexlers extends Service, IssueTracker {
      */
     void autostart();
 
-    File getDir();
+    /**
+     * Get jexlers directory path.
+     */
+    Path getPath();
 
     /**
      * Get jexlers, sorted by id.
@@ -54,14 +57,16 @@ public interface Jexlers extends Service, IssueTracker {
     Jexler getJexler(String id);
     
     /**
-     * Get file for jexler id, even if no such file exists (yet).
+     * Get jexler script file path for jexler id,
+     * even if no such script file exists (yet).
      */
-    File getJexlerFile(String id);
+    Path getJexlerPath(String id);
     
     /**
-     * Get jexler id for file, even if the file does not exist (any more),
+     * Get jexler id for jexler script file path,
+     * even if the script file does not exist (any more),
      * or null if not a jexler script.
      */
-    String getJexlerId(File jexlerFile);
+    String getJexlerId(Path jexlerPath);
 
 }

@@ -60,7 +60,7 @@ public class JexlerContextListener implements ServletContextListener    {
         log.info("Welcome to jexler. Version: " + version);
         servletContext = event.getServletContext();
         String webappPath = servletContext.getRealPath("/");
-        jexlers = new JexlersFactory().get(new File(webappPath, "WEB-INF/jexlers"));
+        jexlers = new JexlersFactory().get(new File(webappPath, "WEB-INF/jexlers").toPath());
         jexlers.autostart();
 
         // determine log file

@@ -16,7 +16,7 @@
 
 package net.jexler.internal;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -36,12 +36,12 @@ import net.jexler.service.Service;
  */
 public class MockJexler implements Jexler {
 	
-	private File file;
+	private Path path;
 	//private Jexlers jexlers;
 	private Queue<Event> events;
 	
-	public MockJexler(File file, Jexlers jexlers) {
-		this.file = file;
+	public MockJexler(Path path, Jexlers jexlers) {
+		this.path = path;
 		//this.jexlers = jexlers;
 		events = new ConcurrentLinkedQueue<Event>();
 	}
@@ -117,8 +117,8 @@ public class MockJexler implements Jexler {
 
 
 	@Override
-	public File getFile() {
-		return file;
+	public Path getPath() {
+		return path;
 	}
 
 	@Override

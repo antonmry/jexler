@@ -17,6 +17,8 @@
 package net.jexler.internal;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -44,7 +46,7 @@ public class BasicJexlers extends BasicServiceGroup implements Jexlers {
 	
 	static final String EXT = ".groovy";
 
-    private final File dir;
+    private final Path path;
     private final String id;
     private final JexlerFactory jexlerFactory;
 
@@ -55,16 +57,16 @@ public class BasicJexlers extends BasicServiceGroup implements Jexlers {
 
     /**
      * Constructor.
-     * @param dir directory which contains jexler scripts
+     * @param path path for directory which contains jexler scripts
      */
-    public BasicJexlers(File dir, JexlerFactory jexlerFactory) {
-    	super(dir.exists() ? dir.getName() : null);
-        if (!dir.exists()) {
-            throw new RuntimeException("Directory '" + dir.getAbsolutePath() + "' does not exist");
-        } else  if (!dir.isDirectory()) {
-            throw new RuntimeException("File '" + dir.getAbsolutePath() + "' is not a directory");
+    public BasicJexlers(Path path, JexlerFactory jexlerFactory) {
+    	super(Files.exists(path) ? path.toFile().getName() : null);
+        if (!Files.exists(path)) {
+            throw new RuntimeException("Directory '" + path.toUri() + "' does not exist");
+        } else  if (!Files.isDirectory(path)) {
+            throw new RuntimeException("File '" + path.toUri() + "' is not a directory");
         }
-        this.dir = dir;
+        this.path = path;
         id = super.getId();
         this.jexlerFactory = jexlerFactory;
         jexlerMap = new TreeMap<String,Jexler>();
@@ -81,22 +83,22 @@ public class BasicJexlers extends BasicServiceGroup implements Jexlers {
     public void refresh() {
 
         // list directory and create jexlers in map for new script files in directory
-        File[] files = dir.listFiles();
+        File[] files = path.toFile().listFiles();
         for (File file : files) {
             if (file.isFile() && !file.isHidden()) {
-                String id = getJexlerId(file);
+                String id = getJexlerId(file.toPath());
                 if (id != null && !jexlerMap.containsKey(id)) {
-                    Jexler jexler = jexlerFactory.get(file, this);
+                    Jexler jexler = jexlerFactory.get(file.toPath(), this);
                     jexlerMap.put(jexler.getId(), jexler);
                 }
             }
         }
-
+        
         // recreate list while omitting jexlers without script file that are stopped
         getJexlers().clear();
         for (String id : jexlerMap.keySet()) {
             Jexler jexler = jexlerMap.get(id);
-            if (jexler.getFile().exists() || jexler.isOn()) {
+            if (Files.exists(jexler.getPath()) || jexler.isOn()) {
             	getJexlers().add(jexler);
             }
         }
@@ -168,8 +170,8 @@ public class BasicJexlers extends BasicServiceGroup implements Jexlers {
         return id;
     }
 
-    public File getDir() {
-        return dir;
+    public Path getPath() {
+        return path;
     }
 
 	@Override
@@ -184,13 +186,13 @@ public class BasicJexlers extends BasicServiceGroup implements Jexlers {
     }
 
 	@Override
-	public File getJexlerFile(String id) {
-    	return new File(dir, id + EXT);
+	public Path getJexlerPath(String id) {
+    	return new File(path.toFile(), id + EXT).toPath();
 	}
 
 	@Override
-	public String getJexlerId(File jexlerFile) {
-		String name = jexlerFile.getName();
+	public String getJexlerId(Path jexlerPath) {
+		String name = jexlerPath.toFile().getName();
 		if (name.endsWith(EXT)) {
 			return name.substring(0, name.length() - EXT.length());
 		} else {

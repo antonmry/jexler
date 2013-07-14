@@ -16,7 +16,7 @@
 
 package net.jexler;
 
-import java.io.File;
+import java.nio.file.Path;
 
 import net.jexler.service.Event;
 import net.jexler.service.Service;
@@ -35,9 +35,9 @@ public interface Jexler extends Service, IssueTracker {
     public void handle(Event event);
     
     /**
-     * Get script file.
+     * Get script file path.
      */
-    File getFile();
+    Path getPath();
     
     /**
      * Get meta info.
