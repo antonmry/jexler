@@ -14,13 +14,13 @@
    limitations under the License.
 */
 
-package net.jexler.impl;
+package net.jexler.internal;
 
 import java.io.File;
 
 import net.jexler.Jexlers;
 import net.jexler.JexlersFactory;
-import net.jexler.impl.MockJexlers;
+import net.jexler.internal.MockJexlers;
 
 /**
  * Default jexler factory implementation.

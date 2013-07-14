@@ -34,7 +34,7 @@ import net.jexler.Issue;
 import net.jexler.Jexler;
 import net.jexler.Jexlers;
 import net.jexler.RunState;
-import net.jexler.impl.JexlerUtil;
+import net.jexler.internal.JexlerUtil;
 import net.jexler.service.Service;
 
 import org.slf4j.Logger;
@@ -264,8 +264,6 @@ public class JexlersView {
             return "text/plain";
         }
         MimetypesFileTypeMap map = new MimetypesFileTypeMap();
-        map.addMimeTypes("text/x-ruby rb");
-        map.addMimeTypes("text/x-python py");
         map.addMimeTypes("text/x-groovy groovy");
         String mimeType = map.getContentType(jexler.getFile());
         return mimeType;
@@ -310,7 +308,7 @@ public class JexlersView {
     	}
         String source = request.getParameter("source");
         if (source != null) {
-            File file = new File(jexlers.getDir(), JexlerUtil.getFilenameForJexlerId(targetJexlerId));
+            File file = jexlers.getJexlerFile(targetJexlerId);
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
                 writer.write(source);
             } catch (IOException e) {
@@ -328,7 +326,7 @@ public class JexlersView {
     	if (!JexlerContextListener.allowScriptEdit()) {
     		return;
     	}
-        File file = new File(jexlers.getDir(), JexlerUtil.getFilenameForJexlerId(targetJexlerId));
+        File file = jexlers.getJexlerFile(targetJexlerId);
         file.delete();
     }
 

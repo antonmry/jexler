@@ -14,46 +14,27 @@
    limitations under the License.
 */
 
-package net.jexler.service;
+package net.jexler.internal;
+
+import java.io.File;
 
 import net.jexler.Jexler;
-import net.jexler.RunState;
+import net.jexler.JexlerFactory;
+import net.jexler.Jexlers;
 
 /**
- * Formal service for stopping a jexler, triggered externally.
+ * Default jexler factory implementation.
  *
  * @author $(whois jexler.net)
  */
-public class StopServiceOld extends ServiceBase {
+public class MockJexlerFactory extends JexlerFactory  {
 
-    public static class Event extends EventBase {
-        public Event(StopServiceOld service) {
-            super(service);
-        }
-    }
-
-    /**
-     * Constructor.
-     */
-    public StopServiceOld(Jexler jexler, String id) {
-        super(jexler, id);
+    public MockJexlerFactory() {
     }
 
     @Override
-    public void start() {
-        setRunState(RunState.IDLE);
-    }
-
-    @Override
-    public void stop() {
-    	setRunState(RunState.OFF);
-    }
-
-    /**
-     * Trigger event.
-     */
-    public void trigger() {
-        getJexler().handle(new Event(this));
-    }
+	public Jexler get(File file, Jexlers jexlers) {
+		return new MockJexler(file, jexlers);
+	}
 
 }

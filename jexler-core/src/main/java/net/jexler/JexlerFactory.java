@@ -18,7 +18,7 @@ package net.jexler;
 
 import java.io.File;
 
-import net.jexler.impl.BasicJexler;
+import net.jexler.internal.BasicJexler;
 
 /**
  * Jexler factory.

@@ -14,41 +14,36 @@
    limitations under the License.
 */
 
-package net.jexler.impl;
+package net.jexler.internal;
 
 import java.io.File;
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.jexler.Issue;
 import net.jexler.Jexler;
+import net.jexler.JexlerFactory;
 import net.jexler.Jexlers;
-import net.jexler.MetaInfo;
 import net.jexler.RunState;
-import net.jexler.service.Event;
 import net.jexler.service.Service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
- * Mock jexler implementation for unit tests.
+ * Mock jexlers implementation.
  *
  * @author $(whois jexler.net)
  */
-public class MockJexler implements Jexler {
-	
-	private File file;
-	//private Jexlers jexlers;
-	private Queue<Event> events;
-	
-	public MockJexler(File file, Jexlers jexlers) {
-		this.file = file;
-		//this.jexlers = jexlers;
-		events = new ConcurrentLinkedQueue<Event>();
-	}
-	
-	public MockJexler() {
-		this(null, null);
-	}
+public class MockJexlers implements Jexlers {
+
+	static final Logger log = LoggerFactory.getLogger(MockJexlers.class);
+
+    /**
+     * Constructor.
+     * @param dir directory which contains jexler scripts
+     */
+    public MockJexlers(File dir, JexlerFactory jexlerFactory) {
+    }
 
 	@Override
 	public void start() {
@@ -59,7 +54,7 @@ public class MockJexler implements Jexler {
 	public boolean waitForStartup(long timeout) {
 		throw new RuntimeException("Not implemented");
 	}
-	
+
 	@Override
 	public void stop() {
 		throw new RuntimeException("Not implemented");
@@ -104,53 +99,45 @@ public class MockJexler implements Jexler {
 	public void forgetIssues() {
 		throw new RuntimeException("Not implemented");
 	}
-	
+
 	@Override
-	public void handle(Event event) {
-		events.add(event);
+	public void refresh() {
+		throw new RuntimeException("Not implemented");
+	}
+
+	@Override
+	public void autostart() {
+		throw new RuntimeException("Not implemented");
 	}
 
 	@Override
 	public String getId() {
-		return "mockId";
+		throw new RuntimeException("Not implemented");
 	}
-
-
-	@Override
-	public File getFile() {
-		return file;
-	}
-	
 
 	@Override
 	public File getDir() {
-		return (file == null) ? null : file.getParentFile();
+		throw new RuntimeException("Not implemented");
 	}
 
 	@Override
-	public MetaInfo getMetaInfo() {
+	public List<Jexler> getJexlers() {
 		throw new RuntimeException("Not implemented");
 	}
-	
-	/**
-	 * Wait at most timeout ms for event, return
-	 * event if got one in time, null otherwise.
-	 */
-	public Event takeEvent(long timeout) {
-    	long t0 = System.currentTimeMillis();
-    	do {
-    		Event event = events.poll();
-    		if (event != null) {
-    			return event;
-    		}
-    		if (System.currentTimeMillis() - t0 > timeout) {
-    			return null;
-    		}
-    		try {
-    			Thread.sleep(10);
-    		} catch (InterruptedException e) {
-    		}
-    	} while (true);
+
+	@Override
+	public Jexler getJexler(String id) {
+		throw new RuntimeException("Not implemented");
+	}
+
+	@Override
+	public File getJexlerFile(String id) {
+		throw new RuntimeException("Not implemented");
+	}
+
+	@Override
+	public String getJexlerId(File jexlerFile) {
+		throw new RuntimeException("Not implemented");
 	}
 
 }

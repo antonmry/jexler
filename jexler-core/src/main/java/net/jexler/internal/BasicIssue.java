@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-package net.jexler.impl;
+package net.jexler.internal;
 
 import java.util.Date;
 

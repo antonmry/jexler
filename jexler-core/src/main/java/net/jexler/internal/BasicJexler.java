@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-package net.jexler.impl;
+package net.jexler.internal;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
@@ -97,7 +97,7 @@ public class BasicJexler implements Jexler {
     public BasicJexler(File file, Jexlers jexlers) {
         this.file = file;
         this.jexlers = jexlers;
-        id = JexlerUtil.getJexlerIdForFile(file);
+        id = jexlers.getJexlerId(file);
         runState = RunState.OFF;
         events = new Events();
         services = new BasicServiceGroup(id + ".services");

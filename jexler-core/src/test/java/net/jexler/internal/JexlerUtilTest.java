@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-package net.jexler.impl;
+package net.jexler.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -27,6 +27,7 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 
 import net.jexler.FastTests;
+import net.jexler.internal.JexlerUtil;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -123,29 +124,6 @@ public final class JexlerUtilTest
 		JexlerUtil.waitAtLeast(50);
 		dt = System.currentTimeMillis() - t0;
 		assertTrue("must be true", dt >= 50);
-	}
-	
-	@Test
-    public void getJexlerIdForFileTest() throws Exception {
-		
-		String id = JexlerUtil.getJexlerIdForFile(new File("foo.groovy"));
-		assertEquals("must be same", "foo", id);
-
-		id = JexlerUtil.getJexlerIdForFile(new File("/path/to/foo.groovy"));
-		assertEquals("must be same", "foo", id);
-		
-		id = JexlerUtil.getJexlerIdForFile(new File("foo.java"));
-		assertNull("must be null", id);
-		
-		id = JexlerUtil.getJexlerIdForFile(new File("/path/to/foo.java"));
-		assertNull("must be null", id);	
-	}
-	
-	@Test
-    public void getFilenameForJexlerIdTest() throws Exception {
-		
-		String filename = JexlerUtil.getFilenameForJexlerId("foo");
-		assertEquals("must be same", "foo.groovy", filename);
 	}
 	
 }

@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-package net.jexler.impl;
+package net.jexler.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -26,6 +26,7 @@ import java.nio.file.Files;
 
 import net.jexler.FastTests;
 import net.jexler.MetaInfo;
+import net.jexler.internal.BasicMetaInfo;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;

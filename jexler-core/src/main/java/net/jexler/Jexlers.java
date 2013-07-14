@@ -52,5 +52,16 @@ public interface Jexlers extends Service, IssueTracker {
      * @return jexler for given id or null if none
      */
     Jexler getJexler(String id);
+    
+    /**
+     * Get file for jexler id, even if no such file exists (yet).
+     */
+    File getJexlerFile(String id);
+    
+    /**
+     * Get jexler id for file, even if the file does not exist (any more),
+     * or null if not a jexler script.
+     */
+    String getJexlerId(File jexlerFile);
 
 }

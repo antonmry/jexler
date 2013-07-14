@@ -21,7 +21,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import net.jexler.VerySlowTests;
-import net.jexler.impl.MockJexler;
+import net.jexler.internal.MockJexler;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;

@@ -16,7 +16,7 @@
 
 package net.jexler;
 
-import net.jexler.impl.BasicIssue;
+import net.jexler.internal.BasicIssue;
 import net.jexler.service.Service;
 
 

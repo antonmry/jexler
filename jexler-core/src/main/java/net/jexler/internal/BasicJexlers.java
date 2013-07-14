@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-package net.jexler.impl;
+package net.jexler.internal;
 
 import java.io.File;
 import java.util.List;
@@ -41,6 +41,8 @@ import org.slf4j.LoggerFactory;
 public class BasicJexlers extends BasicServiceGroup implements Jexlers {
 
 	static final Logger log = LoggerFactory.getLogger(BasicJexlers.class);
+	
+	static final String EXT = ".groovy";
 
     private final File dir;
     private final String id;
@@ -82,7 +84,7 @@ public class BasicJexlers extends BasicServiceGroup implements Jexlers {
         File[] files = dir.listFiles();
         for (File file : files) {
             if (file.isFile() && !file.isHidden()) {
-                String id = JexlerUtil.getJexlerIdForFile(file);
+                String id = getJexlerId(file);
                 if (id != null && !jexlerMap.containsKey(id)) {
                     Jexler jexler = jexlerFactory.get(file, this);
                     jexlerMap.put(jexler.getId(), jexler);
@@ -180,5 +182,20 @@ public class BasicJexlers extends BasicServiceGroup implements Jexlers {
     public Jexler getJexler(String id) {
         return jexlerMap.get(id);
     }
+
+	@Override
+	public File getJexlerFile(String id) {
+    	return new File(dir, id + EXT);
+	}
+
+	@Override
+	public String getJexlerId(File jexlerFile) {
+		String name = jexlerFile.getName();
+		if (name.endsWith(EXT)) {
+			return name.substring(0, name.length() - EXT.length());
+		} else {
+			return null;
+		}
+	}
 
 }

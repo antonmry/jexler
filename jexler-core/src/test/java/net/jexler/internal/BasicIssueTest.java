@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-package net.jexler.impl;
+package net.jexler.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -23,6 +23,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import net.jexler.FastTests;
 import net.jexler.Issue;
+import net.jexler.internal.BasicIssue;
 import net.jexler.service.MockService;
 import net.jexler.service.Service;
 
