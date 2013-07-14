@@ -28,13 +28,12 @@ import java.io.Writer;
 public class JexlerUtil {
 	
 	private JexlerUtil() {
-		// avoid instantiation
 	}
 
     /**
      * Get stack trace as a string.
      * @param throwable
-     * @return stack trace, or empty if throwable is null or could not obtain stack trace
+     * @return stack trace, empty if throwable is null or could not obtain
      */
     public static String getStackTrace(Throwable throwable) {
     	if (throwable == null) {
@@ -54,11 +53,11 @@ public class JexlerUtil {
      * Replaces CRLF, CR, LF with "%n", in that order.
      * return string with replacements, null if given string is null
      */
-    public static String toSingleLine(String s) {
-    	if (s == null) {
+    public static String toSingleLine(String multi) {
+    	if (multi == null) {
     		return null;
     	}
-    	return s.replace("\r\n", "%n").replace("\r", "%n").replace("\n", "%n");
+    	return multi.replace("\r\n", "%n").replace("\r", "%n").replace("\n", "%n");
     }
 
     

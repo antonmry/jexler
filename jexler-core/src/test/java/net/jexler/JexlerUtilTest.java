@@ -70,30 +70,19 @@ public final class JexlerUtilTest
 
 	@Test
     public void waitAtLeastTest() throws Exception {
-		
+
 		long t0 = System.currentTimeMillis();
-		JexlerUtil.waitAtLeast(0);
+		JexlerUtil.waitAtLeast(200);
 		long t1 = System.currentTimeMillis();
 		assertTrue("must be true", t1-t0 >= 0);
+		assertTrue("should usually be true", t1-t0 < 2000);
 
-	    t0 = System.currentTimeMillis();
-		JexlerUtil.waitAtLeast(250);
-		t1 = System.currentTimeMillis();
-		assertTrue("must be true", t1-t0 >= 0);
-		assertTrue("should be true (except maybe under very heavy load?)", t1-t0 < 2000);		
-
-		int n = 50;
-		@SuppressWarnings("unused")
-		double sum = 0;
-		for (long ms=1; ms<=n; ms++) {
+		for (long ms=0; ms<=50; ms++) {
 			t0 = System.currentTimeMillis();
 			JexlerUtil.waitAtLeast(ms);
 			t1 = System.currentTimeMillis();
 			assertTrue("must be true", t1-t0 >= ms);
-			//System.out.printf("want: %2d, got: %2d%n", ms, t1-t0);
-			sum += (double)(t1-t0) / (double)ms;
 		}
-		//System.out.println(sum/n);
 	}
 	
 }

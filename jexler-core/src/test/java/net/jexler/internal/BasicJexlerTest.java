@@ -17,13 +17,15 @@
 package net.jexler.internal;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.nio.file.Files;
 
 import net.jexler.FastTests;
 import net.jexler.JexlerFactory;
+import net.jexler.RunState;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -34,35 +36,32 @@ import org.junit.experimental.categories.Category;
  * @author $(whois jexler.net)
  */
 @Category(FastTests.class)
-public final class BasicJexlersTest
+public final class BasicJexlerTest
 {
 
 	@Test
-    public void getJexlerIdTest() throws Exception {
-	
-		File dir = Files.createTempDirectory(null).toFile();
-		BasicJexlers jexlers = new BasicJexlers(dir, new JexlerFactory());
-		
-		String id = jexlers.getJexlerId(new File(dir, "foo.groovy"));
-		assertEquals("must be same", "foo", id);
-		
-		id = jexlers.getJexlerId(new File("foo.groovy"));
-		assertEquals("must be same", "foo", id);
-
-		id = jexlers.getJexlerId(new File("foo.java"));
-		assertNull("must be null", id);
-	}
-	
-	@Test
-    public void getJexlerFileTest() throws Exception {
+    public void testEmptyJexlerScript() throws Exception {
 		
 		File dir = Files.createTempDirectory(null).toFile();
-		BasicJexlers jexlers = new BasicJexlers(dir, new JexlerFactory());
-
-		File file = jexlers.getJexlerFile("foo");
-		assertEquals("must be same",
-				new File(dir, "foo.groovy").getCanonicalPath(),
-				file.getCanonicalPath());
+		File file = new File(dir, "test.groovy");
+		
+		FileWriter writer = new FileWriter(file);
+		writer.append("");
+		writer.close();
+		
+		BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
+		assertEquals("must be same", file.getAbsolutePath(), jexler.getFile().getAbsolutePath());
+		assertEquals("must be same", dir.getAbsolutePath(), jexler.getDir().getAbsolutePath());
+		assertEquals("must be same", "test", jexler.getId());
+		assertEquals("must be same", RunState.OFF, jexler.getRunState());
+		assertTrue("must be true", jexler.getMetaInfo().isEmpty());
+		assertTrue("must be true", jexler.getIssues().isEmpty());
+		
+		jexler.start();
+		jexler.waitForStartup(10000);
+		assertEquals("must be same", RunState.OFF, jexler.getRunState());
+		assertTrue("must be true", jexler.getIssues().isEmpty());
+		
 	}
 	
 }
