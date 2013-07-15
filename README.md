@@ -35,3 +35,7 @@ Resources
 * jexler (WAR): [Sourceforge](https://sourceforge.net/projects/jexler/)
 * Online javadoc: At www.jexler.net (soon)
 
+Screenshots
+-----------
+
+![web gui](http://a.fsdn.com/con/app/proj/jexler/screenshots/jexler-sf-screenshot.jpg)
