@@ -21,8 +21,9 @@ Build
 Try web GUI
 -----------
 
-* Run JexlerJetty class in Eclipse
+* Demo: `gradle demo`
 * Go to http://localhost:9080/
+* or run JexlerJettyTest in eclipse
 * or deploy jexler/build/libs/jexler-*.war
 * or deploy jexler-*.war from sourceforge (link below)
 
