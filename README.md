@@ -3,21 +3,34 @@
 jexler
 ======
 
-Java 7 (with Groovy), Eclipse/Gradle, Apache License
+Jexler is a simple Java 7 framework for starting/stopping Groovy scripts
+as services and enabling them to react to events of their choice.
 
-e.g.
+Comes as a library (JAR) plus a simple web GUI (WAR).
 
-* &gt; gradle build
-* &gt; gradle eclipse
+* Java 7 (with Groovy), Eclipse/Gradle, Apache License
+* Web GUI: Java 7, Servlet 2.5 (Tomcat 6 or later)
 
-jexler webapp
--------------
+Build
+-----
 
-* run JexlerJetty class in Eclipse
-* => http://localhost:8080/
+* Quick build: `gradle clean build`
+* Full build: `gradle clean build pom verySlowTests`
+* Create eclipse project: `gradle eclipse`
+
+Try web GUI
+-----------
+
+* Run JexlerJetty class in Eclipse
+* Go to http://localhost:9080/
 * or deploy jexler/build/libs/jexler-*.war
+* or deploy jexler-*.war from sourceforge (link below)
 
-Downloads
+Resources
 ---------
 
-* [jexler-1.0.0.war](http://www.jexler.net/jexler-1.0.0.war) (Java 7, Servlet 2.5 (Tomcat 6 or later))
+* Website: [http://www.jexler.net/](http://www.jexler.net/)
+* jexler-core (JAR): Maven Central (soon)
+* jexler (WAR): [Sourceforge](https://sourceforge.net/projects/jexler/)
+* Online javadoc: At www.jexler.net (soon)
+
