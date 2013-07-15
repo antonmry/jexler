@@ -34,7 +34,7 @@ Resources
 * Website: [http://www.jexler.net/](http://www.jexler.net/)
 * jexler-core (JAR): Maven Central (soon)
 * jexler (WAR): [Sourceforge](https://sourceforge.net/projects/jexler/)
-* Online javadoc: At www.jexler.net (soon)
+* Javadoc (jexler-core): [http://www.jexler.net/javadoc/](http://www.jexler.net/javadoc/)
 
 Screenshots
 -----------

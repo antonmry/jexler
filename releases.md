@@ -3,6 +3,15 @@
 jexler releases
 ===============
 
+1.0.3 (2013-07-16)
+------------------
+
+* Separated public API from internal classes.
+* Added lots of unit tests.
+* Javadoc.
+* Maven pom and artefacts for publishing jexler-core to the
+  maven central repository.
+
 1.0.2 (2013-07-05)
 ------------------
 
