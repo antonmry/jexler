@@ -16,10 +16,12 @@
 
 package net.jexler.war;
 
-import java.io.IOException;
+import net.jexler.test.DemoTests;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,18 +30,15 @@ import org.slf4j.LoggerFactory;
  *
  * @author $(whois jexler.net)
  */
-public final class JexlerJetty {
+@Category(DemoTests.class)
+public class JexlerJettyTest {
 
-	static final Logger log = LoggerFactory.getLogger(JexlerJetty.class);
+	static final Logger log = LoggerFactory.getLogger(JexlerJettyTest.class);
 
-    /**
-     * Main method.
-     *
-     * @param args command line arguments
-     */
-    public static void main(final String[] args) throws Exception {
+	@Test
+    public void demo() throws Exception {
     	System.setProperty("groovy.grape.report.downloads", "true");
-        int port = 9080;
+        final int port = 9080;
         final Server server = new Server(port);
         WebAppContext wac = new WebAppContext();
         wac.setResourceBase("./src/main/webapp");
@@ -49,29 +48,13 @@ public final class JexlerJetty {
         server.setHandler(wac);
         server.start();
 
-        System.out.println("Jexler in embedded jetty running on http://localhost:" + port + "/ ...");
-
-        // let user stop server
-        new Thread() {
-            public void run() {
-                System.out.println("Press enter to stop...");
-                try {
-                    System.in.read();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    server.stop();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-
+        System.out.println();
+        System.out.println("***************************************************************");
+        System.out.println("Jexler in embedded jetty running on http://localhost:" + port + "/");
+        System.out.println("Press ctrl-c to stop.");
+        System.out.println("***************************************************************");
+        
         server.join();
-
-        System.out.println("Jexler done OK.");
-        System.exit(0);
     }
 
 }

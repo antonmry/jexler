@@ -42,21 +42,28 @@ subprojects {
   test {
 	//testLogging.showStandardStreams = true
 	useJUnit {
-      includeCategories 'net.jexler.FastTests'
+      includeCategories 'net.jexler.test.FastTests'
     }
   }
 
   task slowTests(type: Test, dependsOn: 'test') {
 	//testLogging.showStandardStreams = true
     useJUnit {
-      includeCategories 'net.jexler.SlowTests'
+      includeCategories 'net.jexler.test.SlowTests'
     }
   }
   
   task verySlowTests(type: Test, dependsOn: 'slowTests') {
 	//testLogging.showStandardStreams = true
     useJUnit {
-      includeCategories 'net.jexler.VerySlowTests'
+      includeCategories 'net.jexler.test.VerySlowTests'
+    }
+  }
+  
+  task demo(type: Test) {
+    testLogging.showStandardStreams = true
+    useJUnit {
+      includeCategories 'net.jexler.test.DemoTests'
     }
   }
   

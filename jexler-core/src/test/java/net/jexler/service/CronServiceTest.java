@@ -20,8 +20,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import net.jexler.VerySlowTests;
 import net.jexler.internal.MockJexler;
+import net.jexler.test.VerySlowTests;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;

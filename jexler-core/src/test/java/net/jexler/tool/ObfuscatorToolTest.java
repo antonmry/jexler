@@ -21,7 +21,7 @@ import static org.junit.Assert.fail;
 
 import javax.xml.bind.DatatypeConverter;
 
-import net.jexler.FastTests;
+import net.jexler.test.FastTests;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;

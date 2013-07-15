@@ -18,12 +18,12 @@ package net.jexler.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import net.jexler.FastTests;
 import net.jexler.Issue;
 import net.jexler.IssueTracker;
 import net.jexler.JexlerUtil;
 import net.jexler.internal.BasicIssue;
 import net.jexler.internal.BasicIssueTracker;
+import net.jexler.test.FastTests;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;

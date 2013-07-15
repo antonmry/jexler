@@ -24,12 +24,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Files;
 
-import net.jexler.FastTests;
 import net.jexler.Jexler;
 import net.jexler.JexlerFactory;
 import net.jexler.JexlerUtil;
 import net.jexler.RunState;
 import net.jexler.service.StopEvent;
+import net.jexler.test.FastTests;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;

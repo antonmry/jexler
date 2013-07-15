@@ -14,11 +14,11 @@
    limitations under the License.
 */
 
-package net.jexler;
+package net.jexler.test;
 
 /**
- * Slow (~seconds) unit tests category marker.
+ * Demo unit tests category marker.
  *
  * @author $(whois jexler.net)
  */
-public interface SlowTests {}
+public interface DemoTests {}

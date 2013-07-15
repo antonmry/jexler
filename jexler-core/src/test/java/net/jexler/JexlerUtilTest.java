@@ -22,6 +22,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.PrintWriter;
 
+import net.jexler.test.FastTests;
+
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 

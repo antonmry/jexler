@@ -26,8 +26,8 @@ import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.StandardWatchEventKinds;
 
-import net.jexler.VerySlowTests;
 import net.jexler.internal.MockJexler;
+import net.jexler.test.VerySlowTests;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;

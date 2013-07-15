@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-package net.jexler;
+package net.jexler.test;
 
 /**
  * Fast (~ms) unit tests category marker.
