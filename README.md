@@ -3,10 +3,11 @@
 jexler
 ======
 
-Jexler is a simple Java 7 framework for starting/stopping Groovy scripts
-as services and enabling them to react to events of their choice.
+Jexler is a simple relaxed Java 7 framework for starting/stopping
+Groovy scripts as services and enabling them to react to events
+of their choice.
 
-Comes as a library (JAR) plus a simple web GUI (WAR).
+Comes as a library (JAR) plus a simple relaxed web GUI (WAR).
 
 * Java 7 (with Groovy), Eclipse/Gradle, Apache License
 * Web GUI: Java 7, Servlet 2.5 (Tomcat 6 or later)

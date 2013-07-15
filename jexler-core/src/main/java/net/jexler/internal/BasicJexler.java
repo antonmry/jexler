@@ -157,7 +157,7 @@ public class BasicJexler implements Jexler {
                         		trackIssue(services, "Could not stop services.", e);
                         	}
                         	events.clear();
-                        	services.getServiceList().clear();
+                        	services.getServices().clear();
                         	runState = RunState.OFF;
                         }
                     }

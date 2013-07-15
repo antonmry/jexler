@@ -1,6 +1,6 @@
 apply plugin: 'war'
 
-description = 'jexler webapp - simple web GUI for the jexler core library.'
+description = 'jexler webapp - simple relaxed web GUI for the jexler core library.'
 
 project.ext {
   pkg = 'war'

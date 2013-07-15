@@ -38,6 +38,6 @@ public interface ServiceGroup extends Service {
 	 * Use to read and modify the group of services.
 	 * @return list of services, never null
 	 */
-	List<Service> getServiceList();
+	List<Service> getServices();
 
 }

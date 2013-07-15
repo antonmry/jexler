@@ -175,7 +175,7 @@ public class BasicJexlers extends BasicServiceGroup implements Jexlers {
 	@Override
     @SuppressWarnings("unchecked")
     public List<Jexler> getJexlers() {
-    	return (List<Jexler>)(List<?>)getServiceList();
+    	return (List<Jexler>)(List<?>)getServices();
     }
 
     @Override

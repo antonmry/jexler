@@ -91,7 +91,7 @@ public class BasicServiceGroup implements ServiceGroup {
      * Get run state for the group.
      * If there is no service in the group, OFF is returned;
      * if all services are in the same state, that state is returned;
-     * if a least one service is starting up  BUSY_STARTING is returned;
+     * if a least one service is starting up, BUSY_STARTING is returned;
      * else IDLE is returned.
      */
     @Override
@@ -146,7 +146,7 @@ public class BasicServiceGroup implements ServiceGroup {
 	}
 
 	@Override
-	public List<Service> getServiceList() {
+	public List<Service> getServices() {
 		return services;
 	}
 
