@@ -43,7 +43,7 @@ public final class MockService extends ServiceBase
 		return instance;
 	}
 	
-	private MockService(Jexler jexler, String id) {
+	public MockService(Jexler jexler, String id) {
 		super(jexler,id);
 	}
 
@@ -56,7 +56,7 @@ public final class MockService extends ServiceBase
 	@Override
 	public void stop() {
 		nStopped++;
-		this.setRunState(RunState.IDLE);
+		this.setRunState(RunState.OFF);
 	}
 	
 	public int getNStarted() {
