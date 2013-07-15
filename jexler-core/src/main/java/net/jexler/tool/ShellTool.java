@@ -61,7 +61,7 @@ public class ShellTool {
 
     /**
      * Set environment variables for command.
-     * Each item has the form "<name>=<value>".
+     * Each item has the form "name=value".
      * If not set inherit from parent process.
      * @param environment
      */
