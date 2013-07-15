@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A cron service, creates events at configurable times.
+ * Implemented using the cron4j library.
  *
  * @author $(whois jexler.net)
  */
@@ -38,12 +39,18 @@ public class CronService extends ServiceBase {
 
     /**
      * Constructor.
+     * @param jexler the jexler to send events to
+     * @param id the id of the service
      */
     public CronService(Jexler jexler, String id) {
         super(jexler, id);
         thisService = this;
     }
 
+    /**
+     * Set cron pattern, e.g. "* * * * *".
+     * @return this (for chaining calls)
+     */
     public CronService setCron(String cron) {
         this.cron = cron;
         return this;

@@ -21,7 +21,8 @@ import java.util.List;
 import net.jexler.service.Service;
 
 /**
- * Interface for tracking issues (errors).
+ * Interface for tracking issues.
+ * Implemented, for example, by jexler and jexlers.
  *
  * @author $(whois jexler.net)
  */
@@ -29,7 +30,6 @@ public interface IssueTracker {
 
     /**
      * Log issue as error and remember it.
-     * @param issue
      */
     void trackIssue(Issue issue);
     
@@ -37,15 +37,11 @@ public interface IssueTracker {
      * Convenience method for tracking an issue by giving its parameters.
      * <code>trackIssue(service, msg, e)</code> is equivalent to
      * <code>trackIssue(new IssueFactory().get(service, msg, e))</code>.
-     * @param service
-     * @param message
-     * @param exception
      */
     void trackIssue(Service service, String message, Exception exception);
 
     /**
      * Get remembered issues, most recent issue first.
-     * @return issues
      */
     List<Issue> getIssues();
 

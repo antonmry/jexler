@@ -18,7 +18,7 @@ package net.jexler;
 
 
 /**
- * Run state of a service.
+ * Enum for the run state of a service.
  *
  * @author $(whois jexler.net)
  */

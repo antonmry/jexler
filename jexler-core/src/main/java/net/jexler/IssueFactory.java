@@ -30,6 +30,9 @@ public class IssueFactory  {
     public IssueFactory() {
     }
 
+    /**
+     * Get issue instance.
+     */
 	public Issue get(Service service, String message, Exception exception) {
 		return new BasicIssue(service, message, exception);
 	}

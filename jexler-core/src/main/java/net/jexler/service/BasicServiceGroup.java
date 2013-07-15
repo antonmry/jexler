@@ -40,6 +40,7 @@ public class BasicServiceGroup implements ServiceGroup {
 
     /**
      * Constructor.
+     * @param id the service group id
      */
     public BasicServiceGroup(String id) {
     	this.id = id;
@@ -64,6 +65,11 @@ public class BasicServiceGroup implements ServiceGroup {
 		return ServiceUtil.waitForStartup(this, timeout);
 	}
 	
+	/**
+	 * Stop all services in a group.
+	 * Runtime exceptions are only logged, i.e. it is always
+	 * attempted to stop all services.
+	 */
 	@Override
     public void stop() {
 		RuntimeException ex = null;
@@ -88,11 +94,11 @@ public class BasicServiceGroup implements ServiceGroup {
 	}
 
     /**
-     * Get run state for the group.
-     * If there is no service in the group, OFF is returned;
-     * if all services are in the same state, that state is returned;
-     * if a least one service is starting up, BUSY_STARTING is returned;
-     * else IDLE is returned.
+     * Get run state of the group.
+     * @return If there is no service in the group, OFF is returned;
+     *   if all services are in the same state, that state is returned;
+     *   if a least one service is starting up, BUSY_STARTING is returned;
+     *   else IDLE is returned.
      */
     @Override
     public RunState getRunState() {

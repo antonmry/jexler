@@ -32,6 +32,9 @@ import org.slf4j.LoggerFactory;
  */
 public class ShellTool {
 
+	/**
+	 * Simple bean for the result of executing a shell command.
+	 */
     public class Result {
         public int rc;
         public String stdout;
@@ -50,9 +53,9 @@ public class ShellTool {
     }
 
     /**
-     * Set working directory for command.
+     * Set working directory for the command.
      * If not set inherit from parent process.
-     * @param workingDirectory
+     * @return this (for chaining calls)
      */
     public ShellTool setWorkingDirectory(File workingDirectory) {
         this.workingDirectory = workingDirectory;
@@ -60,10 +63,10 @@ public class ShellTool {
     }
 
     /**
-     * Set environment variables for command.
+     * Set environment variables for the command.
      * Each item has the form "name=value".
      * If not set inherit from parent process.
-     * @param environment
+     * @return this (for chaining calls)
      */
     public ShellTool setEnvironment(String[] environment) {
         this.environment = environment;
@@ -71,9 +74,12 @@ public class ShellTool {
     }
 
     /**
-     * Run shell command and return result.
+     * Run the given shell command and return the result.
+     * If an exception occurs, the return code of the result is set to -1,
+     * stderr of the result is set to the stack trace of the exception and
+     * stdout of the result is set to an empty string.
      * @param command command to run
-     * @return result
+     * @return result, never null
      */
     public Result run(String command) {
         Result result = new Result();
@@ -91,9 +97,12 @@ public class ShellTool {
     }
 
     /**
-     * Run shell command and return result.
+     * Run the given shell command and return the result.
+     * If an exception occurs, the return code of the result is set to -1,
+     * stderr of the result is set to the stack trace of the exception and
+     * stdout of the result is set to an empty string.
      * @param cmdarray array containing the command and its arguments
-     * @return result
+     * @return result, never null
      */
     public Result run(String[] cmdarray) {
         Result result = new Result();

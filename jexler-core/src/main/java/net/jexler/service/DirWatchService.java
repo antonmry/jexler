@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Directory watch service, creates an event when a file
- * in the directory is created, modified oder deleted.
+ * in a given directory is created, modified oder deleted.
  *
  * @author $(whois jexler.net)
  */
@@ -46,6 +46,8 @@ public class DirWatchService extends ServiceBase {
 
     /**
      * Constructor.
+     * @param jexler the jexler to send events to
+     * @param id the id of the service
      */
     public DirWatchService(Jexler jexler, String id) {
         super(jexler, id);
@@ -56,8 +58,9 @@ public class DirWatchService extends ServiceBase {
 
     /**
      * Set directory to watch.
-     * Default if not set is jexler directory.
+     * Default if not set is the directory that contains the jexler.
      * @param watchDir directory to watch
+     * @return this (for chaining calls)
      */
     public DirWatchService setDir(File watchDir) {
         this.watchDir = watchDir;
@@ -68,6 +71,7 @@ public class DirWatchService extends ServiceBase {
      * Set time to sleep between polling file system.
      * Default if not set is 1000ms (1 sec).
      * @param sleepTimeMs time to sleep in ms
+     * @return this (for chaining calls)
      */
     public DirWatchService setSleepTimeMs(long sleepTimeMs) {
         this.sleepTimeMs = sleepTimeMs;

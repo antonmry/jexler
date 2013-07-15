@@ -93,7 +93,7 @@ public class BasicJexler implements Jexler {
     /**
      * Constructor.
      * @param file file with jexler script
-     * @param jexlers
+     * @param jexlers jexlers instance that contains this jexler
      */
     public BasicJexler(File file, Jexlers jexlers) {
         this.file = file;
@@ -106,7 +106,9 @@ public class BasicJexler implements Jexler {
     }
 
     /**
-     * Immediately marks jexler service as on, then tries to start the script.
+     * Initiate jexler start.
+     * Immediately marks the jexler service as starting up, then tries to
+     * start the script.
      * Typically returns before the jexler script has started or completed
      * to initialize all of its services.
      * The jexler remains in the running state until the script exits in
@@ -201,7 +203,7 @@ public class BasicJexler implements Jexler {
     }
 
     /**
-     * Sends stop event to jexler.
+     * Initiate jexler stop by sending it a stop event to handle.
      */
     @Override
     public void stop() {
@@ -272,7 +274,7 @@ public class BasicJexler implements Jexler {
     }
     
     /**
-     * Read meta info from jexler file an store it in member variable.
+     * Read meta info from jexler file and store it in member variable.
      */
     private void setMetaInfoAtStart() {
     	try {

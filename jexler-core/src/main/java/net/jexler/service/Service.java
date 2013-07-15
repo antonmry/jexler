@@ -21,21 +21,19 @@ import net.jexler.RunState;
 
 /**
  * Interface for a service.
- * Implemented by Jexler(s) themselves and services used by jexlers.
- * 
- * TODO: describe life cycle
+ * Implemented by jexler(s) themselves and services used by jexlers.
  *
  * @author $(whois jexler.net)
  */
 public interface Service {
 
     /**
-     * Initiates service start.
+     * Initiate service start.
      */
     void start();
 
     /**
-     * Waits until run state is not BUSY_STARTING or timeout.
+     * Wait until run state is not BUSY_STARTING or timeout.
      * @param timeout timeout in ms
      * @return true if no timeout, false otherwise
      */
@@ -43,12 +41,12 @@ public interface Service {
 
 
     /**
-     * Initiates service stop.
+     * Initiate service stop.
      */
     void stop();
     
     /**
-     * Waits until run state is not OFF or timeout.
+     * Wait until run state is not OFF or timeout.
      * @param timeout timeout in ms
      * @return true if no timeout, false otherwise
      */
@@ -56,13 +54,11 @@ public interface Service {
 
 	/**
 	 * Get run state of the service.
-	 * @return state
 	 */
 	RunState getRunState();    
 
     /**
      * Convenience method for testing if run state is not OFF.
-     * @return true or false
      */
     boolean isOn();
 
@@ -73,8 +69,7 @@ public interface Service {
     boolean isOff();
 
     /**
-     * Get id.
-     * @return id
+     * Get service id.
      */
     String getId();
 

@@ -70,6 +70,7 @@ public class ObfuscatorTool {
         
     /**
      * UTF-8 encode, encipher and hex encode given string.
+     * @return obfuscated string
      */
     public String obfuscate(String plain) 
     		throws InvalidKeyException, IllegalBlockSizeException,
@@ -83,6 +84,7 @@ public class ObfuscatorTool {
 
     /**
      * Hex decode, decipher and UTF-8 decode given string.
+     * @return deobfuscated string
      */
     public String deobfuscate(String encHex)
     		throws InvalidKeyException, IllegalBlockSizeException,

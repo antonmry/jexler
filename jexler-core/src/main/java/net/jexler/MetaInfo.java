@@ -19,23 +19,22 @@ package net.jexler;
 import java.util.Map;
 
 /**
- * Interface for meta info of a jexler,
- * stored in the first line of a jexler file as a list.
+ * Interface for meta info of a jexler, which is
+ * stored in the first line of a jexler script file
+ * as a list in Groovy notation.
  * 
- * For example:
+ * Example: [ "autostart"=true, "root"=new File('/') ]
  * 
- * [ "autostart"=true, "custom"=new File('/').usableSpace ]
- * 
- * The first line must start with '[', except whitespace,
- * else meta info is considered empty, as well as if for
- * some reason evaluating the line fails or is not possible.
+ * The first line must start with '[', except for whitespace,
+ * else meta info is considered empty (and also if for some
+ * reason evaluating the line fails or is not possible).
  *
  * @author $(whois jexler.net)
  */
 public interface MetaInfo extends Map<String,Object> {
 
     /**
-     * Get boolean flag value from meta info.
+     * Convenience method to get a boolean flag value from meta info.
      * @param name flag name
      * @param defaultValue default value to use
      * @return value from meta info if indicated, otherwise default value

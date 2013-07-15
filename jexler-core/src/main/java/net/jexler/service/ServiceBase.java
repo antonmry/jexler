@@ -32,6 +32,8 @@ public abstract class ServiceBase implements Service {
 
     /**
      * Constructor.
+     * @param jexler the jexler to send events to
+     * @param id the id of the service
      */
     public ServiceBase(Jexler jexler, String id) {
         this.jexler = jexler;
@@ -39,6 +41,9 @@ public abstract class ServiceBase implements Service {
         runState = RunState.OFF;
     }
 
+    /**
+     * Set run state to given value.
+     */
     public void setRunState(RunState runState) {
         this.runState = runState;
     }

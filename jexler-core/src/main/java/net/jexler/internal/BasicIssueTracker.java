@@ -38,6 +38,9 @@ public class BasicIssueTracker implements IssueTracker {
 
 	private final List<Issue> issues;
 	
+	/**
+	 * Default constructor.
+	 */
 	public BasicIssueTracker() {
 		issues = Collections.synchronizedList(new LinkedList<Issue>());
 	}

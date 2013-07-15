@@ -31,16 +31,28 @@ public class DirWatchEvent extends EventBase {
     private File file;
     private WatchEvent.Kind<?> kind;
     
+    /**
+	 * Constructor.
+	 * @param service the cron service that created the event
+     * @param file the file that has been created, modified or deleted
+     * @param kind what happened with the file
+     */
     public DirWatchEvent(Service service, File file, WatchEvent.Kind<?> kind) {
         super(service);
         this.file = file;
         this.kind = kind;
     }
     
+    /**
+     * Get file that has been created, modified or deleted.
+     */
     public File getFile() {
         return file;
     }
     
+    /**
+     * Get what happened with the file.
+     */
     public WatchEvent.Kind<?> getKind() {
         return kind;
     }

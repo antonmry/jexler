@@ -16,10 +16,8 @@
 
 package net.jexler.service;
 
-
-
 /**
- * Interface for an event (sent by a service to a jexler).
+ * Interface for an event sent by a service to a jexler.
  *
  * @author $(whois jexler.net)
  */
@@ -27,7 +25,6 @@ public interface Event {
 
     /**
      * Get service that sent the event.
-     * @return sensor
      */
     Service getService();
 

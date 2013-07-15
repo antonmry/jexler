@@ -50,8 +50,6 @@ public class BasicMetaInfo extends HashMap<String,Object> implements MetaInfo {
 	
 	/**
 	 * Constructor from file.
-	 * @param file file to read meta info from
-	 * 
 	 */
 	public BasicMetaInfo(File file) throws IOException {
 		if (file == null || !file.exists()) {

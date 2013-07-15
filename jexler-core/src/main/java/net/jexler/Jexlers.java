@@ -22,7 +22,7 @@ import java.util.List;
 import net.jexler.service.Service;
 
 /**
- * All jexlers in a directory.
+ * Interface for all jexlers in a directory.
  *
  * @author $(whois jexler.net)
  */
@@ -38,28 +38,31 @@ public interface Jexlers extends Service, IssueTracker {
      */
     void autostart();
 
+    /**
+     * Get directory that contains the jexler Groovy scripts.
+     */
     File getDir();
 
     /**
-     * Get jexlers, sorted by id.
-     * @return jexlers
+     * Get the list of all jexlers, sorted by id.
      */
     List<Jexler> getJexlers();
 
     /**
-     * Get jexler for given id.
-     * @param id
+     * Get the jexler for the given id.
      * @return jexler for given id or null if none
      */
     Jexler getJexler(String id);
     
     /**
-     * Get file for jexler id, even if no such file exists (yet).
+     * Get the file for the given jexler id,
+     * even if no such file exists (yet).
      */
     File getJexlerFile(String id);
     
     /**
-     * Get jexler id for file, even if the file does not exist (any more),
+     * Get the jexler id for the given file,
+     * even if the file does not exist (any more),
      * or null if not a jexler script.
      */
     String getJexlerId(File jexlerFile);

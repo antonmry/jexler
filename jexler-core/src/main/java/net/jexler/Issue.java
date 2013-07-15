@@ -21,26 +21,44 @@ import java.util.Date;
 import net.jexler.service.Service;
 
 /**
- * Issue.
+ * Interface for an issue.
+ * Issues are typically created and attached to a jexler or jexlers
+ * if something could not be done, often because some exception
+ * occurred.
  *
  * @author $(whois jexler.net)
  */
 public interface Issue extends Comparable<Issue> {
 
+	/**
+	 * Get date and time of when the issue occurred.
+	 */
     public Date getDate();
 
+    /**
+     * Get service where the issue occurred, may be null.
+     */
     public Service getService();
 
+    /**
+     * Get message set when issue was created.
+     */
     public String getMessage();
 
+    /**
+     * Get exception that caused the issue, or null if none.
+     */
     public Exception getException();
 
     /**
-     * Get stack trace as a multi-line string.
+     * Get exception stack trace as a multi-line string.
      * @return stack trace or empty if none or could not obtain it
      */
     public String getStackTrace();
 
+    /**
+     * Compares issues, newer is smaller (first in a sorted list).
+     */
     public int compareTo(Issue issue);
 
 }

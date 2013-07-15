@@ -22,6 +22,8 @@ import java.io.Writer;
 
 /**
  * Jexler utilities.
+ * Includes some static methods that might be useful in Groovy scripts
+ * or in Java (for writing custom services or tools).
  *
  * @author $(whois jexler.net)
  */
@@ -31,9 +33,8 @@ public class JexlerUtil {
 	}
 
     /**
-     * Get stack trace as a string.
-     * @param throwable
-     * @return stack trace, empty if throwable is null or could not obtain
+     * Get stack trace for given throwable as a string.
+     * @return stack trace, never null, empty if throwable is null or could not obtain
      */
     public static String getStackTrace(Throwable throwable) {
     	if (throwable == null) {

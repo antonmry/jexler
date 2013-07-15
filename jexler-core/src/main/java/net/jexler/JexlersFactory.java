@@ -30,6 +30,9 @@ public class JexlersFactory  {
     public JexlersFactory() {
     }
 
+    /**
+     * Get jexlers instance.
+     */
 	public Jexlers get(File dir) {
 		return new BasicJexlers(dir, new JexlerFactory());
 	}

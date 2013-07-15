@@ -29,6 +29,7 @@ public abstract class EventBase implements Event {
 
     /**
      * Constructor.
+     * @param service the service that created the event
      */
     public EventBase(Service service) {
         this.service = service;

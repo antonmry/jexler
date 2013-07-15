@@ -56,6 +56,8 @@ public class BasicJexlers extends BasicServiceGroup implements Jexlers {
     /**
      * Constructor.
      * @param dir directory which contains jexler scripts
+     * @param jexlerFactory factory for creating jexler instances
+     * @throws RuntimeException if given dir is not a directory or does not exist
      */
     public BasicJexlers(File dir, JexlerFactory jexlerFactory) {
     	super(dir.exists() ? dir.getName() : null);
@@ -74,8 +76,8 @@ public class BasicJexlers extends BasicServiceGroup implements Jexlers {
 
     /**
      * Refresh list of jexlers.
-     * Add new jexlers for new script files.
-     * Remove old jexlers if their script file is gone and they are stopped.
+     * Add new jexlers for new script files;
+     * remove old jexlers if their script file is gone and they are stopped.
      */
     @Override
     public void refresh() {

@@ -20,6 +20,8 @@ package net.jexler.service;
 
 /**
  * Service utilities.
+ * Includes some static methods that might be useful in Groovy scripts
+ * or in Java (for writing custom services).
  *
  * @author $(whois jexler.net)
  */

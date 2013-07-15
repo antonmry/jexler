@@ -22,7 +22,7 @@ import net.jexler.service.Event;
 import net.jexler.service.Service;
 
 /**
- * Interface for a jexler, runs a script that handles events.
+ * Interface for a jexler, runs a Groovy script that handles events.
  *
  * @author $(whois jexler.net)
  */
@@ -30,7 +30,6 @@ public interface Jexler extends Service, IssueTracker {
 	            
     /**
      * Handle given event.
-     * @param event
      */
     public void handle(Event event);
     
@@ -46,9 +45,9 @@ public interface Jexler extends Service, IssueTracker {
     
     /**
      * Get meta info.
-     * If the jexler is not running, read from jexler file.
-     * If the jexler is running, meta info read from jexler
-     * file when the jexler was started.
+     * Read from the jexler file at each call except if the jexler
+     * is already running, in that case returns meta info read at
+     * the time the jexler was started.
      */
     MetaInfo getMetaInfo();
 

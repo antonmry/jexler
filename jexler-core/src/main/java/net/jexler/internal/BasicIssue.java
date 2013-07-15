@@ -35,6 +35,9 @@ public class BasicIssue implements Issue {
     private final Exception exception;
     private final String stackTrace;
 
+    /**
+     * Constructor from service, message and exception.
+     */
     public BasicIssue(Service service, String message, Exception exception) {
         date = new Date();
         this.service = service;
@@ -43,26 +46,27 @@ public class BasicIssue implements Issue {
         stackTrace = JexlerUtil.getStackTrace(exception);
     }
 
+    @Override
     public Date getDate() {
         return date;
     }
 
+    @Override
     public Service getService() {
         return service;
     }
 
+    @Override
     public String getMessage() {
         return message;
     }
 
+    @Override
     public Exception getException() {
         return exception;
     }
 
-    /**
-     * Get stack trace as a multi-line string.
-     * @return stack trace or null if none
-     */
+    @Override
     public String getStackTrace() {
         return stackTrace;
     }
@@ -73,6 +77,9 @@ public class BasicIssue implements Issue {
         return -date.compareTo(issue.getDate());
     }
 
+    /**
+     * Create a single line string of all members, suitable for logging.
+     */
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();

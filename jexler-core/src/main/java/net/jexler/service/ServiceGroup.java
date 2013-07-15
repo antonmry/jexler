@@ -28,14 +28,13 @@ import java.util.List;
 public interface ServiceGroup extends Service {
 	
 	/**
-	 * Add a service to the group of services.
-	 * @param service
+	 * Add given service to the group of services.
 	 */
 	void add(Service service);
 	
 	/**
 	 * Get the list of services.
-	 * Use to read and modify the group of services.
+	 * Use also to modify the group of services.
 	 * @return list of services, never null
 	 */
 	List<Service> getServices();
