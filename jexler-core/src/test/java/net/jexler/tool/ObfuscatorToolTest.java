@@ -17,10 +17,6 @@
 package net.jexler.tool;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
-import javax.xml.bind.DatatypeConverter;
-
 import net.jexler.test.FastTests;
 
 import org.junit.Test;
@@ -36,47 +32,8 @@ public final class ObfuscatorToolTest
 {
 
 	@Test
-    public void testBasic() throws Exception {
+    public void testDefaultKey() throws Exception {
         ObfuscatorTool tool = new ObfuscatorTool();
-        
-        String plain = "test";
-        String obfus = tool.obfuscate(plain);
-        //System.out.println(obfus);
-        assertEquals("must be same", "F5F2F40096B4155B27AD8B3B275C2864", obfus);
-        String plainAgain = tool.deobfuscate(obfus);
-        assertEquals("must be same", plain, plainAgain);
-    
-        plain = "longer string with unicode \u03D4";
-        obfus = tool.obfuscate(plain);
-        //System.out.println(obfus);
-        assertEquals("must be same", 
-        		"E0A8C1D1014069BA856A2FF0062F8F5D42025391EA8F302014D88E963E2A3492",
-        		obfus);
-        plainAgain = tool.deobfuscate(obfus);
-        assertEquals("must be same", plain, plainAgain);
-        
-        plain = "";
-        obfus = tool.obfuscate(plain);
-        //System.out.println(obfus);
-        assertEquals("must be same", "C955BFA82004AC1472234D84D11639C1", obfus);
-        plainAgain = tool.deobfuscate(obfus);
-        assertEquals("must be same", plain, plainAgain);
-        
-        try {
-        	tool.obfuscate(null);
-        	fail("must throw");
-        } catch (NullPointerException e) {
-        	// expected
-        }
-    }
-
-	@Test
-    public void testCustom() throws Exception {
-        ObfuscatorTool tool = new ObfuscatorTool();
-        
-        tool.setKey("DES", DatatypeConverter.parseHexBinary("62e0c45a20dfe429"));
-        tool.setIv(DatatypeConverter.parseHexBinary("b42de953243ab9ed"));
-        tool.setCipher("DES/CBC/PKCS5Padding");
         
         String plain = "test";
         String obfus = tool.obfuscate(plain);
@@ -98,6 +55,34 @@ public final class ObfuscatorToolTest
         obfus = tool.obfuscate(plain);
         //System.out.println(obfus);
         assertEquals("must be same", "F1559F4F8783C61F", obfus);
+        plainAgain = tool.deobfuscate(obfus);
+        assertEquals("must be same", plain, plainAgain);
+	}
+
+	@Test
+    public void testCustomKey() throws Exception {
+        ObfuscatorTool tool = new ObfuscatorTool("1e02ab32dc0482e0","de03a21b6428bf04");
+        
+        String plain = "test";
+        String obfus = tool.obfuscate(plain);
+        //System.out.println(obfus);
+        assertEquals("must be same", "8CC6272DFA076961", obfus);
+        String plainAgain = tool.deobfuscate(obfus);
+        assertEquals("must be same", plain, plainAgain);
+    
+        plain = "longer string with unicode \u03D4";
+        obfus = tool.obfuscate(plain);
+        //System.out.println(obfus);
+        assertEquals("must be same", 
+        		"CEF9439DC881ADF3C22597CC909D026FFC908D5F81D3ECC10D3AD7E6CBE09987",
+        		obfus);
+        plainAgain = tool.deobfuscate(obfus);
+        assertEquals("must be same", plain, plainAgain);
+        
+        plain = "";
+        obfus = tool.obfuscate(plain);
+        //System.out.println(obfus);
+        assertEquals("must be same", "5C6C249B35974D05", obfus);
         plainAgain = tool.deobfuscate(obfus);
         assertEquals("must be same", plain, plainAgain);
 	}

@@ -35,7 +35,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Tool for (de-)obfuscating strings.
  * 
- * By default uses AES 128 in CBC mode with a hard-coded key (and iv).
+ * Uses (single) DES in CBC mode with PKCS#5 padding,
+ * by default with a hard-coded key and iv.
  *
  * @author $(whois jexler.net)
  */
@@ -43,45 +44,30 @@ public class ObfuscatorTool {
 
     static final Logger log = LoggerFactory.getLogger(ObfuscatorTool.class);
     
-    private SecretKeySpec key;
-    private IvParameterSpec iv;
-    private Cipher cipher;
+    static final String ALGORITHM = "DES";
+    static final String TRANSFORMATION = "DES/CBC/PKCS5Padding";
+    
+    private final SecretKeySpec key;
+    private final IvParameterSpec iv;
+    private final Cipher cipher;
     
     /**
-     * Constructor, uses hard-coded default key and iv
-     * and AES 128 in CBC mode with PKCS#5 padding.
+     * Default constructor, sets a hard-coded default key and iv.
      */
     public ObfuscatorTool() throws NoSuchAlgorithmException, NoSuchPaddingException {
-    	setKey("AES", DatatypeConverter.parseHexBinary("62e0c45a20dfe429543212be640c3254"));
-    	setIv(DatatypeConverter.parseHexBinary("b42de953243ab9edf03bdac61344bec5"));
-    	setCipher("AES/CBC/PKCS5Padding");
+    	this("62e0c45a20dfe429","b42de953243ab9ed");
     }
     
     /**
-     * Set custom key.
+     * Constructor from key and iv.
      */
-    public ObfuscatorTool setKey(String algorithm, byte[] keyBytes) {
-    	key = new SecretKeySpec(keyBytes, algorithm);
-    	return this;
-    }
-    
-    /**
-     * Set custom iv.
-     */
-    public ObfuscatorTool setIv(byte[] ivBytes) {
-    	iv = new IvParameterSpec(ivBytes);
-    	return this;
-    }
-    
-    /**
-     * Set custom cipher
-     */
-    public ObfuscatorTool setCipher(String transformation)
+    public ObfuscatorTool (String hexKey, String hexIv)
     		throws NoSuchAlgorithmException, NoSuchPaddingException {
-    	cipher = Cipher.getInstance(transformation);
-    	return this;
+    	key = new SecretKeySpec(DatatypeConverter.parseHexBinary(hexKey), ALGORITHM);
+    	iv = new IvParameterSpec(DatatypeConverter.parseHexBinary(hexIv));
+    	cipher = Cipher.getInstance(TRANSFORMATION);
     }
-    
+        
     /**
      * UTF-8 encode, encipher and hex encode given string.
      */
