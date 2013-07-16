@@ -89,7 +89,7 @@ subprojects {
         developers {
           developer {
             id 'jexler'
-            name '$(whois jexler.net)'
+            name 'Jex Jexler (whois jexler.net)'
             email 'jex@jexler.net'
           }
         }
