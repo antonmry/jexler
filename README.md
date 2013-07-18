@@ -16,7 +16,7 @@ Build
 -----
 
 * Quick build: `gradle clean build`
-* Full build: `gradle clean build pom verySlowTests`
+* Full build: `gradle clean build pom jacoco`
 * Create eclipse project: `gradle eclipse`
 
 Try web GUI
