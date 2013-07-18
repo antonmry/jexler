@@ -2,6 +2,7 @@ subprojects {
   apply plugin: 'java'
   apply plugin: 'eclipse'
   apply plugin: 'maven'
+  apply plugin: 'jacoco'
 
   sourceCompatibility = 1.7
   targetCompatibility = 1.7
@@ -65,6 +66,11 @@ subprojects {
     useJUnit {
       includeCategories 'net.jexler.test.DemoTests'
     }
+  }
+  
+  task jacoco(type:JacocoReport, dependsOn: 'verySlowTests') {
+	  executionData test, slowTests, verySlowTests
+	  sourceSets sourceSets.main
   }
   
   task pom << {
