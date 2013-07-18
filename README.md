@@ -32,7 +32,7 @@ Resources
 ---------
 
 * Website: [http://www.jexler.net/](http://www.jexler.net/)
-* jexler-core (JAR): Maven Central (soon)
+* jexler-core (JAR): [Maven Central](http://search.maven.org/#search%7Cga%7C1%7Cjexler-core)
 * jexler (WAR): [Sourceforge](https://sourceforge.net/projects/jexler/)
 * Javadoc (jexler-core): [http://www.jexler.net/javadoc/](http://www.jexler.net/javadoc/)
 
