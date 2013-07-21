@@ -16,9 +16,7 @@ while (true) {
     // run shell command
     shellTool = new ShellTool()
     result = shellTool.run("echo 'hello world'")
-    log.trace("rc = " + result.rc)
-    log.trace("stdout = " + result.stdout)
-    log.trace("stderr = " + result.stderr)
+    log.trace(result.toString())
     
 	// http get request
     httpclient = new DefaultHttpClient()

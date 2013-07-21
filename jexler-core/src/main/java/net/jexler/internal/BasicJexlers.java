@@ -165,6 +165,9 @@ public class BasicJexlers extends BasicServiceGroup implements Jexlers {
     	issueTracker.forgetIssues();
     }
 
+    /**
+     * Get id, which is the name of the jexlers directory.
+     */
     @Override
     public String getId() {
         return id;

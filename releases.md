@@ -3,6 +3,15 @@
 jexler releases
 ===============
 
+bleeding edge...
+----------------
+
+* jexler-core
+  * Slightly modified interface of ShellTool (lists and maps
+    instead of arrays to make it simpler to use with Groovy).
+  * More unit tests (jacoco XX%/YY%).
+* ...
+
 1.0.3 (2013-07-16)
 ------------------
 

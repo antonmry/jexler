@@ -22,6 +22,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.jexler.test.FastTests;
 
@@ -56,9 +59,9 @@ public final class ShellToolTest
         assertTrue("must be true", result.stderr.isEmpty());
         
         if (isWindows()) {
-        	result = tool.run(new String[] { "cmd","/c", "dir" });
+        	result = tool.run(Arrays.asList(new String[] { "cmd","/c", "dir" }));
         } else {
-        	result = tool.run(new String[] { "ls","-l" });
+        	result = tool.run(Arrays.asList(new String[] { "ls","-l" }));
         }
         //System.out.println(result);
         assertNotNull("must not be null", result);
@@ -96,14 +99,16 @@ public final class ShellToolTest
         assertTrue("must be true", result.stderr.isEmpty());
 
         tool.setWorkingDirectory(null);
-        tool.setEnvironment(new String[] { "MYVAR=there" });
+        Map<String,String> env = new HashMap<String,String>();
+        env.put("MYVAR", "there");
+        tool.setEnvironment(env);
         if (isWindows()) {
         	// (not case sensitive on windows)
         	String[] cmd = new String[] { "cmd", "/c", "echo hello %MyVar%" };
-        	result = tool.run(cmd);
+        	result = tool.run(Arrays.asList(cmd));
         } else {
         	String[] cmd = new String[] { "sh", "-c", "echo hello $MYVAR" };
-        	result = tool.run(cmd);
+        	result = tool.run(Arrays.asList(cmd));
         }
         //System.out.println(result);
         assertNotNull("must not be null", result);
@@ -143,6 +148,16 @@ public final class ShellToolTest
         assertTrue("must be true", !result.stderr.isEmpty());
         System.out.println(result.stderr);
         assertTrue("must be true", result.stderr.contains("java.io.IOException"));
+
+        result = tool.run(Arrays.asList(new String[] { "there-is-no-such-command" }));
+        //System.out.println(result);
+        assertNotNull("must not be null", result);
+        assertNotNull("must not be null", result.stdout);
+        assertNotNull("must not be null", result.stderr);
+        assertTrue("must be true", result.rc != 0);
+        assertTrue("must be true", !result.stderr.isEmpty());
+        System.out.println(result.stderr);
+        assertTrue("must be true", result.stderr.contains("java.io.IOException"));
 	}
 	
 	@Test
@@ -156,7 +171,6 @@ public final class ShellToolTest
         assertEquals("must be same", "[rc=5,stdout='file1%nfile2%n',stderr='']", result.toString());
 	}
 	
-
 	private boolean isWindows() {
 		return System.getProperty("os.name").startsWith("Windows");
 	}

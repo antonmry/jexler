@@ -45,7 +45,7 @@ public final class JexlerUtilTest
 	}
 	
 	@Test
-    public void getStackTraceTest() throws Exception {
+    public void testGetStackTrace() throws Exception {
 		
 		String stackTrace = JexlerUtil.getStackTrace(null);
 		assertEquals("must be same", "", stackTrace);
@@ -58,11 +58,11 @@ public final class JexlerUtilTest
 		assertTrue("must be true", stackTrace.startsWith("java.lang.Exception"));
 		String className = this.getClass().getSimpleName();
 		assertTrue("must be true", stackTrace.contains(
-				className + ".getStackTraceTest(" + className + ".java:"));
+				className + ".testGetStackTrace(" + className + ".java:"));
 	}
 
 	@Test
-    public void toSingleLineTest() throws Exception {
+    public void testToSingleLine() throws Exception {
 		assertNull("must be null", JexlerUtil.toSingleLine(null));
 		assertEquals("must be same", "", JexlerUtil.toSingleLine(""));
 		assertEquals("must be same", "%n 55", JexlerUtil.toSingleLine("%n 55"));
@@ -71,7 +71,7 @@ public final class JexlerUtilTest
 	}
 
 	@Test
-    public void waitAtLeastTest() throws Exception {
+    public void testWaitAtLeast() throws Exception {
 
 		long t0 = System.currentTimeMillis();
 		JexlerUtil.waitAtLeast(200);

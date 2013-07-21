@@ -18,6 +18,10 @@ package net.jexler.tool;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Scanner;
 
 import net.jexler.JexlerUtil;
@@ -26,7 +30,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Tool for running shell commands.
+ * Tool for running shell commands, just a thin wrapper around
+ * the java runtime exec calls.
  *
  * @author $(whois jexler.net)
  */
@@ -56,7 +61,7 @@ public class ShellTool {
     static final Logger log = LoggerFactory.getLogger(ShellTool.class);
 
     private File workingDirectory;
-    private String[] environment;
+    private Map<String,String> env;
 
     /**
      * Constructor.
@@ -66,7 +71,7 @@ public class ShellTool {
 
     /**
      * Set working directory for the command.
-     * If not set inherit from parent process.
+     * If not set or set to null, inherit from parent process.
      * @return this (for chaining calls)
      */
     public ShellTool setWorkingDirectory(File workingDirectory) {
@@ -76,12 +81,12 @@ public class ShellTool {
 
     /**
      * Set environment variables for the command.
-     * Each item has the form "name=value".
-     * If not set inherit from parent process.
+     * Key is variable name, value is variable value.
+     * If not set or set to null, inherit from parent process.
      * @return this (for chaining calls)
      */
-    public ShellTool setEnvironment(String[] environment) {
-        this.environment = environment;
+    public ShellTool setEnvironment(Map<String,String> env) {
+        this.env = env;
         return this;
     }
 
@@ -96,7 +101,7 @@ public class ShellTool {
     public Result run(String command) {
         Result result = new Result();
         try {
-            Process proc = Runtime.getRuntime().exec(command, environment, workingDirectory);
+            Process proc = Runtime.getRuntime().exec(command, toEnvArray(env), workingDirectory);
             result.rc = proc.waitFor();
             result.stdout = readInputStream(proc.getInputStream());
             result.stderr = readInputStream(proc.getErrorStream());
@@ -113,13 +118,15 @@ public class ShellTool {
      * If an exception occurs, the return code of the result is set to -1,
      * stderr of the result is set to the stack trace of the exception and
      * stdout of the result is set to an empty string.
-     * @param cmdarray array containing the command and its arguments
+     * @param cmdList list containing the command and its arguments
      * @return result, never null
      */
-    public Result run(String[] cmdarray) {
+    public Result run(List<String> cmdList) {
+    	String[] cmdArray = new String[cmdList.size()];
+    	cmdList.toArray(cmdArray);
         Result result = new Result();
         try {
-            Process proc = Runtime.getRuntime().exec(cmdarray, environment, workingDirectory);
+            Process proc = Runtime.getRuntime().exec(cmdArray, toEnvArray(env), workingDirectory);
             result.rc = proc.waitFor();
             result.stdout = readInputStream(proc.getInputStream());
             result.stderr = readInputStream(proc.getErrorStream());
@@ -133,10 +140,26 @@ public class ShellTool {
 
     private String readInputStream(InputStream is) {
     	// (assume default platform character encoding)
-        try (Scanner s = new Scanner(is)) {
-            s.useDelimiter("\\A");
-            return s.hasNext() ? s.next() : "";
-        }
+        Scanner scanner = new Scanner(is);
+        scanner.useDelimiter("\\A");
+        String data = scanner.hasNext() ? scanner.next() : "";
+        scanner.close();
+        return data;
+    }
+    
+    /**
+     * Convert map of name and value to array of name=value.
+     */
+    private String[] toEnvArray(Map<String,String> env) {
+    	if (env == null) {
+    		return null;
+    	}
+    	List<String> envList = new LinkedList<String>();
+    	for (Entry<String, String> entry : env.entrySet()) {
+    		envList.add(entry.getKey() + "=" + entry.getValue());
+    	}
+    	String[] envArray = new String[envList.size()];
+    	return envList.toArray(envArray);
     }
 
 }

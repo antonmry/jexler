@@ -28,9 +28,6 @@ import java.io.Writer;
  * @author $(whois jexler.net)
  */
 public class JexlerUtil {
-	
-	private JexlerUtil() {
-	}
 
     /**
      * Get stack trace for given throwable as a string.

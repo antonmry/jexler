@@ -11,7 +11,7 @@ while (true) {
     log.trace("It is now: " + new Date() + " (" + event.service.id + ")")
 	log.trace("Util.hello(): " + Util.hello())
   } else if (event instanceof OnceEvent) {
-    log.trace("This should be logged only once...")
+    log.trace("log once")
   } else if (event instanceof StopEvent) {
     return
   }
