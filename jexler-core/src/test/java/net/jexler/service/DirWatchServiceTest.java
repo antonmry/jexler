@@ -52,19 +52,19 @@ public final class DirWatchServiceTest
         File watchDir = Files.createTempDirectory(null).toFile();
         
         MockJexler jexler = new MockJexler();
-        DirWatchService dirWatchService = new DirWatchService(jexler, "watchid");
-        dirWatchService.setDir(watchDir);
-        dirWatchService.setSleepTimeMs(MS_1_SEC);
-        assertEquals("must be same", "watchid", dirWatchService.getId());
+        DirWatchService service = new DirWatchService(jexler, "watchid");
+        service.setDir(watchDir);
+        service.setSleepTimeMs(MS_1_SEC);
+        assertEquals("must be same", "watchid", service.getId());
         
-        dirWatchService.start();
-    	assertTrue("must be true", dirWatchService.isOn());
+        service.start();
+    	assertTrue("must be true", service.isOn());
         assertNull("must be null", jexler.takeEvent(MS_30_SEC));
                 
-        checkEvents(jexler, dirWatchService, watchDir);
+        checkEvents(jexler, service, watchDir);
         
-        dirWatchService.stop();
-    	assertTrue("must be true", dirWatchService.waitForShutdown(MS_30_SEC));
+        service.stop();
+    	assertTrue("must be true", service.waitForShutdown(MS_30_SEC));
         
         // create file after service stop
         File tempFile = new File(watchDir, "temp2");
@@ -76,23 +76,23 @@ public final class DirWatchServiceTest
 
         // different watch directory
         watchDir = Files.createTempDirectory(null).toFile();
-        dirWatchService.setDir(watchDir);
+        service.setDir(watchDir);
         
-        dirWatchService.start();    
-    	assertTrue("must be true", dirWatchService.isOn());
+        service.start();    
+    	assertTrue("must be true", service.isOn());
         assertNull("must be null", jexler.takeEvent(MS_30_SEC));
         
-        checkEvents(jexler, dirWatchService, watchDir);
+        checkEvents(jexler, service, watchDir);
         
         // delete watch directory
         assertTrue("must be true", watchDir.delete());
         assertNull("must be null", jexler.takeEvent(MS_30_SEC));
         
-        dirWatchService.stop();
-    	assertTrue("must be true", dirWatchService.waitForShutdown(MS_30_SEC));
+        service.stop();
+    	assertTrue("must be true", service.waitForShutdown(MS_30_SEC));
     }
         
-    private void checkEvents(MockJexler jexler, DirWatchService dirWatchService,
+    private void checkEvents(MockJexler jexler, DirWatchService service,
             File watchDir) throws Exception {
 
         // create file
@@ -101,7 +101,7 @@ public final class DirWatchServiceTest
 
         Event event = jexler.takeEvent(MS_30_SEC);
         assertNotNull("must not be null", event);
-        assertEquals("must be same", dirWatchService, event.getService());
+        assertEquals("must be same", service, event.getService());
         assertTrue("must be true", event instanceof DirWatchEvent);
         DirWatchEvent dirWatchEvent = (DirWatchEvent)event;
         assertEquals("must be same", tempFile.getCanonicalPath(),
@@ -118,7 +118,7 @@ public final class DirWatchServiceTest
 
         event = jexler.takeEvent(MS_30_SEC);
         assertNotNull("must not be null", event);
-        assertEquals("must be same", dirWatchService, event.getService());
+        assertEquals("must be same", service, event.getService());
         assertTrue("must be true", event instanceof DirWatchEvent);
         dirWatchEvent = (DirWatchEvent)event;
         assertEquals("must be same", tempFile.getCanonicalPath(),
@@ -133,7 +133,7 @@ public final class DirWatchServiceTest
 
         event = jexler.takeEvent(MS_30_SEC);
         assertNotNull("must not be null", event);
-        assertEquals("must be same", dirWatchService, event.getService());
+        assertEquals("must be same", service, event.getService());
         assertTrue("must be true", event instanceof DirWatchEvent);
         dirWatchEvent = (DirWatchEvent)event;
         assertEquals("must be same", tempFile.getCanonicalPath(),

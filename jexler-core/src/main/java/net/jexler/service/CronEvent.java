@@ -29,7 +29,7 @@ public class CronEvent extends EventBase {
 	
 	/**
 	 * Constructor.
-	 * @param service the cron service that created the event
+	 * @param service the service that created the event
 	 * @param cron the cron pattern that caused the event
 	 */
     public CronEvent(Service service, String cron) {

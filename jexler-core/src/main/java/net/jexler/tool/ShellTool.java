@@ -39,6 +39,18 @@ public class ShellTool {
         public int rc;
         public String stdout;
         public String stderr;
+        @Override
+        public String toString() {
+        	StringBuilder builder = new StringBuilder();
+        	builder.append("[rc=");
+        	builder.append(rc);
+        	builder.append(",stdout='");
+        	builder.append(JexlerUtil.toSingleLine(stdout));
+        	builder.append("',stderr='");
+        	builder.append(JexlerUtil.toSingleLine(stderr));
+        	builder.append("']");
+        	return builder.toString();
+        }
     }
 
     static final Logger log = LoggerFactory.getLogger(ShellTool.class);
