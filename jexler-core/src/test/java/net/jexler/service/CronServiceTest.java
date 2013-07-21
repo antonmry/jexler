@@ -51,6 +51,7 @@ public final class CronServiceTest
     	
     	service.start();
     	assertTrue("must be true", service.isOn());
+    	assertTrue("must be true", service.waitForStartup(MS_30_SEC));
     	
     	Event event = jexler.takeEvent(MS_1_MIN_10_SEC);
     	assertNotNull("must not be null", event);
@@ -72,6 +73,7 @@ public final class CronServiceTest
     	
     	service.start();
     	assertTrue("must be true", service.isOn());
+    	assertTrue("must be true", service.waitForStartup(MS_30_SEC));
     	
     	event = jexler.takeEvent(MS_1_MIN_10_SEC);
     	assertNotNull("must not be null", event);

@@ -26,6 +26,9 @@ package net.jexler.service;
  * @author $(whois jexler.net)
  */
 public class ServiceUtil {
+	
+	private ServiceUtil() {
+	}
 		
     public static boolean waitForStartup(Service service, long timeout) {
     	long t0 = System.currentTimeMillis();

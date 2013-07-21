@@ -29,7 +29,10 @@ import java.io.Writer;
  */
 public class JexlerUtil {
 
-    /**
+	private JexlerUtil() {
+	}
+
+	/**
      * Get stack trace for given throwable as a string.
      * @return stack trace, never null, empty if throwable is null or could not obtain
      */

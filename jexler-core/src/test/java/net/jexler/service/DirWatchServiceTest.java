@@ -59,6 +59,7 @@ public final class DirWatchServiceTest
         
         service.start();
     	assertTrue("must be true", service.isOn());
+    	assertTrue("must be true", service.waitForStartup(MS_30_SEC));
         assertNull("must be null", jexler.takeEvent(MS_30_SEC));
                 
         checkEvents(jexler, service, watchDir);
@@ -80,6 +81,7 @@ public final class DirWatchServiceTest
         
         service.start();    
     	assertTrue("must be true", service.isOn());
+    	assertTrue("must be true", service.waitForStartup(MS_30_SEC));
         assertNull("must be null", jexler.takeEvent(MS_30_SEC));
         
         checkEvents(jexler, service, watchDir);
