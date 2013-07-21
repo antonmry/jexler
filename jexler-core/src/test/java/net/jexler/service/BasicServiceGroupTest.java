@@ -19,6 +19,7 @@ package net.jexler.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import net.jexler.RunState;
 import net.jexler.internal.MockJexler;
 import net.jexler.test.FastTests;
@@ -62,6 +63,11 @@ public final class BasicServiceGroupTest
     	
     	service2.setRunState(RunState.IDLE);
     	assertEquals("must be same", RunState.IDLE, group.getRunState());
+    	
+    	service1.setRunState(RunState.BUSY_STOPPING);
+    	service2.setRunState(RunState.BUSY_STOPPING);
+    	service3.setRunState(RunState.BUSY_STOPPING);
+    	assertEquals("must be same", RunState.BUSY_STOPPING, group.getRunState());
 	}
 
 	@Test
@@ -107,6 +113,29 @@ public final class BasicServiceGroupTest
     	assertEquals("must be same", RunState.OFF, service3.getRunState());
     	assertEquals("must be same", RunState.OFF, group.getRunState());
     	assertFalse("must be false", group.isOn());
+    	
+    	// test runtime exception during stop, must still try to stop all
+    	
+    	group.start();
+    	RuntimeException ex = new RuntimeException();
+    	service2.setStopRuntimeException(ex);
+    	assertEquals("must be same", RunState.IDLE, service1.getRunState());
+    	assertEquals("must be same", RunState.IDLE, service2.getRunState());
+    	assertEquals("must be same", RunState.IDLE, service3.getRunState());
+    	assertEquals("must be same", RunState.IDLE, group.getRunState());
+    	assertTrue("must be true", group.isOn());
+    	
+    	try {
+    		group.stop();
+    		fail("must throw");
+    	} catch (RuntimeException e) {
+    		assertEquals("must be same", ex, e);
+    	}
+    	assertEquals("must be same", RunState.OFF, service1.getRunState());
+    	assertEquals("must be same", RunState.IDLE, service2.getRunState());
+    	assertEquals("must be same", RunState.OFF, service3.getRunState());
+    	assertEquals("must be same", RunState.IDLE, group.getRunState());
+    	assertTrue("must be true", group.isOn());
 	}
 	
 }

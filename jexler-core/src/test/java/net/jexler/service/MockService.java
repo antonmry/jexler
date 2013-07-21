@@ -34,6 +34,7 @@ public final class MockService extends ServiceBase
 	private volatile int nStopped = 0;
 	private volatile int nEventsSent = 0;
 	private volatile int nEventsGotBack = 0;
+	private RuntimeException stopRuntimeException = null;
 	
 	public static void setTestInstance(Jexler jexler, String id) {
 		instance = new MockService(jexler, id);
@@ -56,7 +57,14 @@ public final class MockService extends ServiceBase
 	@Override
 	public void stop() {
 		nStopped++;
+		if (stopRuntimeException != null) {
+			throw stopRuntimeException;
+		}
 		this.setRunState(RunState.OFF);
+	}
+	
+	public void setStopRuntimeException(RuntimeException e) {
+		this.stopRuntimeException = e;
 	}
 	
 	public int getNStarted() {
