@@ -19,13 +19,14 @@ package net.jexler.internal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 
 import net.jexler.MetaInfo;
-import net.jexler.internal.BasicMetaInfo;
 import net.jexler.test.FastTests;
 
 import org.junit.Test;
@@ -46,13 +47,19 @@ public final class BasicMetaInfoTest
 		MetaInfo info = BasicMetaInfo.EMPTY;
 		assertTrue("must be true", info.isEmpty());
 		
-		info = new BasicMetaInfo(null);
-		assertTrue("must be true", info.isEmpty());
-
 		info = new BasicMetaInfo(new File("/does/not/exist/5092749"));
 		assertTrue("must be true", info.isEmpty());
 		
+		try {
+			 new BasicMetaInfo(Files.createTempDirectory(null).toFile());
+			 fail("must throw");
+		} catch (IOException e) {
+		}
+		
 		File testFile = Files.createTempFile(null, null).toFile();
+        info = new BasicMetaInfo(testFile);
+		assertTrue("must be true", info.isEmpty());
+		
         FileWriter writer = new FileWriter(testFile);
         writer.append("// some comment");
         writer.close();
@@ -66,7 +73,19 @@ public final class BasicMetaInfoTest
 		assertTrue("must be true", info.isEmpty());
 		
         writer = new FileWriter(testFile);
-        writer.append("[ 'autostart' : true, 'foo' : 'bar' ]");
+        writer.append("# does not compile");
+        writer.close();
+        info = new BasicMetaInfo(testFile);
+		assertTrue("must be true", info.isEmpty());
+		
+        writer = new FileWriter(testFile);
+        writer.append("[ 'list', 'not', 'map' ]");
+        writer.close();
+        info = new BasicMetaInfo(testFile);
+		assertTrue("must be true", info.isEmpty());
+		
+        writer = new FileWriter(testFile);
+        writer.append("   [ 'autostart' : true, 'foo' : 'bar' ]");
         writer.close();
         info = new BasicMetaInfo(testFile);
 		assertEquals("must be same", 2, info.size());

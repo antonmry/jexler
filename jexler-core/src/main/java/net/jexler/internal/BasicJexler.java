@@ -280,7 +280,7 @@ public class BasicJexler implements Jexler {
     	try {
     		metaInfoAtStart = new BasicMetaInfo(file);
     	} catch (IOException e) {
-    		String msg = "Could not read meta info from existing jexler file '" 
+    		String msg = "Could not read meta info from jexler file '" 
     				+ file.getAbsolutePath() + "'.";
     		trackIssue(null, msg, e);
     		metaInfoAtStart = BasicMetaInfo.EMPTY;
@@ -295,7 +295,7 @@ public class BasicJexler implements Jexler {
     		try {
     			return new BasicMetaInfo(file);
     		} catch (IOException e) {
-    			String msg = "Could not read meta info from existing jexler file '" 
+    			String msg = "Could not read meta info from jexler file '" 
     					+ file.getAbsolutePath() + "'.";
     			trackIssue(null, msg, e);
     			return BasicMetaInfo.EMPTY;

@@ -21,7 +21,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import net.jexler.internal.MockJexler;
-import net.jexler.test.VerySlowTests;
+import net.jexler.test.SlowTests;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -31,8 +31,8 @@ import org.junit.experimental.categories.Category;
  *
  * @author $(whois jexler.net)
  */
-@Category(VerySlowTests.class)
-public final class CronServiceTest
+@Category(SlowTests.class)
+public final class CronServiceSlowTest
 {
 	private final static long MS_1_MIN_10_SEC = 70000;
 	private final static long MS_30_SEC = 30000;

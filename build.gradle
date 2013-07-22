@@ -45,19 +45,15 @@ subprojects {
 	useJUnit {
       includeCategories 'net.jexler.test.FastTests'
     }
+	//afterTest { desc, result ->
+	//  println "Executing test ${desc.name} [${desc.className}] with result: ${result.resultType}"
+	//}
   }
 
   task slowTests(type: Test, dependsOn: 'test') {
 	//testLogging.showStandardStreams = true
     useJUnit {
       includeCategories 'net.jexler.test.SlowTests'
-    }
-  }
-  
-  task verySlowTests(type: Test, dependsOn: 'slowTests') {
-	//testLogging.showStandardStreams = true
-    useJUnit {
-      includeCategories 'net.jexler.test.VerySlowTests'
     }
   }
   
@@ -68,8 +64,8 @@ subprojects {
     }
   }
   
-  task jacoco(type:JacocoReport, dependsOn: 'verySlowTests') {
-	  executionData test, slowTests, verySlowTests
+  task jacoco(type:JacocoReport, dependsOn: 'slowTests') {
+	  executionData test, slowTests
 	  sourceSets sourceSets.main
   }
   

@@ -102,11 +102,7 @@ public class BasicIssue implements Issue {
         	builder.append("'" + JexlerUtil.toSingleLine(exception.toString()) + "'");
         }
         builder.append(",stackTrace=");
-        if (stackTrace == null) {
-        	builder.append(stackTrace);
-        } else {
-        	builder.append("'" + JexlerUtil.toSingleLine(stackTrace.toString()) + "'");
-        }
+        builder.append("'" + JexlerUtil.toSingleLine(stackTrace.toString()) + "'");
         builder.append(']');
         return builder.toString();
     }

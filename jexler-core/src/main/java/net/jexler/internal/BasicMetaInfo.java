@@ -52,7 +52,7 @@ public class BasicMetaInfo extends HashMap<String,Object> implements MetaInfo {
 	 * Constructor from file.
 	 */
 	public BasicMetaInfo(File file) throws IOException {
-		if (file == null || !file.exists()) {
+		if (!file.exists()) {
 			return;
 		}
 
@@ -60,12 +60,6 @@ public class BasicMetaInfo extends HashMap<String,Object> implements MetaInfo {
 			// read first line of jexler script
 			String line = reader.readLine();
 			if (line == null) {
-				return;
-			}
-			
-			// is meta info?
-			line = line.trim();
-			if (!line.startsWith("[")) {
 				return;
 			}
 

@@ -18,12 +18,15 @@ package net.jexler.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Files;
+import java.util.Set;
 
+import net.jexler.Issue;
 import net.jexler.JexlerFactory;
 import net.jexler.JexlerUtil;
 import net.jexler.RunState;
@@ -48,9 +51,7 @@ public final class BasicJexlerTest
 		File dir = Files.createTempDirectory(null).toFile();
 		File file = new File(dir, "test.groovy");
 		
-		FileWriter writer = new FileWriter(file);
-		writer.append("");
-		writer.close();
+		Files.createFile(file.toPath());
 		
 		BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
 		assertEquals("must be same", file.getAbsolutePath(), jexler.getFile().getAbsolutePath());
@@ -136,6 +137,52 @@ public final class BasicJexlerTest
 		assertEquals("must be same", 1, mockService.getNStopped());
 		assertEquals("must be same", 1, mockService.getNEventsSent());
 		assertEquals("must be same", 1, mockService.getNEventsGotBack());
+	}
+	
+	@Test
+    public void testEventTake() throws Exception {
+		
+		File dir = Files.createTempDirectory(null).toFile();
+		File file = new File(dir, "test.groovy");
+		
+		FileWriter writer = new FileWriter(file);
+		writer.append(
+				"while (true) {\n" +
+				"  event = events.take()\n" +
+				"  if (event instanceof StopEvent) {\n" +
+				"    return\n" +
+				"  }\n" +
+				"}\n");
+		writer.close();
+		
+		BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
+		jexler.start();
+		jexler.waitForStartup(10000);
+		assertTrue("must be true", jexler.getIssues().isEmpty());
+
+		Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+		Thread scriptThread = null;
+		for (Thread thread : threadSet) {
+			if ("test".equals(thread.getName())) {
+				scriptThread = thread;
+			}
+		}
+		assertNotNull("must not be null", scriptThread);
+		
+		scriptThread.interrupt();
+		
+		JexlerUtil.waitAtLeast(500);
+		assertEquals("must be same", RunState.IDLE, jexler.getRunState());
+		assertTrue("must be true", jexler.isOn());
+		assertEquals("must be same", 1, jexler.getIssues().size());
+		Issue issue = jexler.getIssues().get(0);
+		assertEquals("must be same", jexler, issue.getService());
+		assertEquals("must be same", "Could not take event.", issue.getMessage());
+		assertNotNull("must notm be null", issue.getException());
+		assertTrue("must be true", issue.getException() instanceof InterruptedException);
+
+		jexler.stop();
+		jexler.waitForShutdown(10000);
 	}
 
 }

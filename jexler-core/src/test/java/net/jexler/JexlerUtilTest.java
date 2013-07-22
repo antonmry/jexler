@@ -36,7 +36,7 @@ import org.junit.experimental.categories.Category;
 @Category(FastTests.class)
 public final class JexlerUtilTest
 {
-	
+
 	@SuppressWarnings("serial")
 	static class NoStackTraceException extends Exception {
 		@Override
@@ -86,7 +86,7 @@ public final class JexlerUtilTest
 		long t0 = System.currentTimeMillis();
 		JexlerUtil.waitAtLeast(200);
 		long t1 = System.currentTimeMillis();
-		assertTrue("must be true", t1-t0 >= 0);
+		assertTrue("must be true", t1-t0 >= 200);
 		assertTrue("should usually be true", t1-t0 < 2000);
 
 		for (long ms=0; ms<=50; ms++) {
