@@ -44,7 +44,7 @@ public final class BasicJexlersTest
 {
 
 	@Test
-    public void basicJexlersTest() throws Exception {
+    public void testBasic() throws Exception {
 	
 		File dir = Files.createTempDirectory(null).toFile();
 		
@@ -179,7 +179,7 @@ public final class BasicJexlersTest
 	}
 
 	@Test
-    public void getJexlerIdTest() throws Exception {
+    public void testGetJexlerId() throws Exception {
 	
 		File dir = Files.createTempDirectory(null).toFile();
 		BasicJexlers jexlers = new BasicJexlers(dir, new JexlerFactory());
@@ -195,7 +195,7 @@ public final class BasicJexlersTest
 	}
 	
 	@Test
-    public void getJexlerFileTest() throws Exception {
+    public void testGetJexlerFile() throws Exception {
 		
 		File dir = Files.createTempDirectory(null).toFile();
 		BasicJexlers jexlers = new BasicJexlers(dir, new JexlerFactory());

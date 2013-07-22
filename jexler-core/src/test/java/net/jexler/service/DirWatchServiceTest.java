@@ -47,7 +47,7 @@ public final class DirWatchServiceTest
      * Takes about 5 minutes to complete.
      */
     @Test
-    public void testDirWatch() throws Exception {
+    public void testBasic() throws Exception {
         
         File watchDir = Files.createTempDirectory(null).toFile();
         

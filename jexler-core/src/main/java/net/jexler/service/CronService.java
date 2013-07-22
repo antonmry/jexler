@@ -49,6 +49,8 @@ public class CronService extends ServiceBase {
 
     /**
      * Set cron pattern, e.g. "* * * * *".
+     * Use "now" for now, i.e. for a single event immediately,
+     * which can be useful for testing.
      * @return this (for chaining calls)
      */
     public CronService setCron(String cron) {
@@ -59,6 +61,12 @@ public class CronService extends ServiceBase {
     @Override
     public void start() {
         if (!isOff()) {
+            return;
+        }
+        if (cron.equals("now")) {
+            log.trace("new cron event: " + cron);
+            getJexler().handle(new CronEvent(thisService, cron));
+            setRunState(RunState.IDLE);
             return;
         }
         scheduler = new Scheduler();
@@ -80,7 +88,9 @@ public class CronService extends ServiceBase {
         if (isOff()) {
             return;
         }
-        scheduler.stop();
+        if (!cron.equals("now")) {
+        	scheduler.stop();
+        }
         setRunState(RunState.OFF);
     }
 
