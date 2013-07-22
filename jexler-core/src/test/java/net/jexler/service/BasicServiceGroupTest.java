@@ -113,12 +113,26 @@ public final class BasicServiceGroupTest
     	assertEquals("must be same", RunState.OFF, service3.getRunState());
     	assertEquals("must be same", RunState.OFF, group.getRunState());
     	assertFalse("must be false", group.isOn());
+	}
+	
+	@Test
+    public void testStopRuntimeException() throws Exception {
     	
-    	// test runtime exception during stop, must still try to stop all
+    	MockJexler jexler = new MockJexler();
+    	MockService service1 = new MockService(jexler, "service1");
+    	MockService service2 = new MockService(jexler, "service2");
+    	MockService service3 = new MockService(jexler, "service2");
+    	
+    	BasicServiceGroup group = new BasicServiceGroup("group");
+    	group.add(service1);
+    	group.add(service2);
+    	group.add(service3);
     	
     	group.start();
-    	RuntimeException ex = new RuntimeException();
-    	service2.setStopRuntimeException(ex);
+    	RuntimeException ex1 = new RuntimeException();
+    	RuntimeException ex2 = new RuntimeException();
+    	service1.setStopRuntimeException(ex1);
+    	service2.setStopRuntimeException(ex2);
     	assertEquals("must be same", RunState.IDLE, service1.getRunState());
     	assertEquals("must be same", RunState.IDLE, service2.getRunState());
     	assertEquals("must be same", RunState.IDLE, service3.getRunState());
@@ -129,13 +143,29 @@ public final class BasicServiceGroupTest
     		group.stop();
     		fail("must throw");
     	} catch (RuntimeException e) {
-    		assertEquals("must be same", ex, e);
+    		assertEquals("must be same", ex1, e);
     	}
-    	assertEquals("must be same", RunState.OFF, service1.getRunState());
+    	assertEquals("must be same", RunState.IDLE, service1.getRunState());
     	assertEquals("must be same", RunState.IDLE, service2.getRunState());
     	assertEquals("must be same", RunState.OFF, service3.getRunState());
     	assertEquals("must be same", RunState.IDLE, group.getRunState());
     	assertTrue("must be true", group.isOn());
 	}
 	
+	@Test
+    public void testEmpty() throws Exception {
+
+		BasicServiceGroup group = new BasicServiceGroup("group");
+    	assertEquals("must be same", RunState.OFF, group.getRunState());
+    	assertFalse("must be false", group.isOn());
+    	
+    	group.start();
+    	assertEquals("must be same", RunState.OFF, group.getRunState());
+    	assertFalse("must be false", group.isOn());
+    	
+    	group.stop();
+    	assertEquals("must be same", RunState.OFF, group.getRunState());
+    	assertFalse("must be false", group.isOn());
+	}
+
 }

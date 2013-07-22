@@ -16,8 +16,6 @@
 
 package net.jexler.service;
 
-
-
 /**
  * Service utilities.
  * Includes some static methods that might be useful in Groovy scripts
@@ -27,7 +25,16 @@ package net.jexler.service;
  */
 public class ServiceUtil {
 	
-	private ServiceUtil() {
+	@SuppressWarnings("serial")
+	static class NoInstanceException extends Exception {
+	}
+	
+	/**
+	 * Don't use, class contains only static utility methods.
+	 * @throws NoInstanceException Always.
+	 */
+	public ServiceUtil() throws NoInstanceException {
+		throw new NoInstanceException();
 	}
 		
     public static boolean waitForStartup(Service service, long timeout) {

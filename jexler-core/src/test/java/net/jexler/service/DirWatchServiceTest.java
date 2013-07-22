@@ -23,10 +23,13 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardWatchEventKinds;
 
+import net.jexler.Issue;
 import net.jexler.internal.MockJexler;
+import net.jexler.test.FastTests;
 import net.jexler.test.VerySlowTests;
 
 import org.junit.Test;
@@ -84,7 +87,10 @@ public final class DirWatchServiceTest
     	assertTrue("must be true", service.waitForStartup(MS_30_SEC));
         assertNull("must be null", jexler.takeEvent(MS_30_SEC));
         
-        checkEvents(jexler, service, watchDir);
+        service.start();    
+    	assertTrue("must be true", service.getRunState().isIdle());
+
+    	checkEvents(jexler, service, watchDir);
         
         // delete watch directory
         assertTrue("must be true", watchDir.delete());
@@ -92,8 +98,32 @@ public final class DirWatchServiceTest
         
         service.stop();
     	assertTrue("must be true", service.waitForShutdown(MS_30_SEC));
-    }
         
+        service.stop();
+    	assertTrue("must be true", service.isOff());
+    }
+
+    @Test
+    @Category(FastTests.class)
+    public void testNoWatchDir() throws Exception {
+        File watchDir = new File("does-not-exist");
+        
+        MockJexler jexler = new MockJexler();
+        DirWatchService service = new DirWatchService(jexler, "watchid");
+        service.setDir(watchDir);
+        service.setSleepTimeMs(MS_1_SEC);
+        
+        service.start();
+    	assertTrue("must be true", service.isOff());
+        assertEquals("must be same", 1, jexler.getIssues().size());
+        Issue issue = jexler.getIssues().get(0);
+        assertEquals("must be same", service, issue.getService());
+        assertTrue("must be true",
+        		issue.getMessage().startsWith("could not create watch service or key"));
+        assertNotNull("must not be null", issue.getException());
+    	assertTrue("must be true", issue.getException() instanceof IOException);
+    }
+
     private void checkEvents(MockJexler jexler, DirWatchService service,
             File watchDir) throws Exception {
 

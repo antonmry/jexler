@@ -28,8 +28,17 @@ import java.io.Writer;
  * @author $(whois jexler.net)
  */
 public class JexlerUtil {
-
-	private JexlerUtil() {
+	
+	@SuppressWarnings("serial")
+	static class NoInstanceException extends Exception {
+	}
+	
+	/**
+	 * Don't use, class contains only static utility methods.
+	 * @throws NoInstanceException Always.
+	 */
+	public JexlerUtil() throws NoInstanceException {
+		throw new NoInstanceException();
 	}
 
 	/**

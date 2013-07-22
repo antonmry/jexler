@@ -17,6 +17,7 @@
 package net.jexler.internal;
 
 import java.io.File;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -39,11 +40,13 @@ public class MockJexler implements Jexler {
 	private File file;
 	//private Jexlers jexlers;
 	private Queue<Event> events;
+	private List<Issue> issues;
 	
 	public MockJexler(File file, Jexlers jexlers) {
 		this.file = file;
 		//this.jexlers = jexlers;
 		events = new ConcurrentLinkedQueue<Event>();
+		issues = new LinkedList<Issue>();
 	}
 	
 	public MockJexler() {
@@ -92,17 +95,21 @@ public class MockJexler implements Jexler {
 
     @Override
     public void trackIssue(Service service, String message, Exception exception) {
-    	throw new RuntimeException("Not implemented");
+    	issues.add(new BasicIssue(service, message, exception));
     }
 
     @Override
 	public List<Issue> getIssues() {
-		throw new RuntimeException("Not implemented");
+		return issues;
 	}
 
 	@Override
 	public void forgetIssues() {
-		throw new RuntimeException("Not implemented");
+		issues.clear();
+	}
+
+	public void addIssues(List<Issue> issues) {
+		issues.addAll(issues);
 	}
 	
 	@Override

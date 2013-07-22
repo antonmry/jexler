@@ -19,6 +19,7 @@ package net.jexler;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.PrintWriter;
 
@@ -44,6 +45,15 @@ public final class JexlerUtilTest
 		}
 	}
 	
+	@Test
+    public void testNoInstance() throws Exception {
+		try {
+			new JexlerUtil();
+			fail("must throw");
+		} catch (JexlerUtil.NoInstanceException e) {
+		}
+	}
+
 	@Test
     public void testGetStackTrace() throws Exception {
 		
