@@ -2,7 +2,7 @@
 
 services.add(new CronService(jexler, "every-minute").setCron("* * * * *"))
 services.add(new CronService(jexler, "every-two-minutes").setCron("*/2 * * * *"))
-services.add(new CronService(jexler, "run once immediately").setCron("now"))
+services.add(new CronService(jexler, "once-immediately").setCron("now"))
 services.start()
 
 while (true) {
