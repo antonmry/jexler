@@ -238,7 +238,7 @@ public final class BasicJexlerTest
 		File file = new File(dir, "test.groovy");
 		
 		FileWriter writer = new FileWriter(file);
-		writer.append("[ 'autostart' : false, 'autoimport' : false ]\n" +
+		writer.append("[ 'autostart' : false, 'foo' : 'bar' ]\n" +
 				"def mockService = MockService.getTestInstance()\n" +
 				"mockService.setStopRuntimeException(new RuntimeException())\n" +
 				"services.add(mockService)\n" +
@@ -351,9 +351,10 @@ public final class BasicJexlerTest
 		
 		FileWriter writer = new FileWriter(file);
 		writer.append(
+				"[ 'autoimport' : false ]\n" +
 				"while (true) {\n" +
 				"  event = events.take()\n" +
-				"  if (event instanceof StopEvent) {\n" +
+				"  if (event instanceof net.jexler.service.StopEvent) {\n" +
 				"    return\n" +
 				"  }\n" +
 				"}\n");
