@@ -58,7 +58,8 @@ fi
 if [ ! -d "$ROOT/$WEBAPP_NEW" ]; then
   mkdir "$ROOT/$WEBAPP_NEW"
   cd "$ROOT/$WEBAPP_NEW"
-  jar xvf "$ROOT/$WEBAPP_NEW.war" >/dev/null
+  jar xf "../$WEBAPP_NEW.war"
+  #unzip -q "$ROOT/$WEBAPP_NEW.war" -d "$ROOT/$WEBAPP_NEW"
 fi
 
 # move old files away from old webapp directory
