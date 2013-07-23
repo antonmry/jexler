@@ -51,6 +51,8 @@ import org.slf4j.LoggerFactory;
 public class BasicJexler implements Jexler {
 
     static final Logger log = LoggerFactory.getLogger(BasicJexler.class);
+    
+    public static final String START_WAIT_MS_PROPERTY_NAME = "net.jexler.start.wait.ms";
         
     @SuppressWarnings("serial")
 	public class Events extends LinkedBlockingQueue<Event> {
@@ -177,14 +179,14 @@ public class BasicJexler implements Jexler {
     	 * jexlers failing to start up from then on - observed only on mac
     	 * in tomcat, could not reproduce in a test case so far...)
     	 */
-        final String name = "net.jexler.start.wait.ms";
-        String value = System.getProperty(name);
+        String value = System.getProperty(START_WAIT_MS_PROPERTY_NAME);
         if (value != null) {
         	long ms = 0;
         	try {
         		ms = Long.parseLong(value);
         	} catch (NumberFormatException e) {
-        		trackIssue(this, "Property '" + name + "' value '" + value + "' is not a number.", e);
+        		trackIssue(this, "Property '" + START_WAIT_MS_PROPERTY_NAME + 
+        				"' value '" + value + "' is not a number.", e);
         	}
         	JexlerUtil.waitAtLeast(ms);
     	}
@@ -284,7 +286,7 @@ public class BasicJexler implements Jexler {
     	} catch (IOException e) {
     		String msg = "Could not read meta info from jexler file '" 
     				+ file.getAbsolutePath() + "'.";
-    		trackIssue(null, msg, e);
+    		trackIssue(this, msg, e);
     		metaInfoAtStart = BasicMetaInfo.EMPTY;
     	}
     }
@@ -299,7 +301,7 @@ public class BasicJexler implements Jexler {
     		} catch (IOException e) {
     			String msg = "Could not read meta info from jexler file '" 
     					+ file.getAbsolutePath() + "'.";
-    			trackIssue(null, msg, e);
+    			trackIssue(this, msg, e);
     			return BasicMetaInfo.EMPTY;
     		}
     	}

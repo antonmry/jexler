@@ -88,7 +88,7 @@ public final class BasicJexlersSlowTest
 		jexlers.waitForStartup(MS_5_SEC);
 		assertEquals("should be same", 2, jexlers.getIssues().size());
 		for (Issue issue : jexlers.getIssues()) {
-			assertEquals("must be same", "Timeout waiting for jexler startup", issue.getMessage());
+			assertEquals("must be same", "Timeout waiting for jexler startup.", issue.getMessage());
 		}
 		
 		jexlers.forgetIssues();
@@ -99,7 +99,7 @@ public final class BasicJexlersSlowTest
 		jexlers.waitForShutdown(MS_5_SEC);
 		assertEquals("should be same", 2, jexlers.getIssues().size());
 		for (Issue issue : jexlers.getIssues()) {
-			assertEquals("must be same", "Timeout waiting for jexler shutdown", issue.getMessage());
+			assertEquals("must be same", "Timeout waiting for jexler shutdown.", issue.getMessage());
 		}
 		
 		jexlers.forgetIssues();

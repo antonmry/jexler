@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -180,6 +181,12 @@ public final class BasicJexlerTest
 		assertEquals("must be same", 0, mockService.getNEventsSent());
 		assertEquals("must be same", 0, mockService.getNEventsGotBack());
 		
+		jexler.start();
+		jexler.waitForStartup(10000);
+		assertEquals("must be same", RunState.IDLE, jexler.getRunState());
+		assertTrue("must be true", jexler.isOn());
+		assertTrue("must be true", jexler.getIssues().isEmpty());
+		
 		mockService.notifyJexler();
 		JexlerUtil.waitAtLeast(1000);
 		assertEquals("must be same", 1, mockService.getNStarted());
@@ -216,9 +223,14 @@ public final class BasicJexlerTest
 		assertEquals("must be same", 1, mockService.getNStopped());
 		assertEquals("must be same", 1, mockService.getNEventsSent());
 		assertEquals("must be same", 1, mockService.getNEventsGotBack());
+		
+		jexler.stop();
+		jexler.waitForShutdown(10000);
+		assertEquals("must be same", RunState.OFF, jexler.getRunState());
+		assertTrue("must be true", jexler.isOff());
+		assertTrue("must be true", jexler.getIssues().isEmpty());
 	}
 	
-
 	@Test
     public void testShutdownRuntimeException() throws Exception {
 
@@ -226,7 +238,7 @@ public final class BasicJexlerTest
 		File file = new File(dir, "test.groovy");
 		
 		FileWriter writer = new FileWriter(file);
-		writer.append("[ 'autostart' : false, 'foo' : 'bar' ]\n" +
+		writer.append("[ 'autostart' : false, 'autoimport' : false ]\n" +
 				"def mockService = MockService.getTestInstance()\n" +
 				"mockService.setStopRuntimeException(new RuntimeException())\n" +
 				"services.add(mockService)\n" +
@@ -262,6 +274,73 @@ public final class BasicJexlerTest
 		assertEquals("must be same", "Could not stop services.", issue.getMessage());
 		assertNotNull("must not be null", issue.getService());
 		assertEquals("must be same", mockService.getStopRuntimeException(), issue.getException());
+	}
+	
+	@Test
+    public void testMetaInfoIOException() throws Exception {
+
+		File dir = Files.createTempDirectory(null).toFile();
+		//File file = new File(dir, "test.groovy");
+		
+		// note that passing dir as jexler file!
+		BasicJexler jexler = new BasicJexler(dir, new BasicJexlers(dir, new JexlerFactory()));
+		assertTrue("must be true", jexler.getIssues().isEmpty());
+		
+		jexler.getMetaInfo();
+		assertEquals("must be same", 1, jexler.getIssues().size());
+		Issue issue = jexler.getIssues().get(0);
+		assertTrue("must be true",
+				issue.getMessage().startsWith("Could not read meta info from jexler file"));
+		assertEquals("must be same", jexler, issue.getService());
+		assertNotNull("must not be null", issue.getException());
+		assertTrue("must be true", issue.getException() instanceof IOException);
+
+		jexler.forgetIssues();
+		assertTrue("must be true", jexler.getIssues().isEmpty());
+		
+		try {
+			jexler.start();
+			fail();
+		} catch (Exception e) {
+		}
+		assertEquals("must be same", 1, jexler.getIssues().size());
+		issue = jexler.getIssues().get(0);
+		assertTrue("must be true",
+				issue.getMessage().startsWith("Could not read meta info from jexler file"));
+		assertEquals("must be same", jexler, issue.getService());
+		assertNotNull("must not be null", issue.getException());
+		assertTrue("must be true", issue.getException() instanceof IOException);
+	}
+	
+	
+	@Test
+    public void testIvyGrapeIssueWorkaround() throws Exception {
+
+		File dir = Files.createTempDirectory(null).toFile();
+		File file = new File(dir, "test.groovy");
+		
+		Files.createFile(file.toPath());
+		
+		BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
+
+		System.setProperty(BasicJexler.START_WAIT_MS_PROPERTY_NAME, "not-a-number");
+		jexler.start();
+		jexler.waitForStartup(10000);
+		assertEquals("must be same", RunState.OFF, jexler.getRunState());
+		
+		assertEquals("must be same", 1, jexler.getIssues().size());
+		Issue issue = jexler.getIssues().get(0);
+		assertTrue("must be true",
+				issue.getMessage().contains("is not a number"));
+		assertEquals("must be same", jexler, issue.getService());
+		assertNotNull("must not be null", issue.getException());
+		assertTrue("must be true", issue.getException() instanceof NumberFormatException);
+		
+		System.setProperty(BasicJexler.START_WAIT_MS_PROPERTY_NAME, "100");
+		jexler.start();
+		jexler.waitForStartup(10000);
+		assertEquals("must be same", RunState.OFF, jexler.getRunState());
+		assertTrue("must be true", jexler.getIssues().isEmpty());		
 	}
 	
 	@Test
