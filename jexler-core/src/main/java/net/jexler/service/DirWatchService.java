@@ -93,8 +93,8 @@ public class DirWatchService extends ServiceBase {
         			StandardWatchEventKinds.ENTRY_MODIFY,
         			StandardWatchEventKinds.ENTRY_DELETE);
         } catch (IOException e) {
-        	getJexler().trackIssue(this, "could not create watch service or key for directory '"
-        			+ watchDir.getAbsolutePath() + "'", e);
+        	getJexler().trackIssue(this, "Could not create watch service or key for directory '"
+        			+ watchDir.getAbsolutePath() + "'.", e);
         	return;
         }
         Thread watchThread = new Thread(new Runnable() {

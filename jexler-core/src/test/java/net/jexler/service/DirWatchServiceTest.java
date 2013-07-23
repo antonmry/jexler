@@ -55,7 +55,7 @@ public final class DirWatchServiceTest
         Issue issue = jexler.getIssues().get(0);
         assertEquals("must be same", service, issue.getService());
         assertTrue("must be true",
-        		issue.getMessage().startsWith("could not create watch service or key"));
+        		issue.getMessage().startsWith("Could not create watch service or key"));
         assertNotNull("must not be null", issue.getException());
     	assertTrue("must be true", issue.getException() instanceof IOException);
     }
