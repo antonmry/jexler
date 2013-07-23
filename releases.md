@@ -3,13 +3,13 @@
 jexler releases
 ===============
 
-bleeding edge...
-----------------
+1.0.4 (2013-07-23)
+------------------
 
 * ShellTool: Methods with lists and maps instead of arrays.
 * CronService: Cron string "now" for a single event immediately.
-* Unit test coverage close to 100% (except for artefacts).
-* ...
+* Unit test coverage of jexler-core close to 100% (except for artefacts).
+* GUI: Automatically updates status of jexlers every second.
 
 1.0.3 (2013-07-16)
 ------------------
