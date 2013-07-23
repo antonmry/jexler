@@ -6,9 +6,9 @@ jexler releases
 bleeding edge...
 ----------------
 
-* ShellTool: methods with lists and maps instead of arrays.
-* CronService: cron string "now" for a single event immediately.
-* Added unit tests.
+* ShellTool: Methods with lists and maps instead of arrays.
+* CronService: Cron string "now" for a single event immediately.
+* Unit test coverage close to 100% (except for artefacts).
 * ...
 
 1.0.3 (2013-07-16)
