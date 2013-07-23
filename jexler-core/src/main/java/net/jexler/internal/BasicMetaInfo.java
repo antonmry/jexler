@@ -62,7 +62,7 @@ public class BasicMetaInfo extends HashMap<String,Object> implements MetaInfo {
 			if (line == null) {
 				return;
 			}
-
+			
 			// evaluate first line as groovy script
 			Binding binding = new Binding();
 			GroovyShell shell = new GroovyShell(binding);

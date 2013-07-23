@@ -143,6 +143,8 @@ public class BasicJexler implements Jexler {
 
     	final GroovyShell shell = new GroovyShell(binding, configuration);
     	shell.getClassLoader().addClasspath(file.getParent());
+    	
+    	final Jexler thisJexler = this;
 
         scriptThread = new Thread(
                 new Runnable() {
@@ -150,7 +152,7 @@ public class BasicJexler implements Jexler {
                         try {
                         	shell.evaluate(file);
                         } catch (RuntimeException | IOException e) {
-                        	trackIssue(null, "Script failed.", e);
+                        	trackIssue(thisJexler, "Script failed.", e);
                         } finally {
                         	runState = RunState.BUSY_STOPPING;
                         	try {

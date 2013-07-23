@@ -100,5 +100,11 @@ public final class BasicMetaInfoTest
 		assertTrue("must be true", info.isOn("foo", true));
 		assertFalse("must be false", info.isOn(null, false));
 		assertTrue("must be true", info.isOn(null, true));
+		
+        writer = new FileWriter(testFile);
+        writer.append("meta = [ 'autostart' : true, 'foo' : 'bar' ]");
+        writer.close();
+        info = new BasicMetaInfo(testFile);
+		assertEquals("must be same", 2, info.size());
 	}
 }

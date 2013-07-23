@@ -67,6 +67,10 @@ public final class MockService extends ServiceBase
 		this.stopRuntimeException = e;
 	}
 	
+	public RuntimeException getStopRuntimeException() {
+		return stopRuntimeException;
+	}
+	
 	public int getNStarted() {
 		return nStarted;
 	}

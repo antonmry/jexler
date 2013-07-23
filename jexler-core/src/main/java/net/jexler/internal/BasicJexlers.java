@@ -62,9 +62,9 @@ public class BasicJexlers extends BasicServiceGroup implements Jexlers {
     public BasicJexlers(File dir, JexlerFactory jexlerFactory) {
     	super(dir.exists() ? dir.getName() : null);
         if (!dir.exists()) {
-            throw new RuntimeException("Directory '" + dir.getAbsolutePath() + "' does not exist");
+            throw new RuntimeException("Directory '" + dir.getAbsolutePath() + "' does not exist.");
         } else  if (!dir.isDirectory()) {
-            throw new RuntimeException("File '" + dir.getAbsolutePath() + "' is not a directory");
+            throw new RuntimeException("File '" + dir.getAbsolutePath() + "' is not a directory.");
         }
         this.dir = dir;
         id = super.getId();
@@ -125,7 +125,7 @@ public class BasicJexlers extends BasicServiceGroup implements Jexlers {
     	if (!ok) {
     		for (Jexler jexler : getJexlers()) {
                 if (jexler.getRunState() == RunState.BUSY_STARTING) {
-                	trackIssue(jexler, "Timeout waiting for jexler startup", null);
+                	trackIssue(jexler, "Timeout waiting for jexler startup.", null);
                 }
             }
     	}
@@ -138,7 +138,7 @@ public class BasicJexlers extends BasicServiceGroup implements Jexlers {
     	if (!ok) {
     		for (Jexler jexler : getJexlers()) {
                 if (jexler.getRunState() != RunState.OFF) {
-                	trackIssue(jexler, "Timeout waiting for jexler shutdown", null);
+                	trackIssue(jexler, "Timeout waiting for jexler shutdown.", null);
                 }
             }
     	}
