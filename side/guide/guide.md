@@ -15,7 +15,7 @@ Here's a first example of a jexler Groovy script:
     services.start()
     
     while (true) {
-          event = events.take();
+      event = events.take();
       if (event instanceof CronEvent) {
         log.info("hello")
       } else if (event instanceof StopEvent) {
@@ -79,8 +79,8 @@ The first three jexlers are running, the last one is off, and you could start or
 
 If you want to try it out and play with jexler immediately:
 
-* Get the jexler source from github: [https://github.com/jexler/jexler]()
+* Get the jexler source from github: [https://github.com/jexler/jexler](https://github.com/jexler/jexler)
 * Install Java 7 and Gradle
 * `gradle demo`
-* Open [http://localhost:9080/]() in a web browser
+* Open [http://localhost:9080/](http://localhost:9080/) in a web browser
 * See the README at github for alternatives...
