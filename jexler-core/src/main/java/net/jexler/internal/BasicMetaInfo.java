@@ -71,6 +71,8 @@ public class BasicMetaInfo extends HashMap<String,Object> implements MetaInfo {
 				o = shell.evaluate(line);
 			} catch (CompilationFailedException e) {
 				return;
+			} catch (RuntimeException e) {
+				return;
 			}
 
 			// evaluated to a map?
