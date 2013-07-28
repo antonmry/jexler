@@ -10,6 +10,8 @@ jexler releases
 * CronService: Cron string "now+stop" for a single event immediately
   followed by a single StopEvent.
 * Bugfix: Catching RuntimeException in BasicMetaInfo.
+* Two now context parameters in web.xml, jexler.safety.script.confirmSave 
+  and jexler.safety.script.confirmDelete, see user's guide for details.
 
 1.0.4 (2013-07-23)
 ------------------
