@@ -7,6 +7,9 @@ Jexler is a simple relaxed Java 7 framework for starting/stopping
 Groovy scripts as services and enabling them to react to events
 of their choice.
 
+Introduction
+------------
+
 Here's a first example of a jexler Groovy script:
 
     [ "autostart" : true ]
@@ -80,7 +83,7 @@ The first three jexlers are running, the last one is off, and you could start or
 If you want to try it out and play with jexler immediately:
 
 * Get the jexler source from github: [https://github.com/jexler/jexler](https://github.com/jexler/jexler)
-* Install Java 7 and Gradle
+* Install the Java 7 JDK and Gradle
 * `gradle demo`
 * Open [http://localhost:9080/](http://localhost:9080/) in a web browser
 * See the README at github for alternatives...
@@ -88,7 +91,7 @@ If you want to try it out and play with jexler immediately:
 Services
 --------
 
-**CronService**
+###CronService
 
 This service sends a CronEvent at times configurable with a cron string:
 
@@ -110,7 +113,7 @@ The CronEvent class has a single getter `getCron()` to get the cron string that 
 
 Implemented using the Open Source [cron4j](http://www.sauronsoftware.it/projects/cron4j/) library.
 
-**DirWatchService**
+###DirWatchService
 
 This service observes a directory for changes in the file system and sends events when a file is created, modified or deleted:
 
@@ -143,13 +146,13 @@ The DirWatchEvent class has the following getters:
 
 Implemented using a Java 7 WatchService.
 
-**More Services**
+###More Services
 
 Writing your own services is relatively easy, since you can also write services in Groovy, even from within the jexler web GUI.
 
 The trick is that all Groovy scripts in the jexlers directory are part of the class path.
 
-So, for example, if you wanted a more sophisticated version of CronService, you could copy the CronService.java from the jexler source to a MyCronService.groovy in the jexlers directory in the jexler webapp and do the same for CronEvent. After a few boilerplate changes, you should have a MyCronService that does the same as CronService and could start adding new features.
+So, for example, if you wanted a more sophisticated version of CronService, you could copy the CronService.java from the jexler source to a MyCronService.groovy in the jexlers directory in the jexler webapp and do the same for CronEvent. After a few boilerplate changes, you should have a MyCronService that does the same as CronService (this works, I tried it!) and could start adding new features, etc.
 
 And if you feel that it would be great if jexler had more services out-of-the-box, feel free to write your own Java or Groovy library of services and make it available.
 
@@ -160,9 +163,9 @@ And even then...
 Tools
 -----
 
-**ShellTool**
+###ShellTool
 
-This tool allows to run shell commands:
+This tool helps to run shell commands easily:
 
     shellTool = new ShellTool()
     result = shellTool.run("echo 'hello world'")
@@ -178,7 +181,7 @@ There are two setters:
   (key is variable name, value is variable value);
   if not set or set to null, inherit from parent process.
 
-Note that the setters again return the ShellTool instance, i.e. setters can be chained:
+Note that the setters again return their ShellTool instance, i.e. setters can be chained:
 
     new ShellTool().setWorkingDirectory('/tmp').run('ls')
 
@@ -189,7 +192,7 @@ And there are two methods for running a shell command:
 
 The second method allows to explicitly indicate the application to run (first list element) and how to split its arguments.
 
-Passing the right command string or list of commands can be tricky:
+Passing the right command string or list of commands can be a bit tricky:
 
 * On windows some common shell commands like "dir" or "echo" are not actually commands, but arguments to cmd.exe, so use e.g. `cmd /c echo hello` as a command string.
 * To set the working directory for cygwin, use e.g. `c:/cygwin/bin/bash -l /my/working/dir ls -l`.
@@ -197,9 +200,9 @@ Passing the right command string or list of commands can be tricky:
 
 The Result contains three items:
 
-* `int rc`: Return code of the command (0 means no error, any other value indicates that something went wrong).
-* `String stdout`: The standard output of the command.
-* `String stderr`: The standard error output of the command.
+* `int rc`: The return code of the command (0 is no error, other values indicate an error).
+* `String stdout`: The output of the command.
+* `String stderr`: The error output of the command.
 
 If an exception occurs, the return code of the result is set to -1, stderr of the result is set to the stack trace of the exception and stdout of the result is set to an empty string.
 
@@ -207,9 +210,9 @@ Note that the `toString()` method of Result produces a single line string suitab
 
 Implemented using `Runtime.getRuntime().exec()`.
 
-**ObfuscatorTool**
+###ObfuscatorTool
 
-This tool can be used to obfuscate passwords and other "minor" secret strings. It uses (single) DES, by default with a hard-coded key (plus IV).
+This tool can help to obfuscate passwords and other "minor" secret strings. It uses (single) DES, by default with a hard-coded key (plus IV).
 
 * `String obfuscate(String plain)`:
   UTF-8 encode, encipher and hex encode given string.
@@ -220,8 +223,8 @@ Simple use case:
 
 * Log obfuscated password:
   `log.trace(new ObfuscatorTool().obfuscate("mysecret"))`
-* Copy obfuscated password from log file (and delete entry from log file.)
-* Use: `def password = new ObfuscatorTool().deobfuscate("2A8A0F691DB78AD8DA6664D3A25DA963")`
+* Copy obfuscated password from log file (and delete entry from log file).
+* Use it: `def password = new ObfuscatorTool().deobfuscate("2A8A0F691DB78AD8DA6664D3A25DA963")`
 
 Use your own keys:
 
@@ -229,30 +232,30 @@ Use your own keys:
 
 Note that all of this is not a cryptographically strong protection of secrets, just a countermeasure to fend off the simplest attacks, like e.g. "shoulder surfing". Someone with access to the running jexler with write permission for jexler scripts can easily desobfuscate secrets.
 
-**More Tools**
+###More Tools
 
-With Java and Groovy plus Grape you have *thousands* of tools and libraries at your fingertips, just search the internet when you need something specific.
+With Java and Groovy plus Grape you have ***thousands*** of tools and libraries at your fingertips, just search the internet when you need something specific.
 
 Note again that since almost all Java code is valid Groovy code, you can search for solutions in Java and Groovy to find something you can use in jexler scripts.
 
-Besides, essentially the same comments as for services apply also to tools.
+Besides, essentially the same comments as for services apply also to tools. No need to reinvent the wheel.
 
 Web GUI
 -------
 
-**Basic Usage**
+###Basic Usage
 
 ![web gui basic usage](jexler-gui-basic.jpg)
 
 Use the red/green/blue buttons in the first two columns of the table to start/stop/restart a single jexler or all jexlers (top row).
 
-Note that a jexler utility Groovy script that just declares a class with methods simply runs and stops immediately again, so it causes no problems when starting/stopping all jexlers.
+Note that a jexler utility Groovy script that just declares a class with methods simply runs and stops immediately again (since its `main()` method is implicitly empty), so this causes no trouble at all when starting/stopping all jexlers.
 
 The third column allows to view the jexler log file (blue button in top row) and to view any issues that a jexler may have had, where a green button means that there are no issues and a red button can be clicked to view the issue(s).
 
-Issues are what jexler usually creates when something exceptionally happens that might require intervention by an administrator to get things running smoothly again.
+*Issues* are what jexler usually creates when something exceptionally happens that might require intervention by an administrator to get things running smoothly again.
 
-Jexler uses [logback](http://logback.qos.ch) for logging, by default (WEB-INF/classes/logback.xml) the jexler webapp logs to `${catalina.base}/logs/jexler.log` (with daily rotation). If you change that location, the GUI should still automatically find it, unless you do something more fancy, like splitting up logging into several files.
+Jexler uses [logback](http://logback.qos.ch) for logging, by default (see WEB-INF/classes/logback.xml) the jexler webapp logs to `${catalina.base}/logs/jexler.log` (with daily rotation). If you change that location, the GUI should still automatically find the log file, unless you do something more fancy, like splitting up logging into several files.
 
 Click the name of any jexler in the fourth column to edit its script. Hover over the name to see the run state of the jexler.
 
@@ -270,28 +273,29 @@ Click the jexler logo to reload the main view. Note that the table with the run 
 
 Finally, hover over the jexler logo to see the version.
 
-**Edit jexler Scripts**
+###Edit jexler Scripts
 
 ![web gui edit scripts](jexler-gui-edit.jpg)
 
 New files are created simply by typing a new name and clicking save.
 
-Note that save and delete do not ask for permission before writing or deleting. Since jexler is a tool rather for developers / scripters, it is presumed that jexler files are already part of a source management system like git or svn or cvs, or are regularly backed up, so that making changes in the jexler web GUI is always reversible. (If your use case is different, simply add corresponding JavaScript alerts in the Jexler.jsp)
+Note that save does by default not ask for permission before (over-)writing a script, whereas delete asks by default for permission. These settings can be changed in the web.xml, see further below.
 
-**Issues**
+###Issues
 
 ![web gui view issues](jexler-gui-issues.jpg)
 
-Issues are automatically created if a jexler throws an exception (and then the jexler is stopped).
+Issues are automatically created if a jexler unexpectedly exits by throwing an exception.
 
-Often it is better to catch exceptions within the jexler script to keep it running, and to track the exception as a issue:
+Often it is better to catch exceptions within the jexler script to keep it running, and to track the exception as a issue in the script:
 
     try {
       new SimpleEmail().with {
+        addTo to
         //...
         send()
       }
-      log.trace("mail successfully sent to " + to)
+      log.trace("mail successfully sent to $to")
     } catch (EmailException e) {
       jexler.trackIssue(jexler, "Could not send mail to $to.", e)
       return false
@@ -299,48 +303,62 @@ Often it is better to catch exceptions within the jexler script to keep it runni
 
 The three parameters are:
 
-* `Service service`: The service that caused or had the issue, may be null.
+* `Service service`: The service where the issue occurred, may be null.
 * `String message`: A message that provides information about the issue.
 * `Exception exception`: The exception (if any) that caused the issue, may be null.
 
 Tracked issues are always additionally logged with level error.
 
-**View Log**
+###View Log
 
 ![web gui view log file](jexler-gui-log.jpg)
 
-**Customizing / Security**
+###Customizing (and Security)
 
-The following context parameters can be set in the web.xml:
+Several context parameters can be set in the web.xml.
 
     <context-param>
-      <description>Timeout for starting a jexler in ms</description>
+      <description>Timeout for starting a jexler in ms.</description>
       <param-name>jexler.start.timeout</param-name>
       <param-value>10000</param-value>
     </context-param>
     <context-param>
-      <description>Timeout for stopping a jexler in ms</description>
+      <description>Timeout for stopping a jexler in ms.</description>
       <param-name>jexler.stop.timeout</param-name>
       <param-value>10000</param-value>
     </context-param>
+
+These two parameters control how long the jexler waits before returning to the client when starting / stopping a jexler or all jexlers. (An issue is tracked if the timeout occurs.) Default is 10 sec each.
+
     <context-param>
-        <description>Whether to allow editing jexler scripts in web gui or not</description>
+      <description>Whether to allow editing jexler scripts in web gui or not.</description>
       <param-name>jexler.security.script.allowEdit</param-name>
       <param-value>true</param-value>
     </context-param>
 
-The first two parameters control how long the jexler waits before returning to the client when starting / stopping a jexler or all jexlers. (An issue is tracked if the timeout occurs.)
-
-The third parameter can be used to disallow editing of jexler scripts in the GUI as a security measure.
+This parameter can be used to disallow editing of jexler scripts in the GUI as a security measure. Default is false.
 
 Please be aware that jexler (thanks to Groovy and Grape) is a very powerful tool, *giving someone access to a jexler web GUI with write permission for scripts is practically like giving someone shell access as the user under which the web GUI is running*. So, please protect the web GUI accordingly.
 
-With write permission off, jexler is relatively harmless since it is not possible to give a jexler parameters when starting it.
+Without write permission, jexler is relatively harmless, also since it is not possible to give a jexler any kind of start parameters in the web GUI without editing the script.
+
+    <context-param>
+      <description>Whether to confirm script save in web gui or not.</description>
+      <param-name>jexler.safety.script.confirmSave</param-name>
+      <param-value>false</param-value>
+    </context-param>
+    <context-param>
+      <description>Whether to confirm script delete in web gui or not.</description>
+      <param-name>jexler.safety.script.confirmDelete</param-name>
+      <param-value>true</param-value>
+    </context-param>
+
+These two parameters indicate whether the web GUI should ask the user to confirm before saving or deleting a jexler script file. Default is false for saving and true for deleting.
 
 Troubleshooting
 ---------------
 
-**Grape Issue**
+###Grape Issue
 
 On one machine (Linux centOS), I had the problem that Grab did initially not work, e.g.:
 
@@ -363,7 +381,7 @@ Putting the following into ~/.grape/grapeConfig.xml, according to this [stackove
       </resolvers>
     </ivysettings>
 
-**Mac OS X Tomcat Startup**
+###Mac OS X Tomcat Startup
 
 On Mac OS X in Tomcat I sometimes had the problem that something
 within Grape and/or Ivy was apparently not thread safe, so that
@@ -373,7 +391,7 @@ help any more.
 
 But adding a delay after the startup of each jexler resolved
 the issue. To activate this workaround, set a Java System Property
-with name `net.jexler.start.wait.ms` and value set to the time in ms
+with name `net.jexler.start.wait.ms` and set it to the time in ms
 to wait after each jexler start.
 
 I have not been able to reproduce the issue in a unit test,
@@ -415,18 +433,20 @@ and the following variables are available to jexler Groovy scripts:
 * `ServiceGroup services`: The group of services to add services to and to start then. It is not mandatory add services here, they can also be managed separately, but often it is convenient that services in this object are automatically stopped if the jexler exits (regularly or due to an exception).
 * `Logger log`: The logback logger for the jexler instance.
 
-**Distribution**
+###Distribution
 
 * jexler-core is at [Maven Central](http://search.maven.org/#search%7Cga%7C1%7Cjexler-core)
-* jexler webapp (and this guide) are at [Sourceforge](https://sourceforge.net/projects/jexler/)
+* jexler webapp is at [Sourceforge](https://sourceforge.net/projects/jexler/) (see "Files" tab)
 * http://www.jexler.net/ hosts [Javadoc](http://www.jexler.net/javadoc/), [jacoco](http://www.jexler.net/jacoco/) and this [guide](http://www.jexler.net/guide/)
 
 Use Cases
 ---------
 
-**httest Binaries**
+###httest Binaries
 
-I use jexler so far (July 2013) mainly for nightly jexler builds and for building binaries for the httest HTTP Test Tool on four different platforms (Mac, Windows, Linux Debian 32 bit and 64 bit).
+I use jexler so far (July 2013) mainly for nightly jexler builds and:
+
+*For building binaries for the httest HTTP Test Tool on four different platforms (Mac, Windows, Linux Debian 32 bit and 64 bit).*
 
 Httest is an Open Source (mainly C) command line tool written by Christian Liesch:
 
@@ -436,7 +456,7 @@ Httest is an Open Source (mainly C) command line tool written by Christian Liesc
 * Sourceforge: [http://sourceforge.net/projects/htt/](http://sourceforge.net/projects/htt/)
 * Binaries: [http://www.jexler.net/htt/](http://www.jexler.net/htt/)
 
-I made some minor contributions to the project and mainly I build httest binaries automatically using jexler whenever a new httest source code relelase appears at Sourceforge (plus nightly builds):
+I made some minor contributions to the project and I build httest binaries automatically using jexler whenever a new httest source code relelase appears at Sourceforge (plus nightly builds). An automatic build consists roughly of the following steps:
 
 * Check out source from git repository at Sourceforge.
 * Build and make some basic tests, using also the ShellTool.
@@ -446,17 +466,17 @@ I made some minor contributions to the project and mainly I build httest binarie
 
 On each of the four platforms, there is an independent Tomcat with its jexler webapp.
 
-**Checks and Cleanups**
+###Checks and Cleanups
 
 At work I have used it a little for small maintenance things, e.g. for checking if certain Hudson nightly builds have really run, for cleaning up log files and for warning if disk space is getting low.
 
-**More**
+###More
 
 I am curious whether and for what purposes jexler might be used, but would also not be angry if practically nobody uses it, it was fun to write jexler and I personally like it, both from a technical and an artistic perspective - that's reward enough for me :)
 
 Jexler is maybe more suited for tasks that have some leisure in them, but in principle you could also imagine to write a web server with jexlers as handlers or similar things.
 
-Keep me updated at jex@jexler.net. (Please be patient, I might not read mails to that address regularly.)
+Keep me updated at [jex@jexler.net](mailto:jex@jexler.net). (Please be patient, I might not read mails to that address regularly.)
 
 Roadmap
 -------
@@ -465,8 +485,14 @@ Well, there is none, except to keep jexler really small and to keep the quality 
 
 I will gladly link third party libraries and similar additions around jexler on my web site and, if you want to take it all to a new level, feel free to do so within jexler's Apache 2 Open Source license.
 
-Copyright 2012-now $(whois jexler.net)  
+Or to put it a bit more poetically, to me jexler is an island,
+things may flow freely around it, but jexler itself is unlikely
+to change much.
+
+Copyright &copy; 2012-now $(whois jexler.net)  
 [http://www.jexler.net/](http://www.jexler.net/)
+
+Note also that the jexler logo with the bat is my own creation (*2010).
 
 License
 -------
