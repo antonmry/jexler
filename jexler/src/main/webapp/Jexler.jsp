@@ -100,8 +100,8 @@
     <c:otherwise>
       <p></p>
       <form action="request.contextPath" method="post">
-        <button type="submit" name="cmd" value="save" ${jexlers.disabledIfReadonly}>Save as...</button>
-        <button type="submit" name="cmd" value="delete" ${jexlers.disabledIfReadonly}>Delete...</button>
+        <button type="submit" name="cmd" value="save" ${jexlers.disabledIfReadonly} ${jexlers.scriptConfirmSave}>Save as...</button>
+        <button type="submit" name="cmd" value="delete" ${jexlers.disabledIfReadonly} ${jexlers.scriptConfirmDelete}>Delete...</button>
         <input type="text" name="jexler" value="${jexler.jexlerId}" ${jexlers.disabledIfReadonly}>
         <p></p>
         <textarea id="source" name="source">${jexler.source}</textarea>
@@ -113,7 +113,7 @@
           tabMode: "indent",
           matchBrackets: true,
           indentUnit: 2,
-          readOnly: ${!jexlers.allowScriptEdit}
+          readOnly: ${!jexlers.scriptAllowEdit}
         });
       </script>
     </c:otherwise>

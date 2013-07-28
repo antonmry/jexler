@@ -271,16 +271,34 @@ public class JexlersView {
         return mimeType;
     }
     
-    public String getAllowScriptEdit() {
-    	return Boolean.toString(JexlerContextListener.allowScriptEdit());
+    public String getScriptAllowEdit() {
+    	return Boolean.toString(JexlerContextListener.scriptAllowEdit());
     }
     
     public String getDisabledIfReadonly() {
-    	boolean allowEdit = JexlerContextListener.allowScriptEdit();
+    	boolean allowEdit = JexlerContextListener.scriptAllowEdit();
     	if (allowEdit) {
     		return "";
     	} else {
     		return " disabled='disabled'";
+    	}
+    }
+    
+    public String getScriptConfirmSave() {
+    	boolean confirmSave = JexlerContextListener.scriptConfirmSave();
+    	if (confirmSave) {
+    		return "onclick=\"return confirm('Are you sure you want to save?');\"";
+    	} else {
+    		return "";
+    	}
+    }
+    
+    public String getScriptConfirmDelete() {
+    	boolean confirmDelete = JexlerContextListener.scriptConfirmDelete();
+    	if (confirmDelete) {
+    		return "onclick=\"return confirm('Are you sure you want to delete?');\"";
+    	} else {
+    		return "";
     	}
     }
 
@@ -305,7 +323,7 @@ public class JexlersView {
     }
 
     private void handleSaveAs() {
-    	if (!JexlerContextListener.allowScriptEdit()) {
+    	if (!JexlerContextListener.scriptAllowEdit()) {
     		return;
     	}
         String source = request.getParameter("source");
@@ -325,7 +343,7 @@ public class JexlersView {
     }
 
     private void handleDelete() {
-    	if (!JexlerContextListener.allowScriptEdit()) {
+    	if (!JexlerContextListener.scriptAllowEdit()) {
     		return;
     	}
         File file = jexlers.getJexlerFile(targetJexlerId);

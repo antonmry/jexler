@@ -50,7 +50,9 @@ public class JexlerContextListener implements ServletContextListener    {
     
     private static long startTimeout;
     private static long stopTimeout;
-    private static boolean allowScriptEdit;
+    private static boolean scriptAllowEdit;
+    private static boolean scriptConfirmSave;
+    private static boolean scriptConfirmDelete;
 
     @Override
     public void contextInitialized(ServletContextEvent event) {
@@ -95,8 +97,16 @@ public class JexlerContextListener implements ServletContextListener    {
     	log.trace("jexler stop timeout: " + stopTimeout + " ms");
 
     	param = servletContext.getInitParameter("jexler.security.script.allowEdit");
-    	allowScriptEdit = Boolean.parseBoolean(param);
-    	log.trace("allow to edit jexler scripts: " + allowScriptEdit);
+    	scriptAllowEdit = Boolean.parseBoolean(param);
+    	log.trace("allow to edit jexler scripts: " + scriptAllowEdit);
+    	
+    	param = servletContext.getInitParameter("jexler.safety.script.confirmSave");
+    	scriptConfirmSave = Boolean.parseBoolean(param);
+    	log.trace("confirm jexler script save: " + scriptConfirmSave);
+    	
+    	param = servletContext.getInitParameter("jexler.safety.script.confirmDelete");
+    	scriptConfirmDelete = Boolean.parseBoolean(param);
+    	log.trace("confirm jexler script delete: " + scriptConfirmDelete);
     }
 
     @Override
@@ -129,8 +139,16 @@ public class JexlerContextListener implements ServletContextListener    {
     	return stopTimeout;
     }
     
-    public static boolean allowScriptEdit() {
-    	return allowScriptEdit;
+    public static boolean scriptAllowEdit() {
+    	return scriptAllowEdit;
+    }
+    
+    public static boolean scriptConfirmSave() {
+    	return scriptConfirmSave;
+    }
+    
+    public static boolean scriptConfirmDelete() {
+    	return scriptConfirmDelete;
     }
 
 }
