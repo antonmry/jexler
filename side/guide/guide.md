@@ -152,7 +152,7 @@ Writing your own services is relatively easy, since you can also write services 
 
 The trick is that all Groovy scripts in the jexlers directory are part of the class path.
 
-So, for example, if you wanted a more sophisticated version of CronService, you could copy the CronService.java from the jexler source to a MyCronService.groovy in the jexlers directory in the jexler webapp and do the same for CronEvent. After a few boilerplate changes, you should have a MyCronService that does the same as CronService (this works, I tried it!) and could start adding new features, etc.
+So, for example, if you wanted a more sophisticated version of CronService, you could copy the CronService.java from the jexler source to a MyCronService.groovy in the jexlers directory in the jexler webapp and do the same for CronEvent. After a few boilerplate changes, you should have a MyCronService that does the same as CronService (this works, I tried it!) and then you could start adding new features, etc.
 
 And if you feel that it would be great if jexler had more services out-of-the-box, feel free to write your own Java or Groovy library of services and make it available.
 
@@ -165,7 +165,7 @@ Tools
 
 ###ShellTool
 
-This tool helps to run shell commands easily:
+This tool helps to run shell commands:
 
     shellTool = new ShellTool()
     result = shellTool.run("echo 'hello world'")
@@ -183,7 +183,7 @@ There are two setters:
 
 Note that the setters again return their ShellTool instance, i.e. setters can be chained:
 
-    new ShellTool().setWorkingDirectory('/tmp').run('ls')
+    result = new ShellTool().setWorkingDirectory('/tmp').run('ls')
 
 And there are two methods for running a shell command:
 
@@ -192,11 +192,12 @@ And there are two methods for running a shell command:
 
 The second method allows to explicitly indicate the application to run (first list element) and how to split its arguments.
 
-Passing the right command string or list of commands can be a bit tricky:
+Passing the right command string can be a bit tricky:
 
 * On windows some common shell commands like "dir" or "echo" are not actually commands, but arguments to cmd.exe, so use e.g. `cmd /c echo hello` as a command string.
 * To set the working directory for cygwin, use e.g. `c:/cygwin/bin/bash -l /my/working/dir ls -l`.
-* Sometimes there is now way around splitting up arguments explicitly.
+* Sometimes there is now way around splitting up arguments explicitly,
+  a single string won't do.
 
 The Result contains three items:
 
@@ -212,7 +213,7 @@ Implemented using `Runtime.getRuntime().exec()`.
 
 ###ObfuscatorTool
 
-This tool can help to obfuscate passwords and other "minor" secret strings. It uses (single) DES, by default with a hard-coded key (plus IV).
+This tool can help to obfuscate passwords and other "minor" secret strings. It uses (single) DES, by default with a hard-coded key, see javadoc and code for full details.
 
 * `String obfuscate(String plain)`:
   UTF-8 encode, encipher and hex encode given string.
@@ -228,7 +229,7 @@ Simple use case:
 
 Use your own keys:
 
-* `public ObfuscatorTool (String hexKey, String hexIv)`
+* `ObfuscatorTool (String hexKey, String hexIv)`
 
 Note that all of this is not a cryptographically strong protection of secrets, just a countermeasure to fend off the simplest attacks, like e.g. "shoulder surfing". Someone with access to the running jexler with write permission for jexler scripts can easily desobfuscate secrets.
 
@@ -255,7 +256,7 @@ The third column allows to view the jexler log file (blue button in top row) and
 
 *Issues* are what jexler usually creates when something exceptionally happens that might require intervention by an administrator to get things running smoothly again.
 
-Jexler uses [logback](http://logback.qos.ch) for logging, by default (see WEB-INF/classes/logback.xml) the jexler webapp logs to `${catalina.base}/logs/jexler.log` (with daily rotation). If you change that location, the GUI should still automatically find the log file, unless you do something more fancy, like splitting up logging into several files.
+Jexler uses [logback](http://logback.qos.ch) for logging, by default (see WEB-INF/classes/logback.xml) the jexler webapp logs to `${catalina.base}/logs/jexler.log` (with daily log rotation). If you change that location, the GUI should still automatically find the log file, unless you do something more fancy, like splitting up logging into several files.
 
 Click the name of any jexler in the fourth column to edit its script. Hover over the name to see the run state of the jexler.
 
@@ -267,11 +268,11 @@ There are five run states that apply to a jexler:
 * 'busy (event)': Busy processing an event.
 * 'busy (stopping)': Stopping, not processing events any more.
 
-These run states also apply to all jexlers as a group (and technically even to all jexler services).
+These run states also apply to all jexlers as a group (and technically even to services, like the CronService).
 
-Click the jexler logo to reload the main view. Note that the table with the run states is reloaded automatically every second by JavaScript. You typically only need to reload explicitly if JavaScript is off or for older Internet Explorer browsers in which this feature has not been supported in the jexler web GUI.
+Click the jexler logo to reload the main view. Note that the table with the run states is reloaded automatically every second by JavaScript. You typically only need to reload explicitly if JavaScript is off or for older Internet Explorer browsers for which this feature has not been supported in the jexler web GUI.
 
-Finally, hover over the jexler logo to see the version.
+Finally, hover over the jexler logo to see the jexler release version.
 
 ###Edit jexler Scripts
 
@@ -287,7 +288,7 @@ Note that save does by default not ask for permission before (over-)writing a sc
 
 Issues are automatically created if a jexler unexpectedly exits by throwing an exception.
 
-Often it is better to catch exceptions within the jexler script to keep it running, and to track the exception as a issue in the script:
+Often it is better to catch exceptions within the jexler script to keep the jexler running, and instead to track the exception as a issue in the script:
 
     try {
       new SimpleEmail().with {
@@ -301,17 +302,19 @@ Often it is better to catch exceptions within the jexler script to keep it runni
       return false
     }
 
-The three parameters are:
+Parameters are:
 
 * `Service service`: The service where the issue occurred, may be null.
 * `String message`: A message that provides information about the issue.
 * `Exception exception`: The exception (if any) that caused the issue, may be null.
 
-Tracked issues are always additionally logged with level error.
+Tracked issues are always additionally logged with level error (as a single line, with full stack trace, if available, and with linebreaks translated to '%n').
 
 ###View Log
 
 ![web gui view log file](jexler-gui-log.jpg)
+
+Note that newest log entries are on top.
 
 ###Customizing (and Security)
 
@@ -336,9 +339,13 @@ These two parameters control how long the jexler waits before returning to the c
       <param-value>true</param-value>
     </context-param>
 
-This parameter can be used to disallow editing of jexler scripts in the GUI as a security measure. Default is false.
+This parameter can be used to disallow editing of jexler scripts in the GUI as a security measure. Default is to allow editing.
 
-Please be aware that jexler (thanks to Groovy and Grape) is a very powerful tool, *giving someone access to a jexler web GUI with write permission for scripts is practically like giving someone shell access as the user under which the web GUI is running*. So, please protect the web GUI accordingly.
+Please be aware that jexler (thanks to Groovy and Grape) is a very powerful tool:
+
+***Giving someone access to a jexler web GUI with write permission for scripts is practically like giving someone shell access as the user under which the web GUI is running***.
+
+So, please protect the web GUI accordingly.
 
 Without write permission, jexler is relatively harmless, also since it is not possible to give a jexler any kind of start parameters in the web GUI without editing the script.
 
@@ -366,7 +373,7 @@ On one machine (Linux centOS), I had the problem that Grab did initially not wor
 
 Apparently, the problem was that Grab tried to acces the local Maven repository (~/.m2/repository) and that there something was missing or only partially there, in any case I got exceptions with text "Error grabbing grapes".
 
-Putting the following into ~/.grape/grapeConfig.xml, according to this [stackoverflow thread](http://stackoverflow.com/questions/6335184/groovy-1-8-grab-fails-unless-i-manually-call-grape-resolve), resolved the issue for me:
+Creating the following ~/.grape/grapeConfig.xml, according to this [stackoverflow thread](http://stackoverflow.com/questions/6335184/groovy-1-8-grab-fails-unless-i-manually-call-grape-resolve), resolved the issue for me:
 
     <ivysettings>
       <settings defaultResolver="downloadGrapes"/>
@@ -416,9 +423,9 @@ The jexler-core is deeply tested, close to 100% test coverage in jacoco, except 
 
 The jexler webapp is very simple and contains a demo unit test that starts it in a Jetty embedded web server.
 
-All interfaces and classes in jexler-core that are not in packages that end with ".internal" are basically public and should normally remain backwards compatible as long as the jexler major does not change, i.e. jexler 4.5.6 would be backwards compatible with 4.0.0, but 5.0.0 would not (this is common practice). Of course, if only very little people use some feature or some new feature reveals itself to be really badly designed, exceptions may be made in order to make life easier for most users.
+All interfaces and classes in jexler-core that are not in packages that end with ".internal" are basically public and should normally remain backwards compatible as long as the jexler major version does not change (i.e. jexler 4.5.6 would be backwards compatible with 4.0.0, but 5.0.0 would not; this numbering scheme is common practice). Of course, if only very little people use specific feature or if some new feature reveals itself to be really badly designed, exceptions may be made in order to make life easier for most users.
 
-Within a jexler, the following packages are automatically imported:
+Within a jexler, the following packages are automatically imported by default:
 
 * net.jexler
 * net.jexler.service
@@ -430,8 +437,20 @@ and the following variables are available to jexler Groovy scripts:
 * `Jexlers jexlers`: The jexlers instance, i.e. the class
    that abstracts all jexlers in a directory.
 * `List<Event> events`: The list of events to poll for new events.
-* `ServiceGroup services`: The group of services to add services to and to start then. It is not mandatory add services here, they can also be managed separately, but often it is convenient that services in this object are automatically stopped if the jexler exits (regularly or due to an exception).
+* `ServiceGroup services`: The group of services to add services to and to start then. It is not mandatory to add any services here, they can also be managed separately, but often it is convenient that services added to this service group are automatically stopped if the jexler exits (regularly or due to an exception).
 * `Logger log`: The logback logger for the jexler instance.
+
+###Meta Info
+
+The first line of a jexler script may contain a map with string keys and values of any value, the so called *meta info*, e.g.:
+
+    [ 'autostart' : true, 'autoimport' : true, 'whatever' : 'my words' ]
+
+These are evaluated before running the jexler script, i.e. none of the variables listed above are available for that map. There are two boolean settings that jexler uses by default:
+
+* `autostart`: If true, the jexler is started when the webapp starts up.
+   Default is false.
+* `autoimport`: If false, the three mentioned packages are not automatically imported. Default is true.
 
 ###Distribution
 
@@ -508,4 +527,3 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  
 See the License for the specific language governing permissions and  
 limitations under the License.
-
