@@ -49,7 +49,7 @@ public class BasicServiceGroup implements ServiceGroup {
     
     /**
      * Start all services in the group.
-     * Runtime exceptions are not caught, i.e. if the
+     * Runtime exceptions are not caught, hence if the
      * first service throws while starting up, no attempt
      * is made to start the others.
      */
@@ -67,7 +67,7 @@ public class BasicServiceGroup implements ServiceGroup {
 	
 	/**
 	 * Stop all services in a group.
-	 * Runtime exceptions are only logged, i.e. it is always
+	 * Runtime exceptions are only logged, hence it is always
 	 * attempted to stop all services.
 	 */
 	@Override

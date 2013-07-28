@@ -3,11 +3,13 @@
 jexler releases
 ===============
 
-next
-----
+1.0.5 (2013-07-29)
+------------------
 
+* User's guide.
 * CronService: Cron string "now+stop" for a single event immediately
   followed by a single StopEvent.
+* Bugfix: Catching RuntimeException in BasicMetaInfo.
 
 1.0.4 (2013-07-23)
 ------------------

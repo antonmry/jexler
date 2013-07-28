@@ -75,7 +75,7 @@ What you can see above is essentially a list of jexler Groovy scripts. In the we
       ...
 
 
-The first three jexlers are running, the last one is off, and you could start or stop them in the GUI, or look at the logfile, edit the scripts, etc.
+The first three jexlers are running, the last one is off, and you could start or stop them in the GUI, or look at the log file, edit the scripts, etc.
 
 If you want to try it out and play with jexler immediately:
 
@@ -94,7 +94,7 @@ This service sends a CronEvent at times configurable with a cron string:
 
     services.add(new CronService(jexler, "hourly").setCron("0 * * * *"))
 
-Note that the `setCron()` method returns the CronService instance, so that setters can be chained.
+Note that the `setCron()` method returns its CronService instance, so that setters can be chained.
 
 There are two special cron strings that may be useful for testing:
 
@@ -145,7 +145,7 @@ Implemented using a Java 7 WatchService.
 
 **More Services**
 
-Writing your own services is relatively easy, since you can also write services in Groovy even from within the jexler web GUI.
+Writing your own services is relatively easy, since you can also write services in Groovy, even from within the jexler web GUI.
 
 The trick is that all Groovy scripts in the jexlers directory are part of the class path.
 
@@ -244,15 +244,15 @@ Web GUI
 
 ![web gui basic usage](jexler-gui-basic.jpg)
 
-Use the red/green/blue buttons in the first two columns of the table to start/stop/restart a single jexler or all jexlers (top line).
+Use the red/green/blue buttons in the first two columns of the table to start/stop/restart a single jexler or all jexlers (top row).
 
 Note that a jexler utility Groovy script that just declares a class with methods simply runs and stops immediately again, so it causes no problems when starting/stopping all jexlers.
 
-The third column allows to view the jexler log file (blue button in top line) and to view any issues that a jexler may have had, a green button means no issues, a red button can be clicked to view the issue(s).
+The third column allows to view the jexler log file (blue button in top row) and to view any issues that a jexler may have had, where a green button means that there are no issues and a red button can be clicked to view the issue(s).
 
 Issues are what jexler usually creates when something exceptionally happens that might require intervention by an administrator to get things running smoothly again.
 
-Jexler uses [logback](http://logback.qos.ch) for logging, by default (WEB-INF/classes/logback.xml) the jexler webapp logs to `${catalina.base}/logs/jexler.log` (with daily rotation). If you change that location, the GUI should still automatically find it, unless you do something more fancy, like splitting logging up into several files.
+Jexler uses [logback](http://logback.qos.ch) for logging, by default (WEB-INF/classes/logback.xml) the jexler webapp logs to `${catalina.base}/logs/jexler.log` (with daily rotation). If you change that location, the GUI should still automatically find it, unless you do something more fancy, like splitting up logging into several files.
 
 Click the name of any jexler in the fourth column to edit its script. Hover over the name to see the run state of the jexler.
 
@@ -264,9 +264,9 @@ There are five run states that apply to a jexler:
 * 'busy (event)': Busy processing an event.
 * 'busy (stopping)': Stopping, not processing events any more.
 
-These run states also apply to all jexlers as a group and technically to all jexler services.
+These run states also apply to all jexlers as a group (and technically even to all jexler services).
 
-Click the jexler logo to reload the main view. Note that the table with the run states is reloaded automatically every second by JavaScript. You typically only need to reload explicitly if JavaScript is off or for older Internet Explorer browsers in which this feature is not supported in the jexler GUI.
+Click the jexler logo to reload the main view. Note that the table with the run states is reloaded automatically every second by JavaScript. You typically only need to reload explicitly if JavaScript is off or for older Internet Explorer browsers in which this feature has not been supported in the jexler web GUI.
 
 Finally, hover over the jexler logo to see the version.
 
@@ -284,7 +284,7 @@ Note that save and delete do not ask for permission before writing or deleting. 
 
 Issues are automatically created if a jexler throws an exception (and then the jexler is stopped).
 
-Often it is better to catch exceptions within the jexler and to track them as issues:
+Often it is better to catch exceptions within the jexler script to keep it running, and to track the exception as a issue:
 
     try {
       new SimpleEmail().with {
@@ -297,21 +297,21 @@ Often it is better to catch exceptions within the jexler and to track them as is
       return false
     }
 
-The parameters are:
+The three parameters are:
 
 * `Service service`: The service that caused or had the issue, may be null.
-* `String message`: Message that gives info about the issue.
-* `Exception exception`: Exception (if any) that caused the issue, may be null.
+* `String message`: A message that provides information about the issue.
+* `Exception exception`: The exception (if any) that caused the issue, may be null.
 
-Tracked issues are always also logged with level error.
+Tracked issues are always additionally logged with level error.
 
 **View Log**
 
-![web gui view logfile](jexler-gui-log.jpg)
+![web gui view log file](jexler-gui-log.jpg)
 
 **Customizing / Security**
 
-The following parameters can be set in the web.xml:
+The following context parameters can be set in the web.xml:
 
     <context-param>
       <description>Timeout for starting a jexler in ms</description>
@@ -329,7 +329,7 @@ The following parameters can be set in the web.xml:
       <param-value>true</param-value>
     </context-param>
 
-The first two control how long the jexler waits before returning to the client when starting / stopping a jexler or all jexlers.
+The first two parameters control how long the jexler waits before returning to the client when starting / stopping a jexler or all jexlers. (An issue is tracked if the timeout occurs.)
 
 The third parameter can be used to disallow editing of jexler scripts in the GUI as a security measure.
 
@@ -363,6 +363,23 @@ Putting the following into ~/.grape/grapeConfig.xml, according to this [stackove
       </resolvers>
     </ivysettings>
 
+**Mac OS X Tomcat Startup**
+
+On Mac OS X in Tomcat I sometimes had the problem that something
+within Grape and/or Ivy was apparently not thread safe, so that
+autostarting jexlers failed when grabbing dependencies and left
+the webapp in a state where also restarting jexlers would not
+help any more.
+
+But adding a delay after the startup of each jexler resolved
+the issue. To activate this workaround, set a Java System Property
+with name `net.jexler.start.wait.ms` and value set to the time in ms
+to wait after each jexler start.
+
+I have not been able to reproduce the issue in a unit test,
+which suggests it might also be related to Tomcat,
+but that is not sure, of course.
+
 Source Code
 -----------
 
@@ -372,40 +389,54 @@ See there for instructions how to build.
 
 The code is a Gradle / Eclipse project that contains two Java sub-projects:
 
-* jexler-core: The core jexler library which contains also all services and tools.
-* jexler: The jexler web GUI, a simple Java webapp with a single JSP.
+* jexler-core: The core jexler library (JAR) which contains also all services and tools.
+* jexler: The jexler web GUI, a simple Java webapp (WAR) with a single JSP.
 
 Java 7 is required.
 
-The jexler-core is deeply tested, close to 100% test coverage in jacoco, except for some artefacts.
+The jexler-core is deeply tested, close to 100% test coverage in jacoco, except for a few artefacts.
 
 The jexler webapp is very simple and contains a demo unit test that starts it in a Jetty embedded web server.
 
-All interfaces and classes in jexler-core that are not in packages that end with ".internal" are basically public and should normally remain backwards compatible as long as the jexler major does not change, i.e. jexler 4.5.6 would be backwards compatible with 4.0.0, but 5.0.0 would not (this is common practice). Of course, if only very little people use something or some new feature reveals itself to be really badly designed, exceptions may be made in order to make life easier for most users.
+All interfaces and classes in jexler-core that are not in packages that end with ".internal" are basically public and should normally remain backwards compatible as long as the jexler major does not change, i.e. jexler 4.5.6 would be backwards compatible with 4.0.0, but 5.0.0 would not (this is common practice). Of course, if only very little people use some feature or some new feature reveals itself to be really badly designed, exceptions may be made in order to make life easier for most users.
+
+Within a jexler, the following packages are automatically imported:
+
+* net.jexler
+* net.jexler.service
+* net.jexler.tool
+
+and the following variables are available to jexler Groovy scripts:
+
+* `Jexler jexler`: The jexler instance.
+* `Jexlers jexlers`: The jexlers instance, i.e. the class
+   that abstracts all jexlers in a directory.
+* `List<Event> events`: The list of events to poll for new events.
+* `ServiceGroup services`: The group of services to add services to and to start then. It is not mandatory add services here, they can also be managed separately, but often it is convenient that services in this object are automatically stopped if the jexler exits (regularly or due to an exception).
+* `Logger log`: The logback logger for the jexler instance.
 
 **Distribution**
 
 * jexler-core is at [Maven Central](http://search.maven.org/#search%7Cga%7C1%7Cjexler-core)
 * jexler webapp (and this guide) are at [Sourceforge](https://sourceforge.net/projects/jexler/)
 * http://www.jexler.net/ hosts [Javadoc](http://www.jexler.net/javadoc/), [jacoco](http://www.jexler.net/jacoco/) and this [guide](http://www.jexler.net/guide/)
-* For newest versions, build the project, of course!
 
 Use Cases
 ---------
 
 **httest Binaries**
 
-I use jexler so far (summer 2013) mainly for nightly jexler builds and for building binaries for the httest HTTP Test Tool on four different platforms (Mac, Windows, Linux Debian 32 bit and 64 bit).
+I use jexler so far (July 2013) mainly for nightly jexler builds and for building binaries for the httest HTTP Test Tool on four different platforms (Mac, Windows, Linux Debian 32 bit and 64 bit).
 
 Httest is an Open Source (mainly C) command line tool written by Christian Liesch:
 
 "httest is a script based tool for testing and benchmarking web applications, web servers, proxy servers and web browsers. httest can emulate clients and servers in the same test script, very useful for testing proxys."
 
-* [http://htt.sourceforge.net/](http://htt.sourceforge.net/)
-* [http://sourceforge.net/projects/htt/](http://sourceforge.net/projects/htt/)
-* [http://www.jexler.net/htt/](http://www.jexler.net/htt/)
+* Project: [http://htt.sourceforge.net/](http://htt.sourceforge.net/)
+* Sourceforge: [http://sourceforge.net/projects/htt/](http://sourceforge.net/projects/htt/)
+* Binaries: [http://www.jexler.net/htt/](http://www.jexler.net/htt/)
 
-I made some minor contributions to the project and mainly I build httest binaries automatically using jexler whenever a new httest source code relelase appears at Sourceforge (and I do nightly builds):
+I made some minor contributions to the project and mainly I build httest binaries automatically using jexler whenever a new httest source code relelase appears at Sourceforge (plus nightly builds):
 
 * Check out source from git repository at Sourceforge.
 * Build and make some basic tests, using also the ShellTool.
@@ -415,13 +446,13 @@ I made some minor contributions to the project and mainly I build httest binarie
 
 On each of the four platforms, there is an independent Tomcat with its jexler webapp.
 
-**Maintenance**
+**Checks and Cleanups**
 
-At work I have used it a little for small maintenance things, e.g. for checking if certain Hudson nightly builds had really run, for cleaning up log files and warning if disk space is getting low.
+At work I have used it a little for small maintenance things, e.g. for checking if certain Hudson nightly builds have really run, for cleaning up log files and for warning if disk space is getting low.
 
 **More**
 
-I am curious whether and for what purposes jexler might be used, but also not be angry if practically nobody uses it, it was fun to write jexler and I personally like it, both from a technical and an artistic perspective - that's reward enough for me :)
+I am curious whether and for what purposes jexler might be used, but would also not be angry if practically nobody uses it, it was fun to write jexler and I personally like it, both from a technical and an artistic perspective - that's reward enough for me :)
 
 Jexler is maybe more suited for tasks that have some leisure in them, but in principle you could also imagine to write a web server with jexlers as handlers or similar things.
 

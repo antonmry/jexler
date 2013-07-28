@@ -35,6 +35,7 @@ Resources
 * jexler-core (JAR): [Maven Central](http://search.maven.org/#search%7Cga%7C1%7Cjexler-core)
 * jexler (WAR): [Sourceforge](https://sourceforge.net/projects/jexler/)
 * Javadoc (jexler-core): [http://www.jexler.net/javadoc/](http://www.jexler.net/javadoc/)
+* User's Guide: [http://www.jexler.net/guide/](http://www.jexler.net/guide/)
 
 Screenshots
 -----------

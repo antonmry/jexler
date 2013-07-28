@@ -70,7 +70,7 @@ public enum RunState  {
 	
 	/**
 	 * Convenience method, returns true if IDLE or BUSY_EVENT,
-	 * i.e. the service up and doing what it should do.
+	 * in other words, if the service is up and doing what it should do.
 	 * @return true or false
 	 */
 	public boolean isOperational() {
