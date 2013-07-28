@@ -136,6 +136,26 @@ public final class BasicJexlerTest
 		
 		jexler.stop();
 		jexler.waitForShutdown(10000);
+		
+		writer = new FileWriter(file);
+		writer.append("[ 'autostart' : false, 'foo' : 'bar' ]\n" +
+				"throw new ClassNotFoundException()\n");
+		writer.close();
+		
+		jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
+		
+		jexler.start();
+		jexler.waitForStartup(10000);
+		assertEquals("must be same", RunState.OFF, jexler.getRunState());
+		assertEquals("must be same", 1, jexler.getIssues().size());
+		issue = jexler.getIssues().get(0);
+		assertEquals("must be same", "Script failed.", issue.getMessage());
+		assertEquals("must be same", jexler, issue.getService());
+		assertNotNull("must not be null", issue.getException());
+		assertTrue("must be true", issue.getException() instanceof ClassNotFoundException);		
+		
+		jexler.stop();
+		jexler.waitForShutdown(10000);
 	}
 
 	@Test

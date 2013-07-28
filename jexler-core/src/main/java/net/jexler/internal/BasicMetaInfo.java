@@ -28,8 +28,6 @@ import java.util.Map;
 
 import net.jexler.MetaInfo;
 
-import org.codehaus.groovy.control.CompilationFailedException;
-
 /**
  * Basic default implementation of meta info interface.
  *
@@ -69,9 +67,8 @@ public class BasicMetaInfo extends HashMap<String,Object> implements MetaInfo {
 			Object o;
 			try {
 				o = shell.evaluate(line);
-			} catch (CompilationFailedException e) {
-				return;
-			} catch (RuntimeException e) {
+			} catch (Exception e) {
+            	// (script may throw any checked or unchecked exception)
 				return;
 			}
 

@@ -9,7 +9,10 @@ jexler releases
 * User's guide.
 * CronService: Cron string "now+stop" for a single CronEvent immediately,
   followed by a single StopEvent.
-* Bugfix: Catching RuntimeException in BasicMetaInfo.
+* Bugfix: Catching checked Exceptions in BasicJexler and BasicMetaInfo
+  around calling Groovy scripts (because Groovy scripts may throw such
+  checked Exceptions without the Java compiler being aware of the
+  possibility).
 * Two new context parameters in web.xml: jexler.safety.script.confirmSave 
   and jexler.safety.script.confirmDelete, see user's guide for details.
 

@@ -79,6 +79,24 @@ public final class BasicMetaInfoTest
 		assertTrue("must be true", info.isEmpty());
 		
         writer = new FileWriter(testFile);
+        writer.append("throw new RuntimeException()");
+        writer.close();
+        info = new BasicMetaInfo(testFile);
+		assertTrue("must be true", info.isEmpty());
+		
+        writer = new FileWriter(testFile);
+        writer.append("throw new IOException()");
+        writer.close();
+        info = new BasicMetaInfo(testFile);
+		assertTrue("must be true", info.isEmpty());
+		
+        writer = new FileWriter(testFile);
+        writer.append("throw new ClassNotFoundException()");
+        writer.close();
+        info = new BasicMetaInfo(testFile);
+		assertTrue("must be true", info.isEmpty());
+		
+        writer = new FileWriter(testFile);
         writer.append("[ 'list', 'not', 'map' ]");
         writer.close();
         info = new BasicMetaInfo(testFile);

@@ -153,7 +153,8 @@ public class BasicJexler implements Jexler {
                     public void run() {
                         try {
                         	shell.evaluate(file);
-                        } catch (RuntimeException | IOException e) {
+                        } catch (Exception e) {
+                        	// (script may throw any checked or unchecked exception)
                         	trackIssue(thisJexler, "Script failed.", e);
                         } finally {
                         	runState = RunState.BUSY_STOPPING;
