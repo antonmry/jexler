@@ -36,7 +36,7 @@ public final class CronServiceSlowTest
 {
 	private final static long MS_1_MIN_10_SEC = 70000;
 	private final static long MS_30_SEC = 30000;
-	private final static long MS_20_SEC = 20000;
+	private final static long MS_10_SEC = 10000;
 	private final static String CRON_EVERY_MIN = "* * * * *";
 
 	/**
@@ -102,37 +102,86 @@ public final class CronServiceSlowTest
     	
     	MockJexler jexler = new MockJexler();
     	CronService service = new CronService(jexler, "cronid");
-    	service.setCron("now");
-    	Event event = jexler.takeEvent(MS_20_SEC);
+    	service.setCron(CronService.CRON_NOW);
+    	Event event = jexler.takeEvent(MS_10_SEC);
     	assertNull("must be null", event);
     	
     	service.start();
     	assertTrue("must be true", service.isOn());
     	
-    	event = jexler.takeEvent(MS_20_SEC);
+    	event = jexler.takeEvent(MS_10_SEC);
     	assertNotNull("must not be null", event);
     	assertEquals("must be same", service, event.getService());
     	assertTrue("must be true", event instanceof CronEvent);
     	CronEvent cronEvent = (CronEvent)event;
-    	assertEquals("must be same", "now", cronEvent.getCron());
+    	assertEquals("must be same", CronService.CRON_NOW, cronEvent.getCron());
+    	assertNull("must be null", jexler.takeEvent(MS_10_SEC));
     	    	
     	service.stop();
-    	assertTrue("must be true", service.waitForShutdown(MS_20_SEC));
-    	assertNull("must be null", jexler.takeEvent(MS_20_SEC));
+    	assertTrue("must be true", service.waitForShutdown(MS_10_SEC));
+    	assertNull("must be null", jexler.takeEvent(MS_10_SEC));
     	
     	service.start();
     	assertTrue("must be true", service.isOn());
     	
-    	event = jexler.takeEvent(MS_20_SEC);
+    	event = jexler.takeEvent(MS_10_SEC);
     	assertNotNull("must not be null", event);
     	assertEquals("must be same", service, event.getService());
     	assertTrue("must be true", event instanceof CronEvent);
     	cronEvent = (CronEvent)event;
-    	assertEquals("must be same", "now", cronEvent.getCron());
+    	assertEquals("must be same", CronService.CRON_NOW, cronEvent.getCron());
+    	assertNull("must be null", jexler.takeEvent(MS_10_SEC));
     	
     	service.stop();
-    	assertTrue("must be true", service.waitForShutdown(MS_20_SEC));
-    	assertNull("must be null", jexler.takeEvent(MS_20_SEC));
+    	assertTrue("must be true", service.waitForShutdown(MS_10_SEC));
+    	assertNull("must be null", jexler.takeEvent(MS_10_SEC));
+	}
+	
+	/**
+	 * Takes about a minute to complete.
+	 */
+	@Test
+    public void testNowPlusStop() throws Exception {
+    	
+    	MockJexler jexler = new MockJexler();
+    	CronService service = new CronService(jexler, "cronid");
+    	service.setCron(CronService.CRON_NOW_AND_STOP);
+    	Event event = jexler.takeEvent(MS_10_SEC);
+    	assertNull("must be null", event);
+    	
+    	service.start();
+    	assertTrue("must be true", service.isOn());
+    	
+    	event = jexler.takeEvent(MS_10_SEC);
+    	assertNotNull("must not be null", event);
+    	assertEquals("must be same", service, event.getService());
+    	assertTrue("must be true", event instanceof CronEvent);
+    	CronEvent cronEvent = (CronEvent)event;
+    	assertEquals("must be same", CronService.CRON_NOW_AND_STOP, cronEvent.getCron());
+    	event = jexler.takeEvent(MS_10_SEC);
+    	assertNotNull("must not be null", event);
+    	assertTrue("must be true", event instanceof StopEvent);
+    	    	
+    	service.stop();
+    	assertTrue("must be true", service.waitForShutdown(MS_10_SEC));
+    	assertNull("must be null", jexler.takeEvent(MS_10_SEC));
+    	
+    	service.start();
+    	assertTrue("must be true", service.isOn());
+    	
+    	event = jexler.takeEvent(MS_10_SEC);
+    	assertNotNull("must not be null", event);
+    	assertEquals("must be same", service, event.getService());
+    	assertTrue("must be true", event instanceof CronEvent);
+    	cronEvent = (CronEvent)event;
+    	assertEquals("must be same", CronService.CRON_NOW_AND_STOP, cronEvent.getCron());
+    	event = jexler.takeEvent(MS_10_SEC);
+    	assertNotNull("must not be null", event);
+    	assertTrue("must be true", event instanceof StopEvent);
+    	
+    	service.stop();
+    	assertTrue("must be true", service.waitForShutdown(MS_10_SEC));
+    	assertNull("must be null", jexler.takeEvent(MS_10_SEC));
 	}
 
 }

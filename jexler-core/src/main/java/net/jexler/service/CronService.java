@@ -32,6 +32,9 @@ import org.slf4j.LoggerFactory;
 public class CronService extends ServiceBase {
 
     static final Logger log = LoggerFactory.getLogger(CronService.class);
+    
+    public static final String CRON_NOW = "now";
+    public static final String CRON_NOW_AND_STOP = CRON_NOW + "+stop";
 
     private final CronService thisService;
     private String cron;
@@ -50,7 +53,8 @@ public class CronService extends ServiceBase {
     /**
      * Set cron pattern, e.g. "* * * * *".
      * Use "now" for now, i.e. for a single event immediately,
-     * which can be useful for testing.
+     * or "now+stop" for a single event immediately, followed
+     * by a StopEvent, which can both be useful for testing.
      * @return this (for chaining calls)
      */
     public CronService setCron(String cron) {
@@ -63,10 +67,13 @@ public class CronService extends ServiceBase {
         if (!isOff()) {
             return;
         }
-        if (cron.equals("now")) {
+        if (cron.startsWith(CRON_NOW)) {
             log.trace("new cron event: " + cron);
             getJexler().handle(new CronEvent(thisService, cron));
             setRunState(RunState.IDLE);
+            if (cron.equals(CRON_NOW_AND_STOP)) {
+            	getJexler().handle(new StopEvent(thisService));
+            }
             return;
         }
         scheduler = new Scheduler();
@@ -88,7 +95,7 @@ public class CronService extends ServiceBase {
         if (isOff()) {
             return;
         }
-        if (!cron.equals("now")) {
+        if (!cron.startsWith(CRON_NOW)) {
         	scheduler.stop();
         }
         setRunState(RunState.OFF);
