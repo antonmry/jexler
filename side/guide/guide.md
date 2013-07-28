@@ -455,7 +455,7 @@ These are evaluated before running the jexler script, i.e. none of the variables
 ###Distribution
 
 * jexler-core is at [Maven Central](http://search.maven.org/#search%7Cga%7C1%7Cjexler-core)
-* jexler webapp is at [Sourceforge](https://sourceforge.net/projects/jexler/) (see "Files" tab)
+* jexler webapp and this guide are at [Sourceforge](https://sourceforge.net/projects/jexler/) (see "Files" tab)
 * http://www.jexler.net/ hosts [Javadoc](http://www.jexler.net/javadoc/), [jacoco](http://www.jexler.net/jacoco/) and this [guide](http://www.jexler.net/guide/)
 
 Use Cases
