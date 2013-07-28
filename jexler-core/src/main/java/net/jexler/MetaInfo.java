@@ -21,13 +21,17 @@ import java.util.Map;
 /**
  * Interface for meta info of a jexler, which is
  * stored in the first line of a jexler script file
- * as a list in Groovy notation.
+ * as a map in Groovy notation.
  * 
- * Example: [ "autostart"=true, "root"=new File('/') ]
+ * Example:
+ * <pre>
  * 
- * The first line must start with '[', except for whitespace,
- * else meta info is considered empty (and also if for some
- * reason evaluating the line fails or is not possible).
+ * [ "autostart"=true, "root"=new File('/') ]
+ * </pre>
+ * 
+ * Meta info is silently considered empty if for some reason
+ * evaluating the line is not possible or fails or or evaluates
+ * to an object which is not a map.
  *
  * @author $(whois jexler.net)
  */
