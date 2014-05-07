@@ -57,6 +57,28 @@ public class ShellTool {
         	return builder.toString();
         }
     }
+    
+    /**
+     * Helper class for collecting stdout and stderr.
+     */
+    public static class OutputCollector extends Thread {
+		private final InputStream is;
+		private String output;
+		OutputCollector(InputStream is) {
+			this.is = is;
+		}
+	    @Override
+		public void run() {
+    		// (assume default platform character encoding)
+        	Scanner scanner = new Scanner(is);
+        	scanner.useDelimiter("\\A");
+        	output = scanner.hasNext() ? scanner.next() : "";
+        	scanner.close();
+		}
+		public String getOutput() {
+			return output;
+		}
+	}
 
     static final Logger log = LoggerFactory.getLogger(ShellTool.class);
 
@@ -99,18 +121,12 @@ public class ShellTool {
      * @return result, never null
      */
     public Result run(String command) {
-        Result result = new Result();
         try {
             Process proc = Runtime.getRuntime().exec(command, toEnvArray(env), workingDirectory);
-            result.rc = proc.waitFor();
-            result.stdout = readInputStream(proc.getInputStream());
-            result.stderr = readInputStream(proc.getErrorStream());
+            return getResult(proc);
         } catch (Exception e ) {
-            result.rc = -1;
-            result.stdout = "";
-            result.stderr = JexlerUtil.getStackTrace(e);
+        	return getExceptionResult(JexlerUtil.getStackTrace(e));
         }
-        return result;
     }
 
     /**
@@ -124,29 +140,42 @@ public class ShellTool {
     public Result run(List<String> cmdList) {
     	String[] cmdArray = new String[cmdList.size()];
     	cmdList.toArray(cmdArray);
-        Result result = new Result();
         try {
             Process proc = Runtime.getRuntime().exec(cmdArray, toEnvArray(env), workingDirectory);
-            result.rc = proc.waitFor();
-            result.stdout = readInputStream(proc.getInputStream());
-            result.stderr = readInputStream(proc.getErrorStream());
+            return getResult(proc);
         } catch (Exception e ) {
-            result.rc = -1;
-            result.stdout = "";
-            result.stderr = JexlerUtil.getStackTrace(e);
+            return getExceptionResult(JexlerUtil.getStackTrace(e));
         }
+    }
+    
+    /**
+     * Get result of given process.
+     */
+    private Result getResult(Process proc) throws Exception {
+        OutputCollector outCollector = new OutputCollector(proc.getInputStream());
+        OutputCollector errCollector = new OutputCollector(proc.getErrorStream());
+        outCollector.start();
+        errCollector.start();
+        Result result = new Result();
+        result.rc = proc.waitFor();
+        outCollector.join();
+        errCollector.join();
+        result.stdout = outCollector.getOutput();
+        result.stderr = errCollector.getOutput();
+		return result;
+	}
+	
+	/**
+	 * Get result in case where an exception occurred.
+	 */
+	private Result getExceptionResult(String stackTrace) {
+		Result result = new Result();
+		result.rc = -1;
+        result.stdout = "";
+        result.stderr = stackTrace;
         return result;
     }
 
-    private String readInputStream(InputStream is) {
-    	// (assume default platform character encoding)
-        Scanner scanner = new Scanner(is);
-        scanner.useDelimiter("\\A");
-        String data = scanner.hasNext() ? scanner.next() : "";
-        scanner.close();
-        return data;
-    }
-    
     /**
      * Convert map of name and value to array of name=value.
      */

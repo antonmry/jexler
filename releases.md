@@ -3,6 +3,12 @@
 jexler releases
 ===============
 
+1.0.6 (201x-xx-xx)
+------------------
+
+* Bugfix: ShellTool now reads stdout and sterr in dedicated threads
+  (previously could hang on some systems depending on output size).
+
 1.0.5 (2013-07-29)
 ------------------
 
