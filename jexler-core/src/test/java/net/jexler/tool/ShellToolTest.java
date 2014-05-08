@@ -28,6 +28,7 @@ import java.util.Map;
 
 import net.jexler.test.FastTests;
 
+import org.codehaus.groovy.runtime.MethodClosure;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -40,6 +41,9 @@ import org.junit.experimental.categories.Category;
 public final class ShellToolTest
 {
 
+	private String testStdout = "";
+	private String testStderr = "";
+	
 	@Test
     public void testDefault() throws Exception {
         ShellTool tool = new ShellTool();
@@ -82,6 +86,9 @@ public final class ShellToolTest
         Files.createFile(file2.toPath());
         tool.setWorkingDirectory(dir);
         
+        tool.setStdoutLineHandler(new MethodClosure(this, "accumulateStdout"));
+        tool.setStderrLineHandler(new MethodClosure(this, "accumulateStderr"));
+        
         ShellTool.Result result;
         if (isWindows()) {
         	result = tool.run("cmd /c dir");
@@ -97,6 +104,13 @@ public final class ShellToolTest
         assertTrue("must be true", result.stdout.contains("file2"));
         assertNotNull("must not be null", result.stderr);
         assertTrue("must be true", result.stderr.isEmpty());
+        
+        //System.out.println("testStdout='" + testStdout + "'");
+        //System.out.println("testStderr='" + testStderr + "'");
+        assertTrue("must be true", !testStdout.isEmpty());
+        assertTrue("must be true", testStdout.contains("file1"));
+        assertTrue("must be true", testStdout.contains("file2"));
+        assertTrue("must be true", testStderr.isEmpty());
 
         tool.setWorkingDirectory(null);
         Map<String,String> env = new HashMap<String,String>();
@@ -173,6 +187,16 @@ public final class ShellToolTest
 	
 	private boolean isWindows() {
 		return System.getProperty("os.name").startsWith("Windows");
+	}
+	
+	@SuppressWarnings("unused")
+	private void accumulateStdout(String line) {
+		testStdout += line + ";";
+	}
+	
+	@SuppressWarnings("unused")
+	private void accumulateStderr(String line) {
+		testStderr += line + ";";
 	}
 
 }

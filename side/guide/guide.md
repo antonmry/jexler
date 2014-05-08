@@ -165,13 +165,13 @@ Tools
 
 ###ShellTool
 
-This tool helps to run shell commands:
+This tool helps to run shell commands. (Note that there are already at least two standard ways of doing this with Groovy APIs, which may or may not be more convenient depending on your use case.)
 
     shellTool = new ShellTool()
     result = shellTool.run("echo 'hello world'")
     log.trace(result.toString())
 
-There are two setters:
+There are the following setters:
 
 * `setWorkingDirectory(File dir)`:
    Set working directory for the command;
@@ -180,10 +180,16 @@ There are two setters:
   Set environment variables for the command
   (key is variable name, value is variable value);
   if not set or set to null, inherit from parent process.
+* `setStdoutLineHandler(Closure<?> handler)`:
+  Set a closure that will be called to handle each line of stdout;
+  if not set or set to null, do nothing.
+* `setStderrLineHandler(Closure<?> handler)`:
+  Set a closure that will be called to handle each line of stderr;
+  if not set or set to null, do nothing.
 
 Note that the setters again return their ShellTool instance, i.e. setters can be chained:
 
-    result = new ShellTool().setWorkingDirectory('/tmp').run('ls')
+    result = new ShellTool().setWorkingDirectory('/tmp').setStderrLineHandler({log.info(it)}).run('ls')
 
 And there are two methods for running a shell command:
 
@@ -196,8 +202,7 @@ Passing the right command string can be a bit tricky:
 
 * On windows some common shell commands like "dir" or "echo" are not actually commands, but arguments to cmd.exe, so use e.g. `cmd /c echo hello` as a command string.
 * To set the working directory for cygwin, use e.g. `c:/cygwin/bin/bash -l /my/working/dir ls -l`.
-* Sometimes there is now way around splitting up arguments explicitly,
-  a single string won't do.
+* Sometimes there is no way around splitting up arguments explicitly, a single string won't do.
 
 The Result contains three items:
 

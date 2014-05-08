@@ -14,8 +14,13 @@ while (true) {
   if (event instanceof CronEvent) {
     
     // run shell command
-    shellTool = new ShellTool()
-    result = shellTool.run("echo 'hello world'")
+    def handler = { line ->
+      if (line.startsWith('hello')) {
+        log.info('stdout matched: ' + line)
+      }
+    }
+    shellTool = new ShellTool().setStdoutLineHandler(handler)
+    result = shellTool.run('echo hello-world')
     log.trace(result.toString())
     
 	// http get request

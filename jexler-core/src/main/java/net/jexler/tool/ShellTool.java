@@ -16,6 +16,8 @@
 
 package net.jexler.tool;
 
+import groovy.lang.Closure;
+
 import java.io.File;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -32,6 +34,10 @@ import org.slf4j.LoggerFactory;
 /**
  * Tool for running shell commands, just a thin wrapper around
  * the java runtime exec calls.
+ * 
+ * Note that there are already at least two standard ways of doing this
+ * with Groovy APIs, which may or may not be more convenient depending
+ * on your use case.
  *
  * @author $(whois jexler.net)
  */
@@ -63,17 +69,26 @@ public class ShellTool {
      */
     public static class OutputCollector extends Thread {
 		private final InputStream is;
+		private final Closure<?> lineHandler;
 		private String output;
-		OutputCollector(InputStream is) {
+		OutputCollector(InputStream is, Closure<?> lineHandler) {
 			this.is = is;
+			this.lineHandler = lineHandler;
 		}
 	    @Override
 		public void run() {
-    		// (assume default platform character encoding)
-        	Scanner scanner = new Scanner(is);
-        	scanner.useDelimiter("\\A");
-        	output = scanner.hasNext() ? scanner.next() : "";
-        	scanner.close();
+	    	StringBuilder out = new StringBuilder();
+	    	// (assume default platform character encoding)
+	    	Scanner scanner = new Scanner(is);
+        	while (scanner.hasNext()) {
+        		String line = scanner.nextLine();
+        		out.append(line + System.lineSeparator());
+        		if (lineHandler != null) {
+	    			lineHandler.call(line);
+	    		}
+        	}
+	    	scanner.close();
+	    	output = out.toString();
 		}
 		public String getOutput() {
 			return output;
@@ -84,6 +99,8 @@ public class ShellTool {
 
     private File workingDirectory;
     private Map<String,String> env;
+    private Closure<?> stdoutLineHandler;
+    private Closure<?> stderrLineHandler;
 
     /**
      * Constructor.
@@ -109,6 +126,26 @@ public class ShellTool {
      */
     public ShellTool setEnvironment(Map<String,String> env) {
         this.env = env;
+        return this;
+    }
+    
+    /**
+     * Set a closure that will be called to handle each line of stdout.
+     * If not set or set to null, do nothing.
+     * @return this (for chaining calls)
+     */
+    public ShellTool setStdoutLineHandler(Closure<?> handler) {
+        stdoutLineHandler = handler;
+        return this;
+    }
+    
+    /**
+     * Set a closure that will be called to handle each line of stderr.
+     * If not set or set to null, do nothing.
+     * @return this (for chaining calls)
+     */
+    public ShellTool setStderrLineHandler(Closure<?> handler) {
+        stderrLineHandler = handler;
         return this;
     }
 
@@ -152,8 +189,8 @@ public class ShellTool {
      * Get result of given process.
      */
     private Result getResult(Process proc) throws Exception {
-        OutputCollector outCollector = new OutputCollector(proc.getInputStream());
-        OutputCollector errCollector = new OutputCollector(proc.getErrorStream());
+        OutputCollector outCollector = new OutputCollector(proc.getInputStream(), stdoutLineHandler);
+        OutputCollector errCollector = new OutputCollector(proc.getErrorStream(), stderrLineHandler);
         outCollector.start();
         errCollector.start();
         Result result = new Result();

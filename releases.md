@@ -6,8 +6,9 @@ jexler releases
 1.0.6 (201x-xx-xx)
 ------------------
 
-* Bugfix: ShellTool now reads stdout and stderr in dedicated threads
-  (previously could hang on some systems depending on output size).
+* ShellTool: Fixed a bug that could cause the run() methods to hang
+  depending on output size and added a way to handle each line of
+  stdout and stderr with closures (see user's guide).
 
 1.0.5 (2013-07-29)
 ------------------
