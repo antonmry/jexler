@@ -50,6 +50,10 @@ subprojects {
 	//}
   }
 
+  jacoco {
+    toolVersion = "0.7.1.201405082137"
+  }
+
   task slowTests(type: Test, dependsOn: 'test') {
 	//testLogging.showStandardStreams = true
     useJUnit {
