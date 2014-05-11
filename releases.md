@@ -9,6 +9,7 @@ jexler releases
 * ShellTool: Fixed a bug that could cause the run() methods to hang
   depending on output size and added a way to handle each line of
   stdout and stderr with closures (see user's guide).
+* User's guide: Updated use cases.
 
 1.0.5 (2013-07-29)
 ------------------
