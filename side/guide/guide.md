@@ -466,33 +466,22 @@ These are evaluated before running the jexler script, i.e. none of the variables
 Use Cases
 ---------
 
-###httest Binaries
+###Automatic Builds (jexler itself and httest Binaries)
 
-I use jexler so far (July 2013) mainly for nightly jexler builds and:
+In 2013, I have used jexler to make nightly builds of jexler on four different platforms: Mac, Windows and Debian Linux 32 bit and 64 bit. This included roughly checking out the source from git, running the build and sending a mail with the result if not OK. On each of the four platforms, there was an independent Tomcat with its jexler webapp (and jexlers shared via a "private" git repository at sourceforge).
 
-*For building binaries for the httest HTTP Test Tool on four different platforms (Mac, Windows, Linux Debian 32 bit and 64 bit).*
+On the same four platforms, I also made nightly and release builds of **httest**, an Open Source HTTP test tool written in C by Christian Liesch (and with some minor contributions by me and others):
 
-Httest is an Open Source (mainly C) command line tool written by Christian Liesch:
-
-"httest is a script based tool for testing and benchmarking web applications, web servers, proxy servers and web browsers. httest can emulate clients and servers in the same test script, very useful for testing proxys."
-
+* "httest is a script based tool for testing and benchmarking web applications, web servers, proxy servers and web browsers. httest can emulate clients and servers in the same test script, very useful for testing proxys."
 * Project: [http://htt.sourceforge.net/](http://htt.sourceforge.net/)
 * Sourceforge: [http://sourceforge.net/projects/htt/](http://sourceforge.net/projects/htt/)
-* Binaries: [http://www.jexler.net/htt/](http://www.jexler.net/htt/)
+* Binaries (by me): [http://www.jexler.net/htt/](http://www.jexler.net/htt/)
 
-I made some minor contributions to the project and I build httest binaries automatically using jexler whenever a new httest source code relelase appears at Sourceforge (plus nightly builds). An automatic build consists roughly of the following steps:
-
-* Check out source from git repository at Sourceforge.
-* Build and make some basic tests, using also the ShellTool.
-* If OK, upload binaries to http://www.jexler.net/htt/ and update index.html there.
-* If OK, check in binaries into a separate git repository (for historizing binaries).
-* Send mail to notify some people about success or failure.
-
-On each of the four platforms, there is an independent Tomcat with its jexler webapp.
+Release builds were triggered automatically by polling sourceforge for a new httest source release. After checking out the source and building the binaries, the binaries were uploaded via FTP to www.jexler.net and notification mails sent, as needed. The builds (nightly and release) included also to run all tests automatically and provide a test report. The Windows build resulted also in a Visual Studio Solution, complete with all needed external libraries and includes. For building on Windows, a combination of cygwin and Visual Studio was used, so that most parts of the build could be shared as bash scripts across all four platforms, but that's already a different story...
 
 ###Checks and Cleanups
 
-At work I have used it a little for small maintenance things, e.g. for checking if certain Hudson nightly builds have really run, for cleaning up log files and for warning if disk space is getting low.
+At work I continue to use it for various minor maintenance things, e.g. for checking if certain Hudson nightly builds have really run or for warning if disk space is getting low resp. cleaning up right away in that case, and for a few more things.
 
 ###More
 
