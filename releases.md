@@ -3,7 +3,7 @@
 jexler releases
 ===============
 
-1.0.6 (201x-xx-xx)
+1.0.6 (2014-05-11)
 ------------------
 
 * ShellTool: Fixed a bug that could cause the run() methods to hang
