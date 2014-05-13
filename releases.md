@@ -3,7 +3,7 @@
 jexler releases
 ===============
 
-1.0.7 (201x-xx-xx)
+1.0.7 (2014-05-14)
 ------------------
 
 * StrongerObfuscatorTool: Superseeds the (now deprecated) ObfuscatorTool
