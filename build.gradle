@@ -7,7 +7,7 @@ subprojects {
   sourceCompatibility = 1.7
   targetCompatibility = 1.7
 
-  version = '1.0.7'
+  version = '1.0.8-SNAPSHOT'
 
   project.group = 'net.jexler'
 
