@@ -216,27 +216,47 @@ Note that the `toString()` method of Result produces a single line string suitab
 
 Implemented using `Runtime.getRuntime().exec()`.
 
-###ObfuscatorTool
+###StrongerObfuscatorTool
 
-This tool can help to obfuscate passwords and other "minor" secret strings. It uses (single) DES, by default with a hard-coded key, see javadoc and code for full details.
+This tool can help to obfuscate passwords and other sensitive strings. By default, it uses 128 bit AES with a hard-coded key, see below plus code/javadoc for full details.
 
 * `String obfuscate(String plain)`:
-  UTF-8 encode, encipher and hex encode given string.
+  UTF-8 encode, pad with random bytes, encipher and hex encode given string.
 * `public String deobfuscate(String encHex)`:
-  Hex decode, decipher and UTF-8 decode given string.
+  Hex decode, decipher, unpad and UTF-8 decode given string.
+* `StrongerObfuscatorTool()`: Default constructor.
+   Chooses 128 bit AES (AES/CBC/PKCS5Padding) with a hard-coded default key and iv,
+   and sets byteBufferPadLen to 64, which limits plain strings to max 47 characters
+   (resp. less if some plain string characters need more than one byte UTF-8 encoded).
+* `StrongerObfuscatorTool setParameters(String hexKey, String hexIv, String algorithm, String transformation)`:
+  Set key, iv, algorithm and transformation.
+* `StrongerObfuscatorTool setByteBufferPadLen(int len)`:
+  Set the length to which to pad the plain string as UTF-8 encoded byte buffer.
 
 Simple use case:
 
 * Log obfuscated password:
-  `log.trace(new ObfuscatorTool().obfuscate("mysecret"))`
+  `log.trace(new StrongerObfuscatorTool().obfuscate("mysecret"))`
 * Copy obfuscated password from log file (and delete entry from log file).
-* Use it: `def password = new ObfuscatorTool().deobfuscate("2A8A0F691DB78AD8DA6664D3A25DA963")`
+* Use it: `def password = new StrongerObfuscatorTool().deobfuscate("2A8A0F ... 5DA963")`
 
-Use your own keys:
+Note that this is overall not a cryptographically strong protection of secrets, just a countermeasure to fend off the simplest attacks, like e.g. "shoulder surfing". Someone with access to the running jexler with write permission for jexler scripts can easily deobfuscate secrets. Someone with only read access to jexler scripts can also simply copy the obfuscated string and deobfuscate it on a different jexler instance. To fend off that attack, e.g. store obfuscated passwords in files in the jexlers directory:
 
-* `ObfuscatorTool (String hexKey, String hexIv)`
+    new File("password.txt").setText(new StrongerObfuscatorTool().obfuscate("mysecret"))
+    def password = new StrongerObfuscatorTool().deobfuscate(new File("password.txt").text)
 
-Note that all of this is not a cryptographically strong protection of secrets, just a countermeasure to fend off the simplest attacks, like e.g. "shoulder surfing". Someone with access to the running jexler with write permission for jexler scripts can easily desobfuscate secrets.
+To obfuscate things even a little more, you could set custom cipher parameters that you would read from a file, or maybe even consider something like the following. Subclass the StrongerObfuscatorTool class in Groovy (or Java):
+
+    class MyObfuscatorTool extends net.jexler.tool.StrongObfuscatorTool {
+      public MyObfuscatorTool() {
+        setParameters("00--my-AES-128-secret-key-hex-00", "0--my-AES-128-secret-iv-hex--00",
+          "AES", "AES/CBC/PKCS5Padding")
+      }
+    }
+
+Compile the class and place the resulting class file in the jexlers directory or within the WEB-INF/lib directory, i.e. add it to the classpath of the running jexlers. This would make it a little harder to deobfuscate strings even to someone with read access to the files in the jexlers resp. WEB-INF/lib directory, because the keys are somewhat "hidden" in the class file.
+
+Note: The StrongerObfuscatorTool replaces the older ObfuscatorTool, which is now deprecated.
 
 ###More Tools
 

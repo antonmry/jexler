@@ -6,7 +6,8 @@ jexler releases
 1.0.7 (201x-xx-xx)
 ------------------
 
-* ...
+* StrongerObfuscatorTool: Superseeds the (now deprecated) ObfuscatorTool
+  for somewhat more security, see user's guide and source code.
 
 1.0.6 (2014-05-11)
 ------------------

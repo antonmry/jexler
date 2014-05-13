@@ -32,6 +32,7 @@ public final class ObfuscatorToolTest
 {
 
 	@Test
+	@SuppressWarnings("deprecation")
     public void testDefaultKey() throws Exception {
         ObfuscatorTool tool = new ObfuscatorTool();
         
@@ -60,6 +61,7 @@ public final class ObfuscatorToolTest
 	}
 
 	@Test
+	@SuppressWarnings("deprecation")
     public void testCustomKey() throws Exception {
         ObfuscatorTool tool = new ObfuscatorTool("1e02ab32dc0482e0","de03a21b6428bf04");
         

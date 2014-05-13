@@ -33,13 +33,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Tool for (de-)obfuscating strings.
+ * Tool for (de-)obfuscating strings - deprecated,
+ * use StrongerObfuscatorTool instead.
  * 
  * Uses (single) DES in CBC mode with PKCS#5 padding,
  * by default with a hard-coded key and iv.
  *
  * @author $(whois jexler.net)
  */
+@Deprecated
 public class ObfuscatorTool {
 
     static final Logger log = LoggerFactory.getLogger(ObfuscatorTool.class);
