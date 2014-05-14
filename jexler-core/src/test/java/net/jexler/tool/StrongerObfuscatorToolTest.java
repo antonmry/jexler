@@ -149,6 +149,21 @@ public final class StrongerObfuscatorToolTest
         	assertEquals("must be same", e.getMessage(),
         			"Input string too long (113 bytes UTF-8 encoded, max allowed: 111)");
         }
+        
+        // different byteBufferPadLen
+        plain = "test";
+        obfus = tool.obfuscate(plain);
+        //System.out.println(obfus);
+        //System.out.println(obfus.length());
+        assertEquals("must be same", expectedObfuscatedLen, obfus.length());
+        tool.setByteBufferPadLen(64);
+        try {
+        	tool.deobfuscate(obfus);
+        	fail("must throw");
+        } catch (IllegalArgumentException e) {
+        	assertEquals("must be same", e.getMessage(),
+        			"Illegal length of deciphered buffer (128 bytes, expected 64)");
+        }
 	}
 
 }
