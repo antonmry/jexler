@@ -19,12 +19,11 @@
   <link rel="shortcut icon" href="favicon.ico"/>
   <link rel="icon" href="favicon.ico"/>
   <link rel="stylesheet" href="jexler.css"/>
-
-  <script src="cm/lib/codemirror.js"></script>
   <link rel="stylesheet" href="cm/lib/codemirror.css">
+  <script src="cm/lib/codemirror.js"></script>
   <script src="cm/addon/edit/matchbrackets.js"></script>
   <script src="cm/mode/groovy/groovy.js"></script>
-  <style type="text/css">.CodeMirror { border: 1px solid #eee; height: auto; } </style>
+  <style type="text/css">.CodeMirror { border: 1px solid #eee; height: auto; }</style>
 
   <script>
     function onPageLoad() {
@@ -169,7 +168,8 @@
           tabMode: "indent",
           matchBrackets: true,
           indentUnit: 2,
-          readOnly: ${!jexlers.scriptAllowEdit}
+          readOnly: ${!jexlers.scriptAllowEdit},
+          scrollbarStyle: "simple"
         });
       </script>
     </c:otherwise>
