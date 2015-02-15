@@ -23,6 +23,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import groovy.lang.GroovyClassLoader;
 import net.jexler.Jexler;
 import net.jexler.Jexlers;
 import net.jexler.JexlersFactory;
@@ -42,6 +43,8 @@ import ch.qos.logback.core.Appender;
 public class JexlerContextListener implements ServletContextListener    {
 
 	static final Logger log = LoggerFactory.getLogger(JexlerContextListener.class);
+
+    private static final String guiVersion = "1.0.8"; // IMPORTANT: keep in sync with version in main build.gradle
 	
 	private static String version;
     private static ServletContext servletContext;
@@ -56,9 +59,14 @@ public class JexlerContextListener implements ServletContextListener    {
 
     @Override
     public void contextInitialized(ServletContextEvent event) {
-        version = Jexler.class.getPackage().getImplementationVersion();
+
+        String coreVersion = Jexler.class.getPackage().getImplementationVersion();
         // no version in eclipse/unit tests (no jar with MANIFEST.MF)
-        version = (version == null) ? "(DEVELOP)" : version;
+        coreVersion = (coreVersion == null) ? "0.0.0" : coreVersion;
+        String groovyVersion = GroovyClassLoader.class.getPackage().getImplementationVersion();
+        groovyVersion = (groovyVersion == null) ? "0.0.0" : groovyVersion;
+        version = guiVersion + " (core " + coreVersion + " / groovy " + groovyVersion + ")";
+
         log.info("Welcome to jexler. Version: " + version);
         servletContext = event.getServletContext();
         String webappPath = servletContext.getRealPath("/");

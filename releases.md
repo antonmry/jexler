@@ -3,6 +3,13 @@
 jexler releases
 ===============
 
+1.0.8 (2015-02-15)
+------------------
+
+* Only GUI changed, no release of jexler-core.
+* Improved GUI: Automatic scroll bars in source and status if window too small;
+  dimmed status if cannot connect to web server.
+
 1.0.7 (2014-05-14)
 ------------------
 

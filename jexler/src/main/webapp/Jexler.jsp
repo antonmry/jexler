@@ -28,9 +28,10 @@
 
   <script>
     function onPageLoad() {
-      window.setInterval(getStatus, 1000);
+      window.setInterval(getStatus, 3000);
+      setHeight();
     }
-    
+        
     var previousText = "";
 
     function getStatus() {
@@ -38,74 +39,126 @@
       xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState === 4) {
           var text = xmlhttp.responseText;
+          if (text == "") {
+            text = previousText;
+            if (text.indexOf("(offline)") < 0) {
+              text = text.replace("<strong>Name</strong>", "<strong>Name (offline)</strong>");
+              text = text.replace(/\.gif'/g, "-dim.gif'");
+              text = text.replace(/<a href='\?cmd=[a-z]+(&jexler=[A-Za-z0-9]+)?'>/g, "");
+              text = text.replace(/<\/a>/g, "");
+              text = text.replace(/status-name/g, "status-name status-offline");
+            }
+          }
           if (text != previousText) {
             previousText = text;
-            var table = document.getElementById("status");
-            table.innerHTML = text;
+            var statusDiv = document.getElementById("statusdiv");
+            statusDiv.innerHTML = text;
           }
         }
       };
       xmlhttp.open('GET', '?cmd=status', true);
       xmlhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+      xmlhttp.timeout = 5000;
       xmlhttp.send(null);
+    }
+
+    window.onresize = function() {
+      setHeight();
+    }
+
+    function setHeight() {
+      var hTotal = document.documentElement.clientHeight;        
+      var hHeader = document.getElementById('header').offsetHeight;
+      var h = hTotal - hHeader - 50;
+      document.getElementById('sourcediv').style.height="" + h + "px";
+      document.getElementById('statusdiv').style.height="" + h + "px";
     }
   </script>
 
   </head>
 
   <body onLoad="onPageLoad()">
-
-  <a href="."><img src="jexler.jpg" title="${jexlers.version}"></a>
-
+  
   <%= jexlers.handleCommands(request) %>
-
-  <table id="status">
-</c:if>
-
-<tr>
-<td>${jexlers.startStop}</td>
-<td>${jexlers.restart}</td>
-<td>${jexlers.log}</td>
-<td><strong>Name</strong></td>
-</tr>
-
-<c:forEach items="${jexlers.jexlers}" var="jexler">
-  <tr>
-  <td>${jexler.value.startStop}</td>
-  <td>${jexler.value.restart}</td>
-  <td>${jexler.value.log}</td>
-  <td title="${jexler.value.runStateInfo}">${jexler.value.jexlerIdLink}</td>
-  </tr>
-</c:forEach>
-
-<c:if test="${param.cmd != 'status'}">
-
-  </table>
-
   <c:set var="jexler" value="${jexlers.jexlers[param.jexler]}"/>
   <c:set var="jexler" value="${jexler != null ? jexler : jexlers }"/>
+  
+  <div class="hidden">
+    <script>
+      new Image().src = "ok-dim.gif"
+      new Image().src = "error-dim.gif"
+      new Image().src = "log-dim.gif"
+      new Image().src = "start-dim.gif"
+      new Image().src = "stop-dim.gif"
+      new Image().src = "restart-dim.gif"
+    </script>
+  </div>
 
-  <c:choose>
+  <form action="request.contextPath" method="post">
+  
+  <table class="frame">
+  <tr id="header">
+  <td class="frame">
+  <a href="."><img src="jexler.jpg" title="${jexlers.version}"></a>
+  </td>
+  <td class="frame frame-buttons">
+    <c:choose>
     <c:when test="${param.cmd == 'log' || param.cmd == 'clearissues'}">
       <p></p>
-      <form action="request.contextPath" method="post">
         <button type="submit" name="cmd" value="forget">Forget</button>
         <button type="submit" name="cmd" value="forgetall">Forget All</button>
         <input type="hidden" name="jexler" value="${jexler.jexlerId}">
-        ${jexler.issues}
-        <p></p>
-        ${jexler.logfile}
-      </form>
     </c:when>
     <c:otherwise>
       <p></p>
-      <form action="request.contextPath" method="post">
         <button type="submit" name="cmd" value="save" ${jexlers.disabledIfReadonly} ${jexlers.scriptConfirmSave}>Save as...</button>
         <button type="submit" name="cmd" value="delete" ${jexlers.disabledIfReadonly} ${jexlers.scriptConfirmDelete}>Delete...</button>
         <input type="text" name="jexler" value="${jexler.jexlerId}" ${jexlers.disabledIfReadonly}>
-        <p></p>
-        <textarea id="source" name="source">${jexler.source}</textarea>
-      </form>
+    </c:otherwise>
+    </c:choose>
+  </td>
+  </tr>
+  <tr>
+  <td class="frame">
+  
+  <div id="statusdiv" style="overflow-y: auto">
+</c:if>
+
+<table class="status" id="status">
+
+<tr>
+<td class="status">${jexlers.startStop}</td>
+<td class="status">${jexlers.restart}</td>
+<td class="status">${jexlers.log}</td>
+<td class="status status-name"><strong>Name</strong></td>
+</tr>
+
+<c:forEach items="${jexlers.jexlers}" var="loopJexler">
+  <tr>
+  <td class="status">${loopJexler.value.startStop}</td>
+  <td class="status">${loopJexler.value.restart}</td>
+  <td class="status">${loopJexler.value.log}</td>
+  <td class="status status-name" title="${loopJexler.value.runStateInfo}">${loopJexler.value.jexlerIdLink}</td>
+  </tr>
+</c:forEach>
+
+</table>
+
+<c:if test="${param.cmd != 'status'}">
+
+  </div>
+  
+  </td>
+  <td class="frame frame-text">
+
+  <div id="sourcediv" style="overflow-y: auto">
+  <c:choose>
+    <c:when test="${param.cmd == 'log' || param.cmd == 'clearissues'}">
+      ${jexler.issues}
+      ${jexler.logfile}
+    </c:when>
+    <c:otherwise>
+      <textarea id="source" name="source">${jexler.source}</textarea>
       <script>
         var editor = CodeMirror.fromTextArea(document.getElementById("source"), {
           lineNumbers: true,
@@ -118,6 +171,13 @@
       </script>
     </c:otherwise>
   </c:choose>
+  </div>
+  
+  </td>
+  </tr>
+  </table>
+  
+  </form>
 
   </body>
 

@@ -201,7 +201,7 @@ public class JexlersView {
             return "";
         }
         StringBuilder builder = new StringBuilder();
-        builder.append("<pre>");
+        builder.append("<pre class='issues'>");
         for (Issue issue : issues) {
             builder.append("\n");
             SimpleDateFormat format = new SimpleDateFormat("EEE dd MMM yyyy HH:mm:ss.SSS");
@@ -232,7 +232,7 @@ public class JexlersView {
             return "";
         }
         StringBuilder builder = new StringBuilder();
-        builder.append("<pre>\n\n");
+        builder.append("<pre class='log'>\n");
         try {
             String logData = readTextFileReversedLines(logfile);
             logData = logData.replace("<", "&lt;");
