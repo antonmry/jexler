@@ -39,10 +39,13 @@
       xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState === 4) {
           var text = xmlhttp.responseText;
+          if (xmlhttp.status / 100 != 2) {
+            text = ""
+          }
           if (text == "") {
             text = previousText;
             if (text.indexOf("(offline)") < 0) {
-              text = text.replace("<strong>Name</strong>", "<strong>Name (offline)</strong>");
+              text = text.replace("<strong>Name</strong>", "<strong>(offline)</strong>");
               text = text.replace(/\.gif'/g, "-dim.gif'");
               text = text.replace(/<a href='\?cmd=[a-z]+(&jexler=[A-Za-z0-9]+)?'>/g, "");
               text = text.replace(/<\/a>/g, "");
