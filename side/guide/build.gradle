@@ -1,0 +1,30 @@
+// $ gradle asciidoctor
+
+apply plugin: 'org.asciidoctor.gradle.asciidoctor'
+
+description = "Jexler Users' Guide"
+
+project.group = 'net.jexler'
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.0'
+    }
+}
+
+asciidoctor { (1)
+    outputDir = new File("$buildDir/docs")
+    backends = [ 'html5' ]
+    options = [
+            doctype: 'book',
+            attributes: [
+                    'source-highlighter': 'prettify',
+                    //toc                 : '',
+                    idprefix            : '',
+                    idseparator         : '-'
+            ]
+    ]
+}
