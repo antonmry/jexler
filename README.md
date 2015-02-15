@@ -40,4 +40,4 @@ Resources
 Screenshots
 -----------
 
-![web gui](http://a.fsdn.com/con/app/proj/jexler/screenshots/jexler-sf-screenshot.jpg)
+[![web gui](http://a.fsdn.com/con/app/proj/jexler/screenshots/jexler-sf-screenshot-new.jpg)](http://a.fsdn.com/con/app/proj/jexler/screenshots/jexler-sf-screenshot-new.jpg)
