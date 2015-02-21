@@ -168,8 +168,7 @@
           tabMode: "indent",
           matchBrackets: true,
           indentUnit: 2,
-          readOnly: ${!jexlers.scriptAllowEdit},
-          scrollbarStyle: "simple"
+          readOnly: ${!jexlers.scriptAllowEdit}
         });
       </script>
     </c:otherwise>
