@@ -283,23 +283,13 @@ public class JexlersView {
     		return " disabled='disabled'";
     	}
     }
-    
-    public String getScriptConfirmSave() {
-    	boolean confirmSave = JexlerContextListener.scriptConfirmSave();
-    	if (confirmSave) {
-    		return "onclick=\"return confirm('Are you sure you want to save?');\"";
-    	} else {
-    		return "";
-    	}
+
+    public boolean isConfirmSave() {
+        return JexlerContextListener.scriptConfirmSave();
     }
-    
-    public String getScriptConfirmDelete() {
-    	boolean confirmDelete = JexlerContextListener.scriptConfirmDelete();
-    	if (confirmDelete) {
-    		return "onclick=\"return confirm('Are you sure you want to delete?');\"";
-    	} else {
-    		return "";
-    	}
+
+    public boolean isConfirmDelete() {
+        return JexlerContextListener.scriptConfirmDelete();
     }
 
     private void handleStart() {
@@ -328,6 +318,7 @@ public class JexlersView {
     	}
         String source = request.getParameter("source");
         if (source != null) {
+            source = source.replace("\r\n", "\n");
             File file = jexlers.getJexlerFile(targetJexlerId);
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
                 writer.write(source);
