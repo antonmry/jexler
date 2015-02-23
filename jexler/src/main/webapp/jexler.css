@@ -9,6 +9,7 @@ td.frame {
   border-width: 0px 0px 0px 0px;
   padding: 5px;
   border-style: none;
+    vertical-align: top;
 }
 td.frame-buttons {
   vertical-align: bottom;
@@ -32,6 +33,10 @@ td.status-name {
 }
 td.status-offline {
   color: gray;
+}
+div.autoscroll {
+    vertical-align: top;
+    overflow-y: auto;
 }
 pre.log {color:gray}
 span.dim {color:gray}

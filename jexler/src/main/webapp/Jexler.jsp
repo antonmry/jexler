@@ -184,7 +184,7 @@
   <tr>
   <td class="frame">
   
-  <div id="statusdiv" style="overflow-y: auto">
+  <div id="statusdiv" class="autoscroll">
 </c:if>
 
 <table class="status" id="status">
@@ -214,7 +214,7 @@
   </td>
   <td class="frame frame-text">
 
-  <div id="sourcediv" style="overflow-y: auto">
+  <div id="sourcediv" class="autoscroll">
   <c:choose>
     <c:when test="${param.cmd == 'log' || param.cmd == 'clearissues'}">
       ${jexler.issues}
