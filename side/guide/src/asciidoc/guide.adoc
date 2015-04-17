@@ -523,7 +523,7 @@ import groovy.grape.Grape
 @Grab('org.apache.httpcomponents:httpclient:4.2.3')
 @GrabConfig(initContextClassLoader=true)
 import org.apache.http.client.methods.HttpGet
-[...]
+// more imports...
 
 In the other jexlers:
 
