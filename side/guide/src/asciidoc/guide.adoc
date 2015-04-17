@@ -508,6 +508,36 @@ I have not been able to reproduce the issue in a unit test,
 which suggests it might also be related to Tomcat,
 but that is not sure, of course.
 
+=== CentOS / Tomcat Startup
+
+On CentOS with Tomcat 7 had the following issue: Serveral jexlers
+used a utility jexler Groovy script which grabbed dependencies via Grape.
+The jexlers themselves had no Grape dependencies. During autostart some
+classes needed by the utility jexler could not be found (NoClassDefFoundError).
+Using the wait time above improved things somewhat, but the following solved it.
+
+In the utility jexler:
+
+[source,Groovy]
+import groovy.grape.Grape
+@Grab('org.apache.httpcomponents:httpclient:4.2.3')
+@GrabConfig(initContextClassLoader=true)
+import org.apache.http.client.methods.HttpGet
+[...]
+
+In the other jexlers:
+
+[source,Groovy]
+----
+[ "autostart" : true ]
+// don't remove, else may fail to load classes needed by Util class when autostarted
+import groovy.grape.Grape
+@Grab('org.apache.httpcomponents:httpclient:4.2.3')
+@GrabConfig(initContextClassLoader=true)
+----
+
+There may be more elegant solutions, but this worked for me.
+
 == Source Code
 
 The source code is at github: https://github.com/jexler/jexler
