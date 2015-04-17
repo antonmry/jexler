@@ -2,7 +2,7 @@ image:http://www.jexler.net/jexler.jpg["jexler logo", link="http:www.jexler.net/
 
 = jexler releases
 
-== 1.0.10-SNAPSHOT (2015-XX-XX)
+== 1.0.10 (2015-04-18)
 
 * When running a jexler Groovy script, now any Throwable is caught,
   not just Exception. Consequently, issues now have a getCause() method
