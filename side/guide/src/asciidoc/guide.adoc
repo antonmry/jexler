@@ -534,6 +534,7 @@ In the other jexlers:
 import groovy.grape.Grape
 @Grab('org.apache.httpcomponents:httpclient:4.2.3')
 @GrabConfig(initContextClassLoader=true)
+// no imports
 ----
 
 There may be more elegant solutions, but this worked for me.
