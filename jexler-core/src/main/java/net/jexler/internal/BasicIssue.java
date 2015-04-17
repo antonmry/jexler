@@ -32,18 +32,18 @@ public class BasicIssue implements Issue {
     private final Date date;
     private final Service service;
     private final String message;
-    private final Exception exception;
+    private final Throwable cause;
     private final String stackTrace;
 
     /**
      * Constructor from service, message and exception.
      */
-    public BasicIssue(Service service, String message, Exception exception) {
+    public BasicIssue(Service service, String message, Throwable cause) {
         date = new Date();
         this.service = service;
         this.message = message;
-        this.exception = exception;
-        stackTrace = JexlerUtil.getStackTrace(exception);
+        this.cause = cause;
+        stackTrace = JexlerUtil.getStackTrace(cause);
     }
 
     @Override
@@ -62,8 +62,8 @@ public class BasicIssue implements Issue {
     }
 
     @Override
-    public Exception getException() {
-        return exception;
+    public Throwable getCause() {
+        return cause;
     }
 
     @Override
@@ -95,11 +95,11 @@ public class BasicIssue implements Issue {
         } else {
         	builder.append("'" + service.getClass().getName() + ":" + service.getId() + "'");
         }
-        builder.append(",exception=");
-        if (exception == null) {
-        	builder.append(exception);
+        builder.append(",cause=");
+        if (cause == null) {
+        	builder.append(cause);
         } else {
-        	builder.append("'" + JexlerUtil.toSingleLine(exception.toString()) + "'");
+        	builder.append("'" + JexlerUtil.toSingleLine(cause.toString()) + "'");
         }
         builder.append(",stackTrace=");
         builder.append("'" + JexlerUtil.toSingleLine(stackTrace.toString()) + "'");

@@ -153,9 +153,9 @@ public class BasicJexler implements Jexler {
                     public void run() {
                         try {
                         	shell.evaluate(file);
-                        } catch (Exception e) {
-                        	// (script may throw any checked or unchecked exception)
-                        	trackIssue(thisJexler, "Script failed.", e);
+                        } catch (Throwable t) {
+                            // (script may throw anything, checked or not)
+                            trackIssue(thisJexler, "Script failed.", t);
                         } finally {
                         	runState = RunState.BUSY_STOPPING;
                         	try {
@@ -249,8 +249,8 @@ public class BasicJexler implements Jexler {
     }
 
     @Override
-    public void trackIssue(Service service, String message, Exception exception) {
-    	issueTracker.trackIssue(service, message, exception);
+    public void trackIssue(Service service, String message, Throwable cause) {
+    	issueTracker.trackIssue(service, message, cause);
     }
 
     @Override

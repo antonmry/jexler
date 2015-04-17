@@ -46,9 +46,9 @@ public interface Issue extends Comparable<Issue> {
     public String getMessage();
 
     /**
-     * Get exception that caused the issue, or null if none.
+     * Get throwable that caused the issue, or null if none.
      */
-    public Exception getException();
+    public Throwable getCause();
 
     /**
      * Get exception stack trace as a multi-line string.

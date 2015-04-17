@@ -67,8 +67,8 @@ public class BasicMetaInfo extends HashMap<String,Object> implements MetaInfo {
 			Object o;
 			try {
 				o = shell.evaluate(line);
-			} catch (Exception e) {
-            	// (script may throw any checked or unchecked exception)
+			} catch (Throwable t) {
+            	// (script may throw anything, checked or not)
 				return;
 			}
 

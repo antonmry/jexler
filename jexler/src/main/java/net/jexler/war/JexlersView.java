@@ -215,9 +215,9 @@ public class JexlersView {
                 s = service.getClass().getName() + ":" + service.getId();
             }
             builder.append("<strong>Service:   </strong>" + s + "\n");
-            Exception e= issue.getException();
-            s = (e==null) ? "-" : e.toString();
-            builder.append("<strong>Exception: </strong>" + s.replace("<", "&lt;") + "\n");
+            Throwable cause = issue.getCause();
+            s = (cause==null) ? "-" : cause.toString();
+            builder.append("<strong>Cause: </strong>" + s.replace("<", "&lt;") + "\n");
             s = issue.getStackTrace();
             if (s != null) {
                 builder.append(s.isEmpty() ? "" : "<span class='trace'>"+ s.replace("<", "&lt;") + "</span>\n");

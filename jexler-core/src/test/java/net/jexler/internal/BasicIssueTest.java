@@ -45,42 +45,42 @@ public final class BasicIssueTest
 		Issue issue = new BasicIssue(null, null, null);
 		assertNull("must be null", issue.getService());
 		assertNull("must be null", issue.getMessage());
-		assertNull("must be null", issue.getException());
+		assertNull("must be null", issue.getCause());
 		assertEquals("must be same", "", issue.getStackTrace());
 		assertEquals("must be same",
-				"Issue: [message=null,service=null,exception=null,stackTrace='']",
+				"Issue: [message=null,service=null,cause=null,stackTrace='']",
 				issue.toString());
 
 		MockService.setTestInstance(null,"mockid");
 		Service service = MockService.getTestInstance();
 		String serviceClass = MockService.class.getName();
 		String message = "hi";
-		Exception exception = null;
-		issue = new BasicIssue(service, message, exception);
+		Throwable cause = null;
+		issue = new BasicIssue(service, message, cause);
 		assertEquals("must be same", service, issue.getService());
 		assertEquals("must be same", message, issue.getMessage());
-		assertNull("must be null", issue.getException());
+		assertNull("must be null", issue.getCause());
 		assertEquals("must be same", "", issue.getStackTrace());
 		//System.out.println(issue);
 		assertEquals("must be same",
 				"Issue: [message='hi',service='" + serviceClass + ":mockid',"
-						+ "exception=null,stackTrace='']", issue.toString());
-		
-		exception = new RuntimeException("run");
-		issue = new BasicIssue(service, message, exception);
+						+ "cause=null,stackTrace='']", issue.toString());
+
+		cause = new RuntimeException("run");
+		issue = new BasicIssue(service, message, cause);
 		assertEquals("must be same", service, issue.getService());
 		assertEquals("must be same", message, issue.getMessage());
-		assertEquals("must be same", exception, issue.getException());
+		assertEquals("must be same", cause, issue.getCause());
 		assertNotNull("must not be null", issue.getStackTrace());
 		//System.out.println(issue);
 		assertTrue("must be true", issue.toString().startsWith(
 				"Issue: [message='hi',service='" + serviceClass + ":mockid',"
-						+ "exception='java.lang.RuntimeException: run',stackTrace='java.lang"));
+						+ "cause='java.lang.RuntimeException: run',stackTrace='java.lang"));
 		assertFalse("must be false", issue.toString().contains("\r"));
 		assertFalse("must be false", issue.toString().contains("\n"));
 
 		message = "got \r this \n and \r\n that \r\n\n\r .";
-		issue = new BasicIssue(service, message, exception);
+		issue = new BasicIssue(service, message, cause);
 		System.out.println(issue);
 		assertEquals("must be same", message, issue.getMessage());
 		assertTrue("must be true", issue.toString().startsWith(

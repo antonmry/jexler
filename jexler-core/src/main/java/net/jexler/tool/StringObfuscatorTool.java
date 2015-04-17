@@ -39,18 +39,13 @@ import org.slf4j.LoggerFactory;
  * Uses by default 128 bit AES in CBC mode with PKCS#5 padding
  * with a hard-coded key and iv.
  * 
- * Stronger than ObfuscatorTool (at least in some use cases):
- * - reveals less about the length of the plain string
- * - obfuscating the same string twice does not give the same result
- * - stronger cipher algorithm (which can also be freely changed)
- * 
- * See user's guide for a little more information.
+ * See user's guide for more information and source code for full details.
  *
  * @author $(whois jexler.net)
  */
-public class StrongerObfuscatorTool {
+public class StringObfuscatorTool {
 
-    static final Logger log = LoggerFactory.getLogger(StrongerObfuscatorTool.class);
+    static final Logger log = LoggerFactory.getLogger(StringObfuscatorTool.class);
     
     private static final int DEFAULT_BYTE_BUFFER_PAD_LEN = 64;
     private static final int MIN_SALT_LEN = 16;
@@ -67,7 +62,7 @@ public class StrongerObfuscatorTool {
      * and sets byteBufferPadLen to 64, which limits plain strings to max 47 characters
      * (resp. less if some plain string characters need more than one byte UTF-8 encoded).
      */
-    public StrongerObfuscatorTool() throws NoSuchAlgorithmException, NoSuchPaddingException {
+    public StringObfuscatorTool() throws NoSuchAlgorithmException, NoSuchPaddingException {
     	setParameters("62e0c45a20dfe429543212be640c3254", "b42de953243ab9edf03bdac61344bec5",
     			"AES", "AES/CBC/PKCS5Padding");
     	setByteBufferPadLen(DEFAULT_BYTE_BUFFER_PAD_LEN);
@@ -77,7 +72,7 @@ public class StrongerObfuscatorTool {
      * Set key, iv, algorithm and transformation.
      * @return this (for chaining calls)
      */
-    public StrongerObfuscatorTool setParameters(String hexKey, String hexIv, String algorithm, String transformation)
+    public StringObfuscatorTool setParameters(String hexKey, String hexIv, String algorithm, String transformation)
     		throws NoSuchAlgorithmException, NoSuchPaddingException {
     	key = new SecretKeySpec(DatatypeConverter.parseHexBinary(hexKey), algorithm);
     	iv = new IvParameterSpec(DatatypeConverter.parseHexBinary(hexIv));
@@ -89,7 +84,7 @@ public class StrongerObfuscatorTool {
      * Set the length to which to pad the plain string as UTF-8 encoded byte buffer.
      * @return this (for chaining calls)
      */
-    public StrongerObfuscatorTool setByteBufferPadLen(int len) {
+    public StringObfuscatorTool setByteBufferPadLen(int len) {
     	byteBufferPadLen = len;
     	return this;
     }

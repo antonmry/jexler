@@ -2,6 +2,15 @@ image:http://www.jexler.net/jexler.jpg["jexler logo", link="http:www.jexler.net/
 
 = jexler releases
 
+== 1.0.10-SNAPSHOT (2015-XX-XX)
+
+* When running a jexler Groovy script, now any Throwable is caught,
+  not just Exception. Consequently, issues now have a getCause() method
+  that returns the causing Throwable, no longer a getException() method.
+* Renamed StrongerObfuscatorTool to StringObfuscatorTool and removed
+  the deprecated ObfuscatorTool.
+* Updated dependency to Groovy 2.4.3.
+
 == 1.0.9 (2015-02-23)
 
 * Updated dependencies to current versions (like Groovy 2.4.0).

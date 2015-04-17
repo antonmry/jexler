@@ -40,15 +40,15 @@ public final class IssueFactoryTest
     public void testBasic() throws Exception {
 		Service service = MockService.getTestInstance();
 		String message = "hi";
-		Exception exception = new RuntimeException();
+		Throwable cause = new RuntimeException();
 		IssueFactory issueFactory = new IssueFactory();
 		
-		Issue issue = issueFactory.get(service, message, exception);
+		Issue issue = issueFactory.get(service, message, cause);
 		assertNotNull("must not be null", issue);
 		assertTrue("must be true", issue instanceof BasicIssue);
 		assertEquals("must be same", service, issue.getService());
 		assertEquals("must be same", "hi", issue.getMessage());
-		assertEquals("must be same", exception, issue.getException());
+		assertEquals("must be same", cause, issue.getCause());
 	}
 	
 }

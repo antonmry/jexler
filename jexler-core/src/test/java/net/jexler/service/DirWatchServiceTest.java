@@ -56,8 +56,8 @@ public final class DirWatchServiceTest
         assertEquals("must be same", service, issue.getService());
         assertTrue("must be true",
         		issue.getMessage().startsWith("Could not create watch service or key"));
-        assertNotNull("must not be null", issue.getException());
-    	assertTrue("must be true", issue.getException() instanceof IOException);
+        assertNotNull("must not be null", issue.getCause());
+    	assertTrue("must be true", issue.getCause() instanceof IOException);
     }
 
 }

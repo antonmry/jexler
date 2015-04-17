@@ -151,8 +151,8 @@ public class BasicJexlers extends BasicServiceGroup implements Jexlers {
     }
 
     @Override
-    public void trackIssue(Service service, String message, Exception exception) {
-    	issueTracker.trackIssue(service, message, exception);
+    public void trackIssue(Service service, String message, Throwable cause) {
+    	issueTracker.trackIssue(service, message, cause);
     }
 
     @Override

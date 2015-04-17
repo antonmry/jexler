@@ -91,8 +91,8 @@ public final class BasicJexlerTest
 		Issue issue = jexler.getIssues().get(0);
 		assertEquals("must be same", "Script failed.", issue.getMessage());
 		assertEquals("must be same", jexler, issue.getService());
-		assertNotNull("must not be null", issue.getException());
-		assertTrue("must be true", issue.getException() instanceof CompilationFailedException);
+		assertNotNull("must not be null", issue.getCause());
+		assertTrue("must be true", issue.getCause() instanceof CompilationFailedException);
 		
 		jexler.stop();
 		jexler.waitForShutdown(10000);
@@ -111,8 +111,8 @@ public final class BasicJexlerTest
 		issue = jexler.getIssues().get(0);
 		assertEquals("must be same", "Script failed.", issue.getMessage());
 		assertEquals("must be same", jexler, issue.getService());
-		assertNotNull("must not be null", issue.getException());
-		assertTrue("must be true", issue.getException() instanceof IllegalArgumentException);		
+		assertNotNull("must not be null", issue.getCause());
+		assertTrue("must be true", issue.getCause() instanceof IllegalArgumentException);
 		
 		jexler.stop();
 		jexler.waitForShutdown(10000);
@@ -131,8 +131,8 @@ public final class BasicJexlerTest
 		issue = jexler.getIssues().get(0);
 		assertEquals("must be same", "Script failed.", issue.getMessage());
 		assertEquals("must be same", jexler, issue.getService());
-		assertNotNull("must not be null", issue.getException());
-		assertTrue("must be true", issue.getException() instanceof IOException);		
+		assertNotNull("must not be null", issue.getCause());
+		assertTrue("must be true", issue.getCause() instanceof IOException);
 		
 		jexler.stop();
 		jexler.waitForShutdown(10000);
@@ -151,8 +151,8 @@ public final class BasicJexlerTest
 		issue = jexler.getIssues().get(0);
 		assertEquals("must be same", "Script failed.", issue.getMessage());
 		assertEquals("must be same", jexler, issue.getService());
-		assertNotNull("must not be null", issue.getException());
-		assertTrue("must be true", issue.getException() instanceof ClassNotFoundException);		
+		assertNotNull("must not be null", issue.getCause());
+		assertTrue("must be true", issue.getCause() instanceof ClassNotFoundException);
 		
 		jexler.stop();
 		jexler.waitForShutdown(10000);
@@ -221,7 +221,7 @@ public final class BasicJexlerTest
 		assertEquals("must be same", 1, jexler.getIssues().size());
 		assertEquals("must be same", mockService, jexler.getIssues().get(0).getService());
 		assertEquals("must be same", "mock issue", jexler.getIssues().get(0).getMessage());
-		assertEquals("must be same", ex, jexler.getIssues().get(0).getException());
+		assertEquals("must be same", ex, jexler.getIssues().get(0).getCause());
 		jexler.forgetIssues();
 		assertTrue("must be true", jexler.getIssues().isEmpty());
 		
@@ -229,7 +229,7 @@ public final class BasicJexlerTest
 		assertEquals("must be same", 1, jexler.getIssues().size());
 		assertEquals("must be same", mockService, jexler.getIssues().get(0).getService());
 		assertEquals("must be same", "mock issue", jexler.getIssues().get(0).getMessage());
-		assertEquals("must be same", ex, jexler.getIssues().get(0).getException());
+		assertEquals("must be same", ex, jexler.getIssues().get(0).getCause());
 		jexler.forgetIssues();
 		assertTrue("must be true", jexler.getIssues().isEmpty());		
 		
@@ -293,7 +293,7 @@ public final class BasicJexlerTest
 		Issue issue = jexler.getIssues().get(0);
 		assertEquals("must be same", "Could not stop services.", issue.getMessage());
 		assertNotNull("must not be null", issue.getService());
-		assertEquals("must be same", mockService.getStopRuntimeException(), issue.getException());
+		assertEquals("must be same", mockService.getStopRuntimeException(), issue.getCause());
 	}
 	
 	@Test
@@ -312,8 +312,8 @@ public final class BasicJexlerTest
 		assertTrue("must be true",
 				issue.getMessage().startsWith("Could not read meta info from jexler file"));
 		assertEquals("must be same", jexler, issue.getService());
-		assertNotNull("must not be null", issue.getException());
-		assertTrue("must be true", issue.getException() instanceof IOException);
+		assertNotNull("must not be null", issue.getCause());
+		assertTrue("must be true", issue.getCause() instanceof IOException);
 
 		jexler.forgetIssues();
 		assertTrue("must be true", jexler.getIssues().isEmpty());
@@ -328,8 +328,8 @@ public final class BasicJexlerTest
 		assertTrue("must be true",
 				issue.getMessage().startsWith("Could not read meta info from jexler file"));
 		assertEquals("must be same", jexler, issue.getService());
-		assertNotNull("must not be null", issue.getException());
-		assertTrue("must be true", issue.getException() instanceof IOException);
+		assertNotNull("must not be null", issue.getCause());
+		assertTrue("must be true", issue.getCause() instanceof IOException);
 	}
 	
 	
@@ -353,8 +353,8 @@ public final class BasicJexlerTest
 		assertTrue("must be true",
 				issue.getMessage().contains("is not a number"));
 		assertEquals("must be same", jexler, issue.getService());
-		assertNotNull("must not be null", issue.getException());
-		assertTrue("must be true", issue.getException() instanceof NumberFormatException);
+		assertNotNull("must not be null", issue.getCause());
+		assertTrue("must be true", issue.getCause() instanceof NumberFormatException);
 		
 		System.setProperty(BasicJexler.START_WAIT_MS_PROPERTY_NAME, "100");
 		jexler.start();
@@ -403,8 +403,8 @@ public final class BasicJexlerTest
 		Issue issue = jexler.getIssues().get(0);
 		assertEquals("must be same", jexler, issue.getService());
 		assertEquals("must be same", "Could not take event.", issue.getMessage());
-		assertNotNull("must notm be null", issue.getException());
-		assertTrue("must be true", issue.getException() instanceof InterruptedException);
+		assertNotNull("must not be null", issue.getCause());
+		assertTrue("must be true", issue.getCause() instanceof InterruptedException);
 
 		jexler.stop();
 		jexler.waitForShutdown(10000);

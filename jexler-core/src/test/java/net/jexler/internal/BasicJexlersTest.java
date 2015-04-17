@@ -174,7 +174,7 @@ public final class BasicJexlersTest
 		assertEquals("must be same", 1, jexlers.getIssues().size());
 		assertNull("must be null", jexlers.getIssues().get(0).getService());
 		assertEquals("must be same", "mock issue", jexlers.getIssues().get(0).getMessage());
-		assertEquals("must be same", ex, jexlers.getIssues().get(0).getException());
+		assertEquals("must be same", ex, jexlers.getIssues().get(0).getCause());
 		jexlers.forgetIssues();
 		assertTrue("must be true", jexlers.getIssues().isEmpty());
 		

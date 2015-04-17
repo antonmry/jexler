@@ -52,8 +52,8 @@ public class BasicIssueTracker implements IssueTracker {
     }
 
     @Override
-    public void trackIssue(Service service, String message, Exception exception) {
-    	trackIssue(new BasicIssue(service, message, exception));
+    public void trackIssue(Service service, String message, Throwable cause) {
+    	trackIssue(new BasicIssue(service, message, cause));
     }
 
     @Override

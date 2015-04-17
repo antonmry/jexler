@@ -30,12 +30,12 @@ import org.junit.experimental.categories.Category;
  * @author $(whois jexler.net)
  */
 @Category(FastTests.class)
-public final class StrongerObfuscatorToolTest
+public final class StringObfuscatorToolTest
 {
 	
 	@Test
     public void testDefaultInstance() throws Exception {
-		StrongerObfuscatorTool tool = new StrongerObfuscatorTool();
+		StringObfuscatorTool tool = new StringObfuscatorTool();
 		int byteBufferPadLen = 64;
 		int blockSize = 16;
 		int expectedObfuscatedLen = 2 * (byteBufferPadLen + blockSize);
@@ -91,7 +91,7 @@ public final class StrongerObfuscatorToolTest
 	
 	@Test
     public void testCustomInstance() throws Exception {
-		StrongerObfuscatorTool tool = new StrongerObfuscatorTool();
+		StringObfuscatorTool tool = new StringObfuscatorTool();
 		tool.setParameters("0011223344556677", "aabbccddeeff0011", "DES", "DES/CBC/PKCS5Padding");
 		int byteBufferPadLen = 128;
 		tool.setByteBufferPadLen(byteBufferPadLen);

@@ -35,10 +35,10 @@ public interface IssueTracker {
     
     /**
      * Convenience method for tracking an issue by giving its parameters.
-     * <code>trackIssue(service, msg, e)</code> is equivalent to
-     * <code>trackIssue(new IssueFactory().get(service, msg, e))</code>.
+     * <code>trackIssue(service, message, cause)</code> is equivalent to
+     * <code>trackIssue(new IssueFactory().get(service, message, cause))</code>.
      */
-    void trackIssue(Service service, String message, Exception exception);
+    void trackIssue(Service service, String message, Throwable cause);
 
     /**
      * Get remembered issues, most recent issue first.
