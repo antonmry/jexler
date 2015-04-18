@@ -491,37 +491,35 @@ resolved the issue for me:
   </resolvers>
 </ivysettings>
 
-=== Mac OS X Tomcat Startup
+=== Tomcat Startup Issues
 
-On Mac OS X in Tomcat I sometimes had the problem that something
-within Grape and/or Ivy was apparently not thread safe, so that
-autostarting jexlers failed when grabbing dependencies and left
+The following issues seem to be related to the way Tomcat loads classes
+and may also depend on Tomcat versions etc.
+
+* Sometimes on Mac OS X and once on CentOS in Tomcat 7, I had the problem
+that something within Grape and/or Ivy was apparently not thread safe,
+so that autostarting jexlers failed when grabbing dependencies and left
 the webapp in a state where also restarting jexlers would not
 help any more.
+Adding a delay after the startup of each jexler helped to alleviate this issue.
+To activate this workaround, set a Java System Property with name
+`net.jexler.start.wait.ms` and set it to the time in ms to wait after
+each jexler start.
 
-But adding a delay after the startup of each jexler resolved
-the issue. To activate this workaround, set a Java System Property
-with name `net.jexler.start.wait.ms` and set it to the time in ms
-to wait after each jexler start.
-
-I have not been able to reproduce the issue in a unit test,
-which suggests it might also be related to Tomcat,
-but that is not sure, of course.
-
-=== CentOS / Tomcat Startup
-
-On CentOS with Tomcat 7 had the following issue: Serveral jexlers
+* On CentOS with Tomcat 7, I had the following issue. Several jexlers
 used a utility jexler Groovy script which grabbed dependencies via Grape.
 The jexlers themselves had no Grape dependencies. During autostart some
-classes needed by the utility jexler could not be found (NoClassDefFoundError).
-Using the wait time above improved things somewhat, but the following solved it.
+classes needed by the utility jexler could often not be found (NoClassDefFoundError),
+while starting them manually afterwards worked.
+Using the wait time above possibly improved things somewhat; more helpful
+was to nominally use Grape within each jexler (see below), although I am still
+not sure that this works 100% reliably.
 
-In the utility jexler:
+In the utility jexler (Util.groovy):
 
 [source,Groovy]
 import groovy.grape.Grape
 @Grab('org.apache.httpcomponents:httpclient:4.2.3')
-@GrabConfig(initContextClassLoader=true)
 import org.apache.http.client.methods.HttpGet
 // more imports...
 
@@ -530,14 +528,14 @@ In the other jexlers:
 [source,Groovy]
 ----
 [ "autostart" : true ]
+
 // don't remove, else may fail to load classes needed by Util class when autostarted
 import groovy.grape.Grape
 @Grab('org.apache.httpcomponents:httpclient:4.2.3')
-@GrabConfig(initContextClassLoader=true)
 // no imports
-----
 
-There may be more elegant solutions, but this worked for me.
+Util util = new Util(jexler, log)
+----
 
 == Source Code
 
