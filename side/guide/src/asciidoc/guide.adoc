@@ -464,12 +464,12 @@ before saving or deleting a jexler script file. Default is false for saving and 
 
 === Grape Issue
 
-On one machine (Linux centOS), I had the problem that Grab did initially not work, e.g.:
+On one machine (CentOS), I had the problem that Grab did initially not work, e.g.:
 
 [source,groovy]
-@Grab('org.apache.httpcomponents:httpclient:4.2.3')
+@Grab('org.apache.httpcomponents:httpclient:4.4.1')
 
-Apparently, the problem was that Grab tried to acces the local Maven repository
+Apparently, the problem was that Grab tried to access the local Maven repository
 (~/.m2/repository) and that there something was missing or only partially there,
 in any case I got exceptions with text "Error grabbing grapes".
 
@@ -519,9 +519,9 @@ In the utility jexler (Util.groovy):
 
 [source,Groovy]
 import groovy.grape.Grape
-@Grab('org.apache.httpcomponents:httpclient:4.2.3')
+@Grab('org.apache.httpcomponents:httpclient:4.4.1')
 import org.apache.http.client.methods.HttpGet
-// more imports...
+// more grabs and imports...
 
 In the other jexlers:
 
@@ -531,7 +531,7 @@ In the other jexlers:
 
 // don't remove, else may fail to load classes needed by Util class when autostarted
 import groovy.grape.Grape
-@Grab('org.apache.httpcomponents:httpclient:4.2.3')
+@Grab('org.apache.httpcomponents:httpclient:4.4.1')
 // no imports
 
 Util util = new Util(jexler, log)
