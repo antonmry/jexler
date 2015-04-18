@@ -140,10 +140,10 @@ public class BasicJexler implements Jexler {
     		importCustomizer.addStarImports(
     				"net.jexler", "net.jexler.service", "net.jexler.tool");
     	}
-    	CompilerConfiguration configuration = new CompilerConfiguration();
-    	configuration.addCompilationCustomizers(importCustomizer);
+    	CompilerConfiguration config = new CompilerConfiguration();
+        config.addCompilationCustomizers(importCustomizer);
 
-    	final GroovyShell shell = new GroovyShell(binding, configuration);
+    	final GroovyShell shell = new GroovyShell(binding, config);
     	shell.getClassLoader().addClasspath(file.getParent());
     	
     	final Jexler thisJexler = this;
