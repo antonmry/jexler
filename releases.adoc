@@ -2,6 +2,10 @@ image:http://www.jexler.net/jexler.jpg["jexler logo", link="http:www.jexler.net/
 
 = jexler releases
 
+== 1.0.11-SNAPSHOT (20xx-xx-xx)
+
+* GUI: Fixed bug that list of jexlers was not updated if showing logs/issues.
+
 == 1.0.10 (2015-04-18)
 
 * When running a jexler Groovy script, now any Throwable is caught,

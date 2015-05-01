@@ -67,10 +67,10 @@ subprojects {
       includeCategories 'net.jexler.test.DemoTests'
     }
   }
-  
+
   task jacoco(type:JacocoReport, dependsOn: 'slowTests') {
-	  executionData test, slowTests
-	  sourceSets sourceSets.main
+    executionData test, slowTests
+    sourceSets sourceSets.main
   }
   
   task pom << {

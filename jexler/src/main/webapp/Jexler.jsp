@@ -35,7 +35,10 @@
     var hasJexlerChanged;
 
     function onPageLoad() {
-      savedSource = document.getElementById('source').value;
+      sourceElement = document.getElementById('source');
+      if (sourceElement != null) {
+        savedSource = sourceElement.value
+      }
       currentSource = savedSource;
       hasSourceChanged = false;
       hasJexlerChanged = false;
