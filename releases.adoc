@@ -2,6 +2,10 @@ image:http://www.jexler.net/jexler.jpg["jexler logo", link="http:www.jexler.net/
 
 = jexler releases
 
+== 1.0.12-SNAPSHOT (20xx-xx-xx)
+
+* ...
+
 == 1.0.11 (2015-05-01)
 
 * Optional partial workaround for a fundamental bug with Groovy/Grape/Ivy:
