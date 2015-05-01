@@ -2,9 +2,14 @@ image:http://www.jexler.net/jexler.jpg["jexler logo", link="http:www.jexler.net/
 
 = jexler releases
 
-== 1.0.11-SNAPSHOT (20xx-xx-xx)
+== 1.0.11 (2015-05-01)
 
-* GUI: Fixed bug that list of jexlers was not updated if showing logs/issues.
+* Optional partial workaround for a fundamental bug with Groovy/Grape/Ivy:
+  "Compilation not thread safe if Grape / Ivy is used in Groovy scripts",
+  https://issues.apache.org/jira/browse/GROOVY-7407, see user guide.
+* A compiled jexler is now only instantiated and run if it is an
+  instance of groovy.lang.Script.
+* GUI fix: List of jexlers updates again when showing logs/issues.
 
 == 1.0.10 (2015-04-18)
 

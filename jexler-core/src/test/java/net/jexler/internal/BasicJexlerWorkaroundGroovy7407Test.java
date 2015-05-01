@@ -1,0 +1,126 @@
+/*
+   Copyright 2012-now $(whois jexler.net)
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+
+package net.jexler.internal;
+
+import net.jexler.Issue;
+import net.jexler.JexlerFactory;
+import net.jexler.RunState;
+import net.jexler.test.FastTests;
+import org.codehaus.groovy.control.CompilationFailedException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.nio.file.Files;
+
+import static org.junit.Assert.*;
+
+/**
+ * Tests the respective class.
+ *
+ * @author $(whois jexler.net)
+ */
+@Category(FastTests.class)
+public final class BasicJexlerWorkaroundGroovy7407Test
+{
+	private void reset() {
+		System.clearProperty(BasicJexler.WorkaroundGroovy7407.RETRIES_PROPERTY_NAME);
+		System.clearProperty(BasicJexler.WorkaroundGroovy7407.RETRIES_REPORT_PROPERTY_NAME);
+		BasicJexler.WorkaroundGroovy7407.resetForUnitTests();
+	}
+
+	@Before
+	public void setup() {
+		reset();
+	}
+
+	@After
+	public void teardown() {
+		reset();
+	}
+
+	@Test
+	public void testNoProperties() throws Exception {
+		assertEquals("must be same", 0, BasicJexler.WorkaroundGroovy7407.getNumberOfRetries());
+		assertEquals("must be same", false, BasicJexler.WorkaroundGroovy7407.isReportRetries());
+		new BasicJexler.WorkaroundGroovy7407();
+	}
+
+	@Test
+	public void testPropertiesWrongType() throws Exception {
+		System.setProperty(BasicJexler.WorkaroundGroovy7407.RETRIES_PROPERTY_NAME, "true");
+		System.setProperty(BasicJexler.WorkaroundGroovy7407.RETRIES_REPORT_PROPERTY_NAME, "*");
+		assertEquals("must be same", 0, BasicJexler.WorkaroundGroovy7407.getNumberOfRetries());
+		assertEquals("must be same", false, BasicJexler.WorkaroundGroovy7407.isReportRetries());
+	}
+
+	@Test
+	public void testPropertiesSet() throws Exception {
+		System.setProperty(BasicJexler.WorkaroundGroovy7407.RETRIES_PROPERTY_NAME, "5");
+		System.setProperty(BasicJexler.WorkaroundGroovy7407.RETRIES_REPORT_PROPERTY_NAME, "true");
+		assertEquals("must be same", 5, BasicJexler.WorkaroundGroovy7407.getNumberOfRetries());
+		assertEquals("must be same", true, BasicJexler.WorkaroundGroovy7407.isReportRetries());
+	}
+
+	@Test
+	public void testCompileOk() throws Exception {
+
+		System.setProperty(BasicJexler.WorkaroundGroovy7407.RETRIES_PROPERTY_NAME, "2");
+
+		File dir = Files.createTempDirectory(null).toFile();
+		File file = new File(dir, "test.groovy");
+
+		Files.createFile(file.toPath());
+
+		BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
+		jexler.start();
+		jexler.waitForStartup(10000);
+		assertEquals("must be same", RunState.OFF, jexler.getRunState());
+		assertTrue("must be true", jexler.getIssues().isEmpty());
+	}
+
+	@Test
+	public void testCompileFails() throws Exception {
+
+		System.setProperty(BasicJexler.WorkaroundGroovy7407.RETRIES_PROPERTY_NAME, "2");
+
+		File dir = Files.createTempDirectory(null).toFile();
+		File file = new File(dir, "test.groovy");
+
+		FileWriter writer = new FileWriter(file);
+		writer.append("&%!+\n");
+		writer.close();
+
+		BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
+		jexler.start();
+		jexler.waitForStartup(10000);
+		assertEquals("must be same", RunState.OFF, jexler.getRunState());
+
+		assertEquals("must be same", 1, jexler.getIssues().size());
+		Issue issue = jexler.getIssues().get(0);
+		System.out.println(issue.toString());
+		assertTrue("must be true",
+				issue.getMessage().contains("Script failed."));
+		assertEquals("must be same", jexler, issue.getService());
+		assertNotNull("must not be null", issue.getCause());
+		assertTrue("must be true", issue.getCause() instanceof CompilationFailedException);
+	}
+
+}

@@ -17,6 +17,7 @@
 package net.jexler.internal;
 
 import groovy.lang.Binding;
+import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyShell;
 
 import java.io.File;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import groovy.lang.Script;
 import net.jexler.Issue;
 import net.jexler.IssueTracker;
 import net.jexler.Jexler;
@@ -51,9 +53,7 @@ import org.slf4j.LoggerFactory;
 public class BasicJexler implements Jexler {
 
     static final Logger log = LoggerFactory.getLogger(BasicJexler.class);
-    
-    public static final String START_WAIT_MS_PROPERTY_NAME = "net.jexler.start.wait.ms";
-        
+
     @SuppressWarnings("serial")
 	public class Events extends LinkedBlockingQueue<Event> {
     	@Override
@@ -70,7 +70,7 @@ public class BasicJexler implements Jexler {
     		} while (true);
     	}
     }
-    
+
     private final File file;
     private final Jexlers jexlers;
     private final String id;
@@ -140,19 +140,29 @@ public class BasicJexler implements Jexler {
     		importCustomizer.addStarImports(
     				"net.jexler", "net.jexler.service", "net.jexler.tool");
     	}
-    	CompilerConfiguration config = new CompilerConfiguration();
+    	final CompilerConfiguration config = new CompilerConfiguration();
         config.addCompilationCustomizers(importCustomizer);
 
-    	final GroovyShell shell = new GroovyShell(binding, config);
-    	shell.getClassLoader().addClasspath(file.getParent());
+        final ClassLoader parent = Thread.currentThread().getContextClassLoader();
     	
     	final Jexler thisJexler = this;
 
         scriptThread = new Thread(
                 new Runnable() {
+
                     public void run() {
                         try {
-                        	shell.evaluate(file);
+                            Class<?> clazz;
+                            if (WorkaroundGroovy7407.getNumberOfRetries() == 0) {
+                                clazz = parse();
+                            } else {
+                                clazz = parseWithRetries();
+                            }
+                            if (Script.class.isAssignableFrom(clazz)) {
+                                Script script = (Script)clazz.newInstance();
+                                script.setBinding(binding);
+                                script.run();
+                            }
                         } catch (Throwable t) {
                             // (script may throw anything, checked or not)
                             trackIssue(thisJexler, "Script failed.", t);
@@ -168,29 +178,51 @@ public class BasicJexler implements Jexler {
                         	runState = RunState.OFF;
                         }
                     }
+
+                    private Class<?> parse() throws IOException {
+                        GroovyClassLoader loader = new GroovyClassLoader(parent, config);
+                        loader.addClasspath(file.getParent());
+                        return loader.parseClass(file);
+                    }
+
+                    private Class<?> parseWithRetries() throws Throwable {
+                        Class<?> clazz = null;
+                        synchronized (Jexler.class) {
+                            try {
+                                clazz = parse();
+                            } catch (Throwable t) {
+                                log.trace(WorkaroundGroovy7407.LOG_PREFIX + "compile failed: "
+                                        + JexlerUtil.toSingleLine(JexlerUtil.getStackTrace(t)));
+                                int n = WorkaroundGroovy7407.getNumberOfRetries();
+                                boolean recovered = false;
+                                for (int i = 1; i <= n; i++) {
+                                    try {
+                                        clazz = parse();
+                                        log.trace(WorkaroundGroovy7407.LOG_PREFIX + "compile retry " + i + " was successful");
+                                        recovered = true;
+                                        if (WorkaroundGroovy7407.isReportRetries()) {
+                                            jexlers.trackIssue(thisJexler,
+                                                    WorkaroundGroovy7407.LOG_PREFIX + "recovered at retry " + i, t);
+                                        }
+                                        break;
+                                    } catch (Throwable t2) {
+                                        t = t2;
+                                        log.trace(WorkaroundGroovy7407.LOG_PREFIX + "compile retry " + i + " failed: "
+                                                + JexlerUtil.toSingleLine(JexlerUtil.getStackTrace(t)));
+                                    }
+                                }
+                                if (!recovered) {
+                                    throw t;
+                                }
+                            }
+                        }
+                        return clazz;
+                    }
+
                 });
         scriptThread.setDaemon(true);
         scriptThread.setName(id);
         scriptThread.start();
-
-    	/*
-    	 * heuristic workaround for grape/ivy not thread safe
-    	 * (when starting several jexlers in a loop which grab dependencies
-    	 * using groovy grape, concurrent access to ivy can result in all
-    	 * jexlers failing to start up from then on - observed only on mac
-    	 * in tomcat, could not reproduce in a test case so far...)
-    	 */
-        String value = System.getProperty(START_WAIT_MS_PROPERTY_NAME);
-        if (value != null) {
-        	long ms = 0;
-        	try {
-        		ms = Long.parseLong(value);
-        	} catch (NumberFormatException e) {
-        		trackIssue(this, "Property '" + START_WAIT_MS_PROPERTY_NAME + 
-        				"' value '" + value + "' is not a number.", e);
-        	}
-        	JexlerUtil.waitAtLeast(ms);
-    	}
     }
         
     @Override
@@ -307,5 +339,48 @@ public class BasicJexler implements Jexler {
     		}
     	}
     }
+
+    // partial(!) workaround for bug GROOVY-7407:
+    //   "Compilation not thread safe if Grape / Ivy is used in Groovy scripts"
+    //   https://issues.apache.org/jira/browse/GROOVY-7407
+    static class WorkaroundGroovy7407 {
+        // number of compile retries
+        static final String RETRIES_PROPERTY_NAME = "net.jexler.workaround.groovy.7407.retries";
+        // boolean whether to create a jexlers issue if compile retries were necessary
+        static final String RETRIES_REPORT_PROPERTY_NAME = "net.jexler.workaround.groovy.7407.retries.report";
+        static final String LOG_PREFIX = "workaround GROOVY-7407: ";
+        private static volatile Integer numberOfRetries;
+        private static volatile Boolean isReportRetries;
+
+        static int getNumberOfRetries() {
+            if (numberOfRetries == null) {
+                String value = System.getProperty(RETRIES_PROPERTY_NAME, "0");
+                try {
+                    numberOfRetries = Integer.parseInt(value);
+                    if (numberOfRetries != 0) {
+                        log.trace(LOG_PREFIX + "is active, number of compile retries: " + numberOfRetries);
+                        log.trace(LOG_PREFIX + "reporting compile retries as jexlers issues: " + isReportRetries());
+                    }
+                } catch (NumberFormatException e) {
+                    log.trace(LOG_PREFIX + "property value '" + value + "' is not a number");
+                    numberOfRetries = 0;
+                }
+            }
+            return numberOfRetries;
+        }
+
+        static boolean isReportRetries() {
+            if (isReportRetries == null) {
+                isReportRetries = Boolean.valueOf(System.getProperty(RETRIES_REPORT_PROPERTY_NAME));
+            }
+            return isReportRetries;
+        }
+
+        static void resetForUnitTests() {
+            numberOfRetries = null;
+            isReportRetries = null;
+        }
+    }
+
 
 }

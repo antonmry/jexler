@@ -331,38 +331,7 @@ public final class BasicJexlerTest
 		assertNotNull("must not be null", issue.getCause());
 		assertTrue("must be true", issue.getCause() instanceof IOException);
 	}
-	
-	
-	@Test
-    public void testIvyGrapeIssueWorkaround() throws Exception {
 
-		File dir = Files.createTempDirectory(null).toFile();
-		File file = new File(dir, "test.groovy");
-		
-		Files.createFile(file.toPath());
-		
-		BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
-
-		System.setProperty(BasicJexler.START_WAIT_MS_PROPERTY_NAME, "not-a-number");
-		jexler.start();
-		jexler.waitForStartup(10000);
-		assertEquals("must be same", RunState.OFF, jexler.getRunState());
-		
-		assertEquals("must be same", 1, jexler.getIssues().size());
-		Issue issue = jexler.getIssues().get(0);
-		assertTrue("must be true",
-				issue.getMessage().contains("is not a number"));
-		assertEquals("must be same", jexler, issue.getService());
-		assertNotNull("must not be null", issue.getCause());
-		assertTrue("must be true", issue.getCause() instanceof NumberFormatException);
-		
-		System.setProperty(BasicJexler.START_WAIT_MS_PROPERTY_NAME, "100");
-		jexler.start();
-		jexler.waitForStartup(10000);
-		assertEquals("must be same", RunState.OFF, jexler.getRunState());
-		assertTrue("must be true", jexler.getIssues().isEmpty());		
-	}
-	
 	@Test
     public void testEventTake() throws Exception {
 		

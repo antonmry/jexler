@@ -491,51 +491,32 @@ resolved the issue for me:
   </resolvers>
 </ivysettings>
 
+=== Grape Concurrency Issues
+
+There is a bug in Groovy/Grape and Ivy up to at least version 2.4.3 resp. 2.4.0.
+Using Grape is simply not thread-safe (unless only a single GroovyClassLoader
+is used), see https://issues.apache.org/jira/browse/GROOVY-7407
+
+As a workaround, there are two system properties that can be set:
+
+* `net.jexler.workaround.groovy.7407.retries`:
+  If set to a number, compilation of each jexler is retried for the indicated
+  number of times.
+* `net.jexler.workaround.groovy.7407.retries.report`:
+  If set to "true", successful compilation retries report a jexlers issue.
+  (If compilation fails at all retries, a jexler issue is always reported.)
+
+This is only a partial workaround, but it reduces the chance for startup failures,
+when several scripts are (auto)started in parallel.
+
 === Tomcat Startup Issues
 
-The following issues seem to be related to the way Tomcat loads classes
-and may also depend on Tomcat versions etc.
+Most issues if jexlers do not autostart seem related to the issue above.
 
-* Sometimes on Mac OS X and once on CentOS in Tomcat 7, I had the problem
-that something within Grape and/or Ivy was apparently not thread safe,
-so that autostarting jexlers failed when grabbing dependencies and left
-the webapp in a state where also restarting jexlers would not
-help any more.
-Adding a delay after the startup of each jexler helped to alleviate this issue.
-To activate this workaround, set a Java System Property with name
-`net.jexler.start.wait.ms` and set it to the time in ms to wait after
-each jexler start.
-
-* On CentOS with Tomcat 7, I had the following issue. Several jexlers
-used a utility jexler Groovy script which grabbed dependencies via Grape.
-The jexlers themselves had no Grape dependencies. During autostart some
-classes needed by the utility jexler could often not be found (NoClassDefFoundError),
-while starting them manually afterwards worked.
-Using the wait time above possibly improved things somewhat; more helpful
-was to nominally use Grape within each jexler (see below), although I am still
-not sure that this works 100% reliably.
-
-In the utility jexler (Util.groovy):
-
-[source,Groovy]
-import groovy.grape.Grape
-@Grab('org.apache.httpcomponents:httpclient:4.4.1')
-import org.apache.http.client.methods.HttpGet
-// more grabs and imports...
-
-In the other jexlers:
-
-[source,Groovy]
-----
-[ "autostart" : true ]
-
-// don't remove, else may fail to load classes needed by Util class when autostarted
-import groovy.grape.Grape
-@Grab('org.apache.httpcomponents:httpclient:4.4.1')
-// no imports
-
-Util util = new Util(jexler, log)
-----
+But there is another less frequent issue that I observed (CentOS / Tomcat 7),
+namely that sometimes a jexler is started, i.e. the script is running,
+but not shown as running, maybe because a (single) cron service that was
+nominally started does not report back its status as no longer `OFF`.
 
 == Source Code
 
