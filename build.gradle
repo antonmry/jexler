@@ -7,7 +7,7 @@ subprojects {
   sourceCompatibility = 1.7
   targetCompatibility = 1.7
 
-  version = '1.0.12-SNAPSHOT' // IMPORTANT: keep in sync with version in JexlerContextListener
+  version = '1.0.12' // IMPORTANT: keep in sync with version in JexlerContextListener
 
   project.group = 'net.jexler'
 
@@ -72,7 +72,11 @@ subprojects {
     executionData test, slowTests
     sourceSets sourceSets.main
   }
-  
+  /*task jacoco(type:JacocoReport, dependsOn: 'test') {
+    executionData test
+    sourceSets sourceSets.main
+  }*/
+
   task pom << {
     pom {
 	  project {

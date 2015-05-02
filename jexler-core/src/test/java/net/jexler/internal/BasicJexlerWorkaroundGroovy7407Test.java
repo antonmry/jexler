@@ -43,7 +43,9 @@ public final class BasicJexlerWorkaroundGroovy7407Test
 	private void reset() {
 		System.clearProperty(BasicJexler.WorkaroundGroovy7407.RETRIES_PROPERTY_NAME);
 		System.clearProperty(BasicJexler.WorkaroundGroovy7407.RETRIES_REPORT_PROPERTY_NAME);
+		System.clearProperty(BasicJexler.WorkaroundGroovy7407.GRAPE_ENGINE_WRAP_PROPERTY_NAME);
 		BasicJexler.WorkaroundGroovy7407.resetForUnitTests();
+		BasicJexler.WorkaroundGroovy7407WrappingGrapeEngine.setEngine(null);
 	}
 
 	@Before
@@ -61,6 +63,7 @@ public final class BasicJexlerWorkaroundGroovy7407Test
 		assertEquals("must be same", 0, BasicJexler.WorkaroundGroovy7407.getNumberOfRetries());
 		assertEquals("must be same", false, BasicJexler.WorkaroundGroovy7407.isReportRetries());
 		new BasicJexler.WorkaroundGroovy7407();
+		new BasicJexler.WorkaroundGroovy7407WrappingGrapeEngine("lock", null);
 	}
 
 	@Test
@@ -80,7 +83,7 @@ public final class BasicJexlerWorkaroundGroovy7407Test
 	}
 
 	@Test
-	public void testCompileOk() throws Exception {
+	public void testCompileOkWithoutWrapping() throws Exception {
 
 		System.setProperty(BasicJexler.WorkaroundGroovy7407.RETRIES_PROPERTY_NAME, "2");
 
@@ -97,9 +100,53 @@ public final class BasicJexlerWorkaroundGroovy7407Test
 	}
 
 	@Test
-	public void testCompileFails() throws Exception {
+	public void testCompileFailsWithoutWrapping() throws Exception {
 
 		System.setProperty(BasicJexler.WorkaroundGroovy7407.RETRIES_PROPERTY_NAME, "2");
+
+		File dir = Files.createTempDirectory(null).toFile();
+		File file = new File(dir, "test.groovy");
+
+		FileWriter writer = new FileWriter(file);
+		writer.append("&%!+\n");
+		writer.close();
+
+		BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
+		jexler.start();
+		jexler.waitForStartup(10000);
+		assertEquals("must be same", RunState.OFF, jexler.getRunState());
+
+		assertEquals("must be same", 1, jexler.getIssues().size());
+		Issue issue = jexler.getIssues().get(0);
+		System.out.println(issue.toString());
+		assertTrue("must be true",
+				issue.getMessage().contains("Script failed."));
+		assertEquals("must be same", jexler, issue.getService());
+		assertNotNull("must not be null", issue.getCause());
+		assertTrue("must be true", issue.getCause() instanceof CompilationFailedException);
+	}
+
+	@Test
+	public void testCompileOkWithWrapping() throws Exception {
+
+		System.setProperty(BasicJexler.WorkaroundGroovy7407.GRAPE_ENGINE_WRAP_PROPERTY_NAME, "true");
+
+		File dir = Files.createTempDirectory(null).toFile();
+		File file = new File(dir, "test.groovy");
+
+		Files.createFile(file.toPath());
+
+		BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
+		jexler.start();
+		jexler.waitForStartup(10000);
+		assertEquals("must be same", RunState.OFF, jexler.getRunState());
+		assertTrue("must be true", jexler.getIssues().isEmpty());
+	}
+
+	@Test
+	public void testCompileFailsWithWrapping() throws Exception {
+
+		System.setProperty(BasicJexler.WorkaroundGroovy7407.GRAPE_ENGINE_WRAP_PROPERTY_NAME, "true");
 
 		File dir = Files.createTempDirectory(null).toFile();
 		File file = new File(dir, "test.groovy");

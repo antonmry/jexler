@@ -60,7 +60,9 @@ public class BasicMetaInfo extends HashMap<String,Object> implements MetaInfo {
 			if (line == null) {
 				return;
 			}
-			
+
+			BasicJexler.WorkaroundGroovy7407.wrapGrapeEngineIfConfigured();
+
 			// evaluate first line as groovy script
 			Binding binding = new Binding();
 			GroovyShell shell = new GroovyShell(binding);

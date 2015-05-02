@@ -468,7 +468,18 @@ There is a bug in Groovy/Grape and Ivy up to at least version 2.4.3 resp. 2.4.0.
 Using Grape is simply not thread-safe (unless only a single GroovyClassLoader
 is used), see https://issues.apache.org/jira/browse/GROOVY-7407
 
-As a workaround, there are two system properties that can be set:
+This shows especially at startup when autostarting jexlers or later if starting
+all jexlers.
+
+As a workaround, you can set the following system property:
+
+* `net.jexler.workaround.groovy.7407.grape.engine.wrap`:
+  If set to "true", the GrapeEngine in the Grape class will be wrapped,
+  so that all Grape calls (@grab etc.) will be synchronized on Grape.class.
+  See the above link for more details and limitations.
+
+An older workaround is still configurable, but be aware that it only reduces
+the chance of the issue occurring, but does not fully fix it:
 
 * `net.jexler.workaround.groovy.7407.retries`:
   If set to a number, compilation of each jexler is retried for the indicated
@@ -477,8 +488,7 @@ As a workaround, there are two system properties that can be set:
   If set to "true", successful compilation retries report a jexlers issue.
   (If compilation fails at all retries, a jexler issue is always reported.)
 
-This is only a partial workaround, but it reduces the chance for startup failures,
-when several scripts are (auto)started in parallel.
+Activating all three properties is possible without any problems.
 
 === Tomcat Startup Issues
 
