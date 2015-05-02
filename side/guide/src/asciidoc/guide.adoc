@@ -462,35 +462,6 @@ before saving or deleting a jexler script file. Default is false for saving and 
 
 == Troubleshooting
 
-=== Grape Issue
-
-On one machine (CentOS), I had the problem that Grab did initially not work, e.g.:
-
-[source,groovy]
-@Grab('org.apache.httpcomponents:httpclient:4.4.1')
-
-Apparently, the problem was that Grab tried to access the local Maven repository
-(~/.m2/repository) and that there something was missing or only partially there,
-in any case I got exceptions with text "Error grabbing grapes".
-
-Creating the following ~/.grape/grapeConfig.xml, according to this
-http://stackoverflow.com/questions/6335184/groovy-1-8-grab-fails-unless-i-manually-call-grape-resolve[stackoverflow thread],
-resolved the issue for me:
-
-[source,xml]
-<ivysettings>
-  <settings defaultResolver="downloadGrapes"/>
-  <resolvers>
-    <chain name="downloadGrapes">
-      <filesystem name="cachedGrapes">
-        <ivy pattern="${user.home}/.groovy/grapes/[organisation]/[module]/ivy-[revision].xml"/>
-        <artifact pattern="${user.home}/.groovy/grapes/[organisation]/[module]/[type]s/[artifact]-[revision].[ext]"/>
-      </filesystem>
-      <ibiblio name="ibiblio" m2compatible="true"/>
-    </chain>
-  </resolvers>
-</ivysettings>
-
 === Grape Concurrency Issues
 
 There is a bug in Groovy/Grape and Ivy up to at least version 2.4.3 resp. 2.4.0.
