@@ -464,7 +464,7 @@ before saving or deleting a jexler script file. Default is false for saving and 
 
 === Grape Concurrency Issues
 
-There is a bug in Groovy/Grape and Ivy up to at least version 2.4.3 resp. 2.4.0.
+There is a bug in Groovy/Grape and Ivy up to at least Groovy 2.4.3 / Ivy 2.4.0.
 Using Grape is simply not thread-safe (unless only a single GroovyClassLoader
 is used), see https://issues.apache.org/jira/browse/GROOVY-7407
 
@@ -489,15 +489,6 @@ the chance of the issue occurring, but does not fully fix it:
   (If compilation fails at all retries, a jexler issue is always reported.)
 
 Activating all three properties is possible without any problems.
-
-=== Tomcat Startup Issues
-
-Most issues if jexlers do not autostart seem related to the issue above.
-
-But there is another less frequent issue that I observed (CentOS / Tomcat 7),
-namely that sometimes a jexler is started, i.e. the script is running,
-but not shown as running, maybe because a (single) cron service that was
-nominally started does not report back its status as no longer `OFF`.
 
 == Source Code
 
