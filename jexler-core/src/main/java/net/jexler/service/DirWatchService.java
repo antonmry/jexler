@@ -25,6 +25,7 @@ import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 
 import net.jexler.Jexler;
+import net.jexler.JexlerUtil;
 import net.jexler.RunState;
 
 import org.slf4j.Logger;
@@ -38,7 +39,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DirWatchService extends ServiceBase {
 
-    static final Logger log = LoggerFactory.getLogger(DirWatchService.class);
+    private static final Logger log = LoggerFactory.getLogger(DirWatchService.class);
 
     private final DirWatchService thisService;
     private File watchDir;
@@ -111,10 +112,7 @@ public class DirWatchService extends ServiceBase {
                 	if (getRunState() != RunState.IDLE) {
                 		break;
                 	}
-                	try {
-    					Thread.sleep(sleepTimeMs);
-    				} catch (InterruptedException e) {
-    				}
+                    JexlerUtil.waitAtLeast(sleepTimeMs);
                 }
                 try {
 					watchService.close();

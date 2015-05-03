@@ -25,7 +25,7 @@ package net.jexler.service;
  */
 public abstract class EventBase implements Event {
 
-    private Service service;
+    private final Service service;
 
     /**
      * Constructor.

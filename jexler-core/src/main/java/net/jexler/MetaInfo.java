@@ -43,7 +43,7 @@ public interface MetaInfo extends Map<String,Object> {
      * @param defaultValue default value to use
      * @return value from meta info if indicated, otherwise default value
      */
-    public boolean isOn(String name, boolean defaultValue);
+    boolean isOn(String name, boolean defaultValue);
 
 }
 

@@ -25,7 +25,7 @@ package net.jexler.service;
  */
 public class CronEvent extends EventBase {
 
-	private String cron;
+	private final String cron;
 	
 	/**
 	 * Constructor.

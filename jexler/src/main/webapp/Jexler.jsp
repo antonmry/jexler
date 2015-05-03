@@ -33,6 +33,8 @@
     var currentSource;
     var hasSourceChanged;
     var hasJexlerChanged;
+    var isGetStatusPending;
+    var isLogGetStatus;
 
     function onPageLoad() {
       sourceElement = document.getElementById('source');
@@ -43,12 +45,18 @@
       hasSourceChanged = false;
       hasJexlerChanged = false;
       setHeight();
+      isGetStatusPending = false;
+      isLogGetStatus = false;
       window.setInterval(getStatus, 1000);
     }
         
     var previousStatusText = "";
 
     function getStatus() {
+      if (isGetStatusPending) {
+        logGetStatus('skipping')
+        return;
+      }
       var xmlhttp = new XMLHttpRequest();
       xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState === 4) {
@@ -73,10 +81,33 @@
           }
         }
       };
+      xmlhttp.onabort = function() {
+        logGetStatus('=> aborted');
+        isGetStatusPending = false;
+      }
+      xmlhttp.onerror = function() {
+        logGetStatus('=> error');
+        isGetStatusPending = false;
+      }
+      xmlhttp.onload = function() {
+        logGetStatus('=> loaded');
+        isGetStatusPending = false;
+      }
+      xmlhttp.ontimeout = function() {
+        logGetStatus('=> timeout');
+        isGetStatusPending = false; }
       xmlhttp.open('GET', '?cmd=status', true);
       xmlhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
       xmlhttp.timeout = 5000;
+      logGetStatus('pending...');
+      isGetStatusPending = true;
       xmlhttp.send(null);
+    }
+
+    function logGetStatus(info) {
+      if (isLogGetStatus) {
+        console.log(info);
+      }
     }
 
     function updateSaveIndicator() {

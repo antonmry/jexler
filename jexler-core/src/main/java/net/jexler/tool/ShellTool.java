@@ -43,7 +43,9 @@ import org.slf4j.LoggerFactory;
  */
 public class ShellTool {
 
-	/**
+    private static final Logger log = LoggerFactory.getLogger(ShellTool.class);
+
+    /**
 	 * Simple bean for the result of executing a shell command.
 	 */
     public class Result {
@@ -52,15 +54,8 @@ public class ShellTool {
         public String stderr;
         @Override
         public String toString() {
-        	StringBuilder builder = new StringBuilder();
-        	builder.append("[rc=");
-        	builder.append(rc);
-        	builder.append(",stdout='");
-        	builder.append(JexlerUtil.toSingleLine(stdout));
-        	builder.append("',stderr='");
-        	builder.append(JexlerUtil.toSingleLine(stderr));
-        	builder.append("']");
-        	return builder.toString();
+        	return "[rc=" + rc + ",stdout='" + JexlerUtil.toSingleLine(stdout) +
+                    "',stderr='" + JexlerUtil.toSingleLine(stderr) + "']";
         }
     }
     
@@ -82,7 +77,8 @@ public class ShellTool {
 	    	Scanner scanner = new Scanner(is);
         	while (scanner.hasNext()) {
         		String line = scanner.nextLine();
-        		out.append(line + System.lineSeparator());
+        		out.append(line);
+                out.append(System.lineSeparator());
         		if (lineHandler != null) {
 	    			lineHandler.call(line);
 	    		}
@@ -94,8 +90,6 @@ public class ShellTool {
 			return output;
 		}
 	}
-
-    static final Logger log = LoggerFactory.getLogger(ShellTool.class);
 
     private File workingDirectory;
     private Map<String,String> env;
@@ -220,7 +214,7 @@ public class ShellTool {
     	if (env == null) {
     		return null;
     	}
-    	List<String> envList = new LinkedList<String>();
+    	List<String> envList = new LinkedList<>();
     	for (Entry<String, String> entry : env.entrySet()) {
     		envList.add(entry.getKey() + "=" + entry.getValue());
     	}

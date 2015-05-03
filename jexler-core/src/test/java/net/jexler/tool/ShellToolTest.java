@@ -113,7 +113,7 @@ public final class ShellToolTest
         assertTrue("must be true", testStderr.isEmpty());
 
         tool.setWorkingDirectory(null);
-        Map<String,String> env = new HashMap<String,String>();
+        Map<String,String> env = new HashMap<>();
         env.put("MYVAR", "there");
         tool.setEnvironment(env);
         if (isWindows()) {

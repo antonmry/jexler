@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  */
 public class CronService extends ServiceBase {
 
-    static final Logger log = LoggerFactory.getLogger(CronService.class);
+    private static final Logger log = LoggerFactory.getLogger(CronService.class);
     
     public static final String CRON_NOW = "now";
     public static final String CRON_NOW_AND_STOP = CRON_NOW + "+stop";

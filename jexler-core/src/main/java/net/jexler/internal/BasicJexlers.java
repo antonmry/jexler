@@ -40,9 +40,9 @@ import org.slf4j.LoggerFactory;
  */
 public class BasicJexlers extends BasicServiceGroup implements Jexlers {
 
-	static final Logger log = LoggerFactory.getLogger(BasicJexlers.class);
+    private static final Logger log = LoggerFactory.getLogger(BasicJexlers.class);
 	
-	static final String EXT = ".groovy";
+	private static final String EXT = ".groovy";
 
     private final File dir;
     private final String id;
@@ -69,7 +69,7 @@ public class BasicJexlers extends BasicServiceGroup implements Jexlers {
         this.dir = dir;
         id = super.getId();
         this.jexlerFactory = jexlerFactory;
-        jexlerMap = new TreeMap<String,Jexler>();
+        jexlerMap = new TreeMap<>();
         issueTracker = new BasicIssueTracker();
         refresh();
     }
@@ -84,6 +84,7 @@ public class BasicJexlers extends BasicServiceGroup implements Jexlers {
 
         // list directory and create jexlers in map for new script files in directory
         File[] files = dir.listFiles();
+        files = files != null ? files : new File[0];
         for (File file : files) {
             if (file.isFile() && !file.isHidden()) {
                 String id = getJexlerId(file);

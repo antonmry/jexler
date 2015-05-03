@@ -37,7 +37,7 @@ public class BasicMetaInfo extends HashMap<String,Object> implements MetaInfo {
 
 	private static final long serialVersionUID = 125418652799853484L;
 
-	public static MetaInfo EMPTY = new BasicMetaInfo();
+	public static final MetaInfo EMPTY = new BasicMetaInfo();
 	
 	/**
 	 * Constructor for empty meta info.

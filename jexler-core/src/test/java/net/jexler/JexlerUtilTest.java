@@ -38,7 +38,7 @@ public final class JexlerUtilTest
 {
 
 	@SuppressWarnings("serial")
-	static class NoStackTraceException extends Exception {
+	private static class NoStackTraceException extends Exception {
 		@Override
 		public void printStackTrace(PrintWriter writer) {
 			throw new RuntimeException();

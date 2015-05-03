@@ -28,8 +28,8 @@ import java.nio.file.WatchEvent;
  */
 public class DirWatchEvent extends EventBase {
 
-    private File file;
-    private WatchEvent.Kind<?> kind;
+    private final File file;
+    private final WatchEvent.Kind<?> kind;
     
     /**
 	 * Constructor.

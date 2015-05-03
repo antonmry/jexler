@@ -152,7 +152,7 @@ public class JexlersView {
     }
 
     public String getStartStop() {
-        boolean isOn = false;
+        boolean isOn;
         if (jexlerId == null) {
         	isOn = jexlers.isOn();
         } else {

@@ -31,7 +31,7 @@ public interface Jexler extends Service, IssueTracker {
     /**
      * Handle given event.
      */
-    public void handle(Event event);
+    void handle(Event event);
     
     /**
      * Get script file.

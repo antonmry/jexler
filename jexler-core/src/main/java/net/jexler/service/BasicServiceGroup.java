@@ -32,8 +32,8 @@ import org.slf4j.LoggerFactory;
  * @author $(whois jexler.net)
  */
 public class BasicServiceGroup implements ServiceGroup {
-	
-    static final Logger log = LoggerFactory.getLogger(BasicServiceGroup.class);
+
+	private static final Logger log = LoggerFactory.getLogger(BasicServiceGroup.class);
 
     private final String id;
 	private final List<Service> services;
@@ -44,7 +44,7 @@ public class BasicServiceGroup implements ServiceGroup {
      */
     public BasicServiceGroup(String id) {
     	this.id = id;
-    	this.services = new LinkedList<Service>();
+    	this.services = new LinkedList<>();
     }
     
     /**
@@ -102,7 +102,7 @@ public class BasicServiceGroup implements ServiceGroup {
      */
     @Override
     public RunState getRunState() {
-    	Set<RunState> set = new HashSet<RunState>();
+    	Set<RunState> set = new HashSet<>();
     	for (Service service : services) {
         	set.add(service.getRunState());
         }

@@ -24,7 +24,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.jexler.Issue;
 import net.jexler.Jexler;
-import net.jexler.Jexlers;
 import net.jexler.MetaInfo;
 import net.jexler.RunState;
 import net.jexler.service.Event;
@@ -37,20 +36,18 @@ import net.jexler.service.Service;
  */
 public class MockJexler implements Jexler {
 	
-	private File file;
-	//private Jexlers jexlers;
-	private Queue<Event> events;
-	private List<Issue> issues;
+	private final File file;
+	private final Queue<Event> events;
+	private final List<Issue> issues;
 	
-	public MockJexler(File file, Jexlers jexlers) {
+	public MockJexler(File file) {
 		this.file = file;
-		//this.jexlers = jexlers;
-		events = new ConcurrentLinkedQueue<Event>();
-		issues = new LinkedList<Issue>();
+		events = new ConcurrentLinkedQueue<>();
+		issues = new LinkedList<>();
 	}
 	
 	public MockJexler() {
-		this(null, null);
+		this(null);
 	}
 
 	@Override
@@ -109,7 +106,7 @@ public class MockJexler implements Jexler {
 	}
 
 	public void addIssues(List<Issue> issues) {
-		issues.addAll(issues);
+		this.issues.addAll(issues);
 	}
 	
 	@Override

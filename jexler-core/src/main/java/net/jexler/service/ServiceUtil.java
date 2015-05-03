@@ -16,6 +16,8 @@
 
 package net.jexler.service;
 
+import net.jexler.JexlerUtil;
+
 /**
  * Service utilities.
  * Includes some static methods that might be useful in Groovy scripts
@@ -46,10 +48,7 @@ public class ServiceUtil {
     		if (System.currentTimeMillis() - t0 >= timeout) {
     			return false;
     		}
-    		try {
-    			Thread.sleep(10);
-    		} catch (InterruptedException e) {
-    		}
+			JexlerUtil.waitAtLeast(10);
     	} while (true);
     }
     
@@ -62,10 +61,7 @@ public class ServiceUtil {
     		if (System.currentTimeMillis() - t0 >= timeout) {
     			return false;
     		}
-    		try {
-    			Thread.sleep(10);
-    		} catch (InterruptedException e) {
-    		}
+			JexlerUtil.waitAtLeast(10);
     	} while (true);
     }
 

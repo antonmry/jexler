@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
  */
 public class StringObfuscatorTool {
 
-    static final Logger log = LoggerFactory.getLogger(StringObfuscatorTool.class);
+	private static final Logger log = LoggerFactory.getLogger(StringObfuscatorTool.class);
     
     private static final int DEFAULT_BYTE_BUFFER_PAD_LEN = 64;
     private static final int MIN_SALT_LEN = 16;

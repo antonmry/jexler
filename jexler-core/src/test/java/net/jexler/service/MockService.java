@@ -88,7 +88,7 @@ public final class MockService extends ServiceBase
 	}
 	
 	public void notifyJexler() {
-		getJexler().handle(new MockEvent(this, "mock-event-id"));
+		getJexler().handle(new MockEvent(this));
 		nEventsSent++;
 	}
 	

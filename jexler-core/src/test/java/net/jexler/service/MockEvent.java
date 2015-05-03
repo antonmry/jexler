@@ -25,7 +25,7 @@ package net.jexler.service;
  */
 public class MockEvent extends EventBase {
 	
-    public MockEvent(Service service, String cron) {
+    public MockEvent(Service service) {
         super(service);
     }
 

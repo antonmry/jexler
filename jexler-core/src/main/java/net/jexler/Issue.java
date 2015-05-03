@@ -33,33 +33,34 @@ public interface Issue extends Comparable<Issue> {
 	/**
 	 * Get date and time of when the issue occurred.
 	 */
-    public Date getDate();
+    Date getDate();
 
     /**
      * Get service where the issue occurred, may be null.
      */
-    public Service getService();
+    Service getService();
 
     /**
      * Get message set when issue was created.
      */
-    public String getMessage();
+    String getMessage();
 
     /**
      * Get throwable that caused the issue, or null if none.
      */
-    public Throwable getCause();
+    Throwable getCause();
 
     /**
      * Get exception stack trace as a multi-line string.
      * @return stack trace or empty if none or could not obtain it
      */
-    public String getStackTrace();
+    String getStackTrace();
 
     /**
      * Compares issues, newer is smaller (first in a sorted list).
      */
-    public int compareTo(Issue issue);
+    @Override
+    int compareTo(Issue issue);
 
 }
 

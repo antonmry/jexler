@@ -85,24 +85,24 @@ public class BasicIssue implements Issue {
         StringBuilder builder = new StringBuilder();
         builder.append("Issue: [message=");
         if (message == null) {
-        	builder.append(message);
+        	builder.append("null");
         } else {
         	builder.append("'" + JexlerUtil.toSingleLine(message) + "'");
         }
         builder.append(",service=");
         if (service == null) {
-        	builder.append(service);
+        	builder.append("null");
         } else {
         	builder.append("'" + service.getClass().getName() + ":" + service.getId() + "'");
         }
         builder.append(",cause=");
         if (cause == null) {
-        	builder.append(cause);
+        	builder.append("null");
         } else {
         	builder.append("'" + JexlerUtil.toSingleLine(cause.toString()) + "'");
         }
         builder.append(",stackTrace=");
-        builder.append("'" + JexlerUtil.toSingleLine(stackTrace.toString()) + "'");
+        builder.append("'" + JexlerUtil.toSingleLine(stackTrace) + "'");
         builder.append(']');
         return builder.toString();
     }

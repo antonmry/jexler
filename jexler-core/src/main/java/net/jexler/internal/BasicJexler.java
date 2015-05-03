@@ -55,7 +55,7 @@ import org.slf4j.LoggerFactory;
  */
 public class BasicJexler implements Jexler {
 
-    static final Logger log = LoggerFactory.getLogger(BasicJexler.class);
+    private static final Logger log = LoggerFactory.getLogger(BasicJexler.class);
 
     @SuppressWarnings("serial")
 	public class Events extends LinkedBlockingQueue<Event> {
@@ -79,7 +79,6 @@ public class BasicJexler implements Jexler {
     private final String id;
 
     private volatile RunState runState;
-    private Thread scriptThread;
     
     private final Events events;
 
@@ -152,7 +151,7 @@ public class BasicJexler implements Jexler {
     	
     	final Jexler thisJexler = this;
 
-        scriptThread = new Thread(
+        Thread scriptThread = new Thread(
                 new Runnable() {
 
                     public void run() {
