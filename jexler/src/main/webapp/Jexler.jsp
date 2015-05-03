@@ -60,24 +60,30 @@
       var xmlhttp = new XMLHttpRequest();
       xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState === 4) {
-          var text = xmlhttp.responseText;
-          if (xmlhttp.status / 100 != 2) {
-            text = ""
-          }
-          if (text == "") {
-            text = previousStatusText;
-            if (text.indexOf("(offline)") < 0) {
-              text = text.replace("<strong>Name</strong>", "<strong>(offline)</strong>");
-              text = text.replace(/\.gif'/g, "-dim.gif'");
-              text = text.replace(/<a href='\?cmd=[a-z]+(&jexler=[A-Za-z0-9]+)?'>/g, "");
-              text = text.replace(/<\/a>/g, "");
-              text = text.replace(/status-name/g, "status-name status-offline");
+          try {
+            logGetStatus('=> readyState 4');
+            var text = xmlhttp.responseText;
+            if (xmlhttp.status / 100 != 2) {
+              text = ""
             }
-          }
-          if (text != previousStatusText) {
-            previousStatusText = text;
-            var statusDiv = document.getElementById("statusdiv");
-            statusDiv.innerHTML = text;
+            if (text == "") {
+              text = previousStatusText;
+              if (text.indexOf("(offline)") < 0) {
+                text = text.replace("<strong>Name</strong>", "<strong>(offline)</strong>");
+                text = text.replace(/\.gif'/g, "-dim.gif'");
+                text = text.replace(/<a href='\?cmd=[a-z]+(&jexler=[A-Za-z0-9]+)?'>/g, "");
+                text = text.replace(/<\/a>/g, "");
+                text = text.replace(/status-name/g, "status-name status-offline");
+              }
+            }
+            if (text != previousStatusText) {
+              previousStatusText = text;
+              var statusDiv = document.getElementById("statusdiv");
+              statusDiv.innerHTML = text;
+            }
+          } finally {
+            logGetStatus('=> finally');
+            isGetStatusPending = false;
           }
         }
       };
