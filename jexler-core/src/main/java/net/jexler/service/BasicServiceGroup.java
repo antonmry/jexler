@@ -55,9 +55,11 @@ public class BasicServiceGroup implements ServiceGroup {
      */
 	@Override
     public void start() {
-        for (Service service : services) {
-        	service.start();
-        }
+		synchronized(services) {
+			for (Service service : services) {
+				service.start();
+			}
+		}
     }
 
 	@Override
@@ -73,16 +75,18 @@ public class BasicServiceGroup implements ServiceGroup {
 	@Override
     public void stop() {
 		RuntimeException ex = null;
-        for (Service service : services) {
-        	try {
-    			service.stop();
-    		} catch (RuntimeException e) {
-    			if (ex == null) {
-    				ex = e;
-    			}
-    			log.trace("Could not stop service '" + id + "'", e);
-    		}
-        }
+		synchronized(services) {
+			for (Service service : services) {
+				try {
+					service.stop();
+				} catch (RuntimeException e) {
+					if (ex == null) {
+						ex = e;
+					}
+					log.trace("Could not stop service '" + id + "'", e);
+				}
+			}
+		}
         if (ex != null) {
         	throw ex;
         }
@@ -103,9 +107,11 @@ public class BasicServiceGroup implements ServiceGroup {
     @Override
     public RunState getRunState() {
     	Set<RunState> set = new HashSet<>();
-    	for (Service service : services) {
-        	set.add(service.getRunState());
-        }
+		synchronized(services) {
+			for (Service service : services) {
+				set.add(service.getRunState());
+			}
+		}
     	switch (set.size()) {
     	case 0: return RunState.OFF;
     	case 1: return set.iterator().next();
@@ -124,11 +130,13 @@ public class BasicServiceGroup implements ServiceGroup {
 	 */
 	@Override
     public boolean isOn() {
-        for (Service service : services) {
-            if (service.isOn()) {
-                return true;
-            }
-        }
+		synchronized(services) {
+			for (Service service : services) {
+				if (service.isOn()) {
+					return true;
+				}
+			}
+		}
         return false;
     }
 
@@ -148,12 +156,16 @@ public class BasicServiceGroup implements ServiceGroup {
 
 	@Override
 	public void add(Service service) {
-		services.add(service);
+		synchronized(services) {
+			services.add(service);
+		}
 	}
 
 	@Override
 	public List<Service> getServices() {
-		return services;
+		synchronized(services) {
+			return services;
+		}
 	}
 
     

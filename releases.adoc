@@ -4,7 +4,7 @@ image:http://www.jexler.net/jexler.jpg["jexler logo", link="http:www.jexler.net/
 
 === 1.0.13-SNAPSHOT (20XX-XX-XX)
 
-* ...
+* Improved multi-threading support.
 * Small internal code refinements after inspection.
 * GUI: Javascript jexlers status update requests wait until previous call
   is done (load, abort, error or timeout).

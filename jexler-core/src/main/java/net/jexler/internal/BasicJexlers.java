@@ -81,33 +81,34 @@ public class BasicJexlers extends BasicServiceGroup implements Jexlers {
      */
     @Override
     public void refresh() {
-
-        // list directory and create jexlers in map for new script files in directory
-        File[] files = dir.listFiles();
-        files = files != null ? files : new File[0];
-        for (File file : files) {
-            if (file.isFile() && !file.isHidden()) {
-                String id = getJexlerId(file);
-                if (id != null && !jexlerMap.containsKey(id)) {
-                    Jexler jexler = jexlerFactory.get(file, this);
-                    jexlerMap.put(jexler.getId(), jexler);
+        synchronized (jexlerMap) {
+            // list directory and create jexlers in map for new script files in directory
+            File[] files = dir.listFiles();
+            files = files != null ? files : new File[0];
+            for (File file : files) {
+                if (file.isFile() && !file.isHidden()) {
+                    String id = getJexlerId(file);
+                    if (id != null && !jexlerMap.containsKey(id)) {
+                        Jexler jexler = jexlerFactory.get(file, this);
+                        jexlerMap.put(jexler.getId(), jexler);
+                    }
                 }
             }
-        }
 
-        // recreate list while omitting jexlers without script file that are stopped
-        getJexlers().clear();
-        for (String id : jexlerMap.keySet()) {
-            Jexler jexler = jexlerMap.get(id);
-            if (jexler.getFile().exists() || jexler.isOn()) {
-            	getJexlers().add(jexler);
+            // recreate list while omitting jexlers without script file that are stopped
+            getJexlers().clear();
+            for (String id : jexlerMap.keySet()) {
+                Jexler jexler = jexlerMap.get(id);
+                if (jexler.getFile().exists() || jexler.isOn()) {
+                    getJexlers().add(jexler);
+                }
             }
-        }
 
-        // recreate map with list entries
-        jexlerMap.clear();
-        for (Jexler jexler : getJexlers()) {
-            jexlerMap.put(jexler.getId(), jexler);
+            // recreate map with list entries
+            jexlerMap.clear();
+            for (Jexler jexler : getJexlers()) {
+                jexlerMap.put(jexler.getId(), jexler);
+            }
         }
     }
 
@@ -186,7 +187,9 @@ public class BasicJexlers extends BasicServiceGroup implements Jexlers {
 
     @Override
     public Jexler getJexler(String id) {
-        return jexlerMap.get(id);
+        synchronized(jexlerMap) {
+            return jexlerMap.get(id);
+        }
     }
 
 	@Override

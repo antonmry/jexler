@@ -42,7 +42,7 @@ public class BasicIssueTracker implements IssueTracker {
 	 * Default constructor.
 	 */
 	public BasicIssueTracker() {
-		issues = new LinkedList<Issue>();
+		issues = new LinkedList<>();
 	}
 	
     @Override
@@ -50,7 +50,6 @@ public class BasicIssueTracker implements IssueTracker {
         log.error(issue.toString());
         synchronized (issues) {
             issues.add(issue);
-            Collections.sort(issues);
         }
     }
 
@@ -65,6 +64,7 @@ public class BasicIssueTracker implements IssueTracker {
     @Override
     public List<Issue> getIssues() {
         synchronized(issues) {
+            Collections.sort(issues);
             return Collections.unmodifiableList(issues);
         }
     }
