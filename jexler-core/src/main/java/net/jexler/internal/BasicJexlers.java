@@ -98,6 +98,7 @@ public class BasicJexlers extends BasicServiceGroup implements Jexlers {
             }
 
             // recreate list while omitting jexlers without script file that are stopped
+            @SuppressWarnings("unchecked")
             List<Jexler> jexlers = (List<Jexler>)(List<?>)getServices();
             jexlers.clear();
             for (String id : jexlerMap.keySet()) {
