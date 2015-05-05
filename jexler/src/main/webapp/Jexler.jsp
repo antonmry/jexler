@@ -1,7 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="java.util.*" %>
-<%@ page import="net.jexler.war.*" %>
 <%@ page trimDirectiveWhitespaces="true" %>
 
 <jsp:useBean id="jexlers" class="net.jexler.war.JexlersView">
