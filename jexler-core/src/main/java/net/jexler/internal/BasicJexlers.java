@@ -17,6 +17,8 @@
 package net.jexler.internal;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -96,17 +98,18 @@ public class BasicJexlers extends BasicServiceGroup implements Jexlers {
             }
 
             // recreate list while omitting jexlers without script file that are stopped
-            getJexlers().clear();
+            List<Jexler> jexlers = (List<Jexler>)(List<?>)getServices();
+            jexlers.clear();
             for (String id : jexlerMap.keySet()) {
                 Jexler jexler = jexlerMap.get(id);
                 if (jexler.getFile().exists() || jexler.isOn()) {
-                    getJexlers().add(jexler);
+                    jexlers.add(jexler);
                 }
             }
 
             // recreate map with list entries
             jexlerMap.clear();
-            for (Jexler jexler : getJexlers()) {
+            for (Jexler jexler : jexlers) {
                 jexlerMap.put(jexler.getId(), jexler);
             }
         }
@@ -182,7 +185,11 @@ public class BasicJexlers extends BasicServiceGroup implements Jexlers {
 	@Override
     @SuppressWarnings("unchecked")
     public List<Jexler> getJexlers() {
-    	return (List<Jexler>)(List<?>)getServices();
+        List<Jexler> jexlers = new LinkedList<>();
+        synchronized(jexlerMap) {
+            jexlers.addAll((List<Jexler>)(List<?>)getServices());
+        }
+    	return Collections.unmodifiableList(jexlers);
     }
 
     @Override

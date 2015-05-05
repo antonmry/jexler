@@ -351,7 +351,8 @@ public class JexlersView {
 
     private void handleForgetAll() {
         jexlers.forgetIssues();
-        for (Jexler jexler : jexlers.getJexlers()) {
+        List<Jexler> jexlersList = jexlers.getJexlers();
+        for (Jexler jexler : jexlersList) {
             jexler.forgetIssues();
         }
     }

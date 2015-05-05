@@ -45,6 +45,10 @@ public interface Jexlers extends Service, IssueTracker {
 
     /**
      * Get the list of all jexlers, sorted by id.
+     *
+     * This is a copy, iterating over it can be freely done;
+     * and trying to add or remove list elements throws
+     * an UnsupportedOperationException.
      */
     List<Jexler> getJexlers();
 
