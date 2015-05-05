@@ -28,6 +28,7 @@ import net.jexler.Jexler;
 import net.jexler.Jexlers;
 import net.jexler.JexlersFactory;
 
+import net.jexler.service.CronService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -120,6 +121,7 @@ public class JexlerContextListener implements ServletContextListener    {
     @Override
     public void contextDestroyed(ServletContextEvent event) {
         jexlers.stop();
+        CronService.stopScheduler();
         log.info("Jexler done.");
     }
 

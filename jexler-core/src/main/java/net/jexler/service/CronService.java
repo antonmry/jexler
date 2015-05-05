@@ -113,4 +113,13 @@ public class CronService extends ServiceBase {
         return scheduler;
     }
 
+    public static void stopScheduler() {
+        synchronized (CronService.class) {
+            if (scheduler != null) {
+                scheduler.stop();
+                scheduler = null;
+            }
+        }
+    }
+
 }
