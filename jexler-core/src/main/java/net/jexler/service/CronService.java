@@ -38,7 +38,9 @@ public class CronService extends ServiceBase {
 
     private final CronService thisService;
     private String cron;
-    private Scheduler scheduler;
+    private String scheduledId;
+
+    private static volatile Scheduler scheduler;
 
     /**
      * Constructor.
@@ -76,18 +78,16 @@ public class CronService extends ServiceBase {
             }
             return;
         }
-        scheduler = new Scheduler();
-        scheduler.start();
-        Thread cronThread = new Thread(new Runnable() {
+        Thread cronThread = new Thread() {
             public void run() {
-                Thread.currentThread().setName(getJexler().getId() + "|" + getId());
+                Thread.currentThread().setName(getJexler().getId() + "|" + thisService.getId());
                 log.trace("new cron event: " + cron);
                 getJexler().handle(new CronEvent(thisService, cron));
             }
-        });
+        };
         cronThread.setDaemon(true);
         setRunState(RunState.IDLE);
-        scheduler.schedule(cron, cronThread);
+        scheduledId = getStartedScheduler().schedule(cron, cronThread);
     }
 
     @Override
@@ -96,9 +96,21 @@ public class CronService extends ServiceBase {
             return;
         }
         if (!cron.startsWith(CRON_NOW)) {
-        	scheduler.stop();
+            getStartedScheduler().deschedule(scheduledId);
         }
         setRunState(RunState.OFF);
+    }
+
+    public static Scheduler getStartedScheduler() {
+        if (scheduler == null ) {
+            synchronized (CronService.class) {
+                if (scheduler == null) {
+                    scheduler = new Scheduler();
+                    scheduler.start();
+                }
+            }
+        }
+        return scheduler;
     }
 
 }

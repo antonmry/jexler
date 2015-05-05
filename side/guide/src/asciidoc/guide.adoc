@@ -146,10 +146,9 @@ while (true) {
 There are two setters:
 
 * `setDir(File dir)`: The directory to watch,
-  default if not set is the directory that contains the jexler.
-* `setSleepTimeMs(long sleepTimeMs)`:
-   Time to sleep between polling file system,
-   default if not set is 1000ms (1 sec).
+   default if not set is the directory that contains the jexler.
+* `setCron(String cron)`: When to poll the file system,
+   default if not set is every minute ("* * * * *").
 
 The DirWatchEvent class has the following getters:
 

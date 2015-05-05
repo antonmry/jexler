@@ -25,7 +25,6 @@ import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 
 import net.jexler.Jexler;
-import net.jexler.JexlerUtil;
 import net.jexler.RunState;
 
 import org.slf4j.Logger;
@@ -43,7 +42,11 @@ public class DirWatchService extends ServiceBase {
 
     private final DirWatchService thisService;
     private File watchDir;
-    private long sleepTimeMs;
+    private String cron;
+
+    private String scheduledId;
+    private WatchService watchService;
+    private WatchKey watchKey;
 
     /**
      * Constructor.
@@ -54,7 +57,7 @@ public class DirWatchService extends ServiceBase {
         super(jexler, id);
         thisService = this;
         this.watchDir = jexler.getDir();
-        this.sleepTimeMs = 1000;
+        this.cron = "* * * * *";
     }
 
     /**
@@ -69,13 +72,12 @@ public class DirWatchService extends ServiceBase {
     }
 
     /**
-     * Set time to sleep between polling file system.
-     * Default if not set is 1000ms (1 sec).
-     * @param sleepTimeMs time to sleep in ms
+     * Set cron pattern for when to check.
+     * Default is every minute, i.e. "* * * * *".
      * @return this (for chaining calls)
      */
-    public DirWatchService setSleepTimeMs(long sleepTimeMs) {
-        this.sleepTimeMs = sleepTimeMs;
+    public DirWatchService setCron(String cron) {
+        this.cron = cron;
         return this;
     }
 
@@ -85,8 +87,6 @@ public class DirWatchService extends ServiceBase {
             return;
         }
         Path path = watchDir.toPath();
-        final WatchService watchService;
-        final WatchKey watchKey;
         try {
         	watchService = path.getFileSystem().newWatchService();
         	watchKey = path.register(watchService,
@@ -98,33 +98,23 @@ public class DirWatchService extends ServiceBase {
         			+ watchDir.getAbsolutePath() + "'.", e);
         	return;
         }
-        Thread watchThread = new Thread(new Runnable() {
+
+        Thread watchThread = new Thread() {
             public void run() {
-                Thread.currentThread().setName(getJexler().getId() + "|" + getId());
-                while (getRunState() == RunState.IDLE) {
-                    for (WatchEvent<?> event : watchKey.pollEvents()) {
-                		Path path = ((Path)event.context());
-                		File file = new File(watchDir, path.toFile().getName());
-                		WatchEvent.Kind<?> kind = event.kind();
-                		log.trace("event " + kind + " '" + file.getAbsolutePath() + "'");
-                		getJexler().handle(new DirWatchEvent(thisService, file, kind));
-                	}
-                	if (getRunState() != RunState.IDLE) {
-                		break;
-                	}
-                    JexlerUtil.waitAtLeast(sleepTimeMs);
+                Thread.currentThread().setName(getJexler().getId() + "|" + thisService.getId());
+                for (WatchEvent<?> event : watchKey.pollEvents()) {
+                    Path path = ((Path) event.context());
+                    File file = new File(watchDir, path.toFile().getName());
+                    WatchEvent.Kind<?> kind = event.kind();
+                    log.trace("event " + kind + " '" + file.getAbsolutePath() + "'");
+                    getJexler().handle(new DirWatchEvent(thisService, file, kind));
                 }
-                try {
-					watchService.close();
-				} catch (IOException e) {
-					log.trace("failed to close watch service", e);
-				}
-                setRunState(RunState.OFF);
             }
-        });
+        };
+
         watchThread.setDaemon(true);
         setRunState(RunState.IDLE);
-        watchThread.start();
+        scheduledId = CronService.getStartedScheduler().schedule(cron, watchThread);
     }
 
     @Override
@@ -132,7 +122,14 @@ public class DirWatchService extends ServiceBase {
         if (isOff()) {
             return;
         }
-        setRunState(RunState.BUSY_STOPPING);
+        CronService.getStartedScheduler().deschedule(scheduledId);
+        watchKey.cancel();
+        try {
+            watchService.close();
+        } catch (IOException e) {
+            log.trace("failed to close watch service", e);
+        }
+        setRunState(RunState.OFF);
     }
 
 }

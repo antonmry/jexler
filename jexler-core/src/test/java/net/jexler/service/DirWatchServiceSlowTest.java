@@ -40,11 +40,11 @@ import org.junit.experimental.categories.Category;
 @Category(SlowTests.class)
 public final class DirWatchServiceSlowTest
 {
-    private final static long MS_1_SEC = 1000;
+    private final static long MS_1_MIN_10_SEC = 70000;
     private final static long MS_30_SEC = 30000;
     
     /**
-     * Takes about 5 minutes to complete.
+     * Takes about 12 minutes to complete.
      */
     @Test
     public void testBasic() throws Exception {
@@ -54,13 +54,13 @@ public final class DirWatchServiceSlowTest
         MockJexler jexler = new MockJexler();
         DirWatchService service = new DirWatchService(jexler, "watchid");
         service.setDir(watchDir);
-        service.setSleepTimeMs(MS_1_SEC);
+        service.setCron("* * * * *");
         assertEquals("must be same", "watchid", service.getId());
         
         service.start();
     	assertTrue("must be true", service.isOn());
     	assertTrue("must be true", service.waitForStartup(MS_30_SEC));
-        assertNull("must be null", jexler.takeEvent(MS_30_SEC));
+        assertNull("must be null", jexler.takeEvent(MS_1_MIN_10_SEC));
                 
         checkEvents(jexler, service, watchDir);
         
@@ -73,7 +73,7 @@ public final class DirWatchServiceSlowTest
         writer.append("hello too");
         writer.close();
         
-        assertNull("must be null", jexler.takeEvent(MS_30_SEC));
+        assertNull("must be null", jexler.takeEvent(MS_1_MIN_10_SEC));
 
         // different watch directory
         watchDir = Files.createTempDirectory(null).toFile();
@@ -82,7 +82,7 @@ public final class DirWatchServiceSlowTest
         service.start();    
     	assertTrue("must be true", service.isOn());
     	assertTrue("must be true", service.waitForStartup(MS_30_SEC));
-        assertNull("must be null", jexler.takeEvent(MS_30_SEC));
+        assertNull("must be null", jexler.takeEvent(MS_1_MIN_10_SEC));
         
         service.start();    
     	assertTrue("must be true", service.getRunState().isIdle());
@@ -91,7 +91,7 @@ public final class DirWatchServiceSlowTest
         
         // delete watch directory
         assertTrue("must be true", watchDir.delete());
-        assertNull("must be null", jexler.takeEvent(MS_30_SEC));
+        assertNull("must be null", jexler.takeEvent(MS_1_MIN_10_SEC));
         
         service.stop();
     	assertTrue("must be true", service.waitForShutdown(MS_30_SEC));
@@ -107,7 +107,7 @@ public final class DirWatchServiceSlowTest
         File tempFile = new File(watchDir, "temp");
         Files.createFile(tempFile.toPath());
 
-        Event event = jexler.takeEvent(MS_30_SEC);
+        Event event = jexler.takeEvent(MS_1_MIN_10_SEC);
         assertNotNull("must not be null", event);
         assertEquals("must be same", service, event.getService());
         assertTrue("must be true", event instanceof DirWatchEvent);
@@ -117,14 +117,14 @@ public final class DirWatchServiceSlowTest
         assertEquals("must be same", StandardWatchEventKinds.ENTRY_CREATE,
                 dirWatchEvent.getKind());
 
-        assertNull("must be null", jexler.takeEvent(MS_30_SEC));
+        assertNull("must be null", jexler.takeEvent(MS_1_MIN_10_SEC));
 
         // modify file
         FileWriter writer = new FileWriter(tempFile);
         writer.append("hello there");
         writer.close();
 
-        event = jexler.takeEvent(MS_30_SEC);
+        event = jexler.takeEvent(MS_1_MIN_10_SEC);
         assertNotNull("must not be null", event);
         assertEquals("must be same", service, event.getService());
         assertTrue("must be true", event instanceof DirWatchEvent);
@@ -134,12 +134,12 @@ public final class DirWatchServiceSlowTest
         assertEquals("must be same", StandardWatchEventKinds.ENTRY_MODIFY,
                 dirWatchEvent.getKind());
 
-        assertNull("must be null", jexler.takeEvent(MS_30_SEC));
+        assertNull("must be null", jexler.takeEvent(MS_1_MIN_10_SEC));
 
         // delete file
         Files.delete(tempFile.toPath());
 
-        event = jexler.takeEvent(MS_30_SEC);
+        event = jexler.takeEvent(MS_1_MIN_10_SEC);
         assertNotNull("must not be null", event);
         assertEquals("must be same", service, event.getService());
         assertTrue("must be true", event instanceof DirWatchEvent);
@@ -149,7 +149,7 @@ public final class DirWatchServiceSlowTest
         assertEquals("must be same", StandardWatchEventKinds.ENTRY_DELETE,
                 dirWatchEvent.getKind());
 
-        assertNull("must be null", jexler.takeEvent(MS_30_SEC));
+        assertNull("must be null", jexler.takeEvent(MS_1_MIN_10_SEC));
     }
 
 }

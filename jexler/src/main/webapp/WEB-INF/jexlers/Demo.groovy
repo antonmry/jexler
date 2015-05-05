@@ -1,6 +1,5 @@
 [ "autostart" : true ]
 
-import groovy.grape.Grape
 @Grab('org.apache.httpcomponents:httpclient:4.2.3')
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.impl.client.BasicResponseHandler

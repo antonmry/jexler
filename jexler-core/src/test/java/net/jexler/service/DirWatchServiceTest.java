@@ -38,7 +38,6 @@ import org.junit.experimental.categories.Category;
 @Category(FastTests.class)
 public final class DirWatchServiceTest
 {
-    private final static long MS_1_SEC = 1000;
 
     @Test
     public void testNoWatchDir() throws Exception {
@@ -47,8 +46,8 @@ public final class DirWatchServiceTest
         MockJexler jexler = new MockJexler();
         DirWatchService service = new DirWatchService(jexler, "watchid");
         service.setDir(watchDir);
-        service.setSleepTimeMs(MS_1_SEC);
-        
+        service.setCron("* * * * *");
+
         service.start();
     	assertTrue("must be true", service.isOff());
         assertEquals("must be same", 1, jexler.getIssues().size());

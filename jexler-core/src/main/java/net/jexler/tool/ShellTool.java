@@ -65,13 +65,16 @@ public class ShellTool {
     public static class OutputCollector extends Thread {
 		private final InputStream is;
 		private final Closure<?> lineHandler;
+        private final String name;
 		private String output;
-		OutputCollector(InputStream is, Closure<?> lineHandler) {
+		OutputCollector(InputStream is, Closure<?> lineHandler, String name) {
 			this.is = is;
 			this.lineHandler = lineHandler;
+            this.name = name;
 		}
 	    @Override
 		public void run() {
+            Thread.currentThread().setName(name);
 	    	StringBuilder out = new StringBuilder();
 	    	// (assume default platform character encoding)
 	    	Scanner scanner = new Scanner(is);
@@ -183,8 +186,8 @@ public class ShellTool {
      * Get result of given process.
      */
     private Result getResult(Process proc) throws Exception {
-        OutputCollector outCollector = new OutputCollector(proc.getInputStream(), stdoutLineHandler);
-        OutputCollector errCollector = new OutputCollector(proc.getErrorStream(), stderrLineHandler);
+        OutputCollector outCollector = new OutputCollector(proc.getInputStream(), stdoutLineHandler, "stdout collector");
+        OutputCollector errCollector = new OutputCollector(proc.getErrorStream(), stderrLineHandler, "stderr collector");
         outCollector.start();
         errCollector.start();
         Result result = new Result();
