@@ -157,7 +157,7 @@ The DirWatchEvent class has the following getters:
    can be StandardWatchEventKinds.ENTRY_CREATE,
    .ENTRY_MODIFY or .ENTRY_DELETE.
 
-Implemented using a Java 7 WatchService.
+Implemented using a Java 7 WatchService and cron4j.
 
 === More Services
 

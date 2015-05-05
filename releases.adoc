@@ -2,7 +2,7 @@ image:http://www.jexler.net/jexler.jpg["jexler logo", link="http:www.jexler.net/
 
 = jexler releases
 
-=== 1.0.14-SNAPSHOT (20XX-XX-XX)
+=== 1.0.14 (2015-05-05)
 
 * CronService and DirWatcherService now internally use a shared instance
   of a cron4j Scheduler to reduce the number of threads needed per service.
