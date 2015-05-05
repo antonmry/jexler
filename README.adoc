@@ -21,7 +21,7 @@ Comes as a library (JAR) plus a simple relaxed web GUI (WAR).
 
 * Demo: `gradle demo`
 * Go to http://localhost:9080/
-* or run JexlerJettyTest in eclipse
+* or run JexlerJettyTest in eclipse/idea
 * or deploy jexler/build/libs/jexler-*.war
 * or deploy jexler-*.war from sourceforge (link below)
 
