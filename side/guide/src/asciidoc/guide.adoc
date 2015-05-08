@@ -36,7 +36,6 @@ Now instead of just logging the word "hello", let's send an email instead:
 ----
 [ "autostart" : true ]
 
-import groovy.grape.Grape
 @Grab('org.apache.commons:commons-email:1.3')
 import org.apache.commons.mail.*
 
