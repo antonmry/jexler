@@ -20,7 +20,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -53,14 +52,14 @@ public final class BasicJexlerTest
     public void testEmptyJexlerScript() throws Exception {
 
 		File dir = Files.createTempDirectory(null).toFile();
-		File file = new File(dir, "test.groovy");
+		File file = new File(dir, "Test.groovy");
 		
 		Files.createFile(file.toPath());
 		
 		BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
 		assertEquals("must be same", file.getAbsolutePath(), jexler.getFile().getAbsolutePath());
 		assertEquals("must be same", dir.getAbsolutePath(), jexler.getDir().getAbsolutePath());
-		assertEquals("must be same", "test", jexler.getId());
+		assertEquals("must be same", "Test", jexler.getId());
 		assertEquals("must be same", RunState.OFF, jexler.getRunState());
 		assertTrue("must be true", jexler.getMetaInfo().isEmpty());
 		assertTrue("must be true", jexler.getIssues().isEmpty());
@@ -72,16 +71,127 @@ public final class BasicJexlerTest
 	}
 
 	@Test
-    public void testJexlerScriptFails() throws Exception {
+    public void testJexlerScriptCompileFails() throws Exception {
 
 		File dir = Files.createTempDirectory(null).toFile();
-		File file = new File(dir, "test.groovy");
-		
+		File file = new File(dir, "Test.groovy");
 		FileWriter writer = new FileWriter(file);
 		writer.append("[ 'autostart' : false, 'foo' : 'bar' ]\n" +
 				"# does not compile...\n");
 		writer.close();
-		
+
+		BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
+
+		jexler.start();
+		jexler.waitForStartup(10000);
+		assertEquals("must be same", RunState.OFF, jexler.getRunState());
+		assertEquals("must be same", 1, jexler.getIssues().size());
+		Issue issue = jexler.getIssues().get(0);
+		assertEquals("must be same", "Script compile failed.", issue.getMessage());
+		assertEquals("must be same", jexler, issue.getService());
+		assertNotNull("must not be null", issue.getCause());
+		assertTrue("must be true", issue.getCause() instanceof CompilationFailedException);
+	}
+
+	@Test
+	public void testJexlerScriptNotAScript() throws Exception {
+
+		File dir = Files.createTempDirectory(null).toFile();
+		File file = new File(dir, "Util.groovy");
+		FileWriter writer = new FileWriter(file);
+		// not an instance of java.lang.Script
+		writer.append("class Util {}\n");
+		writer.close();
+
+		BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
+
+		jexler.start();
+		jexler.waitForStartup(10000);
+		assertEquals("must be same", RunState.OFF, jexler.getRunState());
+		assertEquals("must be same", 0, jexler.getIssues().size());
+	}
+
+	@Test
+	public void testJexlerScriptCreateFails() throws Exception {
+
+		File dir = Files.createTempDirectory(null).toFile();
+		File file = new File(dir, "Test.groovy");
+		FileWriter writer = new FileWriter(file);
+		writer.append("public class Test extends Script { \n" +
+				"  static { throw new RuntimeException() }\n" +
+				"  public def run() {}\n" +
+				"}");
+		writer.close();
+
+		BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
+
+		jexler.start();
+		jexler.waitForStartup(10000);
+		assertEquals("must be same", RunState.OFF, jexler.getRunState());
+		assertEquals("must be same", 1, jexler.getIssues().size());
+		Issue issue = jexler.getIssues().get(0);
+		assertEquals("must be same", "Script create failed.", issue.getMessage());
+		assertEquals("must be same", jexler, issue.getService());
+		assertNotNull("must not be null", issue.getCause());
+		assertTrue("must be true", issue.getCause() instanceof ExceptionInInitializerError);
+	}
+
+	@Test
+	public void testJexlerScriptRunFailsWithRuntimeException() throws Exception {
+
+		File dir = Files.createTempDirectory(null).toFile();
+		File file = new File(dir, "Test.groovy");
+		FileWriter writer = new FileWriter(file);
+		writer.append("[ 'autostart' : false, 'foo' : 'bar' ]\n" +
+				"throw new IllegalArgumentException()\n");
+		writer.close();
+
+		BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
+
+		jexler.start();
+		jexler.waitForStartup(10000);
+		assertEquals("must be same", RunState.OFF, jexler.getRunState());
+		assertEquals("must be same", 1, jexler.getIssues().size());
+		Issue issue = jexler.getIssues().get(0);
+		assertEquals("must be same", "Script run failed.", issue.getMessage());
+		assertEquals("must be same", jexler, issue.getService());
+		assertNotNull("must not be null", issue.getCause());
+		assertTrue("must be true", issue.getCause() instanceof IllegalArgumentException);
+	}
+
+	@Test
+	public void testJexlerScriptRunFailsWithCheckedException() throws Exception {
+
+		File dir = Files.createTempDirectory(null).toFile();
+		File file = new File(dir, "Test.groovy");
+		FileWriter writer = new FileWriter(file);
+		writer.append("[ 'autostart' : false, 'foo' : 'bar' ]\n" +
+				"throw new FileNotFoundException()\n");
+		writer.close();
+
+		BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
+
+		jexler.start();
+		jexler.waitForStartup(10000);
+		assertEquals("must be same", RunState.OFF, jexler.getRunState());
+		assertEquals("must be same", 1, jexler.getIssues().size());
+		Issue issue = jexler.getIssues().get(0);
+		assertEquals("must be same", "Script run failed.", issue.getMessage());
+		assertEquals("must be same", jexler, issue.getService());
+		assertNotNull("must not be null", issue.getCause());
+		assertTrue("must be true", issue.getCause() instanceof IOException);
+	}
+
+	@Test
+	public void testJexlerScriptRunFailsWithError() throws Exception {
+
+		File dir = Files.createTempDirectory(null).toFile();
+		File file = new File(dir, "Test.groovy");
+		FileWriter writer = new FileWriter(file);
+		writer.append("[ 'autostart' : false, 'foo' : 'bar' ]\n" +
+				"throw new NoClassDefFoundError()\n");
+		writer.close();
+
 		BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
 		
 		jexler.start();
@@ -89,80 +199,17 @@ public final class BasicJexlerTest
 		assertEquals("must be same", RunState.OFF, jexler.getRunState());
 		assertEquals("must be same", 1, jexler.getIssues().size());
 		Issue issue = jexler.getIssues().get(0);
-		assertEquals("must be same", "Script failed.", issue.getMessage());
+		assertEquals("must be same", "Script run failed.", issue.getMessage());
 		assertEquals("must be same", jexler, issue.getService());
 		assertNotNull("must not be null", issue.getCause());
-		assertTrue("must be true", issue.getCause() instanceof CompilationFailedException);
-		
-		jexler.stop();
-		jexler.waitForShutdown(10000);
-		
-		writer = new FileWriter(file);
-		writer.append("[ 'autostart' : false, 'foo' : 'bar' ]\n" +
-				"throw new IllegalArgumentException()\n");
-		writer.close();
-		
-		jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
-		
-		jexler.start();
-		jexler.waitForStartup(10000);
-		assertEquals("must be same", RunState.OFF, jexler.getRunState());
-		assertEquals("must be same", 1, jexler.getIssues().size());
-		issue = jexler.getIssues().get(0);
-		assertEquals("must be same", "Script failed.", issue.getMessage());
-		assertEquals("must be same", jexler, issue.getService());
-		assertNotNull("must not be null", issue.getCause());
-		assertTrue("must be true", issue.getCause() instanceof IllegalArgumentException);
-		
-		jexler.stop();
-		jexler.waitForShutdown(10000);
-		
-		writer = new FileWriter(file);
-		writer.append("[ 'autostart' : false, 'foo' : 'bar' ]\n" +
-				"throw new FileNotFoundException()\n");
-		writer.close();
-		
-		jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
-		
-		jexler.start();
-		jexler.waitForStartup(10000);
-		assertEquals("must be same", RunState.OFF, jexler.getRunState());
-		assertEquals("must be same", 1, jexler.getIssues().size());
-		issue = jexler.getIssues().get(0);
-		assertEquals("must be same", "Script failed.", issue.getMessage());
-		assertEquals("must be same", jexler, issue.getService());
-		assertNotNull("must not be null", issue.getCause());
-		assertTrue("must be true", issue.getCause() instanceof IOException);
-		
-		jexler.stop();
-		jexler.waitForShutdown(10000);
-		
-		writer = new FileWriter(file);
-		writer.append("[ 'autostart' : false, 'foo' : 'bar' ]\n" +
-				"throw new ClassNotFoundException()\n");
-		writer.close();
-		
-		jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
-		
-		jexler.start();
-		jexler.waitForStartup(10000);
-		assertEquals("must be same", RunState.OFF, jexler.getRunState());
-		assertEquals("must be same", 1, jexler.getIssues().size());
-		issue = jexler.getIssues().get(0);
-		assertEquals("must be same", "Script failed.", issue.getMessage());
-		assertEquals("must be same", jexler, issue.getService());
-		assertNotNull("must not be null", issue.getCause());
-		assertTrue("must be true", issue.getCause() instanceof ClassNotFoundException);
-		
-		jexler.stop();
-		jexler.waitForShutdown(10000);
+		assertTrue("must be true", issue.getCause() instanceof NoClassDefFoundError);
 	}
 
 	@Test
     public void testSimpleJexlerScript() throws Exception {
 
 		File dir = Files.createTempDirectory(null).toFile();
-		File file = new File(dir, "test.groovy");
+		File file = new File(dir, "Test.groovy");
 		
 		FileWriter writer = new FileWriter(file);
 		writer.append("[ 'autostart' : false, 'foo' : 'bar' ]\n" +
@@ -255,7 +302,7 @@ public final class BasicJexlerTest
     public void testShutdownRuntimeException() throws Exception {
 
 		File dir = Files.createTempDirectory(null).toFile();
-		File file = new File(dir, "test.groovy");
+		File file = new File(dir, "Test.groovy");
 		
 		FileWriter writer = new FileWriter(file);
 		writer.append("[ 'autostart' : false, 'foo' : 'bar' ]\n" +
@@ -307,6 +354,7 @@ public final class BasicJexlerTest
 		assertTrue("must be true", jexler.getIssues().isEmpty());
 		
 		jexler.getMetaInfo();
+
 		assertEquals("must be same", 1, jexler.getIssues().size());
 		Issue issue = jexler.getIssues().get(0);
 		assertTrue("must be true",
@@ -318,11 +366,8 @@ public final class BasicJexlerTest
 		jexler.forgetIssues();
 		assertTrue("must be true", jexler.getIssues().isEmpty());
 		
-		try {
-			jexler.start();
-			fail();
-		} catch (Exception e) {
-		}
+		jexler.start();
+
 		assertEquals("must be same", 1, jexler.getIssues().size());
 		issue = jexler.getIssues().get(0);
 		assertTrue("must be true",
@@ -336,7 +381,7 @@ public final class BasicJexlerTest
     public void testEventTake() throws Exception {
 		
 		File dir = Files.createTempDirectory(null).toFile();
-		File file = new File(dir, "test.groovy");
+		File file = new File(dir, "Test.groovy");
 		
 		FileWriter writer = new FileWriter(file);
 		writer.append(
@@ -357,7 +402,7 @@ public final class BasicJexlerTest
 		Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
 		Thread scriptThread = null;
 		for (Thread thread : threadSet) {
-			if ("test".equals(thread.getName())) {
+			if ("Test".equals(thread.getName())) {
 				scriptThread = thread;
 			}
 		}

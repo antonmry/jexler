@@ -64,24 +64,22 @@ public class BasicMetaInfo extends HashMap<String,Object> implements MetaInfo {
 			BasicJexler.WorkaroundGroovy7407.wrapGrapeEngineIfConfigured();
 
 			// evaluate first line as groovy script
-			Binding binding = new Binding();
-			GroovyShell shell = new GroovyShell(binding);
-			Object o;
+			Object obj;
 			try {
-				o = shell.evaluate(line);
+				obj = new GroovyShell().evaluate(line);
 			} catch (Throwable t) {
             	// (script may throw anything, checked or not)
 				return;
 			}
 
 			// evaluated to a map?
-			if (o == null || !(o instanceof Map)) {
+			if (obj == null || !(obj instanceof Map)) {
 				return;
 			}
 
 			// set map
 			@SuppressWarnings("unchecked")
-			Map<String,Object> map = (Map<String,Object>)o;
+			Map<String,Object> map = (Map<String,Object>)obj;
 			this.putAll(map);
 		}
 	}

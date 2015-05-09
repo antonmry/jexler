@@ -125,104 +125,92 @@ public class BasicJexler implements Jexler {
         if (isOn()) {
             return;
         }
-
-        forgetIssues();
-        setMetaInfoAtStart();
         runState = RunState.BUSY_STARTING;
 
+        forgetIssues();
+
+        try {
+            metaInfoAtStart = new BasicMetaInfo(file);
+        } catch (IOException e) {
+            String msg = "Could not read meta info from jexler file '"
+                    + file.getAbsolutePath() + "'.";
+            trackIssue(this, msg, e);
+            runState = RunState.OFF;
+            return;
+        }
+
+        // prepare for compile
         BasicJexler.WorkaroundGroovy7407.wrapGrapeEngineIfConfigured();
-
-    	final Binding binding = new Binding();
-    	binding.setVariable("jexler", this);
-    	binding.setVariable("jexlers", jexlers);
-    	binding.setVariable("events", events);
-    	binding.setVariable("services", services);
-    	binding.setVariable("log", log);
-    	
-    	ImportCustomizer importCustomizer = new ImportCustomizer();
-    	if (getMetaInfo().isOn("autoimport", true)) {
-    		importCustomizer.addStarImports(
-    				"net.jexler", "net.jexler.service", "net.jexler.tool");
-    	}
     	final CompilerConfiguration config = new CompilerConfiguration();
-        config.addCompilationCustomizers(importCustomizer);
+        if (getMetaInfo().isOn("autoimport", true)) {
+            ImportCustomizer importCustomizer = new ImportCustomizer();
+            importCustomizer.addStarImports(
+                    "net.jexler", "net.jexler.service", "net.jexler.tool");
+            config.addCompilationCustomizers(importCustomizer);
+        }
+        final GroovyClassLoader loader = new GroovyClassLoader(Thread.currentThread().getContextClassLoader(), config);
+        loader.addClasspath(file.getParent());
 
-        final ClassLoader parent = Thread.currentThread().getContextClassLoader();
-    	
-    	final Jexler thisJexler = this;
+        // compile
+        final Class<?> clazz;
+        try {
+            clazz = loader.parseClass(file);
+        } catch (Throwable t) {
+            // (may throw almost anything, checked or not)
+            trackIssue(this, "Script compile failed.", t);
+            runState = RunState.OFF;
+            return;
+        }
 
+        // not a runnable script?
+        if (!Script.class.isAssignableFrom(clazz)) {
+            runState = RunState.OFF;
+            return;
+        }
+
+        // create script and run in a separate thread
+        final Jexler thisJexler = this;
         Thread scriptThread = new Thread(
                 new Runnable() {
-
                     public void run() {
+                        // create script instance
+                        final Script script;
                         try {
-                            Class<?> clazz;
-                            if (WorkaroundGroovy7407.getNumberOfRetries() == 0) {
-                                clazz = parse();
-                            } else {
-                                clazz = parseWithRetries();
-                            }
-                            if (Script.class.isAssignableFrom(clazz)) {
-                                Script script = (Script)clazz.newInstance();
-                                script.setBinding(binding);
-                                script.run();
-                            }
+                            script = (Script)clazz.newInstance();
+                        } catch (Throwable t) {
+                            // (may throw anything, checked or not)
+                            trackIssue(thisJexler, "Script create failed.", t);
+                            runState = RunState.OFF;
+                            return;
+                        }
+
+                        // run script
+                        final Binding binding = new Binding();
+                        binding.setVariable("jexler", thisJexler);
+                        binding.setVariable("jexlers", jexlers);
+                        binding.setVariable("events", events);
+                        binding.setVariable("services", services);
+                        binding.setVariable("log", log);
+                        script.setBinding(binding);
+                        try {
+                            script.run();
                         } catch (Throwable t) {
                             // (script may throw anything, checked or not)
-                            trackIssue(thisJexler, "Script failed.", t);
-                        } finally {
-                        	runState = RunState.BUSY_STOPPING;
-                        	try {
-                        		services.stop();
-                        	} catch (RuntimeException e) {
-                        		trackIssue(services, "Could not stop services.", e);
-                        	}
-                        	events.clear();
-                        	services.getServices().clear();
-                        	runState = RunState.OFF;
+                            trackIssue(thisJexler, "Script run failed.", t);
                         }
-                    }
 
-                    private Class<?> parse() throws IOException {
-                        GroovyClassLoader loader = new GroovyClassLoader(parent, config);
-                        loader.addClasspath(file.getParent());
-                        return loader.parseClass(file);
-                    }
+                        runState = RunState.BUSY_STOPPING;
 
-                    private Class<?> parseWithRetries() throws Throwable {
-                        Class<?> clazz = null;
-                        synchronized (Jexler.class) {
-                            try {
-                                clazz = parse();
-                            } catch (Throwable t) {
-                                log.trace(WorkaroundGroovy7407.LOG_PREFIX + "compile failed: "
-                                        + JexlerUtil.toSingleLine(JexlerUtil.getStackTrace(t)));
-                                int n = WorkaroundGroovy7407.getNumberOfRetries();
-                                boolean recovered = false;
-                                for (int i = 1; i <= n; i++) {
-                                    try {
-                                        clazz = parse();
-                                        log.trace(WorkaroundGroovy7407.LOG_PREFIX + "compile retry " + i + " was successful");
-                                        recovered = true;
-                                        if (WorkaroundGroovy7407.isReportRetries()) {
-                                            jexlers.trackIssue(thisJexler,
-                                                    WorkaroundGroovy7407.LOG_PREFIX + "recovered at retry " + i, t);
-                                        }
-                                        break;
-                                    } catch (Throwable t2) {
-                                        t = t2;
-                                        log.trace(WorkaroundGroovy7407.LOG_PREFIX + "compile retry " + i + " failed: "
-                                                + JexlerUtil.toSingleLine(JexlerUtil.getStackTrace(t)));
-                                    }
-                                }
-                                if (!recovered) {
-                                    throw t;
-                                }
-                            }
+                        try {
+                            services.stop();
+                        } catch (Throwable t) {
+                            trackIssue(services, "Could not stop services.", t);
                         }
-                        return clazz;
-                    }
+                        events.clear();
+                        services.getServices().clear();
 
+                        runState = RunState.OFF;
+                    }
                 });
         scriptThread.setDaemon(true);
         scriptThread.setName(id);
@@ -313,21 +301,7 @@ public class BasicJexler implements Jexler {
     public File getDir() {
         return file.getParentFile();
     }
-    
-    /**
-     * Read meta info from jexler file and store it in member variable.
-     */
-    private void setMetaInfoAtStart() {
-    	try {
-    		metaInfoAtStart = new BasicMetaInfo(file);
-    	} catch (IOException e) {
-    		String msg = "Could not read meta info from jexler file '" 
-    				+ file.getAbsolutePath() + "'.";
-    		trackIssue(this, msg, e);
-    		metaInfoAtStart = BasicMetaInfo.EMPTY;
-    	}
-    }
-    
+
     @Override
     public MetaInfo getMetaInfo() {
     	if (isOn()) {
@@ -344,51 +318,14 @@ public class BasicJexler implements Jexler {
     	}
     }
 
-    // partial(!) workarounds for bug GROOVY-7407:
+    // Workaround for bug GROOVY-7407:
     //   "Compilation not thread safe if Grape / Ivy is used in Groovy scripts"
     //   https://issues.apache.org/jira/browse/GROOVY-7407
     static class WorkaroundGroovy7407 {
-        // number of compile retries
-        static final String RETRIES_PROPERTY_NAME = "net.jexler.workaround.groovy.7407.retries";
-        // boolean whether to create a jexlers issue if compile retries were necessary
-        static final String RETRIES_REPORT_PROPERTY_NAME = "net.jexler.workaround.groovy.7407.retries.report";
         // boolean whether to wrap the GrapeEngine in the Grape class with a synchronized version
         static final String GRAPE_ENGINE_WRAP_PROPERTY_NAME = "net.jexler.workaround.groovy.7407.grape.engine.wrap";
         static final String LOG_PREFIX = "workaround GROOVY-7407: ";
-        private static volatile Integer numberOfRetries;
-        private static volatile Boolean isReportRetries;
         private static volatile Boolean isWrapGrapeEngine;
-
-        static int getNumberOfRetries() {
-            if (numberOfRetries == null) {
-                String value = System.getProperty(RETRIES_PROPERTY_NAME, "0");
-                try {
-                    numberOfRetries = Integer.parseInt(value);
-                    if (numberOfRetries != 0) {
-                        log.trace(LOG_PREFIX + "is active, number of compile retries: " + numberOfRetries);
-                        log.trace(LOG_PREFIX + "reporting compile retries as jexlers issues: " + isReportRetries());
-                    }
-                } catch (NumberFormatException e) {
-                    log.trace(LOG_PREFIX + "property value '" + value + "' is not a number");
-                    numberOfRetries = 0;
-                }
-            }
-            return numberOfRetries;
-        }
-
-        static boolean isReportRetries() {
-            if (isReportRetries == null) {
-                isReportRetries = Boolean.valueOf(System.getProperty(RETRIES_REPORT_PROPERTY_NAME));
-            }
-            return isReportRetries;
-        }
-
-        static void resetForUnitTests() {
-            numberOfRetries = null;
-            isReportRetries = null;
-            isWrapGrapeEngine = null;
-        }
-
         static void wrapGrapeEngineIfConfigured() {
             if (isWrapGrapeEngine == null) {
                 isWrapGrapeEngine = Boolean.valueOf(System.getProperty(GRAPE_ENGINE_WRAP_PROPERTY_NAME));
@@ -398,6 +335,9 @@ public class BasicJexler implements Jexler {
                     log.trace(LOG_PREFIX + "successfully wrapped GrapeEngine");
                 }
             }
+        }
+        static void resetForUnitTests() {
+            isWrapGrapeEngine = null;
         }
     }
 
