@@ -26,7 +26,7 @@ import java.util.Map;
  * Example:
  * <pre>
  * 
- * [ "autostart"=true, "root"=new File('/') ]
+ * [ "autostart" : true, "root" : new File('/') ]
  * </pre>
  * 
  * Meta info is silently considered empty if for some reason
