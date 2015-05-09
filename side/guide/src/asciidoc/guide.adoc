@@ -476,25 +476,13 @@ As a workaround, you can set the following system property:
   so that all Grape calls (@grab etc.) will be synchronized on Grape.class.
   See the above link for more details and limitations.
 
-An older workaround is still configurable, but be aware that it only reduces
-the chance of the issue occurring, but does not fully fix it:
-
-* `net.jexler.workaround.groovy.7407.retries`:
-  If set to a number, compilation of each jexler is retried for the indicated
-  number of times.
-* `net.jexler.workaround.groovy.7407.retries.report`:
-  If set to "true", successful compilation retries report a jexlers issue.
-  (If compilation fails at all retries, a jexler issue is always reported.)
-
-Activating all three properties is possible without any problems.
-
 == Source Code
 
 The source code is at github: https://github.com/jexler/jexler
 
 See there for instructions how to build.
 
-The code is a Gradle / Eclipse project that contains two Java sub-projects:
+The code is a Gradle project that contains two Java sub-projects:
 
 * *jexler-core*: The core jexler library (JAR) which contains also all services and tools.
 * *jexler*: The jexler web GUI, a simple Java webapp (WAR) with a single JSP.
