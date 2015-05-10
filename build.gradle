@@ -4,10 +4,10 @@ subprojects {
   apply plugin: 'maven'
   apply plugin: 'jacoco'
 
-  sourceCompatibility = 1.8
-  targetCompatibility = 1.8
+  sourceCompatibility = 1.7
+  targetCompatibility = 1.7
 
-  version = '2.0.0-SNAPSHOT' // IMPORTANT: keep in sync with version in JexlerContextListener
+  version = '1.0.16-SNAPSHOT' // IMPORTANT: keep in sync with version in JexlerContextListener
 
   project.group = 'net.jexler'
 
