@@ -2,6 +2,10 @@ image:http://www.jexler.net/jexler.jpg["jexler logo", link="http:www.jexler.net/
 
 = jexler releases
 
+=== 2.0.0-SNAPSHOT (20XX-XX-XX)
+
+* ...
+
 === 1.0.15 (2015-05-10)
 
 * Removed obsolete older workaround for GROOVY-7407 with compile retries.
