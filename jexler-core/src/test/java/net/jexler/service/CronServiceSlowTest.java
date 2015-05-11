@@ -93,7 +93,7 @@ public final class CronServiceSlowTest
     	service.stop();
     	assertTrue("must be true", service.isOff());
 
-		CronService.stopScheduler();
+		jexler.getJexlers().close();
 	}
 	
 	/**

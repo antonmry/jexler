@@ -24,6 +24,7 @@ import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 
+import it.sauronsoftware.cron4j.Scheduler;
 import net.jexler.Jexler;
 import net.jexler.RunState;
 
@@ -42,6 +43,7 @@ public class DirWatchService extends ServiceBase {
 
     private final DirWatchService thisService;
     private File watchDir;
+    private Scheduler scheduler;
     private String cron;
 
     private String scheduledId;
@@ -56,7 +58,7 @@ public class DirWatchService extends ServiceBase {
     public DirWatchService(Jexler jexler, String id) {
         super(jexler, id);
         thisService = this;
-        this.watchDir = jexler.getDir();
+        watchDir = jexler.getDir();
         this.cron = "* * * * *";
     }
 
@@ -80,6 +82,17 @@ public class DirWatchService extends ServiceBase {
         this.cron = cron;
         return this;
     }
+
+    /**
+     * Set cron4j scheduler.
+     * Default is a scheduler shared by all jexlers in the same jexlers instance.
+     * @return this (for chaining calls)
+     */
+    public DirWatchService setScheduler(Scheduler scheduler) {
+        this.scheduler = scheduler;
+        return this;
+    }
+
 
     @Override
     public void start() {
@@ -114,7 +127,10 @@ public class DirWatchService extends ServiceBase {
 
         watchThread.setDaemon(true);
         setRunState(RunState.IDLE);
-        scheduledId = CronService.getStartedScheduler().schedule(cron, watchThread);
+        if (scheduler == null) {
+            scheduler = getJexler().getJexlers().getSharedScheduler();
+        }
+        scheduledId = scheduler.schedule(cron, watchThread);
     }
 
     @Override
@@ -122,7 +138,7 @@ public class DirWatchService extends ServiceBase {
         if (isOff()) {
             return;
         }
-        CronService.getStartedScheduler().deschedule(scheduledId);
+        scheduler.deschedule(scheduledId);
         watchKey.cancel();
         try {
             watchService.close();

@@ -16,20 +16,19 @@
 
 package net.jexler.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.io.IOException;
-
 import it.sauronsoftware.cron4j.Scheduler;
 import net.jexler.Issue;
 import net.jexler.internal.MockJexler;
 import net.jexler.test.FastTests;
-
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import java.io.File;
+import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests the respective class.
@@ -37,28 +36,15 @@ import org.junit.experimental.categories.Category;
  * @author $(whois jexler.net)
  */
 @Category(FastTests.class)
-public final class DirWatchServiceTest
+public final class CronServiceTest
 {
 
     @Test
-    public void testNoWatchDir() throws Exception {
-        File watchDir = new File("does-not-exist");
-        
+    public void testConstruct() throws Exception {
         MockJexler jexler = new MockJexler();
-        DirWatchService service = new DirWatchService(jexler, "watchid");
-        service.setDir(watchDir);
+        CronService service = new CronService(jexler, "cronid");
         service.setCron("* * * * *");
         service.setScheduler(new Scheduler());
-
-        service.start();
-    	assertTrue("must be true", service.isOff());
-        assertEquals("must be same", 1, jexler.getIssues().size());
-        Issue issue = jexler.getIssues().get(0);
-        assertEquals("must be same", service, issue.getService());
-        assertTrue("must be true",
-        		issue.getMessage().startsWith("Could not create watch service or key"));
-        assertNotNull("must not be null", issue.getCause());
-    	assertTrue("must be true", issue.getCause() instanceof IOException);
     }
 
 }

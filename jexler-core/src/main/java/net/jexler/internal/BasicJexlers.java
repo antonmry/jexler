@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import it.sauronsoftware.cron4j.Scheduler;
 import net.jexler.Issue;
 import net.jexler.IssueTracker;
 import net.jexler.Jexler;
@@ -55,6 +56,9 @@ public class BasicJexlers extends BasicServiceGroup implements Jexlers {
 
     private final IssueTracker issueTracker;
 
+    private Scheduler scheduler;
+    private final Object schedulerLock;
+
     /**
      * Constructor.
      * @param dir directory which contains jexler scripts
@@ -73,6 +77,7 @@ public class BasicJexlers extends BasicServiceGroup implements Jexlers {
         this.jexlerFactory = jexlerFactory;
         jexlerMap = new TreeMap<>();
         issueTracker = new BasicIssueTracker();
+        schedulerLock = new Object();
         refresh();
     }
 
@@ -214,5 +219,25 @@ public class BasicJexlers extends BasicServiceGroup implements Jexlers {
 			return null;
 		}
 	}
+
+    @Override
+    public Scheduler getSharedScheduler() {
+        synchronized (schedulerLock) {
+            if (scheduler == null) {
+                scheduler = new Scheduler();
+                scheduler.start();
+            }
+            return scheduler;
+        }
+    }
+    @Override
+    public void close() {
+        synchronized (schedulerLock) {
+            if (scheduler != null) {
+                scheduler.stop();
+                scheduler = null;
+            }
+        }
+    }
 
 }

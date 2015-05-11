@@ -7,6 +7,9 @@ image:http://www.jexler.net/jexler.jpg["jexler logo", link="http:www.jexler.net/
 * JexlerDispatcher (new): Allows to dispatch a typical stages in a jexler's
   life cycle and during event handling to individual handler methods, like
   declare(), start(), handleCronEvent(event), stop().
+* The shared cron4j Scheduler for CronService and DirWatcherService is no longer
+  global, but per Jexlers instance and can alternatively be explicitly set;
+  stop the shared instance with the close() method of Jexlers.
 
 === 1.0.15 (2015-05-10)
 

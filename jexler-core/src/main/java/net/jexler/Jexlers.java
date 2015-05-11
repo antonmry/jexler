@@ -16,9 +16,11 @@
 
 package net.jexler;
 
+import java.io.Closeable;
 import java.io.File;
 import java.util.List;
 
+import it.sauronsoftware.cron4j.Scheduler;
 import net.jexler.service.Service;
 
 /**
@@ -26,7 +28,7 @@ import net.jexler.service.Service;
  *
  * @author $(whois jexler.net)
  */
-public interface Jexlers extends Service, IssueTracker {
+public interface Jexlers extends Service, IssueTracker, Closeable {
 
     /**
      * Refresh list of jexlers.
@@ -70,5 +72,16 @@ public interface Jexlers extends Service, IssueTracker {
      * or null if not a jexler script.
      */
     String getJexlerId(File jexlerFile);
+
+    /**
+     * Get shared cron4j scheduler, already started.
+     */
+    Scheduler getSharedScheduler();
+
+    /**
+     * Stop the shared scheduler, plus close maybe other things.
+     */
+    @Override
+    void close();
 
 }

@@ -121,7 +121,7 @@ public class JexlerContextListener implements ServletContextListener    {
     @Override
     public void contextDestroyed(ServletContextEvent event) {
         jexlers.stop();
-        CronService.stopScheduler();
+        jexlers.close();
         log.info("Jexler done.");
     }
 

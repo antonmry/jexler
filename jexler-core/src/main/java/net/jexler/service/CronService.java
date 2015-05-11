@@ -37,10 +37,9 @@ public class CronService extends ServiceBase {
     public static final String CRON_NOW_AND_STOP = CRON_NOW + "+stop";
 
     private final CronService thisService;
+    private Scheduler scheduler;
     private String cron;
     private String scheduledId;
-
-    private static volatile Scheduler scheduler;
 
     /**
      * Constructor.
@@ -61,6 +60,16 @@ public class CronService extends ServiceBase {
      */
     public CronService setCron(String cron) {
         this.cron = cron;
+        return this;
+    }
+
+    /**
+     * Set cron4j scheduler.
+     * Default is a scheduler shared by all jexlers in the same jexlers instance.
+     * @return this (for chaining calls)
+     */
+    public CronService setScheduler(Scheduler scheduler) {
+        this.scheduler = scheduler;
         return this;
     }
 
@@ -87,7 +96,10 @@ public class CronService extends ServiceBase {
         };
         cronThread.setDaemon(true);
         setRunState(RunState.IDLE);
-        scheduledId = getStartedScheduler().schedule(cron, cronThread);
+        if (scheduler == null) {
+            scheduler = getJexler().getJexlers().getSharedScheduler();
+        }
+        scheduledId = scheduler.schedule(cron, cronThread);
     }
 
     @Override
@@ -96,30 +108,9 @@ public class CronService extends ServiceBase {
             return;
         }
         if (!cron.startsWith(CRON_NOW)) {
-            getStartedScheduler().deschedule(scheduledId);
+            scheduler.deschedule(scheduledId);
         }
         setRunState(RunState.OFF);
-    }
-
-    public static Scheduler getStartedScheduler() {
-        if (scheduler == null ) {
-            synchronized (CronService.class) {
-                if (scheduler == null) {
-                    scheduler = new Scheduler();
-                    scheduler.start();
-                }
-            }
-        }
-        return scheduler;
-    }
-
-    public static void stopScheduler() {
-        synchronized (CronService.class) {
-            if (scheduler != null) {
-                scheduler.stop();
-                scheduler = null;
-            }
-        }
     }
 
 }

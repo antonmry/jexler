@@ -201,6 +201,11 @@ log.trace(cronEvent.cron)
 
 Implemented using the Open Source http://www.sauronsoftware.it/projects/cron4j/[cron4j] library.
 
+By default, a cron4j `Scheduler` instance that is shared between all jexlers
+is used (because each scheduler creates a thread). Alternatively, the scheduler
+can be explicitly set when constructing the `CronService` instance:
+`setScheduler(Scheduler scheduler)`.
+
 === DirWatchService
 
 This service observes a directory for changes in the file system and sends events
@@ -221,12 +226,14 @@ while (true) {
 }
 ----
 
-There are two setters:
+There are three setters:
 
 * `setDir(File dir)`: The directory to watch,
    default if not set is the directory that contains the jexler.
 * `setCron(String cron)`: When to poll the file system,
    default if not set is every minute ("* * * * *").
+* `setScheduler(Scheduler scheduler)`: Sets the cron4j scheduler,
+   default if not set is a shared scheduler.
 
 The DirWatchEvent class has the following getters:
 
@@ -235,7 +242,7 @@ The DirWatchEvent class has the following getters:
    can be StandardWatchEventKinds.ENTRY_CREATE,
    .ENTRY_MODIFY or .ENTRY_DELETE.
 
-Implemented using a Java 7 WatchService and cron4j.
+Implemented using a Java 7 WatchService (and cron4j).
 
 === More Services
 

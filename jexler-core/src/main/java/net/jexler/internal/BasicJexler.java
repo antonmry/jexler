@@ -318,6 +318,11 @@ public class BasicJexler implements Jexler {
     	}
     }
 
+    @Override
+    public Jexlers getJexlers() {
+        return jexlers;
+    }
+
     // Workaround for bug GROOVY-7407:
     //   "Compilation not thread safe if Grape / Ivy is used in Groovy scripts"
     //   https://issues.apache.org/jira/browse/GROOVY-7407
