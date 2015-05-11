@@ -41,14 +41,14 @@ public final class JexlerFactoryTest
 	@Test
     public void testBasic() throws Exception {
 		File dir = Files.createTempDirectory(null).toFile();
-		JexlersFactory jexlersFactory = new JexlersFactory();
-		Jexlers jexlers = jexlersFactory.get(dir);
+		JexlerContainerFactory containerFactory = new JexlerContainerFactory();
+		JexlerContainer container = containerFactory.get(dir);
 
-		File file = new File(dir, jexlers.getJexlerFile("test").getName());
+		File file = new File(dir, container.getJexlerFile("test").getName());
 		Files.createFile(file.toPath());
 		
 		JexlerFactory jexlerFactory = new JexlerFactory();
-		Jexler jexler = jexlerFactory.get(file, jexlers);
+		Jexler jexler = jexlerFactory.get(file, container);
 		assertNotNull("must not be null", jexler);
 		assertTrue("must be true", jexler instanceof BasicJexler);
 		assertEquals("must be same", file.getCanonicalPath(), jexler.getFile().getCanonicalPath());

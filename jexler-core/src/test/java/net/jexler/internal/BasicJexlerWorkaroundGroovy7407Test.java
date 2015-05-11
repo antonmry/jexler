@@ -74,7 +74,7 @@ public final class BasicJexlerWorkaroundGroovy7407Test
 
 		Files.createFile(file.toPath());
 
-		BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
+		BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
 		jexler.start();
 		jexler.waitForStartup(10000);
 		assertEquals("must be same", RunState.OFF, jexler.getRunState());
@@ -93,7 +93,7 @@ public final class BasicJexlerWorkaroundGroovy7407Test
 		writer.append("&%!+\n");
 		writer.close();
 
-		BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
+		BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
 		jexler.start();
 		jexler.waitForStartup(10000);
 		assertEquals("must be same", RunState.OFF, jexler.getRunState());

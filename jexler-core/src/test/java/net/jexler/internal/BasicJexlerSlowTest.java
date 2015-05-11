@@ -64,7 +64,7 @@ public final class BasicJexlerSlowTest
 		writer.append(jexlerTemplateSlow);
 		writer.close();
 				
-		BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
+		BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
 		
 		jexler.start();
 		jexler.waitForStartup(MS_5_SEC);

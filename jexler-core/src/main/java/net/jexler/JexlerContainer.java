@@ -24,11 +24,11 @@ import it.sauronsoftware.cron4j.Scheduler;
 import net.jexler.service.Service;
 
 /**
- * Interface for all jexlers in a directory.
+ * Interface for the container of all jexlers in a directory.
  *
  * @author $(whois jexler.net)
  */
-public interface Jexlers extends Service, IssueTracker, Closeable {
+public interface JexlerContainer extends Service, IssueTracker, Closeable {
 
     /**
      * Refresh list of jexlers.

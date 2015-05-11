@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import net.jexler.Issue;
 import net.jexler.Jexler;
 import net.jexler.JexlerFactory;
-import net.jexler.Jexlers;
+import net.jexler.JexlerContainer;
 import net.jexler.MetaInfo;
 import net.jexler.RunState;
 import net.jexler.service.Event;
@@ -40,14 +40,14 @@ import net.jexler.service.Service;
 public class MockJexler implements Jexler {
 	
 	private final File file;
-	private final Jexlers jexlers;
+	private final JexlerContainer container;
 	private final Queue<Event> events;
 	private final List<Issue> issues;
 	
 	public MockJexler(File file) throws Exception {
 		this.file = file;
 		File dir = Files.createTempDirectory(null).toFile();
-		jexlers = new BasicJexlers(dir, new JexlerFactory());
+		container = new BasicJexlerContainer(dir, new JexlerFactory());
 		events = new ConcurrentLinkedQueue<>();
 		issues = new LinkedList<>();
 	}
@@ -143,8 +143,8 @@ public class MockJexler implements Jexler {
 	}
 
 	@Override
-	public Jexlers getJexlers() {
-		return jexlers;
+	public JexlerContainer getContainer() {
+		return container;
 	}
 	
 	/**

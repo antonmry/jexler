@@ -18,23 +18,23 @@ package net.jexler;
 
 import java.io.File;
 
-import net.jexler.internal.BasicJexlers;
+import net.jexler.internal.BasicJexlerContainer;
 
 /**
- * Jexlers factory.
+ * Jexler container factory.
  *
  * @author $(whois jexler.net)
  */
-public class JexlersFactory  {
+public class JexlerContainerFactory {
 
-    public JexlersFactory() {
+    public JexlerContainerFactory() {
     }
 
     /**
-     * Get jexlers instance.
+     * Get jexler container instance.
      */
-	public Jexlers get(File dir) {
-		return new BasicJexlers(dir, new JexlerFactory());
+	public JexlerContainer get(File dir) {
+		return new BasicJexlerContainer(dir, new JexlerFactory());
 	}
 
 }

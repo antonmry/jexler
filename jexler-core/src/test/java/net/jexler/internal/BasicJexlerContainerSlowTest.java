@@ -36,7 +36,7 @@ import org.junit.experimental.categories.Category;
  * @author $(whois jexler.net)
  */
 @Category(SlowTests.class)
-public final class BasicJexlersSlowTest
+public final class BasicJexlerContainerSlowTest
 {
 	private final static long MS_5_SEC = 5000;
 	private final static long MS_20_SEC = 20000;
@@ -81,30 +81,30 @@ public final class BasicJexlersSlowTest
 		writer.append(jexlerTemplateSlow);
 		writer.close();
 		
-		BasicJexlers jexlers = new BasicJexlers(dir, new JexlerFactory());
-		assertEquals("must be same", 3, jexlers.getJexlers().size());
+		BasicJexlerContainer container = new BasicJexlerContainer(dir, new JexlerFactory());
+		assertEquals("must be same", 3, container.getJexlers().size());
 		
-		jexlers.start();
-		jexlers.waitForStartup(MS_5_SEC);
-		assertEquals("should be same", 2, jexlers.getIssues().size());
-		for (Issue issue : jexlers.getIssues()) {
+		container.start();
+		container.waitForStartup(MS_5_SEC);
+		assertEquals("should be same", 2, container.getIssues().size());
+		for (Issue issue : container.getIssues()) {
 			assertEquals("must be same", "Timeout waiting for jexler startup.", issue.getMessage());
 		}
 		
-		jexlers.forgetIssues();
-		jexlers.waitForStartup(MS_20_SEC);
-		assertTrue("must be true", jexlers.getIssues().isEmpty());
+		container.forgetIssues();
+		container.waitForStartup(MS_20_SEC);
+		assertTrue("must be true", container.getIssues().isEmpty());
 		
-		jexlers.stop();
-		jexlers.waitForShutdown(MS_5_SEC);
-		assertEquals("should be same", 2, jexlers.getIssues().size());
-		for (Issue issue : jexlers.getIssues()) {
+		container.stop();
+		container.waitForShutdown(MS_5_SEC);
+		assertEquals("should be same", 2, container.getIssues().size());
+		for (Issue issue : container.getIssues()) {
 			assertEquals("must be same", "Timeout waiting for jexler shutdown.", issue.getMessage());
 		}
 		
-		jexlers.forgetIssues();
-		jexlers.waitForShutdown(MS_20_SEC);
-		assertTrue("must be true", jexlers.getIssues().isEmpty());
+		container.forgetIssues();
+		container.waitForShutdown(MS_20_SEC);
+		assertTrue("must be true", container.getIssues().isEmpty());
 	}
 	
 }

@@ -52,8 +52,8 @@ public interface Jexler extends Service, IssueTracker {
     MetaInfo getMetaInfo();
 
     /**
-     * Get jexlers instance that contains this jexler.
+     * Get the container that contains this jexler.
      */
-    Jexlers getJexlers();
+    JexlerContainer getContainer();
 
 }

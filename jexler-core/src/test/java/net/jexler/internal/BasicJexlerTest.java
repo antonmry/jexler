@@ -64,7 +64,7 @@ public final class BasicJexlerTest
 		
 		Files.createFile(file.toPath());
 		
-		BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
+		BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
 		assertEquals("must be same", file.getAbsolutePath(), jexler.getFile().getAbsolutePath());
 		assertEquals("must be same", dir.getAbsolutePath(), jexler.getDir().getAbsolutePath());
 		assertEquals("must be same", "Test", jexler.getId());
@@ -88,7 +88,7 @@ public final class BasicJexlerTest
 				"# does not compile...\n");
 		writer.close();
 
-		BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
+		BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
 
 		jexler.start();
 		jexler.waitForStartup(10000);
@@ -111,7 +111,7 @@ public final class BasicJexlerTest
 		writer.append("class Util {}\n");
 		writer.close();
 
-		BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
+		BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
 
 		jexler.start();
 		jexler.waitForStartup(10000);
@@ -131,7 +131,7 @@ public final class BasicJexlerTest
 				"}");
 		writer.close();
 
-		BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
+		BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
 
 		jexler.start();
 		jexler.waitForStartup(10000);
@@ -154,7 +154,7 @@ public final class BasicJexlerTest
 				"throw new IllegalArgumentException()\n");
 		writer.close();
 
-		BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
+		BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
 
 		jexler.start();
 		jexler.waitForStartup(10000);
@@ -177,7 +177,7 @@ public final class BasicJexlerTest
 				"throw new FileNotFoundException()\n");
 		writer.close();
 
-		BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
+		BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
 
 		jexler.start();
 		jexler.waitForStartup(10000);
@@ -200,7 +200,7 @@ public final class BasicJexlerTest
 				"throw new NoClassDefFoundError()\n");
 		writer.close();
 
-		BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
+		BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
 		
 		jexler.start();
 		jexler.waitForStartup(10000);
@@ -234,7 +234,7 @@ public final class BasicJexlerTest
 				"}\n");
 		writer.close();
 		
-		BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
+		BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
 		assertEquals("must be same", RunState.OFF, jexler.getRunState());
 		assertEquals("must be same", 2, jexler.getMetaInfo().size());
 		assertFalse("must be false", jexler.getMetaInfo().isOn("autostart", true));
@@ -328,7 +328,7 @@ public final class BasicJexlerTest
 				"}\n");
 		writer.close();
 		
-		BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
+		BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
 
 		MockService.setTestInstance(jexler, "mock-service");
 		MockService mockService = MockService.getTestInstance();
@@ -358,7 +358,7 @@ public final class BasicJexlerTest
 		//File file = new File(dir, "test.groovy");
 		
 		// note that passing dir as jexler file!
-		BasicJexler jexler = new BasicJexler(dir, new BasicJexlers(dir, new JexlerFactory()));
+		BasicJexler jexler = new BasicJexler(dir, new BasicJexlerContainer(dir, new JexlerFactory()));
 		assertTrue("must be true", jexler.getIssues().isEmpty());
 		
 		jexler.getMetaInfo();
@@ -402,7 +402,7 @@ public final class BasicJexlerTest
 				"}\n");
 		writer.close();
 		
-		BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
+		BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
 		jexler.start();
 		jexler.waitForStartup(10000);
 		assertTrue("must be true", jexler.getIssues().isEmpty());

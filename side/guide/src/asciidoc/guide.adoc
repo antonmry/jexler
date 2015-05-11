@@ -595,7 +595,7 @@ Within a jexler, the following packages are automatically imported by default:
 and the following variables are available to jexler Groovy scripts:
 
 * `Jexler jexler`: The jexler instance.
-* `Jexlers jexlers`: The jexlers instance, i.e. the class
+* `JexlerContainer container`: The jexler container instance, i.e. the class
    that abstracts all jexlers in a directory.
 * `List<Event> events`: The list of events to poll for new events.
 * `ServiceGroup services`: The group of services to add services to and to start then.

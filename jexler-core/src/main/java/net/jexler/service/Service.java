@@ -21,7 +21,7 @@ import net.jexler.RunState;
 
 /**
  * Interface for a service.
- * Implemented by jexler(s) themselves and services used by jexlers.
+ * Implemented by jexler and jexler container and by services used by jexlers.
  *
  * @author $(whois jexler.net)
  */

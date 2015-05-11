@@ -16,12 +16,9 @@
 
 package net.jexler;
 
-import groovy.lang.GroovyClassLoader;
-import groovy.lang.Script;
 import net.jexler.internal.BasicJexler;
-import net.jexler.internal.BasicJexlers;
+import net.jexler.internal.BasicJexlerContainer;
 import net.jexler.service.MockService;
-import net.jexler.service.ServiceUtil;
 import net.jexler.test.FastTests;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -71,7 +68,7 @@ public final class JexlerDispatcherTest
                 "}\n");
         writer.close();
 
-        BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
+        BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
         assertEquals("must be same", RunState.OFF, jexler.getRunState());
         assertEquals("must be same", 0, jexler.getMetaInfo().size());
         assertTrue("must be true", jexler.getIssues().isEmpty());
@@ -145,7 +142,7 @@ public final class JexlerDispatcherTest
                 "}\n");
         writer.close();
 
-        BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
+        BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
         assertEquals("must be same", RunState.OFF, jexler.getRunState());
         assertEquals("must be same", 0, jexler.getMetaInfo().size());
         assertTrue("must be true", jexler.getIssues().isEmpty());
@@ -209,7 +206,7 @@ public final class JexlerDispatcherTest
                 "}\n");
         writer.close();
 
-        BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
+        BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
         assertEquals("must be same", RunState.OFF, jexler.getRunState());
         assertEquals("must be same", 0, jexler.getMetaInfo().size());
         assertTrue("must be true", jexler.getIssues().isEmpty());
@@ -311,7 +308,7 @@ public final class JexlerDispatcherTest
                 "}\n");
         writer.close();
 
-        BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
+        BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
         assertEquals("must be same", RunState.OFF, jexler.getRunState());
         assertEquals("must be same", 0, jexler.getMetaInfo().size());
         assertTrue("must be true", jexler.getIssues().isEmpty());
@@ -413,7 +410,7 @@ public final class JexlerDispatcherTest
                 "}\n");
         writer.close();
 
-        BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
+        BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
         assertEquals("must be same", RunState.OFF, jexler.getRunState());
         assertEquals("must be same", 0, jexler.getMetaInfo().size());
         assertTrue("must be true", jexler.getIssues().isEmpty());
@@ -523,7 +520,7 @@ public final class JexlerDispatcherTest
                 "}\n");
         writer.close();
 
-        BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
+        BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
         assertEquals("must be same", RunState.OFF, jexler.getRunState());
         assertEquals("must be same", 0, jexler.getMetaInfo().size());
         assertTrue("must be true", jexler.getIssues().isEmpty());
@@ -626,7 +623,7 @@ public final class JexlerDispatcherTest
                 "}\n");
         writer.close();
 
-        BasicJexler jexler = new BasicJexler(file, new BasicJexlers(dir, new JexlerFactory()));
+        BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
         assertEquals("must be same", RunState.OFF, jexler.getRunState());
         assertEquals("must be same", 0, jexler.getMetaInfo().size());
         assertTrue("must be true", jexler.getIssues().isEmpty());

@@ -2,10 +2,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page trimDirectiveWhitespaces="true" %>
 
-<jsp:useBean id="jexlers" class="net.jexler.war.JexlersView">
-<%= jexlers.handleCommands(request) %>
-<c:set var="jexler" value="${jexlers.jexlers[param.jexler]}"/>
-<c:set var="jexler" value="${jexler != null ? jexler : jexlers }"/>
+<jsp:useBean id="container" class="net.jexler.war.JexlerContainerView">
+<%= container.handleCommands(request) %>
+<c:set var="jexler" value="${container.jexlers[param.jexler]}"/>
+<c:set var="jexler" value="${jexler != null ? jexler : container }"/>
 
 <c:if test="${param.cmd != 'status'}">
 
@@ -128,7 +128,7 @@
     }
 
     function isPostSave() {
-      if (${jexlers.confirmSave}) {
+      if (${container.confirmSave}) {
         if (!confirm("Are you sure you want to save '${jexler.jexlerId}'?")) {
           return false;
         }
@@ -157,7 +157,7 @@
     }
 
     function isPostDelete() {
-      if (${jexlers.confirmDelete}) {
+      if (${container.confirmDelete}) {
         return confirm("Are you sure you want to delete '${jexler.jexlerId}'?");
       } else {
         return true;
@@ -197,7 +197,7 @@
   <table class="frame">
   <tr id="header">
   <td class="frame">
-  <a href="."><img src="jexler.jpg" title="${jexlers.version}"></a>
+  <a href="."><img src="jexler.jpg" title="${container.version}"></a>
   </td>
   <td class="frame frame-buttons">
     <c:choose>
@@ -209,9 +209,9 @@
     <c:otherwise>
       <table class="frame">
       <tr>
-        <td><button type="submit" name="cmd" value="save" ${jexlers.disabledIfReadonly} onclick="return isPostSave()">Save as...</button></td>
-        <td><button type="submit" name="cmd" value="delete" ${jexlers.disabledIfReadonly} onclick="return isPostDelete()">Delete...</button></td>
-        <td><input id="newjexlername" type="text" name="jexler" onkeyup="updateSaveIndicator()" value="${jexler.jexlerId}" ${jexlers.disabledIfReadonly}></td>
+        <td><button type="submit" name="cmd" value="save" ${container.disabledIfReadonly} onclick="return isPostSave()">Save as...</button></td>
+        <td><button type="submit" name="cmd" value="delete" ${container.disabledIfReadonly} onclick="return isPostDelete()">Delete...</button></td>
+        <td><input id="newjexlername" type="text" name="jexler" onkeyup="updateSaveIndicator()" value="${jexler.jexlerId}" ${container.disabledIfReadonly}></td>
         <td><img id="savestatus" src="white.gif"></td>
       </tr>
       </table>
@@ -228,13 +228,13 @@
 <table class="status" id="status">
 
 <tr>
-<td class="status">${jexlers.startStop}</td>
-<td class="status">${jexlers.restart}</td>
-<td class="status">${jexlers.log}</td>
+<td class="status">${container.startStop}</td>
+<td class="status">${container.restart}</td>
+<td class="status">${container.log}</td>
 <td class="status status-name"><strong>Name</strong></td>
 </tr>
 
-<c:forEach items="${jexlers.jexlers}" var="loopJexler">
+<c:forEach items="${container.jexlers}" var="loopJexler">
   <tr>
   <td class="status">${loopJexler.value.startStop}</td>
   <td class="status">${loopJexler.value.restart}</td>
@@ -267,7 +267,7 @@
           tabMode: "indent",
           matchBrackets: true,
           indentUnit: 2,
-          readOnly: ${!jexlers.scriptAllowEdit}
+          readOnly: ${!container.scriptAllowEdit}
         });
         editor.on("change", function(cm, change) {
           updateSaveIndicator();

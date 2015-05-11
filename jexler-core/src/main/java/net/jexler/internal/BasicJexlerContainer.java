@@ -27,8 +27,8 @@ import it.sauronsoftware.cron4j.Scheduler;
 import net.jexler.Issue;
 import net.jexler.IssueTracker;
 import net.jexler.Jexler;
+import net.jexler.JexlerContainer;
 import net.jexler.JexlerFactory;
-import net.jexler.Jexlers;
 import net.jexler.RunState;
 import net.jexler.service.BasicServiceGroup;
 import net.jexler.service.Service;
@@ -37,13 +37,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Basic default implementation of jexlers interface.
+ * Basic default implementation of jexler container interface.
  *
  * @author $(whois jexler.net)
  */
-public class BasicJexlers extends BasicServiceGroup implements Jexlers {
+public class BasicJexlerContainer extends BasicServiceGroup implements JexlerContainer {
 
-    private static final Logger log = LoggerFactory.getLogger(BasicJexlers.class);
+    private static final Logger log = LoggerFactory.getLogger(BasicJexlerContainer.class);
 	
 	private static final String EXT = ".groovy";
 
@@ -65,7 +65,7 @@ public class BasicJexlers extends BasicServiceGroup implements Jexlers {
      * @param jexlerFactory factory for creating jexler instances
      * @throws RuntimeException if given dir is not a directory or does not exist
      */
-    public BasicJexlers(File dir, JexlerFactory jexlerFactory) {
+    public BasicJexlerContainer(File dir, JexlerFactory jexlerFactory) {
     	super(dir.exists() ? dir.getName() : null);
         if (!dir.exists()) {
             throw new RuntimeException("Directory '" + dir.getAbsolutePath() + "' does not exist.");
@@ -177,7 +177,7 @@ public class BasicJexlers extends BasicServiceGroup implements Jexlers {
     }
 
     /**
-     * Get id, which is the name of the jexlers directory.
+     * Get id, which is the name of the jexler container directory.
      */
     @Override
     public String getId() {

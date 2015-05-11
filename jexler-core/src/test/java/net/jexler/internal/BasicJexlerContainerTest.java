@@ -44,7 +44,7 @@ import org.junit.experimental.categories.Category;
  * @author $(whois jexler.net)
  */
 @Category(FastTests.class)
-public final class BasicJexlersTest {
+public final class BasicJexlerContainerTest {
 	private final static long MS_1_SEC = 1000;
 	private final static long MS_10_SEC = 10000;
 
@@ -81,15 +81,15 @@ public final class BasicJexlersTest {
 		writer.append("foo.bar=xyz\n");
 		writer.close();
 
-		BasicJexlers jexlers = new BasicJexlers(dir, new JexlerFactory());
-		assertEquals("must be same", RunState.OFF, jexlers.getRunState());
-		assertEquals("must be same", dir, jexlers.getDir());
-		assertEquals("must be same", dir.getName(), jexlers.getId());
-		assertEquals("must be same", 3, jexlers.getJexlers().size());
+		BasicJexlerContainer container = new BasicJexlerContainer(dir, new JexlerFactory());
+		assertEquals("must be same", RunState.OFF, container.getRunState());
+		assertEquals("must be same", dir, container.getDir());
+		assertEquals("must be same", dir.getName(), container.getId());
+		assertEquals("must be same", 3, container.getJexlers().size());
 
-		Jexler jexler1 = jexlers.getJexler("jexler1");
-		Jexler jexler2 = jexlers.getJexler("jexler2");
-		Jexler jexler3 = jexlers.getJexler("jexler3");
+		Jexler jexler1 = container.getJexler("jexler1");
+		Jexler jexler2 = container.getJexler("jexler2");
+		Jexler jexler3 = container.getJexler("jexler3");
 		assertEquals("must be same", "jexler1", jexler1.getId());
 		assertEquals("must be same", "jexler2", jexler2.getId());
 		assertEquals("must be same", "jexler3", jexler3.getId());
@@ -97,93 +97,93 @@ public final class BasicJexlersTest {
 		assertEquals("must be same", RunState.OFF, jexler2.getRunState());
 		assertEquals("must be same", RunState.OFF, jexler3.getRunState());
 
-		assertEquals("must be same", 0, jexlers.getIssues().size());
+		assertEquals("must be same", 0, container.getIssues().size());
 
-		jexlers.start();
-		jexlers.waitForStartup(MS_10_SEC);
-		assertEquals("must be same", RunState.IDLE, jexlers.getRunState());
-		assertTrue("must be true", jexlers.isOn());
+		container.start();
+		container.waitForStartup(MS_10_SEC);
+		assertEquals("must be same", RunState.IDLE, container.getRunState());
+		assertTrue("must be true", container.isOn());
 		assertEquals("must be same", RunState.IDLE, jexler1.getRunState());
 		assertEquals("must be same", RunState.IDLE, jexler2.getRunState());
 		assertEquals("must be same", RunState.IDLE, jexler3.getRunState());
-		assertEquals("must be same", 0, jexlers.getIssues().size());
+		assertEquals("must be same", 0, container.getIssues().size());
 
-		jexlers.stop();
-		jexlers.waitForShutdown(MS_10_SEC);
-		assertEquals("must be same", RunState.OFF, jexlers.getRunState());
-		assertTrue("must be true", jexlers.isOff());
+		container.stop();
+		container.waitForShutdown(MS_10_SEC);
+		assertEquals("must be same", RunState.OFF, container.getRunState());
+		assertTrue("must be true", container.isOff());
 		assertEquals("must be same", RunState.OFF, jexler1.getRunState());
 		assertEquals("must be same", RunState.OFF, jexler2.getRunState());
 		assertEquals("must be same", RunState.OFF, jexler3.getRunState());
-		assertEquals("must be same", 0, jexlers.getIssues().size());
+		assertEquals("must be same", 0, container.getIssues().size());
 
-		jexlers.autostart();
-		jexlers.waitForStartup(MS_10_SEC);
-		assertEquals("must be same", RunState.IDLE, jexlers.getRunState());
-		assertTrue("must be true", jexlers.isOn());
+		container.autostart();
+		container.waitForStartup(MS_10_SEC);
+		assertEquals("must be same", RunState.IDLE, container.getRunState());
+		assertTrue("must be true", container.isOn());
 		assertEquals("must be same", RunState.OFF, jexler1.getRunState());
 		assertEquals("must be same", RunState.IDLE, jexler2.getRunState());
 		assertEquals("must be same", RunState.OFF, jexler3.getRunState());
-		assertEquals("must be same", 0, jexlers.getIssues().size());
+		assertEquals("must be same", 0, container.getIssues().size());
 
-		jexlers.start();
-		jexlers.waitForStartup(MS_10_SEC);
-		assertEquals("must be same", RunState.IDLE, jexlers.getRunState());
-		assertTrue("must be true", jexlers.isOn());
+		container.start();
+		container.waitForStartup(MS_10_SEC);
+		assertEquals("must be same", RunState.IDLE, container.getRunState());
+		assertTrue("must be true", container.isOn());
 		assertEquals("must be same", RunState.IDLE, jexler1.getRunState());
 		assertEquals("must be same", RunState.IDLE, jexler2.getRunState());
 		assertEquals("must be same", RunState.IDLE, jexler3.getRunState());
-		assertEquals("must be same", 0, jexlers.getIssues().size());
+		assertEquals("must be same", 0, container.getIssues().size());
 
 		jexler3.handle(new StopEvent(jexler3));
 		JexlerUtil.waitAtLeast(MS_1_SEC);
-		assertEquals("must be same", RunState.IDLE, jexlers.getRunState());
-		assertTrue("must be true", jexlers.isOn());
+		assertEquals("must be same", RunState.IDLE, container.getRunState());
+		assertTrue("must be true", container.isOn());
 		assertEquals("must be same", RunState.IDLE, jexler1.getRunState());
 		assertEquals("must be same", RunState.IDLE, jexler2.getRunState());
 		assertEquals("must be same", RunState.OFF, jexler3.getRunState());
-		assertEquals("must be same", 0, jexlers.getIssues().size());
+		assertEquals("must be same", 0, container.getIssues().size());
 
 		// delete file for jexler2
 		assertTrue("must be true", jexler2.getFile().delete());
-		assertEquals("must be same", jexler2, jexlers.getJexler("jexler2"));
-		assertEquals("must be same", 3, jexlers.getJexlers().size());
+		assertEquals("must be same", jexler2, container.getJexler("jexler2"));
+		assertEquals("must be same", 3, container.getJexlers().size());
 		// don't remove running jexler even if file is gone
-		jexlers.refresh();
-		assertEquals("must be same", 3, jexlers.getJexlers().size());
+		container.refresh();
+		assertEquals("must be same", 3, container.getJexlers().size());
 
-		jexlers.stop();
-		jexlers.waitForShutdown(MS_10_SEC);
-		assertEquals("must be same", RunState.OFF, jexlers.getRunState());
-		assertTrue("must be true", jexlers.isOff());
+		container.stop();
+		container.waitForShutdown(MS_10_SEC);
+		assertEquals("must be same", RunState.OFF, container.getRunState());
+		assertTrue("must be true", container.isOff());
 		assertEquals("must be same", RunState.OFF, jexler1.getRunState());
 		assertEquals("must be same", RunState.OFF, jexler2.getRunState());
 		assertEquals("must be same", RunState.OFF, jexler3.getRunState());
-		assertEquals("must be same", 0, jexlers.getIssues().size());
-		assertEquals("must be same", 3, jexlers.getJexlers().size());
+		assertEquals("must be same", 0, container.getIssues().size());
+		assertEquals("must be same", 3, container.getJexlers().size());
 		// now must remove jexler2
-		jexlers.refresh();
-		assertEquals("must be same", 2, jexlers.getJexlers().size());
+		container.refresh();
+		assertEquals("must be same", 2, container.getJexlers().size());
 
-		jexlers.start();
-		jexlers.waitForStartup(MS_10_SEC);
-		assertEquals("must be same", 2, jexlers.getJexlers().size());
+		container.start();
+		container.waitForStartup(MS_10_SEC);
+		assertEquals("must be same", 2, container.getJexlers().size());
 
-		assertTrue("must be true", jexlers.getIssues().isEmpty());
+		assertTrue("must be true", container.getIssues().isEmpty());
 		RuntimeException ex = new RuntimeException();
-		jexlers.trackIssue(null, "mock issue", ex);
-		assertEquals("must be same", 1, jexlers.getIssues().size());
-		assertNull("must be null", jexlers.getIssues().get(0).getService());
-		assertEquals("must be same", "mock issue", jexlers.getIssues().get(0).getMessage());
-		assertEquals("must be same", ex, jexlers.getIssues().get(0).getCause());
-		jexlers.forgetIssues();
-		assertTrue("must be true", jexlers.getIssues().isEmpty());
+		container.trackIssue(null, "mock issue", ex);
+		assertEquals("must be same", 1, container.getIssues().size());
+		assertNull("must be null", container.getIssues().get(0).getService());
+		assertEquals("must be same", "mock issue", container.getIssues().get(0).getMessage());
+		assertEquals("must be same", ex, container.getIssues().get(0).getCause());
+		container.forgetIssues();
+		assertTrue("must be true", container.getIssues().isEmpty());
 
-		jexlers.trackIssue(new IssueFactory().get(null, "mock issue", ex));
-		assertEquals("must be same", 1, jexlers.getIssues().size());
+		container.trackIssue(new IssueFactory().get(null, "mock issue", ex));
+		assertEquals("must be same", 1, container.getIssues().size());
 
-		jexlers.stop();
-		jexlers.waitForShutdown(MS_10_SEC);
+		container.stop();
+		container.waitForShutdown(MS_10_SEC);
 	}
 
 	@Test
@@ -191,7 +191,7 @@ public final class BasicJexlersTest {
 
 		File dir = new File("does-not-exist");
 		try {
-			new BasicJexlers(dir, new JexlerFactory());
+			new BasicJexlerContainer(dir, new JexlerFactory());
 			fail("must throw");
 		} catch (RuntimeException e) {
 			String msg = e.getMessage();
@@ -201,7 +201,7 @@ public final class BasicJexlersTest {
 
 		dir = Files.createTempFile(null, ".tmp").toFile();
 		try {
-			new BasicJexlers(dir, new JexlerFactory());
+			new BasicJexlerContainer(dir, new JexlerFactory());
 			fail("must throw");
 		} catch (RuntimeException e) {
 			String msg = e.getMessage();
@@ -214,15 +214,15 @@ public final class BasicJexlersTest {
 	public void testGetJexlerId() throws Exception {
 
 		File dir = Files.createTempDirectory(null).toFile();
-		BasicJexlers jexlers = new BasicJexlers(dir, new JexlerFactory());
+		BasicJexlerContainer container = new BasicJexlerContainer(dir, new JexlerFactory());
 
-		String id = jexlers.getJexlerId(new File(dir, "foo.groovy"));
+		String id = container.getJexlerId(new File(dir, "foo.groovy"));
 		assertEquals("must be same", "foo", id);
 
-		id = jexlers.getJexlerId(new File("foo.groovy"));
+		id = container.getJexlerId(new File("foo.groovy"));
 		assertEquals("must be same", "foo", id);
 
-		id = jexlers.getJexlerId(new File("foo.java"));
+		id = container.getJexlerId(new File("foo.java"));
 		assertNull("must be null", id);
 	}
 
@@ -230,9 +230,9 @@ public final class BasicJexlersTest {
 	public void testGetJexlerFile() throws Exception {
 
 		File dir = Files.createTempDirectory(null).toFile();
-		BasicJexlers jexlers = new BasicJexlers(dir, new JexlerFactory());
+		BasicJexlerContainer container = new BasicJexlerContainer(dir, new JexlerFactory());
 
-		File file = jexlers.getJexlerFile("foo");
+		File file = container.getJexlerFile("foo");
 		assertEquals("must be same",
 				new File(dir, "foo.groovy").getCanonicalPath(),
 				file.getCanonicalPath());
@@ -241,20 +241,20 @@ public final class BasicJexlersTest {
 	@Test
 	public void testSharedSchedulerAndClose() throws Exception {
 		File dir = Files.createTempDirectory(null).toFile();
-		BasicJexlers jexlers = new BasicJexlers(dir, new JexlerFactory());
+		BasicJexlerContainer container = new BasicJexlerContainer(dir, new JexlerFactory());
 
-		Scheduler scheduler1 = jexlers.getSharedScheduler();
-		Scheduler scheduler2 = jexlers.getSharedScheduler();
+		Scheduler scheduler1 = container.getSharedScheduler();
+		Scheduler scheduler2 = container.getSharedScheduler();
 		assertEquals("must be same", scheduler1, scheduler2);
 		assertTrue("must be true", scheduler1.isStarted());
 
-		jexlers.close();
-		Scheduler scheduler3 = jexlers.getSharedScheduler();
+		container.close();
+		Scheduler scheduler3 = container.getSharedScheduler();
 		assertFalse("must be false", scheduler1 == scheduler3);
 		assertFalse("must be false", scheduler1.isStarted());
 		assertTrue("must be true", scheduler3.isStarted());
 
-		jexlers.close();
+		container.close();
 		assertFalse("must be false", scheduler3.isStarted());
 	}
 

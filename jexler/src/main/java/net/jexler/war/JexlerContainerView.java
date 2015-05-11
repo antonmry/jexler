@@ -35,7 +35,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import net.jexler.Issue;
 import net.jexler.Jexler;
-import net.jexler.Jexlers;
+import net.jexler.JexlerContainer;
 import net.jexler.RunState;
 import net.jexler.service.Service;
 
@@ -47,11 +47,11 @@ import org.slf4j.LoggerFactory;
  *
  * @author $(whois jexler.net)
  */
-public class JexlersView {
+public class JexlerContainerView {
 
-	static final Logger log = LoggerFactory.getLogger(JexlersView.class);
+	static final Logger log = LoggerFactory.getLogger(JexlerContainerView.class);
 
-    private final Jexlers jexlers;
+    private final JexlerContainer container;
     private final File logfile;
     private final long startTimeout;
     private final long stopTimeout;
@@ -63,8 +63,8 @@ public class JexlersView {
     private String targetJexlerId;
     private Jexler targetJexler;
 
-    public JexlersView() {
-        jexlers = JexlerContextListener.getJexlers();
+    public JexlerContainerView() {
+        container = JexlerContextListener.getContainer();
         logfile = JexlerContextListener.getLogfile();
         startTimeout = JexlerContextListener.getStartTimeout();
         stopTimeout = JexlerContextListener.getStopTimeout();
@@ -77,11 +77,11 @@ public class JexlersView {
 
     public String handleCommands(HttpServletRequest request) {
         this.request = request;
-        jexlers.refresh();
+        container.refresh();
         // set jexler from request parameter
         targetJexlerId = request.getParameter("jexler");
         if (targetJexlerId != null) {
-            targetJexler = jexlers.getJexler(targetJexlerId);
+            targetJexler = container.getJexler(targetJexlerId);
         }
 
         String cmd = request.getParameter("cmd");
@@ -114,7 +114,7 @@ public class JexlersView {
             }
         }
 
-        jexlers.refresh();
+        container.refresh();
 
         return "";
     }
@@ -123,11 +123,11 @@ public class JexlersView {
     	return JexlerContextListener.getVersion();
     }
     
-    public Map<String,JexlersView> getJexlers() {
-        List<Jexler> jexlerList = jexlers.getJexlers();
-        Map<String,JexlersView> jexlersViews = new LinkedHashMap<>();
+    public Map<String,JexlerContainerView> getJexlers() {
+        List<Jexler> jexlerList = container.getJexlers();
+        Map<String,JexlerContainerView> jexlersViews = new LinkedHashMap<>();
         for (Jexler jexler : jexlerList) {
-            JexlersView view = new JexlersView();
+            JexlerContainerView view = new JexlerContainerView();
             view.setJexler(jexler);
             jexlersViews.put(jexler.getId(), view);
         }
@@ -154,7 +154,7 @@ public class JexlersView {
     public String getStartStop() {
         boolean isOn;
         if (jexlerId == null) {
-        	isOn = jexlers.isOn();
+        	isOn = container.isOn();
         } else {
         	isOn = jexler.isOn();
         }
@@ -175,7 +175,7 @@ public class JexlersView {
 
     public String getLog() {
          if (jexlerId == null) {
-            if (jexlers.getIssues().size() == 0) {
+            if (container.getIssues().size() == 0) {
                 return "<a href='?cmd=log" + getJexlerParam() + "'><img src='log.gif'></a>";
             } else {
                 return "<a href='?cmd=log" + getJexlerParam() + "'><img src='error.gif'></a>";
@@ -193,7 +193,7 @@ public class JexlersView {
     public String getIssues() {
         List<Issue> issues;
         if (jexler == null) {
-            issues = jexlers.getIssues();
+            issues = container.getIssues();
         } else {
             issues = jexler.getIssues();
         }
@@ -239,7 +239,7 @@ public class JexlersView {
             builder.append(logData);
         } catch (IOException e) {
             String msg = "Could not read logfile '" + logfile.getAbsolutePath() + "'.";
-            jexlers.trackIssue(null, msg, e);
+            container.trackIssue(null, msg, e);
             builder.append(msg);
         }
         builder.append("</pre>\n");
@@ -294,8 +294,8 @@ public class JexlersView {
 
     private void handleStart() {
         if (targetJexlerId == null) {
-            jexlers.start();
-            jexlers.waitForStartup(startTimeout);
+            container.start();
+            container.waitForStartup(startTimeout);
         } else if (targetJexler != null) {
             targetJexler.start();
             targetJexler.waitForStartup(startTimeout);
@@ -304,8 +304,8 @@ public class JexlersView {
 
     private void handleStop() {
         if (targetJexlerId == null) {
-            jexlers.stop();
-            jexlers.waitForShutdown(stopTimeout);
+            container.stop();
+            container.waitForShutdown(stopTimeout);
         } else if (targetJexler != null) {
             targetJexler.stop();
             targetJexler.waitForShutdown(stopTimeout);
@@ -319,7 +319,7 @@ public class JexlersView {
         String source = request.getParameter("source");
         if (source != null) {
             source = source.replace("\r\n", "\n");
-            File file = jexlers.getJexlerFile(targetJexlerId);
+            File file = container.getJexlerFile(targetJexlerId);
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
                 writer.write(source);
             } catch (IOException e) {
@@ -327,7 +327,7 @@ public class JexlersView {
                 if (targetJexler != null) {
                     targetJexler.trackIssue(null, msg, e);
                 } else {
-                    jexlers.trackIssue(null, msg, e);
+                    container.trackIssue(null, msg, e);
                 }
             }
         }
@@ -337,7 +337,7 @@ public class JexlersView {
     	if (!JexlerContextListener.scriptAllowEdit()) {
     		return;
     	}
-        File file = jexlers.getJexlerFile(targetJexlerId);
+        File file = container.getJexlerFile(targetJexlerId);
         file.delete();
     }
 
@@ -345,13 +345,13 @@ public class JexlersView {
         if (targetJexler != null) {
             targetJexler.forgetIssues();
         } else {
-            jexlers.forgetIssues();
+            container.forgetIssues();
         }
     }
 
     private void handleForgetAll() {
-        jexlers.forgetIssues();
-        List<Jexler> jexlersList = jexlers.getJexlers();
+        container.forgetIssues();
+        List<Jexler> jexlersList = container.getJexlers();
         for (Jexler jexler : jexlersList) {
             jexler.forgetIssues();
         }

@@ -25,10 +25,9 @@ import javax.servlet.ServletContextListener;
 
 import groovy.lang.GroovyClassLoader;
 import net.jexler.Jexler;
-import net.jexler.Jexlers;
-import net.jexler.JexlersFactory;
+import net.jexler.JexlerContainer;
+import net.jexler.JexlerContainerFactory;
 
-import net.jexler.service.CronService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +48,7 @@ public class JexlerContextListener implements ServletContextListener    {
 	
 	private static String version;
     private static ServletContext servletContext;
-    private static Jexlers jexlers;
+    private static JexlerContainer container;
     private static File logfile;
     
     private static long startTimeout;
@@ -71,8 +70,8 @@ public class JexlerContextListener implements ServletContextListener    {
         log.info("Welcome to jexler. Version: " + version);
         servletContext = event.getServletContext();
         String webappPath = servletContext.getRealPath("/");
-        jexlers = new JexlersFactory().get(new File(webappPath, "WEB-INF/jexlers"));
-        jexlers.autostart();
+        container = new JexlerContainerFactory().get(new File(webappPath, "WEB-INF/jexlers"));
+        container.autostart();
 
         // determine log file
         logfile = null;
@@ -120,8 +119,8 @@ public class JexlerContextListener implements ServletContextListener    {
 
     @Override
     public void contextDestroyed(ServletContextEvent event) {
-        jexlers.stop();
-        jexlers.close();
+        container.stop();
+        container.close();
         log.info("Jexler done.");
     }
 
@@ -133,8 +132,8 @@ public class JexlerContextListener implements ServletContextListener    {
         return servletContext;
     }
 
-    public static Jexlers getJexlers() {
-        return jexlers;
+    public static JexlerContainer getContainer() {
+        return container;
     }
 
     public static File getLogfile() {

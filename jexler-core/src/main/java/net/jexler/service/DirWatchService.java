@@ -85,7 +85,7 @@ public class DirWatchService extends ServiceBase {
 
     /**
      * Set cron4j scheduler.
-     * Default is a scheduler shared by all jexlers in the same jexlers instance.
+     * Default is a scheduler shared by all jexlers in the same jexler container.
      * @return this (for chaining calls)
      */
     public DirWatchService setScheduler(Scheduler scheduler) {
@@ -128,7 +128,7 @@ public class DirWatchService extends ServiceBase {
         watchThread.setDaemon(true);
         setRunState(RunState.IDLE);
         if (scheduler == null) {
-            scheduler = getJexler().getJexlers().getSharedScheduler();
+            scheduler = getJexler().getContainer().getSharedScheduler();
         }
         scheduledId = scheduler.schedule(cron, watchThread);
     }

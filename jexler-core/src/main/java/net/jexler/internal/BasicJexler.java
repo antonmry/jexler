@@ -32,8 +32,7 @@ import groovy.lang.Script;
 import net.jexler.Issue;
 import net.jexler.IssueTracker;
 import net.jexler.Jexler;
-import net.jexler.JexlerUtil;
-import net.jexler.Jexlers;
+import net.jexler.JexlerContainer;
 import net.jexler.MetaInfo;
 import net.jexler.RunState;
 import net.jexler.service.BasicServiceGroup;
@@ -75,7 +74,7 @@ public class BasicJexler implements Jexler {
     }
 
     private final File file;
-    private final Jexlers jexlers;
+    private final JexlerContainer container;
     private final String id;
 
     private volatile RunState runState;
@@ -97,12 +96,12 @@ public class BasicJexler implements Jexler {
     /**
      * Constructor.
      * @param file file with jexler script
-     * @param jexlers jexlers instance that contains this jexler
+     * @param container jexler container that contains this jexler
      */
-    public BasicJexler(File file, Jexlers jexlers) {
+    public BasicJexler(File file, JexlerContainer container) {
         this.file = file;
-        this.jexlers = jexlers;
-        id = jexlers.getJexlerId(file);
+        this.container = container;
+        id = container.getJexlerId(file);
         runState = RunState.OFF;
         events = new Events();
         services = new BasicServiceGroup(id + ".services");
@@ -187,7 +186,7 @@ public class BasicJexler implements Jexler {
                         // run script
                         final Binding binding = new Binding();
                         binding.setVariable("jexler", thisJexler);
-                        binding.setVariable("jexlers", jexlers);
+                        binding.setVariable("container", container);
                         binding.setVariable("events", events);
                         binding.setVariable("services", services);
                         binding.setVariable("log", log);
@@ -319,8 +318,8 @@ public class BasicJexler implements Jexler {
     }
 
     @Override
-    public Jexlers getJexlers() {
-        return jexlers;
+    public JexlerContainer getContainer() {
+        return container;
     }
 
     // Workaround for bug GROOVY-7407:

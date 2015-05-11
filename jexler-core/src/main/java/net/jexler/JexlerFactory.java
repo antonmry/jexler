@@ -33,8 +33,8 @@ public class JexlerFactory  {
     /**
      * Get jexler instance.
      */
-	public Jexler get(File file, Jexlers jexlers) {
-		return new BasicJexler(file, jexlers);
+	public Jexler get(File file, JexlerContainer container) {
+		return new BasicJexler(file, container);
 	}
 
 }

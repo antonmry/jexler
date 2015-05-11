@@ -22,9 +22,9 @@ import net.jexler.service.Service;
 
 /**
  * Interface for an issue.
- * Issues are typically created and attached to a jexler or jexlers
- * if something could not be done, often because some exception
- * occurred.
+ * Issues are typically created and attached to a jexler
+ * or jexler container if something could not be done,
+ * often because some exception occurred.
  *
  * @author $(whois jexler.net)
  */

@@ -22,7 +22,7 @@ import net.jexler.service.Service;
 
 /**
  * Interface for tracking issues.
- * Implemented, for example, by jexler and jexlers.
+ * Implemented, for example, by jexler and jexler container.
  *
  * @author $(whois jexler.net)
  */
