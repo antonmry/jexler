@@ -17,18 +17,10 @@
 package net.jexler.service;
 
 import it.sauronsoftware.cron4j.Scheduler;
-import net.jexler.Issue;
 import net.jexler.internal.MockJexler;
 import net.jexler.test.FastTests;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import java.io.File;
-import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests the respective class.

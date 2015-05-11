@@ -447,7 +447,7 @@ public final class BasicJexlerTest
     public void shallowTestOfWrappingGrapeEngine() throws Exception {
         final BasicJexler.WorkaroundGroovy7407WrappingGrapeEngine engine =
                 new BasicJexler.WorkaroundGroovy7407WrappingGrapeEngine("lock", new MockEngine());
-        final Map testMap = new HashMap();
+        final Map<String,Object> testMap = new HashMap<>();
         testMap.put("calleeDepth", 3);
         assertNull("must be null", engine.grab("dummy endorsed"));
         assertNull("must be null", engine.grab(new HashMap()));

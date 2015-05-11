@@ -16,7 +16,6 @@
 
 package net.jexler.internal;
 
-import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 
 import java.io.BufferedReader;

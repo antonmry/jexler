@@ -25,8 +25,6 @@ import net.jexler.service.StopEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-
 /**
  * Jexler dispatcher.
  *
