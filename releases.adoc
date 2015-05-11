@@ -4,7 +4,9 @@ image:http://www.jexler.net/jexler.jpg["jexler logo", link="http:www.jexler.net/
 
 === 1.0.16-SNAPSHOT (20XX-XX-XX)
 
-* ...
+* JexlerDispatcher (new): Allows to dispatch a typical stages in a jexler's
+  life cycle and during event handling to individual handler methods, like
+  declare(), start(), handleCronEvent(event), stop().
 
 === 1.0.15 (2015-05-10)
 

@@ -72,10 +72,11 @@ subprojects {
     executionData test, slowTests
     sourceSets sourceSets.main
   }
-  /*task jacoco(type:JacocoReport, dependsOn: 'test') {
+
+  task jacocoFast(type:JacocoReport, dependsOn: 'test') {
     executionData test
     sourceSets sourceSets.main
-  }*/
+  }
 
   task pom << {
     pom {

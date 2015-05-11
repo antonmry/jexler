@@ -97,6 +97,85 @@ If you want to try it out and play with jexler immediately:
 * Open http://localhost:9080/ in a web browser
 * See the README at github for alternatives...
 
+=== Dispatching
+
+It is also possible to define a jexler in a more structured way by defining
+methods that handle different life cycle stages and received events:
+
+[source,groovy]
+----
+[ "autostart" : true ]
+
+JexlerDispatcher.dispatch(this)
+
+// optional, called first
+void declare() {
+  log.trace("-- declare()")
+  cron = "* * * * *"
+}
+
+// mandatory, called after declare(), before the event loop
+void start() {
+  log.trace("-- start()")
+  services.add(new CronService(jexler, "EveryMinute").setCron(cron))
+  services.add(new CronService(jexler, "EveryTwoMinutes").setCron("*/2 * * * *"))
+  services.add(new CronService(jexler, "OnceImmediately").setCron("now"))
+  services.start()
+}
+
+// optional*, called during event loop
+// handle<event-class><service-id>(event), searched first
+void handleCronEventEveryMinute(def event) {
+  log.trace("-- handleCronEventEveryMinute(event)")
+  log.trace("every minute, it is now ${new Date()} ($event.service.id)")
+}
+
+// optional*, called during event loop
+// handle<event-class><service-id>(event), searched second
+void handleCronEventEveryTwoMinutes(def event) {
+  log.trace("-- handleCronEventEveryTwoMinutes(event)")
+  log.trace("every two minutes")
+}
+
+// optional*, called during event loop
+// handle(event), fallback, searched last
+// * if no matching handler was found, an issue is tracked
+void handle(def event) {
+  log.trace("-- handle(event)")
+  log.trace("got event $event.service.id")
+}
+
+// optional, called after receiving StopEvent in the event loop, just before the script returns
+void stop() {
+  log.trace("-- stop()")
+  // nothing to do, services.stop() is called automatically after the script returns
+}
+----
+
+So that the first example above could e.g. be written as:
+
+[source,groovy]
+----
+[ "autostart" : true ]
+
+JexlerDispatcher.dispatch(this)
+
+void start() {
+  services.add(new CronService(jexler, "every-minute").setCron("* * * * *"))
+  services.start()
+}
+
+void handleCronEvent(def event) {
+    log.info("hello")
+}
+----
+
+Under the hood, its still just a running Groovy script (and if you do not
+like the default behavior of `JexlerDispatcher`, get its Java source from the jexler
+source at github and copy it to a  Groovy script called e.g. `MyJexlerDispatcher.groovy`
+put it into the jexlers directory, adjust it as needed, and then call
+`MyJexlerDispatcher.dispatch(this)` instead at the top of your jexler scripts).
+
 == Services
 
 === CronService
