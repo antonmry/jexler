@@ -1,5 +1,6 @@
 [ "autostart" : true ]
 
+// dispatch to methods below
 JexlerDispatcher.dispatch(this)
 
 // optional, called first

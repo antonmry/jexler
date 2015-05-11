@@ -106,6 +106,7 @@ methods that handle different life cycle stages and received events:
 ----
 [ "autostart" : true ]
 
+// dispatch to methods below
 JexlerDispatcher.dispatch(this)
 
 // optional, called first
@@ -202,7 +203,7 @@ log.trace(cronEvent.cron)
 Implemented using the Open Source http://www.sauronsoftware.it/projects/cron4j/[cron4j] library.
 
 By default, a cron4j `Scheduler` instance that is shared between all jexlers
-is used (because each scheduler creates a thread). Alternatively, the scheduler
+is used (because each scheduler creates a new thread). Alternatively, the scheduler
 can be explicitly set when constructing the `CronService` instance:
 `setScheduler(Scheduler scheduler)`.
 
