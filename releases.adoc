@@ -2,6 +2,10 @@ image:http://www.jexler.net/jexler.jpg["jexler logo", link="http:www.jexler.net/
 
 = jexler releases
 
+=== 1.0.17 (2017-XX-XX)
+
+* But if the little fox...
+
 === 1.0.16 (2015-05-12)
 
 * JexlerDispatcher (new): Allows to dispatch a typical stages in a jexler's
