@@ -383,13 +383,13 @@ public class JexlerContainerView {
     private static String readTextFileReversedLines(File file) throws IOException {
         StringBuilder builder = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            do {
+            while (true) {
                 String line = reader.readLine();
                 if (line == null) {
                     break;
                 }
                 builder.insert(0, line + System.lineSeparator());
-            } while (true);
+            }
         }
         return builder.toString();
     }

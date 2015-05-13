@@ -77,7 +77,7 @@ public class JexlerUtil {
      */
     public static void waitAtLeast(long ms) {
     	long t0 = System.currentTimeMillis();
-    	do {
+    	while (true) {
     		long t1 = System.currentTimeMillis();
     		if (t1-t0 >= ms) {
     			return;
@@ -86,7 +86,7 @@ public class JexlerUtil {
     			Thread.sleep(ms - (t1-t0));
     		} catch (InterruptedException e) {
     		}
-    	} while (true);
+    	}
     }
 
 }

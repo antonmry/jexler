@@ -153,7 +153,7 @@ public class MockJexler implements Jexler {
 	 */
 	public Event takeEvent(long timeout) {
     	long t0 = System.currentTimeMillis();
-    	do {
+		while (true) {
     		Event event = events.poll();
     		if (event != null) {
     			return event;
@@ -165,7 +165,7 @@ public class MockJexler implements Jexler {
     			Thread.sleep(10);
     		} catch (InterruptedException e) {
     		}
-    	} while (true);
+    	}
 	}
 
 }

@@ -41,7 +41,7 @@ public class ServiceUtil {
 		
     public static boolean waitForStartup(Service service, long timeout) {
     	long t0 = System.currentTimeMillis();
-    	do {
+		while (true) {
     		if (!service.getRunState().isBusyStarting()) {
     			return true;
     		}
@@ -49,12 +49,12 @@ public class ServiceUtil {
     			return false;
     		}
 			JexlerUtil.waitAtLeast(10);
-    	} while (true);
+    	}
     }
     
     public static boolean waitForShutdown(Service service, long timeout) {
        	long t0 = System.currentTimeMillis();
-    	do {
+		while (true) {
     		if (service.isOff()) {
     			return true;
     		}
@@ -62,7 +62,7 @@ public class ServiceUtil {
     			return false;
     		}
 			JexlerUtil.waitAtLeast(10);
-    	} while (true);
+    	}
     }
 
 }
