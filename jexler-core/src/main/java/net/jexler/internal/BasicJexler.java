@@ -61,7 +61,7 @@ public class BasicJexler implements Jexler {
     	@Override
     	public Event take() {
     		runState = RunState.IDLE;
-    		do {
+            while (true) {
     			try {
     				Event event = super.take();
     				runState = RunState.BUSY_EVENT;
@@ -69,7 +69,7 @@ public class BasicJexler implements Jexler {
     			} catch (InterruptedException e) {
     				trackIssue(BasicJexler.this, "Could not take event.", e);
     			}
-    		} while (true);
+    		}
     	}
     }
 
