@@ -36,8 +36,9 @@ public final class MockService extends ServiceBase
     private volatile int nEventsGotBack = 0;
     private RuntimeException stopRuntimeException = null;
 
-    public static void setTestInstance(Jexler jexler, String id) {
+    public static MockService setTestInstance(Jexler jexler, String id) {
         instance = new MockService(jexler, id);
+        return instance;
     }
 
     public static MockService getTestInstance() {

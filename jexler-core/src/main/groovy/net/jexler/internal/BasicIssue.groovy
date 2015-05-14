@@ -49,7 +49,7 @@ class BasicIssue implements Issue {
     @Override
     public int compareTo(Issue issue) {
         // newest date first
-        return -date.compareTo(issue.getDate())
+        return -date.compareTo(issue.date)
     }
 
     /**
@@ -58,7 +58,7 @@ class BasicIssue implements Issue {
     @Override
     public String toString() {
         return """Issue: [message=${message==null ? 'null' : "'${JexlerUtil.toSingleLine(message)}'"}\
-,service=${service == null ? 'null' : "'${service.getClass().getName() + ":" + service.getId()}'"}\
+,service=${service == null ? 'null' : "'${service.class.name + ":" + service.id}'"}\
 ,cause=${cause == null ? 'null' : "'${JexlerUtil.toSingleLine(cause.toString())}'"}\
 ,stackTrace='${JexlerUtil.toSingleLine(stackTrace)}']"""
     }
