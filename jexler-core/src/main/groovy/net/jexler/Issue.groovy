@@ -14,11 +14,11 @@
    limitations under the License.
 */
 
-package net.jexler;
+package net.jexler
 
-import java.util.Date;
+import groovy.transform.CompileStatic
 
-import net.jexler.service.Service;
+import net.jexler.service.Service
 
 /**
  * Interface for an issue.
@@ -28,39 +28,40 @@ import net.jexler.service.Service;
  *
  * @author $(whois jexler.net)
  */
+@CompileStatic
 public interface Issue extends Comparable<Issue> {
 
 	/**
 	 * Get date and time of when the issue occurred.
 	 */
-    Date getDate();
+    Date getDate()
 
     /**
      * Get service where the issue occurred, may be null.
      */
-    Service getService();
+    Service getService()
 
     /**
      * Get message set when issue was created.
      */
-    String getMessage();
+    String getMessage()
 
     /**
      * Get throwable that caused the issue, or null if none.
      */
-    Throwable getCause();
+    Throwable getCause()
 
     /**
      * Get exception stack trace as a multi-line string.
      * @return stack trace or empty if none or could not obtain it
      */
-    String getStackTrace();
+    String getStackTrace()
 
     /**
      * Compares issues, newer is smaller (first in a sorted list).
      */
     @Override
-    int compareTo(Issue issue);
+    int compareTo(Issue issue)
 
 }
 

@@ -81,7 +81,7 @@ public final class BasicIssueTest
 
 		message = "got \r this \n and \r\n that \r\n\n\r .";
 		issue = new BasicIssue(service, message, cause);
-		System.out.println(issue);
+		//System.out.println(issue);
 		assertEquals("must be same", message, issue.getMessage());
 		assertTrue("must be true", issue.toString().startsWith(
 				"Issue: [message='got %n this %n and %n that %n%n%n .'"));

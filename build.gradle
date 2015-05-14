@@ -20,12 +20,21 @@ subprojects {
     mavenCentral()
   }
 
+  configurations {
+    jansiForGroovydoc.extendsFrom(runtime)
+  }
+
   dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.4.3:indy'
     compile 'org.apache.ivy:ivy:2.4.0'
     compile 'org.slf4j:slf4j-api:1.7.10'
     compile 'ch.qos.logback:logback-classic:1.1.2'
     testCompile 'junit:junit:4.12'
+    jansiForGroovydoc 'org.fusesource.jansi:jansi:1.11'
+  }
+
+  groovydoc {
+    groovyClasspath = project.configurations.jansiForGroovydoc
   }
 
   task sourcesJar(type: Jar, dependsOn:classes) {
@@ -33,14 +42,19 @@ subprojects {
     from sourceSets.main.allSource
   }
 
-  task javadocJar(type: Jar, dependsOn:javadoc) {
+  /*task javadocJar(type: Jar, dependsOn:javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
+  }*/
+
+  task groovydocJar(type: Jar, dependsOn:groovydoc) {
+    classifier = 'javadoc'
+    from groovydoc.destinationDir
   }
 
   artifacts {
     archives sourcesJar 
-    archives javadocJar 
+    archives groovydocJar
   }
    
   test {
