@@ -37,22 +37,22 @@ import org.junit.experimental.categories.Category;
 @Category(FastTests.class)
 public final class JexlerFactoryTest
 {
-	
-	@Test
-    public void testBasic() throws Exception {
-		File dir = Files.createTempDirectory(null).toFile();
-		JexlerContainerFactory containerFactory = new JexlerContainerFactory();
-		JexlerContainer container = containerFactory.get(dir);
 
-		File file = new File(dir, container.getJexlerFile("test").getName());
-		Files.createFile(file.toPath());
-		
-		JexlerFactory jexlerFactory = new JexlerFactory();
-		Jexler jexler = jexlerFactory.get(file, container);
-		assertNotNull("must not be null", jexler);
-		assertTrue("must be true", jexler instanceof BasicJexler);
-		assertEquals("must be same", file.getCanonicalPath(), jexler.getFile().getCanonicalPath());
-		assertEquals("must be same", "test", jexler.getId());
-	}
-	
+    @Test
+    public void testBasic() throws Exception {
+        File dir = Files.createTempDirectory(null).toFile();
+        JexlerContainerFactory containerFactory = new JexlerContainerFactory();
+        JexlerContainer container = containerFactory.get(dir);
+
+        File file = new File(dir, container.getJexlerFile("test").getName());
+        Files.createFile(file.toPath());
+
+        JexlerFactory jexlerFactory = new JexlerFactory();
+        Jexler jexler = jexlerFactory.get(file, container);
+        assertNotNull("must not be null", jexler);
+        assertTrue("must be true", jexler instanceof BasicJexler);
+        assertEquals("must be same", file.getCanonicalPath(), jexler.getFile().getCanonicalPath());
+        assertEquals("must be same", "test", jexler.getId());
+    }
+
 }

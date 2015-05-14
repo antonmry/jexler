@@ -43,14 +43,14 @@ import static org.junit.Assert.fail;
 public final class JexlerDispatcherTest
 {
 
-	@Test
+    @Test
     public void testNoInstance() throws Exception {
-		try {
-			new JexlerDispatcher();
-			fail("must throw");
-		} catch (JexlerDispatcher.NoInstanceException e) {
-		}
-	}
+        try {
+            new JexlerDispatcher();
+            fail("must throw");
+        } catch (JexlerDispatcher.NoInstanceException e) {
+        }
+    }
 
     @Test
     public void testMinimalMethodsAndNoSuitableHandler() throws Exception {

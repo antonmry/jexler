@@ -33,100 +33,100 @@ import org.junit.experimental.categories.Category;
 @Category(SlowTests.class)
 public final class ServiceUtilSlowTest
 {
-	
-	private final static long MS_10_SEC = 10000;
-	private final static long MS_20_SEC = 20000;
-	private final static long MS_30_SEC = 30000;
-	
-	static private class InterruptCounter {
-		public int count = 0;
-	}
 
-	/**
-	 * Takes about 30 seconds to complete.
-	 */
-	@Test
+    private final static long MS_10_SEC = 10000;
+    private final static long MS_20_SEC = 20000;
+    private final static long MS_30_SEC = 30000;
+
+    static private class InterruptCounter {
+        public int count = 0;
+    }
+
+    /**
+     * Takes about 30 seconds to complete.
+     */
+    @Test
     public void testWaitForStartup() throws Exception {
-		
-		final MockService service = new MockService(null, "mock");
-		
-		service.setRunState(RunState.BUSY_STARTING);
-		assertFalse("must be false", ServiceUtil.waitForStartup(service, 0));
-		
-		final Thread current = Thread.currentThread();
-		final InterruptCounter interruptCounter = new InterruptCounter();
-		
-		// interrupts waiting thread once after 10 seconds
-		Thread interrupter = new Thread(new Runnable() {
+
+        final MockService service = new MockService(null, "mock");
+
+        service.setRunState(RunState.BUSY_STARTING);
+        assertFalse("must be false", ServiceUtil.waitForStartup(service, 0));
+
+        final Thread current = Thread.currentThread();
+        final InterruptCounter interruptCounter = new InterruptCounter();
+
+        // interrupts waiting thread once after 10 seconds
+        Thread interrupter = new Thread(new Runnable() {
             public void run() {
-            	try {
-            		Thread.sleep(MS_10_SEC);
-            	} catch (InterruptedException e) {
-            	}
-            	current.interrupt();
-            	interruptCounter.count++;
+                try {
+                    Thread.sleep(MS_10_SEC);
+                } catch (InterruptedException e) {
+                }
+                current.interrupt();
+                interruptCounter.count++;
             }
-		});
-		
-		// sets service to idle after 20 seconds
-		Thread starter = new Thread(new Runnable() {
+        });
+
+        // sets service to idle after 20 seconds
+        Thread starter = new Thread(new Runnable() {
             public void run() {
-            	try {
-            		Thread.sleep(MS_20_SEC);
-            	} catch (InterruptedException e) {
-            	}
-            	service.setRunState(RunState.IDLE);
+                try {
+                    Thread.sleep(MS_20_SEC);
+                } catch (InterruptedException e) {
+                }
+                service.setRunState(RunState.IDLE);
             }
-		});
-		
-		interrupter.start();
-		starter.start();
-		assertTrue("must be true", ServiceUtil.waitForStartup(service, MS_30_SEC));
-		assertEquals("must be same", 1, interruptCounter.count);
-	}
-	
-	
-	/**
-	 * Takes about 30 seconds to complete.
-	 */
-	@Test
+        });
+
+        interrupter.start();
+        starter.start();
+        assertTrue("must be true", ServiceUtil.waitForStartup(service, MS_30_SEC));
+        assertEquals("must be same", 1, interruptCounter.count);
+    }
+
+
+    /**
+     * Takes about 30 seconds to complete.
+     */
+    @Test
     public void testWaitForShutdown() throws Exception {
-		
-		final MockService service = new MockService(null, "mock");
-		
-		service.setRunState(RunState.IDLE);
-		assertFalse("must be false", ServiceUtil.waitForShutdown(service, 0));
-		
-		final Thread current = Thread.currentThread();
-		final InterruptCounter interruptCounter = new InterruptCounter();
-		
-		// interrupts waiting thread once after 10 seconds
-		Thread interrupter = new Thread(new Runnable() {
+
+        final MockService service = new MockService(null, "mock");
+
+        service.setRunState(RunState.IDLE);
+        assertFalse("must be false", ServiceUtil.waitForShutdown(service, 0));
+
+        final Thread current = Thread.currentThread();
+        final InterruptCounter interruptCounter = new InterruptCounter();
+
+        // interrupts waiting thread once after 10 seconds
+        Thread interrupter = new Thread(new Runnable() {
             public void run() {
-            	try {
-            		Thread.sleep(MS_10_SEC);
-            	} catch (InterruptedException e) {
-            	}
-            	current.interrupt();
-            	interruptCounter.count++;
+                try {
+                    Thread.sleep(MS_10_SEC);
+                } catch (InterruptedException e) {
+                }
+                current.interrupt();
+                interruptCounter.count++;
             }
-		});
-		
-		// sets service to off after 20 seconds
-		Thread stopper = new Thread(new Runnable() {
+        });
+
+        // sets service to off after 20 seconds
+        Thread stopper = new Thread(new Runnable() {
             public void run() {
-            	try {
-            		Thread.sleep(MS_20_SEC);
-            	} catch (InterruptedException e) {
-            	}
-            	service.setRunState(RunState.OFF);
+                try {
+                    Thread.sleep(MS_20_SEC);
+                } catch (InterruptedException e) {
+                }
+                service.setRunState(RunState.OFF);
             }
-		});
-		
-		interrupter.start();
-		stopper.start();
-		assertTrue("must be true", ServiceUtil.waitForShutdown(service, MS_30_SEC));
-		assertEquals("must be same", 1, interruptCounter.count);
-	}
+        });
+
+        interrupter.start();
+        stopper.start();
+        assertTrue("must be true", ServiceUtil.waitForShutdown(service, MS_30_SEC));
+        assertEquals("must be same", 1, interruptCounter.count);
+    }
 
 }

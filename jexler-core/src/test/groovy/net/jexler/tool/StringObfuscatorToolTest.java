@@ -32,13 +32,13 @@ import org.junit.experimental.categories.Category;
 @Category(FastTests.class)
 public final class StringObfuscatorToolTest
 {
-	
-	@Test
+
+    @Test
     public void testDefaultInstance() throws Exception {
-		StringObfuscatorTool tool = new StringObfuscatorTool();
-		int byteBufferPadLen = 64;
-		int blockSize = 16;
-		int expectedObfuscatedLen = 2 * (byteBufferPadLen + blockSize);
+        StringObfuscatorTool tool = new StringObfuscatorTool();
+        int byteBufferPadLen = 64;
+        int blockSize = 16;
+        int expectedObfuscatedLen = 2 * (byteBufferPadLen + blockSize);
         
         String plain = "test";
         String obfus = tool.obfuscate(plain);
@@ -81,22 +81,22 @@ public final class StringObfuscatorToolTest
         // too long in UTF-8
         plain = "12345678901234567890123456789012345678901234567\u1234";
         try {
-        	tool.obfuscate(plain);
-        	fail("must throw");
+            tool.obfuscate(plain);
+            fail("must throw");
         } catch (IllegalArgumentException e) {
-        	assertEquals("must be same", e.getMessage(),
-        			"Input string too long (50 bytes UTF-8 encoded, max allowed: 47)");
+            assertEquals("must be same", e.getMessage(),
+                    "Input string too long (50 bytes UTF-8 encoded, max allowed: 47)");
         }
-	}
-	
-	@Test
+    }
+
+    @Test
     public void testCustomInstance() throws Exception {
-		StringObfuscatorTool tool = new StringObfuscatorTool();
-		tool.setParameters("0011223344556677", "aabbccddeeff0011", "DES", "DES/CBC/PKCS5Padding");
-		int byteBufferPadLen = 128;
-		tool.setByteBufferPadLen(byteBufferPadLen);
-		int blockSize = 8;
-		int expectedObfuscatedLen = 2 * (byteBufferPadLen + blockSize);
+        StringObfuscatorTool tool = new StringObfuscatorTool();
+        tool.setParameters("0011223344556677", "aabbccddeeff0011", "DES", "DES/CBC/PKCS5Padding");
+        int byteBufferPadLen = 128;
+        tool.setByteBufferPadLen(byteBufferPadLen);
+        int blockSize = 8;
+        int expectedObfuscatedLen = 2 * (byteBufferPadLen + blockSize);
         
         String plain = "test";
         String obfus = tool.obfuscate(plain);
@@ -130,8 +130,8 @@ public final class StringObfuscatorToolTest
         
         // maximal length
         plain = "12345678901234567890123456789012345678901234567890" +
-        		"12345678901234567890123456789012345678901234567890" +
-        		"12345678901";
+                "12345678901234567890123456789012345678901234567890" +
+                "12345678901";
         obfus = tool.obfuscate(plain);
         //System.out.println(obfus);
         assertEquals("must be same", expectedObfuscatedLen, obfus.length());
@@ -140,14 +140,14 @@ public final class StringObfuscatorToolTest
         
         // too long in UTF-8
         plain = "12345678901234567890123456789012345678901234567890" +
-        		"12345678901234567890123456789012345678901234567890" +
-        		"1234567890\u1234";
+                "12345678901234567890123456789012345678901234567890" +
+                "1234567890\u1234";
         try {
-        	tool.obfuscate(plain);
-        	fail("must throw");
+            tool.obfuscate(plain);
+            fail("must throw");
         } catch (IllegalArgumentException e) {
-        	assertEquals("must be same", e.getMessage(),
-        			"Input string too long (113 bytes UTF-8 encoded, max allowed: 111)");
+            assertEquals("must be same", e.getMessage(),
+                    "Input string too long (113 bytes UTF-8 encoded, max allowed: 111)");
         }
         
         // different byteBufferPadLen
@@ -158,12 +158,12 @@ public final class StringObfuscatorToolTest
         assertEquals("must be same", expectedObfuscatedLen, obfus.length());
         tool.setByteBufferPadLen(64);
         try {
-        	tool.deobfuscate(obfus);
-        	fail("must throw");
+            tool.deobfuscate(obfus);
+            fail("must throw");
         } catch (IllegalArgumentException e) {
-        	assertEquals("must be same", e.getMessage(),
-        			"Illegal length of deciphered buffer (128 bytes, expected 64)");
+            assertEquals("must be same", e.getMessage(),
+                    "Illegal length of deciphered buffer (128 bytes, expected 64)");
         }
-	}
+    }
 
 }

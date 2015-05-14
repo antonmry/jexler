@@ -33,18 +33,18 @@ import org.slf4j.LoggerFactory;
  */
 public class BasicServiceGroup implements ServiceGroup {
 
-	private static final Logger log = LoggerFactory.getLogger(BasicServiceGroup.class);
+    private static final Logger log = LoggerFactory.getLogger(BasicServiceGroup.class);
 
     private final String id;
-	private final List<Service> services;
+    private final List<Service> services;
 
     /**
      * Constructor.
      * @param id the service group id
      */
     public BasicServiceGroup(String id) {
-    	this.id = id;
-    	this.services = new LinkedList<>();
+        this.id = id;
+        this.services = new LinkedList<>();
     }
     
     /**
@@ -53,49 +53,49 @@ public class BasicServiceGroup implements ServiceGroup {
      * first service throws while starting up, no attempt
      * is made to start the others.
      */
-	@Override
+    @Override
     public void start() {
-		synchronized(services) {
-			for (Service service : services) {
-				service.start();
-			}
-		}
-    }
-
-	@Override
-	public boolean waitForStartup(long timeout) {
-		return ServiceUtil.waitForStartup(this, timeout);
-	}
-	
-	/**
-	 * Stop all services in a group.
-	 * Runtime exceptions are only logged, hence it is always
-	 * attempted to stop all services.
-	 */
-	@Override
-    public void stop() {
-		RuntimeException ex = null;
-		synchronized(services) {
-			for (Service service : services) {
-				try {
-					service.stop();
-				} catch (RuntimeException e) {
-					if (ex == null) {
-						ex = e;
-					}
-					log.trace("Could not stop service '" + id + "'", e);
-				}
-			}
-		}
-        if (ex != null) {
-        	throw ex;
+        synchronized(services) {
+            for (Service service : services) {
+                service.start();
+            }
         }
     }
 
-	@Override
-	public boolean waitForShutdown(long timeout) {
-		return ServiceUtil.waitForShutdown(this, timeout);
-	}
+    @Override
+    public boolean waitForStartup(long timeout) {
+        return ServiceUtil.waitForStartup(this, timeout);
+    }
+
+    /**
+     * Stop all services in a group.
+     * Runtime exceptions are only logged, hence it is always
+     * attempted to stop all services.
+     */
+    @Override
+    public void stop() {
+        RuntimeException ex = null;
+        synchronized(services) {
+            for (Service service : services) {
+                try {
+                    service.stop();
+                } catch (RuntimeException e) {
+                    if (ex == null) {
+                        ex = e;
+                    }
+                    log.trace("Could not stop service '" + id + "'", e);
+                }
+            }
+        }
+        if (ex != null) {
+            throw ex;
+        }
+    }
+
+    @Override
+    public boolean waitForShutdown(long timeout) {
+        return ServiceUtil.waitForShutdown(this, timeout);
+    }
 
     /**
      * Get run state of the group.
@@ -106,67 +106,67 @@ public class BasicServiceGroup implements ServiceGroup {
      */
     @Override
     public RunState getRunState() {
-    	Set<RunState> set = new HashSet<>();
-		synchronized(services) {
-			for (Service service : services) {
-				set.add(service.getRunState());
-			}
-		}
-    	switch (set.size()) {
-    	case 0: return RunState.OFF;
-    	case 1: return set.iterator().next();
-    	default:
-    		if (set.contains(RunState.BUSY_STARTING)) {
-    			return RunState.BUSY_STARTING;
-    		} else {
-    			return RunState.IDLE;
-    		}
-    	}
+        Set<RunState> set = new HashSet<>();
+        synchronized(services) {
+            for (Service service : services) {
+                set.add(service.getRunState());
+            }
+        }
+        switch (set.size()) {
+        case 0: return RunState.OFF;
+        case 1: return set.iterator().next();
+        default:
+            if (set.contains(RunState.BUSY_STARTING)) {
+                return RunState.BUSY_STARTING;
+            } else {
+                return RunState.IDLE;
+            }
+        }
     }
 
-	/**
-	 * Check if service is on.
-	 * Considered on if at least one service in the group is on.
-	 */
-	@Override
+    /**
+     * Check if service is on.
+     * Considered on if at least one service in the group is on.
+     */
+    @Override
     public boolean isOn() {
-		synchronized(services) {
-			for (Service service : services) {
-				if (service.isOn()) {
-					return true;
-				}
-			}
-		}
+        synchronized(services) {
+            for (Service service : services) {
+                if (service.isOn()) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
-	/**
-	 * Check if service is off.
-	 * Considered only off if all services in the group are off.
-	 */
-	@Override
+    /**
+     * Check if service is off.
+     * Considered only off if all services in the group are off.
+     */
+    @Override
     public boolean isOff() {
-		return !isOn();
+        return !isOn();
     }
 
-	@Override
-	public String getId() {
-		return id;
-	}
+    @Override
+    public String getId() {
+        return id;
+    }
 
-	@Override
-	public void add(Service service) {
-		synchronized(services) {
-			services.add(service);
-		}
-	}
+    @Override
+    public void add(Service service) {
+        synchronized(services) {
+            services.add(service);
+        }
+    }
 
-	@Override
-	public List<Service> getServices() {
-		synchronized(services) {
-			return services;
-		}
-	}
+    @Override
+    public List<Service> getServices() {
+        synchronized(services) {
+            return services;
+        }
+    }
 
     
 }

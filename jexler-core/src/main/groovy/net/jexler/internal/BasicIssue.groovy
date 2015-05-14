@@ -28,7 +28,7 @@ import net.jexler.service.Service
  */
 @CompileStatic
 class BasicIssue implements Issue {
-	
+
     final Date date
     final Service service
     final String message

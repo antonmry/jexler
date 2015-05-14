@@ -58,13 +58,13 @@ subprojects {
   }
    
   test {
-	//testLogging.showStandardStreams = true
-	useJUnit {
+    //testLogging.showStandardStreams = true
+    useJUnit {
       includeCategories 'net.jexler.test.FastTests'
     }
-	//afterTest { desc, result ->
-	//  println "Executing test ${desc.name} [${desc.className}] with result: ${result.resultType}"
-	//}
+    //afterTest { desc, result ->
+    //  println "Executing test ${desc.name} [${desc.className}] with result: ${result.resultType}"
+    //}
   }
 
   jacoco {
@@ -72,7 +72,7 @@ subprojects {
   }
 
   task slowTests(type: Test, dependsOn: 'test') {
-	//testLogging.showStandardStreams = true
+    //testLogging.showStandardStreams = true
     useJUnit {
       includeCategories 'net.jexler.test.SlowTests'
     }
@@ -97,10 +97,10 @@ subprojects {
 
   task pom << {
     pom {
-	  project {
-		name 'jexler'
-		description project.description
-		url 'http://www.jexler.net/'
+      project {
+        name 'jexler'
+        description project.description
+        url 'http://www.jexler.net/'
         packaging project.ext.pkg
         licenses {
           license {
@@ -109,11 +109,11 @@ subprojects {
             distribution 'repo'
           }
         }
-		scm {
-		  url 'https://github.com/jexler/jexler'
-		  connection 'https://github.com/jexler/jexler.git'
-		  developerConnection 'https://github.com/jexler/jexler.git'
-		}
+        scm {
+          url 'https://github.com/jexler/jexler'
+          connection 'https://github.com/jexler/jexler.git'
+          developerConnection 'https://github.com/jexler/jexler.git'
+        }
         developers {
           developer {
             id 'jexler'
@@ -121,7 +121,7 @@ subprojects {
             email 'jex@jexler.net'
           }
         }
-	  }
+      }
     }.writeTo("$buildDir/libs/${project.name}-${project.version}.pom")
   }
 

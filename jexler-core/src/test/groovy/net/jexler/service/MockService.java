@@ -28,73 +28,73 @@ import net.jexler.RunState;
 public final class MockService extends ServiceBase
 {
 
-	private static MockService instance;
-	
-	private volatile int nStarted = 0;
-	private volatile int nStopped = 0;
-	private volatile int nEventsSent = 0;
-	private volatile int nEventsGotBack = 0;
-	private RuntimeException stopRuntimeException = null;
-	
-	public static void setTestInstance(Jexler jexler, String id) {
-		instance = new MockService(jexler, id);
-	}
+    private static MockService instance;
 
-	public static MockService getTestInstance() {
-		return instance;
-	}
-	
-	public MockService(Jexler jexler, String id) {
-		super(jexler,id);
-	}
+    private volatile int nStarted = 0;
+    private volatile int nStopped = 0;
+    private volatile int nEventsSent = 0;
+    private volatile int nEventsGotBack = 0;
+    private RuntimeException stopRuntimeException = null;
 
-	@Override
-	public void start() {
-		nStarted++;
-		this.setRunState(RunState.IDLE);
-	}
+    public static void setTestInstance(Jexler jexler, String id) {
+        instance = new MockService(jexler, id);
+    }
 
-	@Override
-	public void stop() {
-		nStopped++;
-		if (stopRuntimeException != null) {
-			throw stopRuntimeException;
-		}
-		this.setRunState(RunState.OFF);
-	}
-	
-	public void setStopRuntimeException(RuntimeException e) {
-		this.stopRuntimeException = e;
-	}
-	
-	public RuntimeException getStopRuntimeException() {
-		return stopRuntimeException;
-	}
-	
-	public int getNStarted() {
-		return nStarted;
-	}
-	
-	public int getNStopped() {
-		return nStopped;
-	}
-	
-	public void notifyGotEvent() {
-		nEventsGotBack++;
-	}
-	
-	public int getNEventsGotBack() {
-		return nEventsGotBack;
-	}
-	
-	public void notifyJexler() {
-		getJexler().handle(new MockEvent(this));
-		nEventsSent++;
-	}
-	
-	public int getNEventsSent() {
-		return nEventsSent;
-	}
-	
+    public static MockService getTestInstance() {
+        return instance;
+    }
+
+    public MockService(Jexler jexler, String id) {
+        super(jexler,id);
+    }
+
+    @Override
+    public void start() {
+        nStarted++;
+        this.setRunState(RunState.IDLE);
+    }
+
+    @Override
+    public void stop() {
+        nStopped++;
+        if (stopRuntimeException != null) {
+            throw stopRuntimeException;
+        }
+        this.setRunState(RunState.OFF);
+    }
+
+    public void setStopRuntimeException(RuntimeException e) {
+        this.stopRuntimeException = e;
+    }
+
+    public RuntimeException getStopRuntimeException() {
+        return stopRuntimeException;
+    }
+
+    public int getNStarted() {
+        return nStarted;
+    }
+
+    public int getNStopped() {
+        return nStopped;
+    }
+
+    public void notifyGotEvent() {
+        nEventsGotBack++;
+    }
+
+    public int getNEventsGotBack() {
+        return nEventsGotBack;
+    }
+
+    public void notifyJexler() {
+        getJexler().handle(new MockEvent(this));
+        nEventsSent++;
+    }
+
+    public int getNEventsSent() {
+        return nEventsSent;
+    }
+
 
 }

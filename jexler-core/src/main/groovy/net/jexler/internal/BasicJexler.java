@@ -57,20 +57,20 @@ public class BasicJexler implements Jexler {
     private static final Logger log = LoggerFactory.getLogger(BasicJexler.class);
 
     @SuppressWarnings("serial")
-	public class Events extends LinkedBlockingQueue<Event> {
-    	@Override
-    	public Event take() {
-    		runState = RunState.IDLE;
+    public class Events extends LinkedBlockingQueue<Event> {
+        @Override
+        public Event take() {
+            runState = RunState.IDLE;
             while (true) {
-    			try {
-    				Event event = super.take();
-    				runState = RunState.BUSY_EVENT;
-    				return event;
-    			} catch (InterruptedException e) {
-    				trackIssue(BasicJexler.this, "Could not take event.", e);
-    			}
-    		}
-    	}
+                try {
+                    Event event = super.take();
+                    runState = RunState.BUSY_EVENT;
+                    return event;
+                } catch (InterruptedException e) {
+                    trackIssue(BasicJexler.this, "Could not take event.", e);
+                }
+            }
+        }
     }
 
     private final File file;
@@ -140,7 +140,7 @@ public class BasicJexler implements Jexler {
 
         // prepare for compile
         BasicJexler.WorkaroundGroovy7407.wrapGrapeEngineIfConfigured();
-    	final CompilerConfiguration config = new CompilerConfiguration();
+        final CompilerConfiguration config = new CompilerConfiguration();
         if (getMetaInfo().isOn("autoimport", true)) {
             ImportCustomizer importCustomizer = new ImportCustomizer();
             importCustomizer.addStarImports(
@@ -218,11 +218,11 @@ public class BasicJexler implements Jexler {
         
     @Override
     public boolean waitForStartup(long timeout) {
-    	boolean ok = ServiceUtil.waitForStartup(this, timeout);
-    	if (!ok) {
-    		trackIssue(this, "Timeout waiting for jexler startup.", null);
-    	}
-    	return ok;
+        boolean ok = ServiceUtil.waitForStartup(this, timeout);
+        if (!ok) {
+            trackIssue(this, "Timeout waiting for jexler startup.", null);
+        }
+        return ok;
     }
 
     @Override
@@ -244,11 +244,11 @@ public class BasicJexler implements Jexler {
     
     @Override
     public boolean waitForShutdown(long timeout) {
-    	boolean ok = ServiceUtil.waitForShutdown(this, timeout);
-    	if (!ok) {
-    		trackIssue(this, "Timeout waiting for jexler shutdown.", null);
-    	}
-    	return ok;
+        boolean ok = ServiceUtil.waitForShutdown(this, timeout);
+        if (!ok) {
+            trackIssue(this, "Timeout waiting for jexler shutdown.", null);
+        }
+        return ok;
     }
 
     @Override
@@ -273,7 +273,7 @@ public class BasicJexler implements Jexler {
 
     @Override
     public void trackIssue(Service service, String message, Throwable cause) {
-    	issueTracker.trackIssue(service, message, cause);
+        issueTracker.trackIssue(service, message, cause);
     }
 
     @Override
@@ -283,7 +283,7 @@ public class BasicJexler implements Jexler {
 
     @Override
     public void forgetIssues() {
-    	issueTracker.forgetIssues();
+        issueTracker.forgetIssues();
     }
 
     @Override
@@ -303,18 +303,18 @@ public class BasicJexler implements Jexler {
 
     @Override
     public MetaInfo getMetaInfo() {
-    	if (isOn()) {
-    		return metaInfoAtStart;
-    	} else {
-    		try {
-    			return new BasicMetaInfo(file);
-    		} catch (IOException e) {
-    			String msg = "Could not read meta info from jexler file '" 
-    					+ file.getAbsolutePath() + "'.";
-    			trackIssue(this, msg, e);
-    			return BasicMetaInfo.EMPTY;
-    		}
-    	}
+        if (isOn()) {
+            return metaInfoAtStart;
+        } else {
+            try {
+                return new BasicMetaInfo(file);
+            } catch (IOException e) {
+                String msg = "Could not read meta info from jexler file '"
+                        + file.getAbsolutePath() + "'.";
+                trackIssue(this, msg, e);
+                return BasicMetaInfo.EMPTY;
+            }
+        }
     }
 
     @Override

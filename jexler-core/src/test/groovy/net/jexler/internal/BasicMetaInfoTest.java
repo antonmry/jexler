@@ -41,88 +41,88 @@ import org.junit.experimental.categories.Category;
 public final class BasicMetaInfoTest
 {
 
-	@Test
+    @Test
     public void testBasic() throws Exception {
-    	
-		MetaInfo info = BasicMetaInfo.EMPTY;
-		assertTrue("must be true", info.isEmpty());
-		
-		info = new BasicMetaInfo(new File("/does/not/exist/5092749"));
-		assertTrue("must be true", info.isEmpty());
-		
-		try {
-			 new BasicMetaInfo(Files.createTempDirectory(null).toFile());
-			 fail("must throw");
-		} catch (IOException e) {
-		}
-		
-		File testFile = Files.createTempFile(null, null).toFile();
+
+        MetaInfo info = BasicMetaInfo.EMPTY;
+        assertTrue("must be true", info.isEmpty());
+
+        info = new BasicMetaInfo(new File("/does/not/exist/5092749"));
+        assertTrue("must be true", info.isEmpty());
+
+        try {
+             new BasicMetaInfo(Files.createTempDirectory(null).toFile());
+             fail("must throw");
+        } catch (IOException e) {
+        }
+
+        File testFile = Files.createTempFile(null, null).toFile();
         info = new BasicMetaInfo(testFile);
-		assertTrue("must be true", info.isEmpty());
-		
+        assertTrue("must be true", info.isEmpty());
+
         FileWriter writer = new FileWriter(testFile);
         writer.append("// some comment");
         writer.close();
         info = new BasicMetaInfo(testFile);
-		assertTrue("must be true", info.isEmpty());
-		
+        assertTrue("must be true", info.isEmpty());
+
         writer = new FileWriter(testFile);
         writer.append("import java.io.File");
         writer.close();
         info = new BasicMetaInfo(testFile);
-		assertTrue("must be true", info.isEmpty());
-		
+        assertTrue("must be true", info.isEmpty());
+
         writer = new FileWriter(testFile);
         writer.append("# does not compile");
         writer.close();
         info = new BasicMetaInfo(testFile);
-		assertTrue("must be true", info.isEmpty());
-		
+        assertTrue("must be true", info.isEmpty());
+
         writer = new FileWriter(testFile);
         writer.append("throw new RuntimeException()");
         writer.close();
         info = new BasicMetaInfo(testFile);
-		assertTrue("must be true", info.isEmpty());
-		
+        assertTrue("must be true", info.isEmpty());
+
         writer = new FileWriter(testFile);
         writer.append("throw new IOException()");
         writer.close();
         info = new BasicMetaInfo(testFile);
-		assertTrue("must be true", info.isEmpty());
-		
+        assertTrue("must be true", info.isEmpty());
+
         writer = new FileWriter(testFile);
         writer.append("throw new ClassNotFoundException()");
         writer.close();
         info = new BasicMetaInfo(testFile);
-		assertTrue("must be true", info.isEmpty());
-		
+        assertTrue("must be true", info.isEmpty());
+
         writer = new FileWriter(testFile);
         writer.append("[ 'list', 'not', 'map' ]");
         writer.close();
         info = new BasicMetaInfo(testFile);
-		assertTrue("must be true", info.isEmpty());
-		
+        assertTrue("must be true", info.isEmpty());
+
         writer = new FileWriter(testFile);
         writer.append("   [ 'autostart' : true, 'foo' : 'bar' ]");
         writer.close();
         info = new BasicMetaInfo(testFile);
-		assertEquals("must be same", 2, info.size());
-		assertEquals("must be same", true, info.get("autostart"));
-		assertEquals("must be same", "bar", info.get("foo"));
-		
-		assertTrue("must be true", info.isOn("autostart", false));
-		assertTrue("must be true", info.isOn("autostart", true));
-		assertFalse("must be false", info.isOn("other", false));
-		assertTrue("must be true", info.isOn("other", true));
-		assertFalse("must be false", info.isOn("foo", false));
-		assertTrue("must be true", info.isOn("foo", true));
-		assertFalse("must be false", info.isOn(null, false));
-		assertTrue("must be true", info.isOn(null, true));
-		
+        assertEquals("must be same", 2, info.size());
+        assertEquals("must be same", true, info.get("autostart"));
+        assertEquals("must be same", "bar", info.get("foo"));
+
+        assertTrue("must be true", info.isOn("autostart", false));
+        assertTrue("must be true", info.isOn("autostart", true));
+        assertFalse("must be false", info.isOn("other", false));
+        assertTrue("must be true", info.isOn("other", true));
+        assertFalse("must be false", info.isOn("foo", false));
+        assertTrue("must be true", info.isOn("foo", true));
+        assertFalse("must be false", info.isOn(null, false));
+        assertTrue("must be true", info.isOn(null, true));
+
         writer = new FileWriter(testFile);
         writer.append("meta = [ 'autostart' : true, 'foo' : 'bar' ]");
         writer.close();
         info = new BasicMetaInfo(testFile);
-		assertEquals("must be same", 2, info.size());
-	}
+        assertEquals("must be same", 2, info.size());
+    }
 }

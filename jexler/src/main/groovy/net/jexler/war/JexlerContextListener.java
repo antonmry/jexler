@@ -42,11 +42,11 @@ import ch.qos.logback.core.Appender;
  */
 public class JexlerContextListener implements ServletContextListener    {
 
-	static final Logger log = LoggerFactory.getLogger(JexlerContextListener.class);
+    static final Logger log = LoggerFactory.getLogger(JexlerContextListener.class);
 
     private static final String guiVersion = "1.0.17-SNAPSHOT"; // IMPORTANT: keep in sync with version in main build.gradle
-	
-	private static String version;
+
+    private static String version;
     private static ServletContext servletContext;
     private static JexlerContainer container;
     private static File logfile;
@@ -90,31 +90,31 @@ public class JexlerContextListener implements ServletContextListener    {
         }
         log.trace("logfile: '" + logfile.getAbsolutePath() + "'");
         
-    	String param = servletContext.getInitParameter("jexler.start.timeout");
-    	startTimeout = 10000;
-    	if (param != null) {
-    		startTimeout = Long.parseLong(param);
-    	}
-    	log.trace("jexler start timeout: " + startTimeout + " ms");
+        String param = servletContext.getInitParameter("jexler.start.timeout");
+        startTimeout = 10000;
+        if (param != null) {
+            startTimeout = Long.parseLong(param);
+        }
+        log.trace("jexler start timeout: " + startTimeout + " ms");
         
-    	param = servletContext.getInitParameter("jexler.stop.timeout");
-    	stopTimeout = 10000;
-    	if (param != null) {
-    		stopTimeout = Long.parseLong(param);
-    	}
-    	log.trace("jexler stop timeout: " + stopTimeout + " ms");
+        param = servletContext.getInitParameter("jexler.stop.timeout");
+        stopTimeout = 10000;
+        if (param != null) {
+            stopTimeout = Long.parseLong(param);
+        }
+        log.trace("jexler stop timeout: " + stopTimeout + " ms");
 
-    	param = servletContext.getInitParameter("jexler.security.script.allowEdit");
-    	scriptAllowEdit = Boolean.parseBoolean(param);
-    	log.trace("allow to edit jexler scripts: " + scriptAllowEdit);
-    	
-    	param = servletContext.getInitParameter("jexler.safety.script.confirmSave");
-    	scriptConfirmSave = Boolean.parseBoolean(param);
-    	log.trace("confirm jexler script save: " + scriptConfirmSave);
-    	
-    	param = servletContext.getInitParameter("jexler.safety.script.confirmDelete");
-    	scriptConfirmDelete = Boolean.parseBoolean(param);
-    	log.trace("confirm jexler script delete: " + scriptConfirmDelete);
+        param = servletContext.getInitParameter("jexler.security.script.allowEdit");
+        scriptAllowEdit = Boolean.parseBoolean(param);
+        log.trace("allow to edit jexler scripts: " + scriptAllowEdit);
+
+        param = servletContext.getInitParameter("jexler.safety.script.confirmSave");
+        scriptConfirmSave = Boolean.parseBoolean(param);
+        log.trace("confirm jexler script save: " + scriptConfirmSave);
+
+        param = servletContext.getInitParameter("jexler.safety.script.confirmDelete");
+        scriptConfirmDelete = Boolean.parseBoolean(param);
+        log.trace("confirm jexler script delete: " + scriptConfirmDelete);
     }
 
     @Override
@@ -141,23 +141,23 @@ public class JexlerContextListener implements ServletContextListener    {
     }
 
     public static long getStartTimeout() {
-    	return startTimeout;
+        return startTimeout;
     }
 
     public static long getStopTimeout() {
-    	return stopTimeout;
+        return stopTimeout;
     }
     
     public static boolean scriptAllowEdit() {
-    	return scriptAllowEdit;
+        return scriptAllowEdit;
     }
     
     public static boolean scriptConfirmSave() {
-    	return scriptConfirmSave;
+        return scriptConfirmSave;
     }
     
     public static boolean scriptConfirmDelete() {
-    	return scriptConfirmDelete;
+        return scriptConfirmDelete;
     }
 
 }

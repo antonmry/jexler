@@ -27,7 +27,7 @@ import net.jexler.service.Service;
  * @author $(whois jexler.net)
  */
 public interface Jexler extends Service, IssueTracker {
-	            
+
     /**
      * Handle given event.
      */

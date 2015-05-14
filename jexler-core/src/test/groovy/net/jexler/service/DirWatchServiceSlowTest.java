@@ -58,14 +58,14 @@ public final class DirWatchServiceSlowTest
         assertEquals("must be same", "watchid", service.getId());
         
         service.start();
-    	assertTrue("must be true", service.isOn());
-    	assertTrue("must be true", service.waitForStartup(MS_30_SEC));
+        assertTrue("must be true", service.isOn());
+        assertTrue("must be true", service.waitForStartup(MS_30_SEC));
         assertNull("must be null", jexler.takeEvent(MS_1_MIN_10_SEC));
                 
         checkEvents(jexler, service, watchDir);
         
         service.stop();
-    	assertTrue("must be true", service.waitForShutdown(MS_30_SEC));
+        assertTrue("must be true", service.waitForShutdown(MS_30_SEC));
         
         // create file after service stop
         File tempFile = new File(watchDir, "temp2");
@@ -80,24 +80,24 @@ public final class DirWatchServiceSlowTest
         service.setDir(watchDir);
         
         service.start();    
-    	assertTrue("must be true", service.isOn());
-    	assertTrue("must be true", service.waitForStartup(MS_30_SEC));
+        assertTrue("must be true", service.isOn());
+        assertTrue("must be true", service.waitForStartup(MS_30_SEC));
         assertNull("must be null", jexler.takeEvent(MS_1_MIN_10_SEC));
         
         service.start();    
-    	assertTrue("must be true", service.getRunState().isIdle());
+        assertTrue("must be true", service.getRunState().isIdle());
 
-    	checkEvents(jexler, service, watchDir);
+        checkEvents(jexler, service, watchDir);
         
         // delete watch directory
         assertTrue("must be true", watchDir.delete());
         assertNull("must be null", jexler.takeEvent(MS_1_MIN_10_SEC));
         
         service.stop();
-    	assertTrue("must be true", service.waitForShutdown(MS_30_SEC));
+        assertTrue("must be true", service.waitForShutdown(MS_30_SEC));
         
         service.stop();
-    	assertTrue("must be true", service.isOff());
+        assertTrue("must be true", service.isOff());
     }
 
     private void checkEvents(MockJexler jexler, DirWatchService service,

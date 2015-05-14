@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
  */
 public class JexlerContainerView {
 
-	static final Logger log = LoggerFactory.getLogger(JexlerContainerView.class);
+    static final Logger log = LoggerFactory.getLogger(JexlerContainerView.class);
 
     private final JexlerContainer container;
     private final File logfile;
@@ -120,7 +120,7 @@ public class JexlerContainerView {
     }
 
     public String getVersion() {
-    	return JexlerContextListener.getVersion();
+        return JexlerContextListener.getVersion();
     }
     
     public Map<String,JexlerContainerView> getJexlers() {
@@ -139,24 +139,24 @@ public class JexlerContainerView {
     }
 
     public String getJexlerIdLink() {
-    	// italic if busy ("running")
-    	RunState runState = jexler.getRunState();
-    	boolean isBusy = (runState == RunState.BUSY_STARTING
-    			|| runState == RunState.BUSY_EVENT
-    			|| runState == RunState.BUSY_STOPPING);
-    	String id = jexlerId;
-    	if (isBusy) {
-    		id = "<em>" + id + "</em>";
-    	}
+        // italic if busy ("running")
+        RunState runState = jexler.getRunState();
+        boolean isBusy = (runState == RunState.BUSY_STARTING
+                || runState == RunState.BUSY_EVENT
+                || runState == RunState.BUSY_STOPPING);
+        String id = jexlerId;
+        if (isBusy) {
+            id = "<em>" + id + "</em>";
+        }
         return "<a href='?cmd=info" + getJexlerParam() + "'>" + id + "</a>";
     }
 
     public String getStartStop() {
         boolean isOn;
         if (jexlerId == null) {
-        	isOn = container.isOn();
+            isOn = container.isOn();
         } else {
-        	isOn = jexler.isOn();
+            isOn = jexler.isOn();
         }
         if (isOn) {
             return "<a href='?cmd=stop" + getJexlerParam() + "'><img src='stop.gif'></a>";
@@ -170,7 +170,7 @@ public class JexlerContainerView {
     }
     
     public String getRunStateInfo() {
-    	return jexler.getRunState().getInfo();
+        return jexler.getRunState().getInfo();
     }
 
     public String getLog() {
@@ -253,7 +253,7 @@ public class JexlerContainerView {
         }
         File file = jexler.getFile();
         try {
-    		return new String(Files.readAllBytes(file.toPath()));
+            return new String(Files.readAllBytes(file.toPath()));
         } catch (IOException e) {
             String msg = "Could not read jexler script file '" + file.getAbsolutePath() + "'.";
             jexler.trackIssue(null, msg, e);
@@ -272,16 +272,16 @@ public class JexlerContainerView {
     }
     
     public String getScriptAllowEdit() {
-    	return Boolean.toString(JexlerContextListener.scriptAllowEdit());
+        return Boolean.toString(JexlerContextListener.scriptAllowEdit());
     }
     
     public String getDisabledIfReadonly() {
-    	boolean allowEdit = JexlerContextListener.scriptAllowEdit();
-    	if (allowEdit) {
-    		return "";
-    	} else {
-    		return " disabled='disabled'";
-    	}
+        boolean allowEdit = JexlerContextListener.scriptAllowEdit();
+        if (allowEdit) {
+            return "";
+        } else {
+            return " disabled='disabled'";
+        }
     }
 
     public boolean isConfirmSave() {
@@ -313,9 +313,9 @@ public class JexlerContainerView {
     }
 
     private void handleSaveAs() {
-    	if (!JexlerContextListener.scriptAllowEdit()) {
-    		return;
-    	}
+        if (!JexlerContextListener.scriptAllowEdit()) {
+            return;
+        }
         String source = request.getParameter("source");
         if (source != null) {
             source = source.replace("\r\n", "\n");
@@ -334,9 +334,9 @@ public class JexlerContainerView {
     }
 
     private void handleDelete() {
-    	if (!JexlerContextListener.scriptAllowEdit()) {
-    		return;
-    	}
+        if (!JexlerContextListener.scriptAllowEdit()) {
+            return;
+        }
         File file = container.getJexlerFile(targetJexlerId);
         file.delete();
     }

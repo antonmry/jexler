@@ -22,7 +22,7 @@ while (true) {
     result = shellTool.run('echo hello-world')
     log.trace(result.toString())
     
-	// http get request
+    // http get request
     httpclient = new DefaultHttpClient()
     httpget = new HttpGet("http://www.google.com/")
     responseHandler = new BasicResponseHandler()

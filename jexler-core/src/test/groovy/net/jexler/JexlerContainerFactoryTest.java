@@ -37,16 +37,16 @@ import org.junit.experimental.categories.Category;
 @Category(FastTests.class)
 public final class JexlerContainerFactoryTest
 {
-	
-	@Test
+
+    @Test
     public void testBasic() throws Exception {
-		File dir = Files.createTempDirectory(null).toFile();
-		JexlerContainerFactory containerFactory = new JexlerContainerFactory();
-		JexlerContainer container = containerFactory.get(dir);
-		assertNotNull("must not be null", container);
-		assertTrue("must be true", container instanceof BasicJexlerContainer);
-		assertEquals("must be same", dir.getCanonicalPath(), container.getDir().getCanonicalPath());
-		assertEquals("must be same", dir.getName(), container.getId());
-	}
-	
+        File dir = Files.createTempDirectory(null).toFile();
+        JexlerContainerFactory containerFactory = new JexlerContainerFactory();
+        JexlerContainer container = containerFactory.get(dir);
+        assertNotNull("must not be null", container);
+        assertTrue("must be true", container instanceof BasicJexlerContainer);
+        assertEquals("must be same", dir.getCanonicalPath(), container.getDir().getCanonicalPath());
+        assertEquals("must be same", dir.getName(), container.getId());
+    }
+
 }

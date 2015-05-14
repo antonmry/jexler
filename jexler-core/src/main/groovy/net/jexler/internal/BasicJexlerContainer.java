@@ -44,8 +44,8 @@ import org.slf4j.LoggerFactory;
 public class BasicJexlerContainer extends BasicServiceGroup implements JexlerContainer {
 
     private static final Logger log = LoggerFactory.getLogger(BasicJexlerContainer.class);
-	
-	private static final String EXT = ".groovy";
+
+    private static final String EXT = ".groovy";
 
     private final File dir;
     private final String id;
@@ -66,7 +66,7 @@ public class BasicJexlerContainer extends BasicServiceGroup implements JexlerCon
      * @throws RuntimeException if given dir is not a directory or does not exist
      */
     public BasicJexlerContainer(File dir, JexlerFactory jexlerFactory) {
-    	super(dir.exists() ? dir.getName() : null);
+        super(dir.exists() ? dir.getName() : null);
         if (!dir.exists()) {
             throw new RuntimeException("Directory '" + dir.getAbsolutePath() + "' does not exist.");
         } else  if (!dir.isDirectory()) {
@@ -125,35 +125,35 @@ public class BasicJexlerContainer extends BasicServiceGroup implements JexlerCon
     public void autostart() {
         for (Jexler jexler : getJexlers()) {
             if (jexler.getMetaInfo().isOn("autostart", false)) {
-            	jexler.start();
+                jexler.start();
             }
         }
     }
 
     @Override
     public boolean waitForStartup(long timeout) {
-    	boolean ok = super.waitForStartup(timeout);
-    	if (!ok) {
-    		for (Jexler jexler : getJexlers()) {
+        boolean ok = super.waitForStartup(timeout);
+        if (!ok) {
+            for (Jexler jexler : getJexlers()) {
                 if (jexler.getRunState() == RunState.BUSY_STARTING) {
-                	trackIssue(jexler, "Timeout waiting for jexler startup.", null);
+                    trackIssue(jexler, "Timeout waiting for jexler startup.", null);
                 }
             }
-    	}
-    	return ok;
+        }
+        return ok;
     }
     
     @Override
     public boolean waitForShutdown(long timeout) {
-    	boolean ok = super.waitForShutdown(timeout);
-    	if (!ok) {
-    		for (Jexler jexler : getJexlers()) {
+        boolean ok = super.waitForShutdown(timeout);
+        if (!ok) {
+            for (Jexler jexler : getJexlers()) {
                 if (jexler.getRunState() != RunState.OFF) {
-                	trackIssue(jexler, "Timeout waiting for jexler shutdown.", null);
+                    trackIssue(jexler, "Timeout waiting for jexler shutdown.", null);
                 }
             }
-    	}
-    	return ok;
+        }
+        return ok;
     }
 
     @Override
@@ -163,7 +163,7 @@ public class BasicJexlerContainer extends BasicServiceGroup implements JexlerCon
 
     @Override
     public void trackIssue(Service service, String message, Throwable cause) {
-    	issueTracker.trackIssue(service, message, cause);
+        issueTracker.trackIssue(service, message, cause);
     }
 
     @Override
@@ -173,7 +173,7 @@ public class BasicJexlerContainer extends BasicServiceGroup implements JexlerCon
 
     @Override
     public void forgetIssues() {
-    	issueTracker.forgetIssues();
+        issueTracker.forgetIssues();
     }
 
     /**
@@ -188,14 +188,14 @@ public class BasicJexlerContainer extends BasicServiceGroup implements JexlerCon
         return dir;
     }
 
-	@Override
+    @Override
     @SuppressWarnings("unchecked")
     public List<Jexler> getJexlers() {
         List<Jexler> jexlers = new LinkedList<>();
         synchronized(jexlerMap) {
             jexlers.addAll((List<Jexler>)(List<?>)getServices());
         }
-    	return Collections.unmodifiableList(jexlers);
+        return Collections.unmodifiableList(jexlers);
     }
 
     @Override
@@ -205,20 +205,20 @@ public class BasicJexlerContainer extends BasicServiceGroup implements JexlerCon
         }
     }
 
-	@Override
-	public File getJexlerFile(String id) {
-    	return new File(dir, id + EXT);
-	}
+    @Override
+    public File getJexlerFile(String id) {
+        return new File(dir, id + EXT);
+    }
 
-	@Override
-	public String getJexlerId(File jexlerFile) {
-		String name = jexlerFile.getName();
-		if (name.endsWith(EXT)) {
-			return name.substring(0, name.length() - EXT.length());
-		} else {
-			return null;
-		}
-	}
+    @Override
+    public String getJexlerId(File jexlerFile) {
+        String name = jexlerFile.getName();
+        if (name.endsWith(EXT)) {
+            return name.substring(0, name.length() - EXT.length());
+        } else {
+            return null;
+        }
+    }
 
     @Override
     public Scheduler getSharedScheduler() {

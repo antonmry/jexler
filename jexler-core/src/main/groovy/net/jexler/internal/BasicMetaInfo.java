@@ -34,63 +34,63 @@ import net.jexler.MetaInfo;
  */
 public class BasicMetaInfo extends HashMap<String,Object> implements MetaInfo {
 
-	private static final long serialVersionUID = 125418652799853484L;
+    private static final long serialVersionUID = 125418652799853484L;
 
-	public static final MetaInfo EMPTY = new BasicMetaInfo();
-	
-	/**
-	 * Constructor for empty meta info.
-	 */
-	private BasicMetaInfo() {
-		// empty map
-	}
-	
-	/**
-	 * Constructor from file.
-	 */
-	public BasicMetaInfo(File file) throws IOException {
-		if (!file.exists()) {
-			return;
-		}
+    public static final MetaInfo EMPTY = new BasicMetaInfo();
 
-		try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-			// read first line of jexler script
-			String line = reader.readLine();
-			if (line == null) {
-				return;
-			}
+    /**
+     * Constructor for empty meta info.
+     */
+    private BasicMetaInfo() {
+        // empty map
+    }
 
-			BasicJexler.WorkaroundGroovy7407.wrapGrapeEngineIfConfigured();
+    /**
+     * Constructor from file.
+     */
+    public BasicMetaInfo(File file) throws IOException {
+        if (!file.exists()) {
+            return;
+        }
 
-			// evaluate first line as groovy script
-			Object obj;
-			try {
-				obj = new GroovyShell().evaluate(line);
-			} catch (Throwable t) {
-            	// (script may throw anything, checked or not)
-				return;
-			}
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            // read first line of jexler script
+            String line = reader.readLine();
+            if (line == null) {
+                return;
+            }
 
-			// evaluated to a map?
-			if (obj == null || !(obj instanceof Map)) {
-				return;
-			}
+            BasicJexler.WorkaroundGroovy7407.wrapGrapeEngineIfConfigured();
 
-			// set map
-			@SuppressWarnings("unchecked")
-			Map<String,Object> map = (Map<String,Object>)obj;
-			this.putAll(map);
-		}
-	}
-		
+            // evaluate first line as groovy script
+            Object obj;
+            try {
+                obj = new GroovyShell().evaluate(line);
+            } catch (Throwable t) {
+                // (script may throw anything, checked or not)
+                return;
+            }
+
+            // evaluated to a map?
+            if (obj == null || !(obj instanceof Map)) {
+                return;
+            }
+
+            // set map
+            @SuppressWarnings("unchecked")
+            Map<String,Object> map = (Map<String,Object>)obj;
+            this.putAll(map);
+        }
+    }
+
     @Override
     public boolean isOn(String name, boolean defaultValue) {
-    	Object o = get(name);
-    	if (o != null && o instanceof Boolean) {
-    		return (Boolean)o;
-    	} else {
-    		return defaultValue;
-    	}
+        Object o = get(name);
+        if (o != null && o instanceof Boolean) {
+            return (Boolean)o;
+        } else {
+            return defaultValue;
+        }
     }
 
 }

@@ -31,52 +31,52 @@ import org.junit.experimental.categories.Category;
 @Category(FastTests.class)
 public final class RunStateTest
 {
-	
-	@Test
+
+    @Test
     public void testBasic() throws Exception {
-		assertTrue("must be true", RunState.OFF.isOff());
-		assertTrue("must be true", !RunState.OFF.isOn());
-		assertTrue("must be true", !RunState.OFF.isOperational());
-		assertTrue("must be true", !RunState.OFF.isBusyStarting());
-		assertTrue("must be true", !RunState.OFF.isIdle());
-		assertTrue("must be true", !RunState.OFF.isBusyEvent());
-		assertTrue("must be true", !RunState.OFF.isBusyStopping());
-		
-		assertTrue("must be true", !RunState.BUSY_STARTING.isOff());
-		assertTrue("must be true", RunState.BUSY_STARTING.isOn());
-		assertTrue("must be true", !RunState.BUSY_STARTING.isOperational());
-		assertTrue("must be true", RunState.BUSY_STARTING.isBusyStarting());
-		assertTrue("must be true", !RunState.BUSY_STARTING.isIdle());
-		assertTrue("must be true", !RunState.BUSY_STARTING.isBusyEvent());
-		assertTrue("must be true", !RunState.BUSY_STARTING.isBusyStopping());
-		
-		assertTrue("must be true", !RunState.IDLE.isOff());
-		assertTrue("must be true", RunState.IDLE.isOn());
-		assertTrue("must be true", RunState.IDLE.isOperational());
-		assertTrue("must be true", !RunState.IDLE.isBusyStarting());
-		assertTrue("must be true", RunState.IDLE.isIdle());
-		assertTrue("must be true", !RunState.IDLE.isBusyEvent());
-		assertTrue("must be true", !RunState.IDLE.isBusyStopping());
-		
-		assertTrue("must be true", !RunState.BUSY_EVENT.isOff());
-		assertTrue("must be true", RunState.BUSY_EVENT.isOn());
-		assertTrue("must be true", RunState.BUSY_EVENT.isOperational());
-		assertTrue("must be true", !RunState.BUSY_EVENT.isBusyStarting());
-		assertTrue("must be true", !RunState.BUSY_EVENT.isIdle());
-		assertTrue("must be true", RunState.BUSY_EVENT.isBusyEvent());
-		assertTrue("must be true", !RunState.BUSY_EVENT.isBusyStopping());
-		
-		assertTrue("must be true", !RunState.BUSY_STOPPING.isOff());
-		assertTrue("must be true", RunState.BUSY_STOPPING.isOn());
-		assertTrue("must be true", !RunState.BUSY_STOPPING.isOperational());
-		assertTrue("must be true", !RunState.BUSY_STOPPING.isBusyStarting());
-		assertTrue("must be true", !RunState.BUSY_STOPPING.isIdle());
-		assertTrue("must be true", !RunState.BUSY_STOPPING.isBusyEvent());
-		assertTrue("must be true", RunState.BUSY_STOPPING.isBusyStopping());
-		
-		assertEquals("must be equal", "off", RunState.OFF.getInfo());
-		assertEquals("must be equal", RunState.OFF, RunState.valueOf("OFF"));
-		assertEquals("must be equal", RunState.OFF, RunState.values()[0]);
-	}
-	
+        assertTrue("must be true", RunState.OFF.isOff());
+        assertTrue("must be true", !RunState.OFF.isOn());
+        assertTrue("must be true", !RunState.OFF.isOperational());
+        assertTrue("must be true", !RunState.OFF.isBusyStarting());
+        assertTrue("must be true", !RunState.OFF.isIdle());
+        assertTrue("must be true", !RunState.OFF.isBusyEvent());
+        assertTrue("must be true", !RunState.OFF.isBusyStopping());
+
+        assertTrue("must be true", !RunState.BUSY_STARTING.isOff());
+        assertTrue("must be true", RunState.BUSY_STARTING.isOn());
+        assertTrue("must be true", !RunState.BUSY_STARTING.isOperational());
+        assertTrue("must be true", RunState.BUSY_STARTING.isBusyStarting());
+        assertTrue("must be true", !RunState.BUSY_STARTING.isIdle());
+        assertTrue("must be true", !RunState.BUSY_STARTING.isBusyEvent());
+        assertTrue("must be true", !RunState.BUSY_STARTING.isBusyStopping());
+
+        assertTrue("must be true", !RunState.IDLE.isOff());
+        assertTrue("must be true", RunState.IDLE.isOn());
+        assertTrue("must be true", RunState.IDLE.isOperational());
+        assertTrue("must be true", !RunState.IDLE.isBusyStarting());
+        assertTrue("must be true", RunState.IDLE.isIdle());
+        assertTrue("must be true", !RunState.IDLE.isBusyEvent());
+        assertTrue("must be true", !RunState.IDLE.isBusyStopping());
+
+        assertTrue("must be true", !RunState.BUSY_EVENT.isOff());
+        assertTrue("must be true", RunState.BUSY_EVENT.isOn());
+        assertTrue("must be true", RunState.BUSY_EVENT.isOperational());
+        assertTrue("must be true", !RunState.BUSY_EVENT.isBusyStarting());
+        assertTrue("must be true", !RunState.BUSY_EVENT.isIdle());
+        assertTrue("must be true", RunState.BUSY_EVENT.isBusyEvent());
+        assertTrue("must be true", !RunState.BUSY_EVENT.isBusyStopping());
+
+        assertTrue("must be true", !RunState.BUSY_STOPPING.isOff());
+        assertTrue("must be true", RunState.BUSY_STOPPING.isOn());
+        assertTrue("must be true", !RunState.BUSY_STOPPING.isOperational());
+        assertTrue("must be true", !RunState.BUSY_STOPPING.isBusyStarting());
+        assertTrue("must be true", !RunState.BUSY_STOPPING.isIdle());
+        assertTrue("must be true", !RunState.BUSY_STOPPING.isBusyEvent());
+        assertTrue("must be true", RunState.BUSY_STOPPING.isBusyStopping());
+
+        assertEquals("must be equal", "off", RunState.OFF.getInfo());
+        assertEquals("must be equal", RunState.OFF, RunState.valueOf("OFF"));
+        assertEquals("must be equal", RunState.OFF, RunState.values()[0]);
+    }
+
 }

@@ -24,11 +24,11 @@ package net.jexler.service;
  * @author $(whois jexler.net)
  */
 public class StopEvent extends EventBase {
-	
-	/**
-	 * Constructor.
-	 * @param service the service that is initiating the stop
-	 */
+
+    /**
+     * Constructor.
+     * @param service the service that is initiating the stop
+     */
     public StopEvent(Service service) {
         super(service);
     }

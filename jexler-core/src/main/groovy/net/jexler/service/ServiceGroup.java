@@ -26,17 +26,17 @@ import java.util.List;
  * @author $(whois jexler.net)
  */
 public interface ServiceGroup extends Service {
-	
-	/**
-	 * Add given service to the group of services.
-	 */
-	void add(Service service);
-	
-	/**
-	 * Get the list of services.
-	 * Use also to modify the group of services.
-	 * @return list of services, never null
-	 */
-	List<Service> getServices();
+
+    /**
+     * Add given service to the group of services.
+     */
+    void add(Service service);
+
+    /**
+     * Get the list of services.
+     * Use also to modify the group of services.
+     * @return list of services, never null
+     */
+    List<Service> getServices();
 
 }

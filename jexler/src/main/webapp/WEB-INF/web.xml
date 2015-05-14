@@ -6,12 +6,12 @@
    version="2.5">
 
   <context-param>
-  	<description>Timeout for starting a jexler in ms.</description>
+      <description>Timeout for starting a jexler in ms.</description>
     <param-name>jexler.start.timeout</param-name>
     <param-value>10000</param-value>
   </context-param>
   <context-param>
-  	<description>Timeout for stopping a jexler in ms.</description>
+      <description>Timeout for stopping a jexler in ms.</description>
     <param-name>jexler.stop.timeout</param-name>
     <param-value>10000</param-value>
   </context-param>

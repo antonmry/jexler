@@ -32,8 +32,8 @@ public class DirWatchEvent extends EventBase {
     private final WatchEvent.Kind<?> kind;
     
     /**
-	 * Constructor.
-	 * @param service the service that created the event
+     * Constructor.
+     * @param service the service that created the event
      * @param file the file that has been created, modified or deleted
      * @param kind what happened with the file
      */

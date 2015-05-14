@@ -42,70 +42,70 @@ import static org.junit.Assert.assertTrue;
 @Category(FastTests.class)
 public final class BasicJexlerWorkaroundGroovy7407Test
 {
-	private void reset() {
-		System.clearProperty(BasicJexler.WorkaroundGroovy7407.GRAPE_ENGINE_WRAP_PROPERTY_NAME);
-		BasicJexler.WorkaroundGroovy7407.resetForUnitTests();
-		BasicJexler.WorkaroundGroovy7407WrappingGrapeEngine.setEngine(null);
-	}
+    private void reset() {
+        System.clearProperty(BasicJexler.WorkaroundGroovy7407.GRAPE_ENGINE_WRAP_PROPERTY_NAME);
+        BasicJexler.WorkaroundGroovy7407.resetForUnitTests();
+        BasicJexler.WorkaroundGroovy7407WrappingGrapeEngine.setEngine(null);
+    }
 
-	@Before
-	public void setup() {
-		reset();
-	}
+    @Before
+    public void setup() {
+        reset();
+    }
 
-	@After
-	public void teardown() {
-		reset();
-	}
+    @After
+    public void teardown() {
+        reset();
+    }
 
-	@Test
-	public void testConstructors() throws Exception {
-		new BasicJexler.WorkaroundGroovy7407();
-		new BasicJexler.WorkaroundGroovy7407WrappingGrapeEngine("lock", null);
-	}
+    @Test
+    public void testConstructors() throws Exception {
+        new BasicJexler.WorkaroundGroovy7407();
+        new BasicJexler.WorkaroundGroovy7407WrappingGrapeEngine("lock", null);
+    }
 
-	@Test
-	public void testCompileOkWithWrapping() throws Exception {
+    @Test
+    public void testCompileOkWithWrapping() throws Exception {
 
-		System.setProperty(BasicJexler.WorkaroundGroovy7407.GRAPE_ENGINE_WRAP_PROPERTY_NAME, "true");
+        System.setProperty(BasicJexler.WorkaroundGroovy7407.GRAPE_ENGINE_WRAP_PROPERTY_NAME, "true");
 
-		File dir = Files.createTempDirectory(null).toFile();
-		File file = new File(dir, "test.groovy");
+        File dir = Files.createTempDirectory(null).toFile();
+        File file = new File(dir, "test.groovy");
 
-		Files.createFile(file.toPath());
+        Files.createFile(file.toPath());
 
-		BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
-		jexler.start();
-		jexler.waitForStartup(10000);
-		assertEquals("must be same", RunState.OFF, jexler.getRunState());
-		assertTrue("must be true", jexler.getIssues().isEmpty());
-	}
+        BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
+        jexler.start();
+        jexler.waitForStartup(10000);
+        assertEquals("must be same", RunState.OFF, jexler.getRunState());
+        assertTrue("must be true", jexler.getIssues().isEmpty());
+    }
 
-	@Test
-	public void testCompileFailsWithWrapping() throws Exception {
+    @Test
+    public void testCompileFailsWithWrapping() throws Exception {
 
-		System.setProperty(BasicJexler.WorkaroundGroovy7407.GRAPE_ENGINE_WRAP_PROPERTY_NAME, "true");
+        System.setProperty(BasicJexler.WorkaroundGroovy7407.GRAPE_ENGINE_WRAP_PROPERTY_NAME, "true");
 
-		File dir = Files.createTempDirectory(null).toFile();
-		File file = new File(dir, "test.groovy");
+        File dir = Files.createTempDirectory(null).toFile();
+        File file = new File(dir, "test.groovy");
 
-		FileWriter writer = new FileWriter(file);
-		writer.append("&%!+\n");
-		writer.close();
+        FileWriter writer = new FileWriter(file);
+        writer.append("&%!+\n");
+        writer.close();
 
-		BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
-		jexler.start();
-		jexler.waitForStartup(10000);
-		assertEquals("must be same", RunState.OFF, jexler.getRunState());
+        BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
+        jexler.start();
+        jexler.waitForStartup(10000);
+        assertEquals("must be same", RunState.OFF, jexler.getRunState());
 
-		assertEquals("must be same", 1, jexler.getIssues().size());
-		Issue issue = jexler.getIssues().get(0);
-		System.out.println(issue.toString());
-		assertTrue("must be true",
-				issue.getMessage().contains("Script compile failed."));
-		assertEquals("must be same", jexler, issue.getService());
-		assertNotNull("must not be null", issue.getCause());
-		assertTrue("must be true", issue.getCause() instanceof CompilationFailedException);
-	}
+        assertEquals("must be same", 1, jexler.getIssues().size());
+        Issue issue = jexler.getIssues().get(0);
+        System.out.println(issue.toString());
+        assertTrue("must be true",
+                issue.getMessage().contains("Script compile failed."));
+        assertEquals("must be same", jexler, issue.getService());
+        assertNotNull("must not be null", issue.getCause());
+        assertTrue("must be true", issue.getCause() instanceof CompilationFailedException);
+    }
 
 }

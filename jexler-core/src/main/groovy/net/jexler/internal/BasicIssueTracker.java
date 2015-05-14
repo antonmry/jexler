@@ -34,17 +34,17 @@ import org.slf4j.LoggerFactory;
  */
 public class BasicIssueTracker implements IssueTracker {
 
-	private static final Logger log = LoggerFactory.getLogger(BasicIssueTracker.class);
+    private static final Logger log = LoggerFactory.getLogger(BasicIssueTracker.class);
 
-	private final List<Issue> issues;
-	
-	/**
-	 * Default constructor.
-	 */
-	public BasicIssueTracker() {
-		issues = new LinkedList<>();
-	}
-	
+    private final List<Issue> issues;
+
+    /**
+     * Default constructor.
+     */
+    public BasicIssueTracker() {
+        issues = new LinkedList<>();
+    }
+
     @Override
     public void trackIssue(Issue issue) {
         log.error(issue.toString());
@@ -55,7 +55,7 @@ public class BasicIssueTracker implements IssueTracker {
 
     @Override
     public void trackIssue(Service service, String message, Throwable cause) {
-    	trackIssue(new BasicIssue(service, message, cause));
+        trackIssue(new BasicIssue(service, message, cause));
     }
 
     /**

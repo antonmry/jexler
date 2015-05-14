@@ -31,42 +31,42 @@ import org.junit.experimental.categories.Category;
 @Category(SlowTests.class)
 public final class JexlerUtilSlowTest
 {
-	
-	private final static long MS_10_SEC = 10000;
-	private final static long MS_20_SEC = 20000;
 
-	static private class InterruptCounter {
-		public int count = 0;
-	}
+    private final static long MS_10_SEC = 10000;
+    private final static long MS_20_SEC = 20000;
 
-	/**
-	 * Takes about 20 seconds to complete.
-	 */
-	@Test
+    static private class InterruptCounter {
+        public int count = 0;
+    }
+
+    /**
+     * Takes about 20 seconds to complete.
+     */
+    @Test
     public void testWaitAtLeastInterupt() throws Exception {
 
-		final Thread current = Thread.currentThread();
-		final InterruptCounter interruptCounter = new InterruptCounter();
-		
-		// interrupts waiting thread once after 10 seconds
-		Thread interrupter = new Thread(new Runnable() {
-            public void run() {
-            	try {
-            		Thread.sleep(MS_10_SEC);
-            	} catch (InterruptedException e) {
-            	}
-            	current.interrupt();
-            	interruptCounter.count++;
-            }
-		});
-		interrupter.start();
+        final Thread current = Thread.currentThread();
+        final InterruptCounter interruptCounter = new InterruptCounter();
 
-		long t0 = System.currentTimeMillis();
-		JexlerUtil.waitAtLeast(MS_20_SEC);
-		long t1 = System.currentTimeMillis();
-		assertTrue("must be true", t1-t0 >= MS_20_SEC);
-		assertTrue("should usually be true", t1-t0 < MS_20_SEC + 2000);
-		assertEquals("must be same", 1, interruptCounter.count);
-	}
-	
+        // interrupts waiting thread once after 10 seconds
+        Thread interrupter = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Thread.sleep(MS_10_SEC);
+                } catch (InterruptedException e) {
+                }
+                current.interrupt();
+                interruptCounter.count++;
+            }
+        });
+        interrupter.start();
+
+        long t0 = System.currentTimeMillis();
+        JexlerUtil.waitAtLeast(MS_20_SEC);
+        long t1 = System.currentTimeMillis();
+        assertTrue("must be true", t1-t0 >= MS_20_SEC);
+        assertTrue("should usually be true", t1-t0 < MS_20_SEC + 2000);
+        assertEquals("must be same", 1, interruptCounter.count);
+    }
+
 }

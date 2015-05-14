@@ -24,7 +24,7 @@ package net.jexler.service;
  * @author $(whois jexler.net)
  */
 public class MockEvent extends EventBase {
-	
+
     public MockEvent(Service service) {
         super(service);
     }

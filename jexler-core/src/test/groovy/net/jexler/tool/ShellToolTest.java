@@ -41,18 +41,18 @@ import org.junit.experimental.categories.Category;
 public final class ShellToolTest
 {
 
-	private String testStdout = "";
-	private String testStderr = "";
-	
-	@Test
+    private String testStdout = "";
+    private String testStderr = "";
+
+    @Test
     public void testDefault() throws Exception {
         ShellTool tool = new ShellTool();
         
         ShellTool.Result result;
         if (isWindows()) {
-        	result = tool.run("cmd /c dir");
+            result = tool.run("cmd /c dir");
         } else {
-        	result = tool.run("ls -l");
+            result = tool.run("ls -l");
         }
         //System.out.println(result);
         assertNotNull("must not be null", result);
@@ -63,9 +63,9 @@ public final class ShellToolTest
         assertTrue("must be true", result.stderr.isEmpty());
         
         if (isWindows()) {
-        	result = tool.run(Arrays.asList(new String[] { "cmd","/c", "dir" }));
+            result = tool.run(Arrays.asList(new String[] { "cmd","/c", "dir" }));
         } else {
-        	result = tool.run(Arrays.asList(new String[] { "ls","-l" }));
+            result = tool.run(Arrays.asList(new String[] { "ls","-l" }));
         }
         //System.out.println(result);
         assertNotNull("must not be null", result);
@@ -73,9 +73,9 @@ public final class ShellToolTest
         assertNotNull("must not be null", result.stderr);
         assertEquals("must be same", 0, result.rc);
         assertTrue("must be true", !result.stdout.isEmpty());        
-	}
-	
-	@Test
+    }
+
+    @Test
     public void testCustom() throws Exception {
         ShellTool tool = new ShellTool();
         
@@ -91,9 +91,9 @@ public final class ShellToolTest
         
         ShellTool.Result result;
         if (isWindows()) {
-        	result = tool.run("cmd /c dir");
+            result = tool.run("cmd /c dir");
         } else {
-        	result = tool.run("ls -l");
+            result = tool.run("ls -l");
         }
         //System.out.println(result);
         assertNotNull("must not be null", result);
@@ -117,12 +117,12 @@ public final class ShellToolTest
         env.put("MYVAR", "there");
         tool.setEnvironment(env);
         if (isWindows()) {
-        	// (not case sensitive on windows)
-        	String[] cmd = new String[] { "cmd", "/c", "echo hello %MyVar%" };
-        	result = tool.run(Arrays.asList(cmd));
+            // (not case sensitive on windows)
+            String[] cmd = new String[] { "cmd", "/c", "echo hello %MyVar%" };
+            result = tool.run(Arrays.asList(cmd));
         } else {
-        	String[] cmd = new String[] { "sh", "-c", "echo hello $MYVAR" };
-        	result = tool.run(Arrays.asList(cmd));
+            String[] cmd = new String[] { "sh", "-c", "echo hello $MYVAR" };
+            result = tool.run(Arrays.asList(cmd));
         }
         //System.out.println(result);
         assertNotNull("must not be null", result);
@@ -132,18 +132,18 @@ public final class ShellToolTest
         assertTrue("must be true", result.stdout.contains("hello there"));
         assertNotNull("must not be null", result.stderr);
         assertTrue("must be true", result.stderr.isEmpty());
-	}
-	
-	@Test
+    }
+
+    @Test
     public void testError() throws Exception {
         ShellTool tool = new ShellTool();
         
         ShellTool.Result result;
 
         if (isWindows()) {
-        	result = tool.run("cmd /c type there-is-no-such-file");
+            result = tool.run("cmd /c type there-is-no-such-file");
         } else {
-        	result = tool.run("cat there-is-no-such-file");
+            result = tool.run("cat there-is-no-such-file");
         }
         //System.out.println(result);
         assertNotNull("must not be null", result);
@@ -172,9 +172,9 @@ public final class ShellToolTest
         assertTrue("must be true", !result.stderr.isEmpty());
         System.out.println(result.stderr);
         assertTrue("must be true", result.stderr.contains("java.io.IOException"));
-	}
-	
-	@Test
+    }
+
+    @Test
     public void testResultToString() throws Exception {
         ShellTool tool = new ShellTool();
         ShellTool.Result result = tool.new Result();
@@ -183,20 +183,20 @@ public final class ShellToolTest
         result.stderr="";
         //System.out.println(result);
         assertEquals("must be same", "[rc=5,stdout='file1%nfile2%n',stderr='']", result.toString());
-	}
-	
-	private boolean isWindows() {
-		return System.getProperty("os.name").startsWith("Windows");
-	}
-	
-	@SuppressWarnings("unused")
-	private void accumulateStdout(String line) {
-		testStdout += line + ";";
-	}
-	
-	@SuppressWarnings("unused")
-	private void accumulateStderr(String line) {
-		testStderr += line + ";";
-	}
+    }
+
+    private boolean isWindows() {
+        return System.getProperty("os.name").startsWith("Windows");
+    }
+
+    @SuppressWarnings("unused")
+    private void accumulateStdout(String line) {
+        testStdout += line + ";";
+    }
+
+    @SuppressWarnings("unused")
+    private void accumulateStderr(String line) {
+        testStderr += line + ";";
+    }
 
 }

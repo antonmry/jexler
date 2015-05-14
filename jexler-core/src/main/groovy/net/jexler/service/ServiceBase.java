@@ -50,12 +50,12 @@ public abstract class ServiceBase implements Service {
         
     @Override
     public boolean waitForStartup(long timeout) {
-       	return ServiceUtil.waitForStartup(this, timeout);
+           return ServiceUtil.waitForStartup(this, timeout);
     }
     
     @Override
     public boolean waitForShutdown(long timeout) {
-       	return ServiceUtil.waitForShutdown(this, timeout);
+           return ServiceUtil.waitForShutdown(this, timeout);
     }
     
     @Override

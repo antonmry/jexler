@@ -33,8 +33,8 @@ public class IssueFactory  {
     /**
      * Get issue instance.
      */
-	public Issue get(Service service, String message, Throwable cause) {
-		return new BasicIssue(service, message, cause);
-	}
+    public Issue get(Service service, String message, Throwable cause) {
+        return new BasicIssue(service, message, cause);
+    }
 
 }

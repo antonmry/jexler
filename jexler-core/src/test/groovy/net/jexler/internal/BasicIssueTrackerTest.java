@@ -37,24 +37,24 @@ import org.junit.experimental.categories.Category;
 public final class BasicIssueTrackerTest
 {
 
-	@Test
+    @Test
     public void testBasic() throws Exception {
-    	
-		IssueTracker tracker = new BasicIssueTracker();
-		assertTrue("must be true", tracker.getIssues().isEmpty());
-		
-		Issue issue = new BasicIssue(null, "issue1", null);
-		tracker.trackIssue(issue);
-		assertEquals("must be same", 1, tracker.getIssues().size());
-		assertEquals("must be same", "issue1", tracker.getIssues().get(0).getMessage());
-		
-		JexlerUtil.waitAtLeast(10);
-		tracker.trackIssue(null, "issue2", null);
-		assertEquals("must be same", 2, tracker.getIssues().size());
-		assertEquals("must be same", "issue2", tracker.getIssues().get(0).getMessage());
-		assertEquals("must be same", "issue1", tracker.getIssues().get(1).getMessage());
-		
-		tracker.forgetIssues();
-		assertTrue("must be true", tracker.getIssues().isEmpty());	
-	}
+
+        IssueTracker tracker = new BasicIssueTracker();
+        assertTrue("must be true", tracker.getIssues().isEmpty());
+
+        Issue issue = new BasicIssue(null, "issue1", null);
+        tracker.trackIssue(issue);
+        assertEquals("must be same", 1, tracker.getIssues().size());
+        assertEquals("must be same", "issue1", tracker.getIssues().get(0).getMessage());
+
+        JexlerUtil.waitAtLeast(10);
+        tracker.trackIssue(null, "issue2", null);
+        assertEquals("must be same", 2, tracker.getIssues().size());
+        assertEquals("must be same", "issue2", tracker.getIssues().get(0).getMessage());
+        assertEquals("must be same", "issue1", tracker.getIssues().get(1).getMessage());
+
+        tracker.forgetIssues();
+        assertTrue("must be true", tracker.getIssues().isEmpty());
+    }
 }

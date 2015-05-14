@@ -25,13 +25,13 @@ package net.jexler.service;
  */
 public class CronEvent extends EventBase {
 
-	private final String cron;
-	
-	/**
-	 * Constructor.
-	 * @param service the service that created the event
-	 * @param cron the cron pattern that caused the event
-	 */
+    private final String cron;
+
+    /**
+     * Constructor.
+     * @param service the service that created the event
+     * @param cron the cron pattern that caused the event
+     */
     public CronEvent(Service service, String cron) {
         super(service);
         this.cron = cron;

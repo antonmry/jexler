@@ -52,10 +52,10 @@ public interface Service {
      */
     boolean waitForShutdown(long timeout);
 
-	/**
-	 * Get run state of the service.
-	 */
-	RunState getRunState();    
+    /**
+     * Get run state of the service.
+     */
+    RunState getRunState();
 
     /**
      * Convenience method for testing if run state is not OFF.

@@ -26,43 +26,43 @@ import net.jexler.JexlerUtil;
  * @author $(whois jexler.net)
  */
 public class ServiceUtil {
-	
-	@SuppressWarnings("serial")
-	static class NoInstanceException extends Exception {
-	}
-	
-	/**
-	 * Don't use, class contains only static utility methods.
-	 * @throws NoInstanceException Always.
-	 */
-	public ServiceUtil() throws NoInstanceException {
-		throw new NoInstanceException();
-	}
-		
+
+    @SuppressWarnings("serial")
+    static class NoInstanceException extends Exception {
+    }
+
+    /**
+     * Don't use, class contains only static utility methods.
+     * @throws NoInstanceException Always.
+     */
+    public ServiceUtil() throws NoInstanceException {
+        throw new NoInstanceException();
+    }
+
     public static boolean waitForStartup(Service service, long timeout) {
-    	long t0 = System.currentTimeMillis();
-		while (true) {
-    		if (!service.getRunState().isBusyStarting()) {
-    			return true;
-    		}
-    		if (System.currentTimeMillis() - t0 >= timeout) {
-    			return false;
-    		}
-			JexlerUtil.waitAtLeast(10);
-    	}
+        long t0 = System.currentTimeMillis();
+        while (true) {
+            if (!service.getRunState().isBusyStarting()) {
+                return true;
+            }
+            if (System.currentTimeMillis() - t0 >= timeout) {
+                return false;
+            }
+            JexlerUtil.waitAtLeast(10);
+        }
     }
     
     public static boolean waitForShutdown(Service service, long timeout) {
-       	long t0 = System.currentTimeMillis();
-		while (true) {
-    		if (service.isOff()) {
-    			return true;
-    		}
-    		if (System.currentTimeMillis() - t0 >= timeout) {
-    			return false;
-    		}
-			JexlerUtil.waitAtLeast(10);
-    	}
+           long t0 = System.currentTimeMillis();
+        while (true) {
+            if (service.isOff()) {
+                return true;
+            }
+            if (System.currentTimeMillis() - t0 >= timeout) {
+                return false;
+            }
+            JexlerUtil.waitAtLeast(10);
+        }
     }
 
 }

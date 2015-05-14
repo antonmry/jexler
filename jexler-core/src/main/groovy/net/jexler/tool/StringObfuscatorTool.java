@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
  */
 public class StringObfuscatorTool {
 
-	private static final Logger log = LoggerFactory.getLogger(StringObfuscatorTool.class);
+    private static final Logger log = LoggerFactory.getLogger(StringObfuscatorTool.class);
     
     private static final int DEFAULT_BYTE_BUFFER_PAD_LEN = 64;
     private static final int MIN_SALT_LEN = 16;
@@ -63,9 +63,9 @@ public class StringObfuscatorTool {
      * (resp. less if some plain string characters need more than one byte UTF-8 encoded).
      */
     public StringObfuscatorTool() throws NoSuchAlgorithmException, NoSuchPaddingException {
-    	setParameters("62e0c45a20dfe429543212be640c3254", "b42de953243ab9edf03bdac61344bec5",
-    			"AES", "AES/CBC/PKCS5Padding");
-    	setByteBufferPadLen(DEFAULT_BYTE_BUFFER_PAD_LEN);
+        setParameters("62e0c45a20dfe429543212be640c3254", "b42de953243ab9edf03bdac61344bec5",
+                "AES", "AES/CBC/PKCS5Padding");
+        setByteBufferPadLen(DEFAULT_BYTE_BUFFER_PAD_LEN);
     }
     
     /**
@@ -73,11 +73,11 @@ public class StringObfuscatorTool {
      * @return this (for chaining calls)
      */
     public StringObfuscatorTool setParameters(String hexKey, String hexIv, String algorithm, String transformation)
-    		throws NoSuchAlgorithmException, NoSuchPaddingException {
-    	key = new SecretKeySpec(DatatypeConverter.parseHexBinary(hexKey), algorithm);
-    	iv = new IvParameterSpec(DatatypeConverter.parseHexBinary(hexIv));
-    	cipher = Cipher.getInstance(transformation);
-    	return this;
+            throws NoSuchAlgorithmException, NoSuchPaddingException {
+        key = new SecretKeySpec(DatatypeConverter.parseHexBinary(hexKey), algorithm);
+        iv = new IvParameterSpec(DatatypeConverter.parseHexBinary(hexIv));
+        cipher = Cipher.getInstance(transformation);
+        return this;
     }
     
     /**
@@ -85,8 +85,8 @@ public class StringObfuscatorTool {
      * @return this (for chaining calls)
      */
     public StringObfuscatorTool setByteBufferPadLen(int len) {
-    	byteBufferPadLen = len;
-    	return this;
+        byteBufferPadLen = len;
+        return this;
     }
             
     /**
@@ -95,28 +95,28 @@ public class StringObfuscatorTool {
      * @return obfuscated string
      */
     public String obfuscate(String plain)
-    		throws InvalidKeyException, IllegalBlockSizeException,
-    		BadPaddingException, UnsupportedEncodingException,
-    		InvalidAlgorithmParameterException {
-    	byte[] plainBytes = plain.getBytes("UTF-8");
-    	int lenActual = plainBytes.length;
-    	int lenMaxAllowed = byteBufferPadLen - MIN_SALT_LEN - LEN_BYTES_LEN;
-    	if (lenActual > lenMaxAllowed) {
-    		throw new IllegalArgumentException("Input string too long (" +
-    				lenActual + " bytes UTF-8 encoded, max allowed: " + lenMaxAllowed + ")");
-    	}
-    	byte[] plainPaddedBytes = new byte[byteBufferPadLen];
-    	int lenSaltBytes = byteBufferPadLen - lenActual - LEN_BYTES_LEN;
-    	byte[] saltBytes = new byte[lenSaltBytes];
-    	SecureRandom secureRandom = new SecureRandom();
-    	secureRandom.nextBytes(saltBytes);
-    	System.arraycopy(saltBytes, 0, plainPaddedBytes, 0, lenSaltBytes);
-    	System.arraycopy(plainBytes, 0, plainPaddedBytes, lenSaltBytes, lenActual);
-    	plainPaddedBytes[byteBufferPadLen-1] = (byte)lenActual;
-    	cipher.init(Cipher.ENCRYPT_MODE, key, iv);
-    	byte[] enc = cipher.doFinal(plainPaddedBytes);
-    	String encHex = DatatypeConverter.printHexBinary(enc);
-    	return encHex;
+            throws InvalidKeyException, IllegalBlockSizeException,
+            BadPaddingException, UnsupportedEncodingException,
+            InvalidAlgorithmParameterException {
+        byte[] plainBytes = plain.getBytes("UTF-8");
+        int lenActual = plainBytes.length;
+        int lenMaxAllowed = byteBufferPadLen - MIN_SALT_LEN - LEN_BYTES_LEN;
+        if (lenActual > lenMaxAllowed) {
+            throw new IllegalArgumentException("Input string too long (" +
+                    lenActual + " bytes UTF-8 encoded, max allowed: " + lenMaxAllowed + ")");
+        }
+        byte[] plainPaddedBytes = new byte[byteBufferPadLen];
+        int lenSaltBytes = byteBufferPadLen - lenActual - LEN_BYTES_LEN;
+        byte[] saltBytes = new byte[lenSaltBytes];
+        SecureRandom secureRandom = new SecureRandom();
+        secureRandom.nextBytes(saltBytes);
+        System.arraycopy(saltBytes, 0, plainPaddedBytes, 0, lenSaltBytes);
+        System.arraycopy(plainBytes, 0, plainPaddedBytes, lenSaltBytes, lenActual);
+        plainPaddedBytes[byteBufferPadLen-1] = (byte)lenActual;
+        cipher.init(Cipher.ENCRYPT_MODE, key, iv);
+        byte[] enc = cipher.doFinal(plainPaddedBytes);
+        String encHex = DatatypeConverter.printHexBinary(enc);
+        return encHex;
     }
     
     /**
@@ -124,19 +124,19 @@ public class StringObfuscatorTool {
      * @return deobfuscated string
      */
     public String deobfuscate(String encHex)
-    		throws InvalidKeyException, IllegalBlockSizeException,
-    		BadPaddingException, UnsupportedEncodingException,
-    		InvalidAlgorithmParameterException {
-    	byte[] enc = DatatypeConverter.parseHexBinary(encHex);
-    	cipher.init(Cipher.DECRYPT_MODE, key, iv);
-    	byte[] plain = cipher.doFinal(enc);
-    	if (plain.length != byteBufferPadLen) {
-    		throw new IllegalArgumentException("Illegal length of deciphered buffer (" +
-    				plain.length + " bytes, expected " + byteBufferPadLen + ")");
-    	}
-    	int lenPlainBytes = plain[byteBufferPadLen-1] & 0xff;
-    	int offs = byteBufferPadLen - LEN_BYTES_LEN - lenPlainBytes;
-    	return new String(plain, offs, lenPlainBytes, "UTF-8");
+            throws InvalidKeyException, IllegalBlockSizeException,
+            BadPaddingException, UnsupportedEncodingException,
+            InvalidAlgorithmParameterException {
+        byte[] enc = DatatypeConverter.parseHexBinary(encHex);
+        cipher.init(Cipher.DECRYPT_MODE, key, iv);
+        byte[] plain = cipher.doFinal(enc);
+        if (plain.length != byteBufferPadLen) {
+            throw new IllegalArgumentException("Illegal length of deciphered buffer (" +
+                    plain.length + " bytes, expected " + byteBufferPadLen + ")");
+        }
+        int lenPlainBytes = plain[byteBufferPadLen-1] & 0xff;
+        int offs = byteBufferPadLen - LEN_BYTES_LEN - lenPlainBytes;
+        return new String(plain, offs, lenPlainBytes, "UTF-8");
     }
 
 }

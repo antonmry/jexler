@@ -46,15 +46,15 @@ public class ShellTool {
     private static final Logger log = LoggerFactory.getLogger(ShellTool.class);
 
     /**
-	 * Simple bean for the result of executing a shell command.
-	 */
+     * Simple bean for the result of executing a shell command.
+     */
     public class Result {
         public int rc;
         public String stdout;
         public String stderr;
         @Override
         public String toString() {
-        	return "[rc=" + rc + ",stdout='" + JexlerUtil.toSingleLine(stdout) +
+            return "[rc=" + rc + ",stdout='" + JexlerUtil.toSingleLine(stdout) +
                     "',stderr='" + JexlerUtil.toSingleLine(stderr) + "']";
         }
     }
@@ -63,36 +63,36 @@ public class ShellTool {
      * Helper class for collecting stdout and stderr.
      */
     public static class OutputCollector extends Thread {
-		private final InputStream is;
-		private final Closure<?> lineHandler;
+        private final InputStream is;
+        private final Closure<?> lineHandler;
         private final String name;
-		private String output;
-		OutputCollector(InputStream is, Closure<?> lineHandler, String name) {
-			this.is = is;
-			this.lineHandler = lineHandler;
+        private String output;
+        OutputCollector(InputStream is, Closure<?> lineHandler, String name) {
+            this.is = is;
+            this.lineHandler = lineHandler;
             this.name = name;
-		}
-	    @Override
-		public void run() {
+        }
+        @Override
+        public void run() {
             Thread.currentThread().setName(name);
-	    	StringBuilder out = new StringBuilder();
-	    	// (assume default platform character encoding)
-	    	Scanner scanner = new Scanner(is);
-        	while (scanner.hasNext()) {
-        		String line = scanner.nextLine();
-        		out.append(line);
+            StringBuilder out = new StringBuilder();
+            // (assume default platform character encoding)
+            Scanner scanner = new Scanner(is);
+            while (scanner.hasNext()) {
+                String line = scanner.nextLine();
+                out.append(line);
                 out.append(System.lineSeparator());
-        		if (lineHandler != null) {
-	    			lineHandler.call(line);
-	    		}
-        	}
-	    	scanner.close();
-	    	output = out.toString();
-		}
-		public String getOutput() {
-			return output;
-		}
-	}
+                if (lineHandler != null) {
+                    lineHandler.call(line);
+                }
+            }
+            scanner.close();
+            output = out.toString();
+        }
+        public String getOutput() {
+            return output;
+        }
+    }
 
     private File workingDirectory;
     private Map<String,String> env;
@@ -159,7 +159,7 @@ public class ShellTool {
             Process proc = Runtime.getRuntime().exec(command, toEnvArray(env), workingDirectory);
             return getResult(proc);
         } catch (Exception e ) {
-        	return getExceptionResult(JexlerUtil.getStackTrace(e));
+            return getExceptionResult(JexlerUtil.getStackTrace(e));
         }
     }
 
@@ -172,8 +172,8 @@ public class ShellTool {
      * @return result, never null
      */
     public Result run(List<String> cmdList) {
-    	String[] cmdArray = new String[cmdList.size()];
-    	cmdList.toArray(cmdArray);
+        String[] cmdArray = new String[cmdList.size()];
+        cmdList.toArray(cmdArray);
         try {
             Process proc = Runtime.getRuntime().exec(cmdArray, toEnvArray(env), workingDirectory);
             return getResult(proc);
@@ -196,15 +196,15 @@ public class ShellTool {
         errCollector.join();
         result.stdout = outCollector.getOutput();
         result.stderr = errCollector.getOutput();
-		return result;
-	}
-	
-	/**
-	 * Get result in case where an exception occurred.
-	 */
-	private Result getExceptionResult(String stackTrace) {
-		Result result = new Result();
-		result.rc = -1;
+        return result;
+    }
+
+    /**
+     * Get result in case where an exception occurred.
+     */
+    private Result getExceptionResult(String stackTrace) {
+        Result result = new Result();
+        result.rc = -1;
         result.stdout = "";
         result.stderr = stackTrace;
         return result;
@@ -214,15 +214,15 @@ public class ShellTool {
      * Convert map of name and value to array of name=value.
      */
     private String[] toEnvArray(Map<String,String> env) {
-    	if (env == null) {
-    		return null;
-    	}
-    	List<String> envList = new LinkedList<>();
-    	for (Entry<String, String> entry : env.entrySet()) {
-    		envList.add(entry.getKey() + "=" + entry.getValue());
-    	}
-    	String[] envArray = new String[envList.size()];
-    	return envList.toArray(envArray);
+        if (env == null) {
+            return null;
+        }
+        List<String> envList = new LinkedList<>();
+        for (Entry<String, String> entry : env.entrySet()) {
+            envList.add(entry.getKey() + "=" + entry.getValue());
+        }
+        String[] envArray = new String[envList.size()];
+        return envList.toArray(envArray);
     }
 
 }

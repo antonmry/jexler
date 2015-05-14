@@ -35,20 +35,20 @@ import org.junit.experimental.categories.Category;
 @Category(FastTests.class)
 public final class IssueFactoryTest
 {
-	
-	@Test
+
+    @Test
     public void testBasic() throws Exception {
-		Service service = MockService.getTestInstance();
-		String message = "hi";
-		Throwable cause = new RuntimeException();
-		IssueFactory issueFactory = new IssueFactory();
-		
-		Issue issue = issueFactory.get(service, message, cause);
-		assertNotNull("must not be null", issue);
-		assertTrue("must be true", issue instanceof BasicIssue);
-		assertEquals("must be same", service, issue.getService());
-		assertEquals("must be same", "hi", issue.getMessage());
-		assertEquals("must be same", cause, issue.getCause());
-	}
-	
+        Service service = MockService.getTestInstance();
+        String message = "hi";
+        Throwable cause = new RuntimeException();
+        IssueFactory issueFactory = new IssueFactory();
+
+        Issue issue = issueFactory.get(service, message, cause);
+        assertNotNull("must not be null", issue);
+        assertTrue("must be true", issue instanceof BasicIssue);
+        assertEquals("must be same", service, issue.getService());
+        assertEquals("must be same", "hi", issue.getMessage());
+        assertEquals("must be same", cause, issue.getCause());
+    }
+
 }

@@ -51,14 +51,14 @@ public final class DirWatchServiceTest
         service.setScheduler(new Scheduler());
 
         service.start();
-    	assertTrue("must be true", service.isOff());
+        assertTrue("must be true", service.isOff());
         assertEquals("must be same", 1, jexler.getIssues().size());
         Issue issue = jexler.getIssues().get(0);
         assertEquals("must be same", service, issue.getService());
         assertTrue("must be true",
-        		issue.getMessage().startsWith("Could not create watch service or key"));
+                issue.getMessage().startsWith("Could not create watch service or key"));
         assertNotNull("must not be null", issue.getCause());
-    	assertTrue("must be true", issue.getCause() instanceof IOException);
+        assertTrue("must be true", issue.getCause() instanceof IOException);
     }
 
 }

@@ -83,7 +83,7 @@ public class CronService extends ServiceBase {
             getJexler().handle(new CronEvent(thisService, cron));
             setRunState(RunState.IDLE);
             if (cron.equals(CRON_NOW_AND_STOP)) {
-            	getJexler().handle(new StopEvent(thisService));
+                getJexler().handle(new StopEvent(thisService));
             }
             return;
         }

@@ -28,29 +28,29 @@ import java.io.Writer;
  * @author $(whois jexler.net)
  */
 public class JexlerUtil {
-	
-	@SuppressWarnings("serial")
-	static class NoInstanceException extends Exception {
-	}
-	
-	/**
-	 * Don't use, class contains only static utility methods.
-	 * @throws NoInstanceException Always.
-	 */
-	public JexlerUtil() throws NoInstanceException {
-		throw new NoInstanceException();
-	}
 
-	/**
+    @SuppressWarnings("serial")
+    static class NoInstanceException extends Exception {
+    }
+
+    /**
+     * Don't use, class contains only static utility methods.
+     * @throws NoInstanceException Always.
+     */
+    public JexlerUtil() throws NoInstanceException {
+        throw new NoInstanceException();
+    }
+
+    /**
      * Get stack trace for given throwable as a string.
      * @return stack trace, never null, empty if throwable is null or could not obtain
      */
     public static String getStackTrace(Throwable throwable) {
-    	if (throwable == null) {
-    		return "";
-    	}
+        if (throwable == null) {
+            return "";
+        }
         try {
-        	Writer result = new StringWriter();
+            Writer result = new StringWriter();
             throwable.printStackTrace(new PrintWriter(result));
             return result.toString();
         } catch (RuntimeException e) {
@@ -64,10 +64,10 @@ public class JexlerUtil {
      * return string with replacements, null if given string is null
      */
     public static String toSingleLine(String multi) {
-    	if (multi == null) {
-    		return null;
-    	}
-    	return multi.replace("\r\n", "%n").replace("\r", "%n").replace("\n", "%n");
+        if (multi == null) {
+            return null;
+        }
+        return multi.replace("\r\n", "%n").replace("\r", "%n").replace("\n", "%n");
     }
 
     
@@ -76,17 +76,17 @@ public class JexlerUtil {
      * @param ms time to wait in ms
      */
     public static void waitAtLeast(long ms) {
-    	long t0 = System.currentTimeMillis();
-    	while (true) {
-    		long t1 = System.currentTimeMillis();
-    		if (t1-t0 >= ms) {
-    			return;
-    		}
-    		try {
-    			Thread.sleep(ms - (t1-t0));
-    		} catch (InterruptedException e) {
-    		}
-    	}
+        long t0 = System.currentTimeMillis();
+        while (true) {
+            long t1 = System.currentTimeMillis();
+            if (t1-t0 >= ms) {
+                return;
+            }
+            try {
+                Thread.sleep(ms - (t1-t0));
+            } catch (InterruptedException e) {
+            }
+        }
     }
 
 }

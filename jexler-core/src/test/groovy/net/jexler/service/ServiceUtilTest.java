@@ -31,13 +31,13 @@ import org.junit.experimental.categories.Category;
 public final class ServiceUtilTest
 {
 
-	@Test
+    @Test
     public void testNoInstance() throws Exception {
-		try {
-			new ServiceUtil();
-			fail("must throw");
-		} catch (ServiceUtil.NoInstanceException e) {
-		}
-	}
+        try {
+            new ServiceUtil();
+            fail("must throw");
+        } catch (ServiceUtil.NoInstanceException e) {
+        }
+    }
 
 }

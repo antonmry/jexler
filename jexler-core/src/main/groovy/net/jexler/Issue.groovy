@@ -31,9 +31,9 @@ import net.jexler.service.Service
 @CompileStatic
 public interface Issue extends Comparable<Issue> {
 
-	/**
-	 * Get date and time of when the issue occurred.
-	 */
+    /**
+     * Get date and time of when the issue occurred.
+     */
     Date getDate()
 
     /**

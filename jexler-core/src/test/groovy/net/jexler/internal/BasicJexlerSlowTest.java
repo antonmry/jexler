@@ -38,53 +38,53 @@ import org.junit.experimental.categories.Category;
 @Category(SlowTests.class)
 public final class BasicJexlerSlowTest
 {
-	private final static long MS_5_SEC = 5000;
-	private final static long MS_20_SEC = 20000;
+    private final static long MS_5_SEC = 5000;
+    private final static long MS_20_SEC = 20000;
 
-	@Test
+    @Test
     public void testStartShutdownTooSlow() throws Exception {
-	
-		File dir = Files.createTempDirectory(null).toFile();
-		File file = new File(dir, "test.groovy");
-		
-		String jexlerTemplateSlow =
-			    "log.info('before startup wait ' + jexler.id)\n" +
-				"JexlerUtil.waitAtLeast(10000)\n" +
-			    "log.info('after startup wait ' + jexler.id)\n" +
-			    "while (true) {\n" +
-				"  event = events.take()\n" +
-				"  if (event instanceof StopEvent) {\n" +
-				"    JexlerUtil.waitAtLeast(10000)\n" +
-				"    return\n" +
-				"  }\n" +
-				"}\n";
-		
-		FileWriter writer = new FileWriter(file);
-		writer.append("[ 'autostart' : false ]\n");
-		writer.append(jexlerTemplateSlow);
-		writer.close();
-				
-		BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
-		
-		jexler.start();
-		jexler.waitForStartup(MS_5_SEC);
-		assertEquals("should be same", 1, jexler.getIssues().size());
-		Issue issue = jexler.getIssues().get(0);
-		assertEquals("must be same", "Timeout waiting for jexler startup.", issue.getMessage());
-		
-		jexler.forgetIssues();
-		jexler.waitForStartup(MS_20_SEC);
-		assertTrue("must be true", jexler.getIssues().isEmpty());
-		
-		jexler.stop();
-		jexler.waitForShutdown(MS_5_SEC);
-		assertEquals("should be same", 1, jexler.getIssues().size());
-		issue = jexler.getIssues().get(0);
-		assertEquals("must be same", "Timeout waiting for jexler shutdown.", issue.getMessage());
-		
-		jexler.forgetIssues();
-		jexler.waitForShutdown(MS_20_SEC);
-		assertTrue("must be true", jexler.getIssues().isEmpty());
-	}
-	
+
+        File dir = Files.createTempDirectory(null).toFile();
+        File file = new File(dir, "test.groovy");
+
+        String jexlerTemplateSlow =
+                "log.info('before startup wait ' + jexler.id)\n" +
+                "JexlerUtil.waitAtLeast(10000)\n" +
+                "log.info('after startup wait ' + jexler.id)\n" +
+                "while (true) {\n" +
+                "  event = events.take()\n" +
+                "  if (event instanceof StopEvent) {\n" +
+                "    JexlerUtil.waitAtLeast(10000)\n" +
+                "    return\n" +
+                "  }\n" +
+                "}\n";
+
+        FileWriter writer = new FileWriter(file);
+        writer.append("[ 'autostart' : false ]\n");
+        writer.append(jexlerTemplateSlow);
+        writer.close();
+
+        BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
+
+        jexler.start();
+        jexler.waitForStartup(MS_5_SEC);
+        assertEquals("should be same", 1, jexler.getIssues().size());
+        Issue issue = jexler.getIssues().get(0);
+        assertEquals("must be same", "Timeout waiting for jexler startup.", issue.getMessage());
+
+        jexler.forgetIssues();
+        jexler.waitForStartup(MS_20_SEC);
+        assertTrue("must be true", jexler.getIssues().isEmpty());
+
+        jexler.stop();
+        jexler.waitForShutdown(MS_5_SEC);
+        assertEquals("should be same", 1, jexler.getIssues().size());
+        issue = jexler.getIssues().get(0);
+        assertEquals("must be same", "Timeout waiting for jexler shutdown.", issue.getMessage());
+
+        jexler.forgetIssues();
+        jexler.waitForShutdown(MS_20_SEC);
+        assertTrue("must be true", jexler.getIssues().isEmpty());
+    }
+
 }

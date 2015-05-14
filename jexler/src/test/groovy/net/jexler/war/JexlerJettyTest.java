@@ -33,11 +33,11 @@ import org.slf4j.LoggerFactory;
 @Category(DemoTests.class)
 public class JexlerJettyTest {
 
-	static final Logger log = LoggerFactory.getLogger(JexlerJettyTest.class);
+    static final Logger log = LoggerFactory.getLogger(JexlerJettyTest.class);
 
-	@Test
+    @Test
     public void demo() throws Exception {
-    	System.setProperty("groovy.grape.report.downloads", "true");
+        System.setProperty("groovy.grape.report.downloads", "true");
         final int port = 9080;
         final Server server = new Server(port);
         WebAppContext wac = new WebAppContext();
