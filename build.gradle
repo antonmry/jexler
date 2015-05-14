@@ -1,4 +1,5 @@
 subprojects {
+  apply plugin: 'groovy'
   apply plugin: 'java'
   apply plugin: 'eclipse'
   apply plugin: 'maven'
@@ -20,6 +21,8 @@ subprojects {
   }
 
   dependencies {
+    compile 'org.codehaus.groovy:groovy-all:2.4.3:indy'
+    compile 'org.apache.ivy:ivy:2.4.0'
     compile 'org.slf4j:slf4j-api:1.7.10'
     compile 'ch.qos.logback:logback-classic:1.1.2'
     testCompile 'junit:junit:4.12'
