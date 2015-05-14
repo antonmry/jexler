@@ -19,6 +19,7 @@ package net.jexler.internal
 import net.jexler.service.MockService
 import net.jexler.test.FastTests
 import org.junit.experimental.categories.Category
+import spock.lang.Specification
 
 /**
  * Tests the respective class.
@@ -26,7 +27,7 @@ import org.junit.experimental.categories.Category
  * @author $(whois jexler.net)
  */
 @Category(FastTests.class)
-final class BasicIssueSpec extends spock.lang.Specification {
+class BasicIssueSpec extends Specification {
 
     def "construct and get without cause"() {
         expect:
