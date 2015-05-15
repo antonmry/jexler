@@ -14,10 +14,10 @@
    limitations under the License.
 */
 
-package net.jexler.service;
+package net.jexler.service
 
-import net.jexler.RunState;
-
+import groovy.transform.CompileStatic
+import net.jexler.RunState
 
 /**
  * Interface for a service.
@@ -25,52 +25,53 @@ import net.jexler.RunState;
  *
  * @author $(whois jexler.net)
  */
-public interface Service {
+@CompileStatic
+interface Service {
 
     /**
      * Initiate service start.
      */
-    void start();
+    void start()
 
     /**
      * Wait until run state is not BUSY_STARTING or timeout.
      * @param timeout timeout in ms
      * @return true if no timeout, false otherwise
      */
-    boolean waitForStartup(long timeout);
+    boolean waitForStartup(long timeout)
 
 
     /**
      * Initiate service stop.
      */
-    void stop();
+    void stop()
     
     /**
      * Wait until run state is not OFF or timeout.
      * @param timeout timeout in ms
      * @return true if no timeout, false otherwise
      */
-    boolean waitForShutdown(long timeout);
+    boolean waitForShutdown(long timeout)
 
     /**
      * Get run state of the service.
      */
-    RunState getRunState();
+    RunState getRunState()
 
     /**
      * Convenience method for testing if run state is not OFF.
      */
-    boolean isOn();
+    boolean isOn()
 
     /**
      * Convenience method for testing  if run state is OFF.
      * @return true or false
      */
-    boolean isOff();
+    boolean isOff()
 
     /**
      * Get service id.
      */
-    String getId();
+    String getId()
 
 }

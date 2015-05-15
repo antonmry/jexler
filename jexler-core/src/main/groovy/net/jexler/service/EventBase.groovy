@@ -14,18 +14,31 @@
    limitations under the License.
 */
 
-package net.jexler.service;
+package net.jexler.service
+
+import groovy.transform.CompileStatic;
 
 /**
- * Interface for an event sent by a service to a jexler.
+ * Abstract event base implementation.
  *
  * @author $(whois jexler.net)
  */
-public interface Event {
+@CompileStatic
+abstract class EventBase implements Event {
+
+    private final Service service;
 
     /**
-     * Get service that sent the event.
+     * Constructor.
+     * @param service the service that created the event
      */
-    Service getService();
+    EventBase(Service service) {
+        this.service = service;
+    }
+
+    @Override
+    Service getService() {
+        return service;
+    }
 
 }

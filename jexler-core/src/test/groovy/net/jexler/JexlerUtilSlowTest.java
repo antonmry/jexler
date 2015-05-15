@@ -29,8 +29,7 @@ import org.junit.experimental.categories.Category;
  * @author $(whois jexler.net)
  */
 @Category(SlowTests.class)
-public final class JexlerUtilSlowTest
-{
+public final class JexlerUtilSlowTest {
 
     private final static long MS_10_SEC = 10000;
     private final static long MS_20_SEC = 20000;

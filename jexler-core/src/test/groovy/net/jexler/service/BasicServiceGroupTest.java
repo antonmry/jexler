@@ -33,8 +33,7 @@ import org.junit.experimental.categories.Category;
  * @author $(whois jexler.net)
  */
 @Category(FastTests.class)
-public final class BasicServiceGroupTest
-{
+public final class BasicServiceGroupTest {
 
     @Test
     public void testBasic() throws Exception {
@@ -44,7 +43,7 @@ public final class BasicServiceGroupTest
         MockService service2 = new MockService(jexler, "service2");
         MockService service3 = new MockService(jexler, "service2");
 
-        BasicServiceGroup group = new BasicServiceGroup("group");
+        ServiceGroup group = new ServiceGroup("group");
         assertEquals("must be same", "group", group.getId());
         assertEquals("must be same", 0, group.getServices().size());
 
@@ -78,7 +77,7 @@ public final class BasicServiceGroupTest
         MockService service2 = new MockService(jexler, "service2");
         MockService service3 = new MockService(jexler, "service2");
 
-        BasicServiceGroup group = new BasicServiceGroup("group");
+        ServiceGroup group = new ServiceGroup("group");
         group.add(service1);
         group.add(service2);
         group.add(service3);
@@ -123,7 +122,7 @@ public final class BasicServiceGroupTest
         MockService service2 = new MockService(jexler, "service2");
         MockService service3 = new MockService(jexler, "service2");
 
-        BasicServiceGroup group = new BasicServiceGroup("group");
+        ServiceGroup group = new ServiceGroup("group");
         group.add(service1);
         group.add(service2);
         group.add(service3);
@@ -155,7 +154,7 @@ public final class BasicServiceGroupTest
     @Test
     public void testEmpty() throws Exception {
 
-        BasicServiceGroup group = new BasicServiceGroup("group");
+        ServiceGroup group = new ServiceGroup("group");
         assertEquals("must be same", RunState.OFF, group.getRunState());
         assertFalse("must be false", group.isOn());
 

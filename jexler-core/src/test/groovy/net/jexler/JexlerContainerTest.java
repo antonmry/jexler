@@ -40,6 +40,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(FastTests.class)
 public final class JexlerContainerTest {
+
     private final static long MS_1_SEC = 1000;
     private final static long MS_10_SEC = 10000;
 

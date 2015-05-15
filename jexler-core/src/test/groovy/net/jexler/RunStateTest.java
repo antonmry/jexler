@@ -29,8 +29,7 @@ import org.junit.experimental.categories.Category;
  * @author $(whois jexler.net)
  */
 @Category(FastTests.class)
-public final class RunStateTest
-{
+public final class RunStateTest {
 
     @Test
     public void testBasic() throws Exception {
@@ -76,7 +75,6 @@ public final class RunStateTest
 
         assertEquals("must be equal", "off", RunState.OFF.getInfo());
         assertEquals("must be equal", RunState.OFF, RunState.valueOf("OFF"));
-        assertEquals("must be equal", RunState.OFF, RunState.values()[0]);
     }
 
 }

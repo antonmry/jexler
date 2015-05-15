@@ -14,72 +14,74 @@
    limitations under the License.
 */
 
-package net.jexler.service;
+package net.jexler.service
 
-import net.jexler.Jexler;
-import net.jexler.RunState;
+import groovy.transform.CompileStatic
+import net.jexler.Jexler
+import net.jexler.RunState
 
 /**
  * Abstract service base implementation.
  *
  * @author $(whois jexler.net)
  */
-public abstract class ServiceBase implements Service {
+@CompileStatic
+abstract class ServiceBase implements Service {
 
-    private final Jexler jexler;
-    private final String id;
-    private volatile RunState runState;
+    private final Jexler jexler
+    private final String id
+    private volatile RunState runState
 
     /**
      * Constructor.
      * @param jexler the jexler to send events to
      * @param id the id of the service
      */
-    public ServiceBase(Jexler jexler, String id) {
-        this.jexler = jexler;
-        this.id = id;
-        runState = RunState.OFF;
+    ServiceBase(Jexler jexler, String id) {
+        this.jexler = jexler
+        this.id = id
+        runState = RunState.OFF
     }
 
     /**
      * Set run state to given value.
      */
-    public void setRunState(RunState runState) {
-        this.runState = runState;
+    void setRunState(RunState runState) {
+        this.runState = runState
     }
         
     @Override
-    public boolean waitForStartup(long timeout) {
-           return ServiceUtil.waitForStartup(this, timeout);
+    boolean waitForStartup(long timeout) {
+           return ServiceUtil.waitForStartup(this, timeout)
     }
     
     @Override
-    public boolean waitForShutdown(long timeout) {
-           return ServiceUtil.waitForShutdown(this, timeout);
+    boolean waitForShutdown(long timeout) {
+           return ServiceUtil.waitForShutdown(this, timeout)
     }
     
     @Override
-    public RunState getRunState() {
-        return runState;
+    RunState getRunState() {
+        return runState
     }
 
     @Override
-    public boolean isOn() {
-        return runState.isOn();
+    boolean isOn() {
+        return runState.isOn()
     }
 
     @Override
-    public boolean isOff() {
-        return runState.isOff();
+    boolean isOff() {
+        return runState.isOff()
     }
 
     @Override
-    public String getId() {
-        return id;
+    String getId() {
+        return id
     }
 
     protected Jexler getJexler() {
-        return jexler;
+        return jexler
     }
 
 }

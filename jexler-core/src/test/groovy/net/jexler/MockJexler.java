@@ -24,10 +24,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import net.jexler.Issue;
-import net.jexler.Jexler;
-import net.jexler.JexlerContainer;
-import net.jexler.RunState;
 import net.jexler.service.Event;
 import net.jexler.service.Service;
 

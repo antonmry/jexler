@@ -38,8 +38,7 @@ import org.junit.experimental.categories.Category;
  * @author $(whois jexler.net)
  */
 @Category(FastTests.class)
-public final class ShellToolTest
-{
+public final class ShellToolTest {
 
     private String testStdout = "";
     private String testStderr = "";
@@ -176,8 +175,7 @@ public final class ShellToolTest
 
     @Test
     public void testResultToString() throws Exception {
-        ShellTool tool = new ShellTool();
-        ShellTool.Result result = tool.new Result();
+        ShellTool.Result result = new ShellTool.Result();
         result.rc = 5;
         result.stdout="file1\nfile2\n";
         result.stderr="";

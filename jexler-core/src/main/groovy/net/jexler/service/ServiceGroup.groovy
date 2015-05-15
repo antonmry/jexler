@@ -14,37 +14,36 @@
    limitations under the License.
 */
 
-package net.jexler.service;
+package net.jexler.service
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import groovy.transform.CompileStatic
 
-import net.jexler.RunState;
+import net.jexler.RunState
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 /**
- * Basic default implementation of service group interface.
+ * Service which is a group of services.
+ * Starting starts all, stopping stops all.
  *
  * @author $(whois jexler.net)
  */
-public class BasicServiceGroup implements ServiceGroup {
+@CompileStatic
+class ServiceGroup implements Service {
 
-    private static final Logger log = LoggerFactory.getLogger(BasicServiceGroup.class);
+    private static final Logger log = LoggerFactory.getLogger(ServiceGroup.class)
 
-    private final String id;
-    private final List<Service> services;
+    private final String id
+    private final List<Service> services
 
     /**
      * Constructor.
      * @param id the service group id
      */
-    public BasicServiceGroup(String id) {
-        this.id = id;
-        this.services = new LinkedList<>();
+    ServiceGroup(String id) {
+        this.id = id
+        this.services = new LinkedList<>()
     }
     
     /**
@@ -54,17 +53,17 @@ public class BasicServiceGroup implements ServiceGroup {
      * is made to start the others.
      */
     @Override
-    public void start() {
+    void start() {
         synchronized(services) {
             for (Service service : services) {
-                service.start();
+                service.start()
             }
         }
     }
 
     @Override
-    public boolean waitForStartup(long timeout) {
-        return ServiceUtil.waitForStartup(this, timeout);
+    boolean waitForStartup(long timeout) {
+        return ServiceUtil.waitForStartup(this, timeout)
     }
 
     /**
@@ -73,53 +72,53 @@ public class BasicServiceGroup implements ServiceGroup {
      * attempted to stop all services.
      */
     @Override
-    public void stop() {
-        RuntimeException ex = null;
+    void stop() {
+        RuntimeException ex = null
         synchronized(services) {
             for (Service service : services) {
                 try {
-                    service.stop();
+                    service.stop()
                 } catch (RuntimeException e) {
                     if (ex == null) {
-                        ex = e;
+                        ex = e
                     }
-                    log.trace("Could not stop service '" + id + "'", e);
+                    log.trace("Could not stop service '" + id + "'", e)
                 }
             }
         }
         if (ex != null) {
-            throw ex;
+            throw ex
         }
     }
 
     @Override
-    public boolean waitForShutdown(long timeout) {
-        return ServiceUtil.waitForShutdown(this, timeout);
+    boolean waitForShutdown(long timeout) {
+        return ServiceUtil.waitForShutdown(this, timeout)
     }
 
     /**
      * Get run state of the group.
-     * @return If there is no service in the group, OFF is returned;
-     *   if all services are in the same state, that state is returned;
-     *   if a least one service is starting up, BUSY_STARTING is returned;
+     * @return If there is no service in the group, OFF is returned
+     *   if all services are in the same state, that state is returned
+     *   if a least one service is starting up, BUSY_STARTING is returned
      *   else IDLE is returned.
      */
     @Override
-    public RunState getRunState() {
-        Set<RunState> set = new HashSet<>();
+    RunState getRunState() {
+        Set<RunState> set = new HashSet<>()
         synchronized(services) {
             for (Service service : services) {
-                set.add(service.getRunState());
+                set.add(service.getRunState())
             }
         }
         switch (set.size()) {
-        case 0: return RunState.OFF;
-        case 1: return set.iterator().next();
+        case 0: return RunState.OFF
+        case 1: return set.iterator().next()
         default:
             if (set.contains(RunState.BUSY_STARTING)) {
-                return RunState.BUSY_STARTING;
+                return RunState.BUSY_STARTING
             } else {
-                return RunState.IDLE;
+                return RunState.IDLE
             }
         }
     }
@@ -129,15 +128,15 @@ public class BasicServiceGroup implements ServiceGroup {
      * Considered on if at least one service in the group is on.
      */
     @Override
-    public boolean isOn() {
+    boolean isOn() {
         synchronized(services) {
             for (Service service : services) {
                 if (service.isOn()) {
-                    return true;
+                    return true
                 }
             }
         }
-        return false;
+        return false
     }
 
     /**
@@ -145,26 +144,32 @@ public class BasicServiceGroup implements ServiceGroup {
      * Considered only off if all services in the group are off.
      */
     @Override
-    public boolean isOff() {
-        return !isOn();
+    boolean isOff() {
+        return !isOn()
     }
 
     @Override
-    public String getId() {
-        return id;
+    String getId() {
+        return id
     }
 
-    @Override
-    public void add(Service service) {
+    /**
+     * Add given service to the group of services.
+     */
+    void add(Service service) {
         synchronized(services) {
-            services.add(service);
+            services.add(service)
         }
     }
 
-    @Override
-    public List<Service> getServices() {
+    /**
+     * Get the list of services.
+     * Use also to modify the group of services.
+     * @return list of services, never null
+     */
+    List<Service> getServices() {
         synchronized(services) {
-            return services;
+            return services
         }
     }
 

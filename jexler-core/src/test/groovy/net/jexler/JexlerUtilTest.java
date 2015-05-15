@@ -34,8 +34,7 @@ import org.junit.experimental.categories.Category;
  * @author $(whois jexler.net)
  */
 @Category(FastTests.class)
-public final class JexlerUtilTest
-{
+public final class JexlerUtilTest {
 
     @SuppressWarnings("serial")
     private static class NoStackTraceException extends Exception {

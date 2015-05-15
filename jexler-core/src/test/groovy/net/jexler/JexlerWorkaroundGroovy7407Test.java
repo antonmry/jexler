@@ -16,6 +16,7 @@
 
 package net.jexler;
 
+import groovy.grape.Grape;
 import net.jexler.test.FastTests;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.junit.After;
@@ -28,6 +29,7 @@ import java.io.FileWriter;
 import java.nio.file.Files;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -37,33 +39,34 @@ import static org.junit.Assert.assertTrue;
  * @author $(whois jexler.net)
  */
 @Category(FastTests.class)
-public final class JexlerWorkaroundGroovy7407Test
-{
-    private void reset() {
+public final class JexlerWorkaroundGroovy7407Test {
+
+    private void reset() throws Exception {
         System.clearProperty(Jexler.WorkaroundGroovy7407.GRAPE_ENGINE_WRAP_PROPERTY_NAME);
         Jexler.WorkaroundGroovy7407.resetForUnitTests();
-        WorkaroundGroovy7407WrappingGrapeEngine.setEngine(null);
+        Jexler.WorkaroundGroovy7407WrappingGrapeEngine.setEngine(null);
     }
 
     @Before
-    public void setup() {
+    public void setup() throws Exception {
         reset();
     }
 
     @After
-    public void teardown() {
+    public void teardown() throws Exception {
         reset();
     }
 
     @Test
     public void testConstructors() throws Exception {
         new Jexler.WorkaroundGroovy7407();
-        new WorkaroundGroovy7407WrappingGrapeEngine("lock", null);
+        new Jexler.WorkaroundGroovy7407WrappingGrapeEngine("lock", null);
     }
 
     @Test
     public void testCompileOkWithWrapping() throws Exception {
 
+        assertFalse("must be false", Grape.getInstance() instanceof Jexler.WorkaroundGroovy7407WrappingGrapeEngine);
         System.setProperty(Jexler.WorkaroundGroovy7407.GRAPE_ENGINE_WRAP_PROPERTY_NAME, "true");
 
         File dir = Files.createTempDirectory(null).toFile();
@@ -76,11 +79,14 @@ public final class JexlerWorkaroundGroovy7407Test
         jexler.waitForStartup(10000);
         assertEquals("must be same", RunState.OFF, jexler.getRunState());
         assertTrue("must be true", jexler.getIssues().isEmpty());
+
+        assertTrue("must be true", Grape.getInstance() instanceof Jexler.WorkaroundGroovy7407WrappingGrapeEngine);
     }
 
     @Test
     public void testCompileFailsWithWrapping() throws Exception {
 
+        assertFalse("must be false", Grape.getInstance() instanceof Jexler.WorkaroundGroovy7407WrappingGrapeEngine);
         System.setProperty(Jexler.WorkaroundGroovy7407.GRAPE_ENGINE_WRAP_PROPERTY_NAME, "true");
 
         File dir = Files.createTempDirectory(null).toFile();
@@ -103,6 +109,8 @@ public final class JexlerWorkaroundGroovy7407Test
         assertEquals("must be same", jexler, issue.getService());
         assertNotNull("must not be null", issue.getCause());
         assertTrue("must be true", issue.getCause() instanceof CompilationFailedException);
+
+        assertTrue("must be true", Grape.getInstance() instanceof Jexler.WorkaroundGroovy7407WrappingGrapeEngine);
     }
 
 }

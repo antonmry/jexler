@@ -14,11 +14,14 @@
    limitations under the License.
 */
 
-package net.jexler.test;
+package net.jexler.test
+
+import groovy.transform.CompileStatic
 
 /**
- * Fast unit tests category marker.
+ * Demo unit tests category marker.
  *
  * @author $(whois jexler.net)
  */
-public interface FastTests {}
+@CompileStatic
+interface DemoTests {}

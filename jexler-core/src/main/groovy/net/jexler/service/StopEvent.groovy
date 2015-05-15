@@ -14,11 +14,24 @@
    limitations under the License.
 */
 
-package net.jexler.test;
+package net.jexler.service
+
+import groovy.transform.CompileStatic
 
 /**
- * Slow unit tests category marker.
+ * Event to stop a running jexler.
  *
  * @author $(whois jexler.net)
  */
-public interface SlowTests {}
+@CompileStatic
+public class StopEvent extends EventBase {
+
+    /**
+     * Constructor.
+     * @param service the service that is initiating the stop
+     */
+    StopEvent(Service service) {
+        super(service)
+    }
+
+}

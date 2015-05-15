@@ -19,7 +19,7 @@ package net.jexler
 import groovy.transform.CompileStatic
 
 import it.sauronsoftware.cron4j.Scheduler
-import net.jexler.service.BasicServiceGroup
+import net.jexler.service.ServiceGroup
 import net.jexler.service.Service
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory
  * @author $(whois jexler.net)
  */
 @CompileStatic
-class JexlerContainer extends BasicServiceGroup implements Service, IssueTracker, Closeable {
+class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Closeable {
 
     private static final Logger log = LoggerFactory.getLogger(JexlerContainer.class)
 
@@ -62,7 +62,7 @@ class JexlerContainer extends BasicServiceGroup implements Service, IssueTracker
         this.dir = dir
         id = super.getId()
         jexlerMap = new TreeMap<>()
-        issueTracker = new BasicIssueTracker()
+        issueTracker = new IssueTrackerBase()
         schedulerLock = new Object()
         refresh()
     }

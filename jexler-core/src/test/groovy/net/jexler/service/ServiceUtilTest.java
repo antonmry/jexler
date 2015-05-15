@@ -28,8 +28,7 @@ import org.junit.experimental.categories.Category;
  * @author $(whois jexler.net)
  */
 @Category(FastTests.class)
-public final class ServiceUtilTest
-{
+public final class ServiceUtilTest {
 
     @Test
     public void testNoInstance() throws Exception {

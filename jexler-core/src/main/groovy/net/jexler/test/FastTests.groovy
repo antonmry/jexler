@@ -14,29 +14,14 @@
    limitations under the License.
 */
 
-package net.jexler.service;
+package net.jexler.test
 
-import java.util.List;
-
+import groovy.transform.CompileStatic
 
 /**
- * Interface for a service which is a group of services.
- * Starting starts all, stopping stops all.
+ * Fast unit tests category marker.
  *
  * @author $(whois jexler.net)
  */
-public interface ServiceGroup extends Service {
-
-    /**
-     * Add given service to the group of services.
-     */
-    void add(Service service);
-
-    /**
-     * Get the list of services.
-     * Use also to modify the group of services.
-     * @return list of services, never null
-     */
-    List<Service> getServices();
-
-}
+@CompileStatic
+interface FastTests {}

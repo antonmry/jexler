@@ -32,8 +32,8 @@ import org.junit.experimental.categories.Category;
  * @author $(whois jexler.net)
  */
 @Category(SlowTests.class)
-public final class CronServiceSlowTest
-{
+public final class CronServiceSlowTest {
+
     private final static long MS_1_MIN_10_SEC = 70000;
     private final static long MS_30_SEC = 30000;
     private final static long MS_10_SEC = 10000;

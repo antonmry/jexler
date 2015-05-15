@@ -14,9 +14,10 @@
    limitations under the License.
 */
 
-package net.jexler.service;
+package net.jexler.service
 
-import net.jexler.JexlerUtil;
+import groovy.transform.CompileStatic
+import net.jexler.JexlerUtil
 
 /**
  * Service utilities.
@@ -25,9 +26,11 @@ import net.jexler.JexlerUtil;
  *
  * @author $(whois jexler.net)
  */
-public class ServiceUtil {
+@CompileStatic
+class ServiceUtil {
 
     @SuppressWarnings("serial")
+    @CompileStatic
     static class NoInstanceException extends Exception {
     }
 
@@ -35,33 +38,33 @@ public class ServiceUtil {
      * Don't use, class contains only static utility methods.
      * @throws NoInstanceException Always.
      */
-    public ServiceUtil() throws NoInstanceException {
-        throw new NoInstanceException();
+    ServiceUtil() throws NoInstanceException {
+        throw new NoInstanceException()
     }
 
-    public static boolean waitForStartup(Service service, long timeout) {
-        long t0 = System.currentTimeMillis();
+    static boolean waitForStartup(Service service, long timeout) {
+        long t0 = System.currentTimeMillis()
         while (true) {
             if (!service.getRunState().isBusyStarting()) {
-                return true;
+                return true
             }
             if (System.currentTimeMillis() - t0 >= timeout) {
-                return false;
+                return false
             }
-            JexlerUtil.waitAtLeast(10);
+            JexlerUtil.waitAtLeast(10)
         }
     }
     
-    public static boolean waitForShutdown(Service service, long timeout) {
-           long t0 = System.currentTimeMillis();
+    static boolean waitForShutdown(Service service, long timeout) {
+           long t0 = System.currentTimeMillis()
         while (true) {
             if (service.isOff()) {
-                return true;
+                return true
             }
             if (System.currentTimeMillis() - t0 >= timeout) {
-                return false;
+                return false
             }
-            JexlerUtil.waitAtLeast(10);
+            JexlerUtil.waitAtLeast(10)
         }
     }
 

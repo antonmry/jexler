@@ -14,11 +14,32 @@
    limitations under the License.
 */
 
-package net.jexler.test;
+package net.jexler.service
+
+import groovy.transform.CompileStatic
 
 /**
- * Demo unit tests category marker.
+ * Cron service event.
  *
  * @author $(whois jexler.net)
  */
-public interface DemoTests {}
+@CompileStatic
+class CronEvent extends EventBase {
+
+    private final String cron
+
+    /**
+     * Constructor.
+     * @param service the service that created the event
+     * @param cron the cron pattern that caused the event
+     */
+    CronEvent(Service service, String cron) {
+        super(service)
+        this.cron = cron
+    }
+    
+    String getCron() {
+        return cron
+    }
+
+}

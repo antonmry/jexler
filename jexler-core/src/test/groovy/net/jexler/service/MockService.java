@@ -25,8 +25,7 @@ import net.jexler.RunState;
  *
  * @author $(whois jexler.net)
  */
-public final class MockService extends ServiceBase
-{
+public final class MockService extends ServiceBase {
 
     private static MockService instance;
 

@@ -30,8 +30,7 @@ import org.junit.experimental.categories.Category;
  * @author $(whois jexler.net)
  */
 @Category(FastTests.class)
-public final class StringObfuscatorToolTest
-{
+public final class StringObfuscatorToolTest {
 
     @Test
     public void testDefaultInstance() throws Exception {

@@ -30,13 +30,12 @@ import org.junit.experimental.categories.Category;
  * @author $(whois jexler.net)
  */
 @Category(FastTests.class)
-public final class BasicIssueTrackerTest
-{
+public final class IssueTrackerBaseTest {
 
     @Test
     public void testBasic() throws Exception {
 
-        IssueTracker tracker = new BasicIssueTracker();
+        IssueTracker tracker = new IssueTrackerBase();
         assertTrue("must be true", tracker.getIssues().isEmpty());
 
         Issue issue = new Issue(null, "issue1", null);

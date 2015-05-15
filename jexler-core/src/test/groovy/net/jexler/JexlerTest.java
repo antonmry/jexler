@@ -48,8 +48,7 @@ import org.junit.experimental.categories.Category;
  * @author $(whois jexler.net)
  */
 @Category(FastTests.class)
-public final class JexlerTest
-{
+public final class JexlerTest {
 
     @Test
     public void testEmptyJexlerScript() throws Exception {
@@ -440,8 +439,8 @@ public final class JexlerTest
 
     @Test
     public void shallowTestOfWrappingGrapeEngine() throws Exception {
-        final WorkaroundGroovy7407WrappingGrapeEngine engine =
-                new WorkaroundGroovy7407WrappingGrapeEngine("lock", new MockEngine());
+        final Jexler.WorkaroundGroovy7407WrappingGrapeEngine engine =
+                new Jexler.WorkaroundGroovy7407WrappingGrapeEngine("lock", new MockEngine());
         final Map<String,Object> testMap = new HashMap<>();
         testMap.put("calleeDepth", 3);
         assertNull("must be null", engine.grab("dummy endorsed"));

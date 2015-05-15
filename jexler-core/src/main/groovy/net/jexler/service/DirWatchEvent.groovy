@@ -14,22 +14,22 @@
    limitations under the License.
 */
 
-package net.jexler.service;
+package net.jexler.service
 
-import java.io.File;
-import java.nio.file.WatchEvent;
+import groovy.transform.CompileStatic
 
-
+import java.nio.file.WatchEvent
 
 /**
  * Directory watch service event.
  *
  * @author $(whois jexler.net)
  */
-public class DirWatchEvent extends EventBase {
+@CompileStatic
+class DirWatchEvent extends EventBase {
 
-    private final File file;
-    private final WatchEvent.Kind<?> kind;
+    private final File file
+    private final WatchEvent.Kind<?> kind
     
     /**
      * Constructor.
@@ -37,24 +37,24 @@ public class DirWatchEvent extends EventBase {
      * @param file the file that has been created, modified or deleted
      * @param kind what happened with the file
      */
-    public DirWatchEvent(Service service, File file, WatchEvent.Kind<?> kind) {
-        super(service);
-        this.file = file;
-        this.kind = kind;
+    DirWatchEvent(Service service, File file, WatchEvent.Kind<?> kind) {
+        super(service)
+        this.file = file
+        this.kind = kind
     }
     
     /**
      * Get file that has been created, modified or deleted.
      */
-    public File getFile() {
-        return file;
+    File getFile() {
+        return file
     }
     
     /**
      * Get what happened with the file.
      */
-    public WatchEvent.Kind<?> getKind() {
-        return kind;
+    WatchEvent.Kind<?> getKind() {
+        return kind
     }
 
 }

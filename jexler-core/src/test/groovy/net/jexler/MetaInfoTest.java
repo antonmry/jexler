@@ -37,8 +37,7 @@ import org.junit.experimental.categories.Category;
  * @author $(whois jexler.net)
  */
 @Category(FastTests.class)
-public final class MetaInfoTest
-{
+public final class MetaInfoTest {
 
     @Test
     public void testBasic() throws Exception {

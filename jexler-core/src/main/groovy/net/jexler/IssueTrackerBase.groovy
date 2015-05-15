@@ -23,21 +23,21 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 /**
- * Basic default implementation of issue tracker interface.
+ * Implementation of issue tracker interface.
  *
  * @author $(whois jexler.net)
  */
 @CompileStatic
-class BasicIssueTracker implements IssueTracker {
+class IssueTrackerBase implements IssueTracker {
 
-    private static final Logger log = LoggerFactory.getLogger(BasicIssueTracker.class)
+    private static final Logger log = LoggerFactory.getLogger(IssueTrackerBase.class)
 
     private final List<Issue> issues
 
     /**
      * Default constructor.
      */
-    BasicIssueTracker() {
+    IssueTrackerBase() {
         issues = new LinkedList<>()
     }
 

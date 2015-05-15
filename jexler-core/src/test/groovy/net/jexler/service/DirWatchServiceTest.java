@@ -37,8 +37,7 @@ import org.junit.experimental.categories.Category;
  * @author $(whois jexler.net)
  */
 @Category(FastTests.class)
-public final class DirWatchServiceTest
-{
+public final class DirWatchServiceTest {
 
     @Test
     public void testNoWatchDir() throws Exception {
