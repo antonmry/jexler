@@ -21,19 +21,23 @@ import groovy.grape.GrapeEngine;
 import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 import net.jexler.Issue;
 import net.jexler.IssueTracker;
 import net.jexler.Jexler;
 import net.jexler.JexlerContainer;
-import net.jexler.MetaInfo;
+import net.jexler.JexlerUtil;
 import net.jexler.RunState;
 import net.jexler.service.BasicServiceGroup;
 import net.jexler.service.Event;
@@ -91,7 +95,7 @@ public class BasicJexler implements Jexler {
 
     private final IssueTracker issueTracker;
     
-    private MetaInfo metaInfoAtStart;
+    private Map<String,Object> metaInfoAtStart;
 
     /**
      * Constructor.
@@ -128,12 +132,8 @@ public class BasicJexler implements Jexler {
 
         forgetIssues();
 
-        try {
-            metaInfoAtStart = new BasicMetaInfo(file);
-        } catch (IOException e) {
-            String msg = "Could not read meta info from jexler file '"
-                    + file.getAbsolutePath() + "'.";
-            trackIssue(this, msg, e);
+        metaInfoAtStart = readMetaInfo();
+        if (!getIssues().isEmpty()) {
             runState = RunState.OFF;
             return;
         }
@@ -141,7 +141,7 @@ public class BasicJexler implements Jexler {
         // prepare for compile
         BasicJexler.WorkaroundGroovy7407.wrapGrapeEngineIfConfigured();
         final CompilerConfiguration config = new CompilerConfiguration();
-        if (getMetaInfo().isOn("autoimport", true)) {
+        if (JexlerUtil.isMetaInfoOn(getMetaInfo(), "autoimport", true)) {
             ImportCustomizer importCustomizer = new ImportCustomizer();
             importCustomizer.addStarImports(
                     "net.jexler", "net.jexler.service", "net.jexler.tool");
@@ -302,19 +302,59 @@ public class BasicJexler implements Jexler {
     }
 
     @Override
-    public MetaInfo getMetaInfo() {
+    public Map<String,Object> getMetaInfo() {
         if (isOn()) {
             return metaInfoAtStart;
         } else {
-            try {
-                return new BasicMetaInfo(file);
-            } catch (IOException e) {
-                String msg = "Could not read meta info from jexler file '"
-                        + file.getAbsolutePath() + "'.";
-                trackIssue(this, msg, e);
-                return BasicMetaInfo.EMPTY;
-            }
+            return readMetaInfo();
         }
+    }
+
+    private Map<String,Object> readMetaInfo() {
+        Map<String,Object> info = new HashMap<>();
+
+        if (!file.exists()) {
+            return info;
+        }
+
+        // read first line of jexler script
+        String line;
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            line = reader.readLine();
+        } catch (IOException e) {
+            String msg = "Could not read meta info from jexler file '"
+                    + file.getAbsolutePath() + "'.";
+            trackIssue(this, msg, e);
+            return info;
+        }
+
+
+        if (line == null) {
+            return info;
+        }
+
+        WorkaroundGroovy7407.wrapGrapeEngineIfConfigured();
+
+        // evaluate first line as groovy script
+        Object obj;
+        try {
+            obj = new GroovyShell().evaluate(line);
+        } catch (Throwable t) {
+            // (script may throw anything, checked or not)
+            return info;
+        }
+
+        // evaluated to a map?
+        if (obj == null || !(obj instanceof Map)) {
+            return info;
+        }
+
+        // set map
+        @SuppressWarnings("unchecked")
+        Map<String,Object> map = (Map<String,Object>)obj;
+        info.putAll(map);
+
+        return info;
     }
 
     @Override

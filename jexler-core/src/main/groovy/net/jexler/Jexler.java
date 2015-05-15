@@ -17,6 +17,7 @@
 package net.jexler;
 
 import java.io.File;
+import java.util.Map;
 
 import net.jexler.service.Event;
 import net.jexler.service.Service;
@@ -45,11 +46,25 @@ public interface Jexler extends Service, IssueTracker {
     
     /**
      * Get meta info.
+     *
      * Read from the jexler file at each call except if the jexler
      * is already running, in that case returns meta info read at
      * the time the jexler was started.
+     *
+     * The meta info of a jexler is stored in the first line of
+     * a jexler script file as a map in Groovy notation.
+     *
+     * Example:
+     * <pre>
+     *
+     * [ "autostart" : true, "root" : new File('/') ]
+     * </pre>
+     *
+     * Meta info is silently considered empty if for some reason
+     * evaluating the line is not possible or fails or or evaluates
+     * to an object which is not a map.
      */
-    MetaInfo getMetaInfo();
+    Map<String,Object> getMetaInfo();
 
     /**
      * Get the container that contains this jexler.

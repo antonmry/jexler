@@ -29,6 +29,7 @@ import net.jexler.IssueTracker;
 import net.jexler.Jexler;
 import net.jexler.JexlerContainer;
 import net.jexler.JexlerFactory;
+import net.jexler.JexlerUtil;
 import net.jexler.RunState;
 import net.jexler.service.BasicServiceGroup;
 import net.jexler.service.Service;
@@ -124,7 +125,7 @@ public class BasicJexlerContainer extends BasicServiceGroup implements JexlerCon
     @Override
     public void autostart() {
         for (Jexler jexler : getJexlers()) {
-            if (jexler.getMetaInfo().isOn("autostart", false)) {
+            if (JexlerUtil.isMetaInfoOn(jexler.getMetaInfo(), "autostart", false)) {
                 jexler.start();
             }
         }

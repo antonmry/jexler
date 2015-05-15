@@ -20,6 +20,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -27,7 +28,6 @@ import net.jexler.Issue;
 import net.jexler.Jexler;
 import net.jexler.JexlerFactory;
 import net.jexler.JexlerContainer;
-import net.jexler.MetaInfo;
 import net.jexler.RunState;
 import net.jexler.service.Event;
 import net.jexler.service.Service;
@@ -138,7 +138,7 @@ public class MockJexler implements Jexler {
     }
 
     @Override
-    public MetaInfo getMetaInfo() {
+    public Map<String,Object> getMetaInfo() {
         throw new RuntimeException("Not implemented");
     }
 

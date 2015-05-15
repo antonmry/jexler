@@ -236,8 +236,8 @@ public final class BasicJexlerTest
         BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
         assertEquals("must be same", RunState.OFF, jexler.getRunState());
         assertEquals("must be same", 2, jexler.getMetaInfo().size());
-        assertFalse("must be false", jexler.getMetaInfo().isOn("autostart", true));
-        assertFalse("must be false", jexler.getMetaInfo().isOn("autostart", false));
+        assertFalse("must be false", JexlerUtil.isMetaInfoOn(jexler.getMetaInfo(), "autostart", true));
+        assertFalse("must be false", JexlerUtil.isMetaInfoOn(jexler.getMetaInfo(), "autostart", false));
         assertEquals("must be same", "bar", jexler.getMetaInfo().get("foo"));
         assertTrue("must be true", jexler.getIssues().isEmpty());
 
