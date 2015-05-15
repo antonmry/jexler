@@ -21,7 +21,8 @@ import groovy.transform.CompileStatic
 import net.jexler.service.Service
 
 /**
- * Interface for an issue.
+ * Issue.
+ *
  * Issues are typically created and attached to a jexler
  * or jexler container if something could not be done,
  * often because some exception occurred.
@@ -29,39 +30,61 @@ import net.jexler.service.Service
  * @author $(whois jexler.net)
  */
 @CompileStatic
-public interface Issue extends Comparable<Issue> {
+class Issue implements Comparable<Issue> {
 
     /**
-     * Get date and time of when the issue occurred.
+     * date and time when the issue occurred
      */
-    Date getDate()
+    final Date date
 
     /**
-     * Get service where the issue occurred, may be null.
+     * service where the issue occurred, may be null
      */
-    Service getService()
+    final Service service
 
     /**
-     * Get message set when issue was created.
+     * message that explains the issue, may be null
      */
-    String getMessage()
+    final String message
 
     /**
-     * Get throwable that caused the issue, or null if none.
+     * throwable that caused the issue, null if none
      */
-    Throwable getCause()
+    final Throwable cause
 
     /**
-     * Get exception stack trace as a multi-line string.
-     * @return stack trace or empty if none or could not obtain it
+     * exception stack trace as a multi-line string,
+     * empty if could not get it or no causing throwable
      */
-    String getStackTrace()
+    final String stackTrace
 
     /**
-     * Compares issues, newer is smaller (first in a sorted list).
+     * Constructor from service, message and exception.
+     */
+    Issue(Service service, String message, Throwable cause) {
+        date = new Date()
+        this.service = service
+        this.message = message
+        this.cause = cause
+        stackTrace = JexlerUtil.getStackTrace(cause)
+    }
+
+    @Override
+    public int compareTo(Issue issue) {
+        // newest date first
+        return -date.compareTo(issue.date)
+    }
+
+    /**
+     * Create a single line string of all members, suitable for logging.
      */
     @Override
-    int compareTo(Issue issue)
+    public String toString() {
+        return """Issue: [message=${message==null ? 'null' : "'${JexlerUtil.toSingleLine(message)}'"}\
+,service=${service == null ? 'null' : "'${service.class.name + ":" + service.id}'"}\
+,cause=${cause == null ? 'null' : "'${JexlerUtil.toSingleLine(cause.toString())}'"}\
+,stackTrace='${JexlerUtil.toSingleLine(stackTrace)}']"""
+    }
 
 }
 

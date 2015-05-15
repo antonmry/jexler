@@ -98,7 +98,7 @@ public class MockJexler implements Jexler {
 
     @Override
     public void trackIssue(Service service, String message, Throwable cause) {
-        issues.add(new BasicIssue(service, message, cause));
+        issues.add(new Issue(service, message, cause));
     }
 
     @Override

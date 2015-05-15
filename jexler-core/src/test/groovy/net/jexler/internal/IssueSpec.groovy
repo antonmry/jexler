@@ -16,6 +16,7 @@
 
 package net.jexler.internal
 
+import net.jexler.Issue
 import net.jexler.service.MockService
 import net.jexler.test.FastTests
 import org.junit.experimental.categories.Category
@@ -27,11 +28,11 @@ import spock.lang.Specification
  * @author $(whois jexler.net)
  */
 @Category(FastTests.class)
-class BasicIssueSpec extends Specification {
+class IssueSpec extends Specification {
 
     def "construct and get without cause"() {
         expect:
-        def issue = new BasicIssue(service, message, cause)
+        def issue = new Issue(service, message, cause)
         issue.service == service
         issue.message == message
         issue.cause == cause
@@ -47,7 +48,7 @@ class BasicIssueSpec extends Specification {
 
     def "construct and get with cause"() {
         expect:
-        def issue = new BasicIssue(service, message, cause)
+        def issue = new Issue(service, message, cause)
         issue.service == service
         issue.message == message
         issue.cause == cause
@@ -64,9 +65,9 @@ class BasicIssueSpec extends Specification {
 
     def "compare"() {
         expect:
-        def issueEarlier = new BasicIssue(null, null, null)
+        def issueEarlier = new Issue(null, null, null)
         Thread.sleep(10)
-        def issueLater = new BasicIssue(null, null, null)
+        def issueLater = new Issue(null, null, null)
         issueEarlier.compareTo(issueLater) > 0
         issueLater.compareTo(issueEarlier) < 0
     }

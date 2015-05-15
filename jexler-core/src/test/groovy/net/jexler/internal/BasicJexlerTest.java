@@ -36,7 +36,6 @@ import java.util.Set;
 import groovy.grape.GrapeEngine;
 import groovy.lang.GroovyClassLoader;
 import net.jexler.Issue;
-import net.jexler.IssueFactory;
 import net.jexler.JexlerFactory;
 import net.jexler.JexlerUtil;
 import net.jexler.RunState;
@@ -280,7 +279,7 @@ public final class BasicJexlerTest
         jexler.forgetIssues();
         assertTrue("must be true", jexler.getIssues().isEmpty());
 
-        jexler.trackIssue(new IssueFactory().get(mockService, "mock issue", ex));
+        jexler.trackIssue(new Issue(mockService, "mock issue", ex));
         assertEquals("must be same", 1, jexler.getIssues().size());
         assertEquals("must be same", mockService, jexler.getIssues().get(0).getService());
         assertEquals("must be same", "mock issue", jexler.getIssues().get(0).getMessage());

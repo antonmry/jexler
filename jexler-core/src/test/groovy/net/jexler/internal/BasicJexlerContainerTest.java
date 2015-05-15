@@ -27,7 +27,7 @@ import java.io.FileWriter;
 import java.nio.file.Files;
 
 import it.sauronsoftware.cron4j.Scheduler;
-import net.jexler.IssueFactory;
+import net.jexler.Issue;
 import net.jexler.Jexler;
 import net.jexler.JexlerFactory;
 import net.jexler.JexlerUtil;
@@ -179,7 +179,7 @@ public final class BasicJexlerContainerTest {
         container.forgetIssues();
         assertTrue("must be true", container.getIssues().isEmpty());
 
-        container.trackIssue(new IssueFactory().get(null, "mock issue", ex));
+        container.trackIssue(new Issue(null, "mock issue", ex));
         assertEquals("must be same", 1, container.getIssues().size());
 
         container.stop();

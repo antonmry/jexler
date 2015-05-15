@@ -21,8 +21,6 @@ import static org.junit.Assert.assertTrue;
 import net.jexler.Issue;
 import net.jexler.IssueTracker;
 import net.jexler.JexlerUtil;
-import net.jexler.internal.BasicIssue;
-import net.jexler.internal.BasicIssueTracker;
 import net.jexler.test.FastTests;
 
 import org.junit.Test;
@@ -43,7 +41,7 @@ public final class BasicIssueTrackerTest
         IssueTracker tracker = new BasicIssueTracker();
         assertTrue("must be true", tracker.getIssues().isEmpty());
 
-        Issue issue = new BasicIssue(null, "issue1", null);
+        Issue issue = new Issue(null, "issue1", null);
         tracker.trackIssue(issue);
         assertEquals("must be same", 1, tracker.getIssues().size());
         assertEquals("must be same", "issue1", tracker.getIssues().get(0).getMessage());

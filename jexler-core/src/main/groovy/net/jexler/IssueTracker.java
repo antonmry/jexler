@@ -36,7 +36,7 @@ public interface IssueTracker {
     /**
      * Convenience method for tracking an issue by giving its parameters.
      * <code>trackIssue(service, message, cause)</code> is equivalent to
-     * <code>trackIssue(new IssueFactory().get(service, message, cause))</code>.
+     * <code>trackIssue(new Issue(service, message, cause))</code>.
      */
     void trackIssue(Service service, String message, Throwable cause);
 
