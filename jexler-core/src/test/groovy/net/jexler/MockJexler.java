@@ -125,12 +125,10 @@ public class MockJexler extends Jexler {
         return "mockId";
     }
 
-
     @Override
     public File getFile() {
         return file;
     }
-
 
     @Override
     public File getDir() {

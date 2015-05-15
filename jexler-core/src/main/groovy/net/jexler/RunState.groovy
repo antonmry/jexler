@@ -14,15 +14,17 @@
    limitations under the License.
 */
 
-package net.jexler;
+package net.jexler
 
+import groovy.transform.CompileStatic
 
 /**
  * Enum for the run state of a service.
  *
  * @author $(whois jexler.net)
  */
-public enum RunState  {
+@CompileStatic
+enum RunState  {
 
     /** Service is off. */
     OFF ("off"),
@@ -33,72 +35,68 @@ public enum RunState  {
     /** Service is running and busy processing an event. */
     BUSY_EVENT("busy (event)"),
     /** Service is busy stopping. */
-    BUSY_STOPPING("busy (stopping)");
+    BUSY_STOPPING("busy (stopping)")
 
-    private final String info;
+    /**
+     * Human readable info about the run state.
+     */
+    final String info
 
     /**
      * Constructor from info.
      */
     RunState(String info) {
-        this.info = info;
-    }
-
-    /**
-     * Get human readable info about the run state.
-     */
-    public String getInfo() {
-        return info;
+        this.info = info
     }
 
     /**
      * Convenience method, returns true if OFF.
      */
-    public boolean isOff() {
-        return this == OFF;
+    boolean isOff() {
+        return this == OFF
     }
 
     /**
      * Convenience method, returns true if BUSY_STARTING.
      */
-    public boolean isBusyStarting() {
-        return this == BUSY_STARTING;
+    boolean isBusyStarting() {
+        return this == BUSY_STARTING
     }
 
     /**
      * Convenience method, returns true if IDLE.
      */
-    public boolean isIdle() {
-        return this == IDLE;
+    boolean isIdle() {
+        return this == IDLE
     }
 
     /**
      * Convenience method, returns true if BUSY_EVENT.
      */
-    public boolean isBusyEvent() {
-        return this == BUSY_EVENT;
+    boolean isBusyEvent() {
+        return this == BUSY_EVENT
     }
 
     /**
      * Convenience method, returns true if BUSY_STOPPING.
      */
-    public boolean isBusyStopping() {
-        return this == BUSY_STOPPING;
+    boolean isBusyStopping() {
+        return this == BUSY_STOPPING
     }
 
     /**
      * Convenience method, returns true if not OFF.
      */
-    public boolean isOn() {
-        return this != OFF;
+    boolean isOn() {
+        return this != OFF
     }
 
     /**
      * Convenience method, returns true if IDLE or BUSY_EVENT,
      * in other words, if the service is up and doing what it should do.
      */
-    public boolean isOperational() {
-        return this == IDLE || this == BUSY_EVENT;
+    boolean isOperational() {
+        return this == IDLE || this == BUSY_EVENT
     }
 
 }

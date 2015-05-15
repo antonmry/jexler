@@ -14,64 +14,61 @@
    limitations under the License.
 */
 
-package net.jexler;
+package net.jexler
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import groovy.transform.CompileStatic
+import net.jexler.service.Service
 
-import net.jexler.Issue;
-import net.jexler.service.Service;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 /**
  * Basic default implementation of issue tracker interface.
  *
  * @author $(whois jexler.net)
  */
-public class BasicIssueTracker implements IssueTracker {
+@CompileStatic
+class BasicIssueTracker implements IssueTracker {
 
-    private static final Logger log = LoggerFactory.getLogger(BasicIssueTracker.class);
+    private static final Logger log = LoggerFactory.getLogger(BasicIssueTracker.class)
 
-    private final List<Issue> issues;
+    private final List<Issue> issues
 
     /**
      * Default constructor.
      */
-    public BasicIssueTracker() {
-        issues = new LinkedList<>();
+    BasicIssueTracker() {
+        issues = new LinkedList<>()
     }
 
     @Override
-    public void trackIssue(Issue issue) {
-        log.error(issue.toString());
+    void trackIssue(Issue issue) {
+        log.error(issue.toString())
         synchronized (issues) {
-            issues.add(issue);
+            issues.add(issue)
         }
     }
 
     @Override
-    public void trackIssue(Service service, String message, Throwable cause) {
-        trackIssue(new Issue(service, message, cause));
+    void trackIssue(Service service, String message, Throwable cause) {
+        trackIssue(new Issue(service, message, cause))
     }
 
     /**
      * Returns an unmodifiable list.
      */
     @Override
-    public List<Issue> getIssues() {
+    List<Issue> getIssues() {
         synchronized(issues) {
-            Collections.sort(issues);
-            return Collections.unmodifiableList(issues);
+            Collections.sort(issues)
+            return Collections.unmodifiableList(issues)
         }
     }
 
     @Override
-    public void forgetIssues() {
+    void forgetIssues() {
         synchronized(issues) {
-            issues.clear();
+            issues.clear()
         }
     }
 

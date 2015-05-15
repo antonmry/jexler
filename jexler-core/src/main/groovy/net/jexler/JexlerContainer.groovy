@@ -14,62 +14,57 @@
    limitations under the License.
 */
 
-package net.jexler;
+package net.jexler
 
-import java.io.Closeable;
-import java.io.File;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import groovy.transform.CompileStatic
 
-import it.sauronsoftware.cron4j.Scheduler;
-import net.jexler.service.BasicServiceGroup;
-import net.jexler.service.Service;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import it.sauronsoftware.cron4j.Scheduler
+import net.jexler.service.BasicServiceGroup
+import net.jexler.service.Service
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 /**
  * Container of all jexlers in a directory.
  *
  * @author $(whois jexler.net)
  */
-public class JexlerContainer extends BasicServiceGroup implements Service, IssueTracker, Closeable {
+@CompileStatic
+class JexlerContainer extends BasicServiceGroup implements Service, IssueTracker, Closeable {
 
-    private static final Logger log = LoggerFactory.getLogger(JexlerContainer.class);
+    private static final Logger log = LoggerFactory.getLogger(JexlerContainer.class)
 
-    private static final String EXT = ".groovy";
+    private static final String EXT = ".groovy"
 
-    private final File dir;
-    private final String id;
+    private final File dir
+    private final String id
 
     /** key is jexler id */
-    private final Map<String,Jexler> jexlerMap;
+    private final Map<String,Jexler> jexlerMap
 
-    private final IssueTracker issueTracker;
+    private final IssueTracker issueTracker
 
-    private Scheduler scheduler;
-    private final Object schedulerLock;
+    private Scheduler scheduler
+    private final Object schedulerLock
 
     /**
      * Constructor.
      * @param dir directory which contains jexler scripts
      * @throws RuntimeException if given dir is not a directory or does not exist
      */
-    public JexlerContainer(File dir) {
-        super(dir.exists() ? dir.getName() : null);
+    JexlerContainer(File dir) {
+        super(dir.exists() ? dir.getName() : null)
         if (!dir.exists()) {
-            throw new RuntimeException("Directory '" + dir.getAbsolutePath() + "' does not exist.");
+            throw new RuntimeException("Directory '" + dir.getAbsolutePath() + "' does not exist.")
         } else  if (!dir.isDirectory()) {
-            throw new RuntimeException("File '" + dir.getAbsolutePath() + "' is not a directory.");
+            throw new RuntimeException("File '" + dir.getAbsolutePath() + "' is not a directory.")
         }
-        this.dir = dir;
-        id = super.getId();
-        jexlerMap = new TreeMap<>();
-        issueTracker = new BasicIssueTracker();
-        schedulerLock = new Object();
-        refresh();
+        this.dir = dir
+        id = super.getId()
+        jexlerMap = new TreeMap<>()
+        issueTracker = new BasicIssueTracker()
+        schedulerLock = new Object()
+        refresh()
     }
 
     /**
@@ -77,36 +72,36 @@ public class JexlerContainer extends BasicServiceGroup implements Service, Issue
      * Add new jexlers for new script files;
      * remove old jexlers if their script file is gone and they are stopped.
      */
-    public void refresh() {
+    void refresh() {
         synchronized (jexlerMap) {
             // list directory and create jexlers in map for new script files in directory
-            File[] files = dir.listFiles();
-            files = files != null ? files : new File[0];
+            File[] files = dir.listFiles()
+            files = files != null ? files : new File[0]
             for (File file : files) {
                 if (file.isFile() && !file.isHidden()) {
-                    String id = getJexlerId(file);
+                    String id = getJexlerId(file)
                     if (id != null && !jexlerMap.containsKey(id)) {
-                        Jexler jexler = new Jexler(file, this);
-                        jexlerMap.put(jexler.getId(), jexler);
+                        Jexler jexler = new Jexler(file, this)
+                        jexlerMap.put(jexler.getId(), jexler)
                     }
                 }
             }
 
             // recreate list while omitting jexlers without script file that are stopped
             @SuppressWarnings("unchecked")
-            List<Jexler> jexlers = (List<Jexler>)(List<?>)getServices();
-            jexlers.clear();
+            List<Jexler> jexlers = (List<Jexler>)(List<?>)getServices()
+            jexlers.clear()
             for (String id : jexlerMap.keySet()) {
-                Jexler jexler = jexlerMap.get(id);
+                Jexler jexler = jexlerMap.get(id)
                 if (jexler.getFile().exists() || jexler.isOn()) {
-                    jexlers.add(jexler);
+                    jexlers.add(jexler)
                 }
             }
 
             // recreate map with list entries
-            jexlerMap.clear();
+            jexlerMap.clear()
             for (Jexler jexler : jexlers) {
-                jexlerMap.put(jexler.getId(), jexler);
+                jexlerMap.put(jexler.getId(), jexler)
             }
         }
     }
@@ -114,98 +109,98 @@ public class JexlerContainer extends BasicServiceGroup implements Service, Issue
     /**
      * Start jexlers that are marked as autostart.
      */
-    public void autostart() {
+    void autostart() {
         for (Jexler jexler : getJexlers()) {
             if (JexlerUtil.isMetaInfoOn(jexler.getMetaInfo(), "autostart", false)) {
-                jexler.start();
+                jexler.start()
             }
         }
     }
 
     @Override
-    public boolean waitForStartup(long timeout) {
-        boolean ok = super.waitForStartup(timeout);
+    boolean waitForStartup(long timeout) {
+        boolean ok = super.waitForStartup(timeout)
         if (!ok) {
             for (Jexler jexler : getJexlers()) {
                 if (jexler.getRunState() == RunState.BUSY_STARTING) {
-                    trackIssue(jexler, "Timeout waiting for jexler startup.", null);
+                    trackIssue(jexler, "Timeout waiting for jexler startup.", null)
                 }
             }
         }
-        return ok;
+        return ok
     }
 
     @Override
-    public boolean waitForShutdown(long timeout) {
-        boolean ok = super.waitForShutdown(timeout);
+    boolean waitForShutdown(long timeout) {
+        boolean ok = super.waitForShutdown(timeout)
         if (!ok) {
             for (Jexler jexler : getJexlers()) {
                 if (jexler.getRunState() != RunState.OFF) {
-                    trackIssue(jexler, "Timeout waiting for jexler shutdown.", null);
+                    trackIssue(jexler, "Timeout waiting for jexler shutdown.", null)
                 }
             }
         }
-        return ok;
+        return ok
     }
 
     @Override
-    public void trackIssue(Issue issue) {
-        issueTracker.trackIssue(issue);
+    void trackIssue(Issue issue) {
+        issueTracker.trackIssue(issue)
     }
 
     @Override
-    public void trackIssue(Service service, String message, Throwable cause) {
-        issueTracker.trackIssue(service, message, cause);
+    void trackIssue(Service service, String message, Throwable cause) {
+        issueTracker.trackIssue(service, message, cause)
     }
 
     @Override
-    public List<Issue> getIssues() {
-        return issueTracker.getIssues();
+    List<Issue> getIssues() {
+        return issueTracker.getIssues()
     }
 
     @Override
-    public void forgetIssues() {
-        issueTracker.forgetIssues();
+    void forgetIssues() {
+        issueTracker.forgetIssues()
     }
 
     /**
      * Get id, which is the name of the jexler container directory.
      */
     @Override
-    public String getId() {
-        return id;
+    String getId() {
+        return id
     }
 
     /**
      * Get directory that contains the jexler Groovy scripts.
      */
-    public File getDir() {
-        return dir;
+    File getDir() {
+        return dir
     }
 
     /**
      * Get the list of all jexlers, sorted by id.
      *
-     * This is a copy, iterating over it can be freely done;
+     * This is a copy, iterating over it can be freely done
      * and trying to add or remove list elements throws
      * an UnsupportedOperationException.
      */
     @SuppressWarnings("unchecked")
-    public List<Jexler> getJexlers() {
-        List<Jexler> jexlers = new LinkedList<>();
+    List<Jexler> getJexlers() {
+        List<Jexler> jexlers = new LinkedList<>()
         synchronized(jexlerMap) {
-            jexlers.addAll((List<Jexler>)(List<?>)getServices());
+            jexlers.addAll((List<Jexler>)(List<?>)getServices())
         }
-        return Collections.unmodifiableList(jexlers);
+        return Collections.unmodifiableList(jexlers)
     }
 
     /**
      * Get the jexler for the given id.
      * @return jexler for given id or null if none
      */
-    public Jexler getJexler(String id) {
+    Jexler getJexler(String id) {
         synchronized(jexlerMap) {
-            return jexlerMap.get(id);
+            return jexlerMap.get(id)
         }
     }
 
@@ -213,8 +208,8 @@ public class JexlerContainer extends BasicServiceGroup implements Service, Issue
      * Get the file for the given jexler id,
      * even if no such file exists (yet).
      */
-    public File getJexlerFile(String id) {
-        return new File(dir, id + EXT);
+    File getJexlerFile(String id) {
+        return new File(dir, id + EXT)
     }
 
     /**
@@ -222,36 +217,36 @@ public class JexlerContainer extends BasicServiceGroup implements Service, Issue
      * even if the file does not exist (any more),
      * or null if not a jexler script.
      */
-    public String getJexlerId(File jexlerFile) {
-        String name = jexlerFile.getName();
+    String getJexlerId(File jexlerFile) {
+        String name = jexlerFile.getName()
         if (name.endsWith(EXT)) {
-            return name.substring(0, name.length() - EXT.length());
+            return name.substring(0, name.length() - EXT.length())
         } else {
-            return null;
+            return null
         }
     }
 
     /**
      * Get shared cron4j scheduler, already started.
      */
-    public Scheduler getSharedScheduler() {
+    Scheduler getSharedScheduler() {
         synchronized (schedulerLock) {
             if (scheduler == null) {
-                scheduler = new Scheduler();
-                scheduler.start();
+                scheduler = new Scheduler()
+                scheduler.start()
             }
-            return scheduler;
+            return scheduler
         }
     }
 
     /**
      * Stop the shared scheduler, plus close maybe other things.
      */
-    public void close() {
+    void close() {
         synchronized (schedulerLock) {
             if (scheduler != null) {
-                scheduler.stop();
-                scheduler = null;
+                scheduler.stop()
+                scheduler = null
             }
         }
     }

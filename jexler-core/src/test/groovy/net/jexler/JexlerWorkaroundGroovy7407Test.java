@@ -42,7 +42,7 @@ public final class JexlerWorkaroundGroovy7407Test
     private void reset() {
         System.clearProperty(Jexler.WorkaroundGroovy7407.GRAPE_ENGINE_WRAP_PROPERTY_NAME);
         Jexler.WorkaroundGroovy7407.resetForUnitTests();
-        Jexler.WorkaroundGroovy7407WrappingGrapeEngine.setEngine(null);
+        WorkaroundGroovy7407WrappingGrapeEngine.setEngine(null);
     }
 
     @Before
@@ -58,7 +58,7 @@ public final class JexlerWorkaroundGroovy7407Test
     @Test
     public void testConstructors() throws Exception {
         new Jexler.WorkaroundGroovy7407();
-        new Jexler.WorkaroundGroovy7407WrappingGrapeEngine("lock", null);
+        new WorkaroundGroovy7407WrappingGrapeEngine("lock", null);
     }
 
     @Test

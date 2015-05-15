@@ -19,10 +19,6 @@ package net.jexler;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import net.jexler.BasicIssueTracker;
-import net.jexler.Issue;
-import net.jexler.IssueTracker;
-import net.jexler.JexlerUtil;
 import net.jexler.test.FastTests;
 
 import org.junit.Test;

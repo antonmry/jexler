@@ -14,11 +14,11 @@
    limitations under the License.
 */
 
-package net.jexler;
+package net.jexler
 
-import java.util.List;
+import groovy.transform.CompileStatic
 
-import net.jexler.service.Service;
+import net.jexler.service.Service
 
 /**
  * Interface for tracking issues.
@@ -26,28 +26,29 @@ import net.jexler.service.Service;
  *
  * @author $(whois jexler.net)
  */
-public interface IssueTracker {
+@CompileStatic
+interface IssueTracker {
 
     /**
      * Log issue as error and remember it.
      */
-    void trackIssue(Issue issue);
+    void trackIssue(Issue issue)
     
     /**
      * Convenience method for tracking an issue by giving its parameters.
      * <code>trackIssue(service, message, cause)</code> is equivalent to
      * <code>trackIssue(new Issue(service, message, cause))</code>.
      */
-    void trackIssue(Service service, String message, Throwable cause);
+    void trackIssue(Service service, String message, Throwable cause)
 
     /**
      * Get remembered issues, most recent issue first.
      */
-    List<Issue> getIssues();
+    List<Issue> getIssues()
 
     /**
      * Forget remembered issues.
      */
-    void forgetIssues();
+    void forgetIssues()
 
 }
