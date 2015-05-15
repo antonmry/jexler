@@ -16,7 +16,6 @@
 
 package net.jexler
 
-import net.jexler.Issue
 import net.jexler.service.MockService
 import net.jexler.test.FastTests
 import org.junit.experimental.categories.Category
