@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-package net.jexler.internal;
+package net.jexler;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -27,11 +27,6 @@ import java.io.FileWriter;
 import java.nio.file.Files;
 
 import it.sauronsoftware.cron4j.Scheduler;
-import net.jexler.Issue;
-import net.jexler.Jexler;
-import net.jexler.JexlerFactory;
-import net.jexler.JexlerUtil;
-import net.jexler.RunState;
 import net.jexler.service.StopEvent;
 import net.jexler.test.FastTests;
 
@@ -44,7 +39,7 @@ import org.junit.experimental.categories.Category;
  * @author $(whois jexler.net)
  */
 @Category(FastTests.class)
-public final class BasicJexlerContainerTest {
+public final class JexlerContainerTest {
     private final static long MS_1_SEC = 1000;
     private final static long MS_10_SEC = 10000;
 
@@ -81,7 +76,7 @@ public final class BasicJexlerContainerTest {
         writer.append("foo.bar=xyz\n");
         writer.close();
 
-        BasicJexlerContainer container = new BasicJexlerContainer(dir, new JexlerFactory());
+        JexlerContainer container = new JexlerContainer(dir);
         assertEquals("must be same", RunState.OFF, container.getRunState());
         assertEquals("must be same", dir, container.getDir());
         assertEquals("must be same", dir.getName(), container.getId());
@@ -191,7 +186,7 @@ public final class BasicJexlerContainerTest {
 
         File dir = new File("does-not-exist");
         try {
-            new BasicJexlerContainer(dir, new JexlerFactory());
+            new JexlerContainer(dir);
             fail("must throw");
         } catch (RuntimeException e) {
             String msg = e.getMessage();
@@ -201,7 +196,7 @@ public final class BasicJexlerContainerTest {
 
         dir = Files.createTempFile(null, ".tmp").toFile();
         try {
-            new BasicJexlerContainer(dir, new JexlerFactory());
+            new JexlerContainer(dir);
             fail("must throw");
         } catch (RuntimeException e) {
             String msg = e.getMessage();
@@ -214,7 +209,7 @@ public final class BasicJexlerContainerTest {
     public void testGetJexlerId() throws Exception {
 
         File dir = Files.createTempDirectory(null).toFile();
-        BasicJexlerContainer container = new BasicJexlerContainer(dir, new JexlerFactory());
+        JexlerContainer container = new JexlerContainer(dir);
 
         String id = container.getJexlerId(new File(dir, "foo.groovy"));
         assertEquals("must be same", "foo", id);
@@ -230,7 +225,7 @@ public final class BasicJexlerContainerTest {
     public void testGetJexlerFile() throws Exception {
 
         File dir = Files.createTempDirectory(null).toFile();
-        BasicJexlerContainer container = new BasicJexlerContainer(dir, new JexlerFactory());
+        JexlerContainer container = new JexlerContainer(dir);
 
         File file = container.getJexlerFile("foo");
         assertEquals("must be same",
@@ -241,7 +236,7 @@ public final class BasicJexlerContainerTest {
     @Test
     public void testSharedSchedulerAndClose() throws Exception {
         File dir = Files.createTempDirectory(null).toFile();
-        BasicJexlerContainer container = new BasicJexlerContainer(dir, new JexlerFactory());
+        JexlerContainer container = new JexlerContainer(dir);
 
         Scheduler scheduler1 = container.getSharedScheduler();
         Scheduler scheduler2 = container.getSharedScheduler();

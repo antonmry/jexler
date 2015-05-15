@@ -25,7 +25,7 @@ import java.io.IOException;
 
 import it.sauronsoftware.cron4j.Scheduler;
 import net.jexler.Issue;
-import net.jexler.internal.MockJexler;
+import net.jexler.MockJexler;
 import net.jexler.test.FastTests;
 
 import org.junit.Test;

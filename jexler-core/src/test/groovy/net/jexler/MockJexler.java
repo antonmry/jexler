@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-package net.jexler.internal;
+package net.jexler;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -26,7 +26,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.jexler.Issue;
 import net.jexler.Jexler;
-import net.jexler.JexlerFactory;
 import net.jexler.JexlerContainer;
 import net.jexler.RunState;
 import net.jexler.service.Event;
@@ -37,7 +36,7 @@ import net.jexler.service.Service;
  *
  * @author $(whois jexler.net)
  */
-public class MockJexler implements Jexler {
+public class MockJexler extends Jexler {
 
     private final File file;
     private final JexlerContainer container;
@@ -45,9 +44,10 @@ public class MockJexler implements Jexler {
     private final List<Issue> issues;
 
     public MockJexler(File file) throws Exception {
+        super(new File("Dummy.groovy"), new JexlerContainer(new File(".")));
         this.file = file;
         File dir = Files.createTempDirectory(null).toFile();
-        container = new BasicJexlerContainer(dir, new JexlerFactory());
+        container = new JexlerContainer(dir);
         events = new ConcurrentLinkedQueue<>();
         issues = new LinkedList<>();
     }

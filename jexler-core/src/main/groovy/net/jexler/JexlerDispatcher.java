@@ -19,7 +19,7 @@ package net.jexler;
 import groovy.lang.MetaClass;
 import groovy.lang.MetaMethod;
 import groovy.lang.Script;
-import net.jexler.internal.BasicJexler.Events;
+import net.jexler.Jexler.Events;
 import net.jexler.service.Event;
 import net.jexler.service.StopEvent;
 import org.slf4j.Logger;

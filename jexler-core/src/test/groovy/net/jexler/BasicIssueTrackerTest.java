@@ -17,13 +17,12 @@
 package net.jexler;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-import java.nio.file.Files;
-
-import net.jexler.internal.BasicJexlerContainer;
+import net.jexler.BasicIssueTracker;
+import net.jexler.Issue;
+import net.jexler.IssueTracker;
+import net.jexler.JexlerUtil;
 import net.jexler.test.FastTests;
 
 import org.junit.Test;
@@ -35,18 +34,27 @@ import org.junit.experimental.categories.Category;
  * @author $(whois jexler.net)
  */
 @Category(FastTests.class)
-public final class JexlerContainerFactoryTest
+public final class BasicIssueTrackerTest
 {
 
     @Test
     public void testBasic() throws Exception {
-        File dir = Files.createTempDirectory(null).toFile();
-        JexlerContainerFactory containerFactory = new JexlerContainerFactory();
-        JexlerContainer container = containerFactory.get(dir);
-        assertNotNull("must not be null", container);
-        assertTrue("must be true", container instanceof BasicJexlerContainer);
-        assertEquals("must be same", dir.getCanonicalPath(), container.getDir().getCanonicalPath());
-        assertEquals("must be same", dir.getName(), container.getId());
-    }
 
+        IssueTracker tracker = new BasicIssueTracker();
+        assertTrue("must be true", tracker.getIssues().isEmpty());
+
+        Issue issue = new Issue(null, "issue1", null);
+        tracker.trackIssue(issue);
+        assertEquals("must be same", 1, tracker.getIssues().size());
+        assertEquals("must be same", "issue1", tracker.getIssues().get(0).getMessage());
+
+        JexlerUtil.waitAtLeast(10);
+        tracker.trackIssue(null, "issue2", null);
+        assertEquals("must be same", 2, tracker.getIssues().size());
+        assertEquals("must be same", "issue2", tracker.getIssues().get(0).getMessage());
+        assertEquals("must be same", "issue1", tracker.getIssues().get(1).getMessage());
+
+        tracker.forgetIssues();
+        assertTrue("must be true", tracker.getIssues().isEmpty());
+    }
 }

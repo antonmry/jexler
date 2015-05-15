@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-package net.jexler.internal;
+package net.jexler;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -35,10 +35,6 @@ import java.util.Set;
 
 import groovy.grape.GrapeEngine;
 import groovy.lang.GroovyClassLoader;
-import net.jexler.Issue;
-import net.jexler.JexlerFactory;
-import net.jexler.JexlerUtil;
-import net.jexler.RunState;
 import net.jexler.service.MockService;
 import net.jexler.test.FastTests;
 
@@ -52,7 +48,7 @@ import org.junit.experimental.categories.Category;
  * @author $(whois jexler.net)
  */
 @Category(FastTests.class)
-public final class BasicJexlerTest
+public final class JexlerTest
 {
 
     @Test
@@ -63,7 +59,7 @@ public final class BasicJexlerTest
 
         Files.createFile(file.toPath());
 
-        BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
+        Jexler jexler = new Jexler(file, new JexlerContainer(dir));
         assertEquals("must be same", file.getAbsolutePath(), jexler.getFile().getAbsolutePath());
         assertEquals("must be same", dir.getAbsolutePath(), jexler.getDir().getAbsolutePath());
         assertEquals("must be same", "Test", jexler.getId());
@@ -87,7 +83,7 @@ public final class BasicJexlerTest
                 "# does not compile...\n");
         writer.close();
 
-        BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
+        Jexler jexler = new Jexler(file, new JexlerContainer(dir));
 
         jexler.start();
         jexler.waitForStartup(10000);
@@ -110,7 +106,7 @@ public final class BasicJexlerTest
         writer.append("class Util {}\n");
         writer.close();
 
-        BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
+        Jexler jexler = new Jexler(file, new JexlerContainer(dir));
 
         jexler.start();
         jexler.waitForStartup(10000);
@@ -130,7 +126,7 @@ public final class BasicJexlerTest
                 "}");
         writer.close();
 
-        BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
+        Jexler jexler = new Jexler(file, new JexlerContainer(dir));
 
         jexler.start();
         jexler.waitForStartup(10000);
@@ -153,7 +149,7 @@ public final class BasicJexlerTest
                 "throw new IllegalArgumentException()\n");
         writer.close();
 
-        BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
+        Jexler jexler = new Jexler(file, new JexlerContainer(dir));
 
         jexler.start();
         jexler.waitForStartup(10000);
@@ -176,7 +172,7 @@ public final class BasicJexlerTest
                 "throw new FileNotFoundException()\n");
         writer.close();
 
-        BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
+        Jexler jexler = new Jexler(file, new JexlerContainer(dir));
 
         jexler.start();
         jexler.waitForStartup(10000);
@@ -199,7 +195,7 @@ public final class BasicJexlerTest
                 "throw new NoClassDefFoundError()\n");
         writer.close();
 
-        BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
+        Jexler jexler = new Jexler(file, new JexlerContainer(dir));
 
         jexler.start();
         jexler.waitForStartup(10000);
@@ -233,7 +229,7 @@ public final class BasicJexlerTest
                 "}\n");
         writer.close();
 
-        BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
+        Jexler jexler = new Jexler(file, new JexlerContainer(dir));
         assertEquals("must be same", RunState.OFF, jexler.getRunState());
         assertEquals("must be same", 2, jexler.getMetaInfo().size());
         assertFalse("must be false", JexlerUtil.isMetaInfoOn(jexler.getMetaInfo(), "autostart", true));
@@ -327,7 +323,7 @@ public final class BasicJexlerTest
                 "}\n");
         writer.close();
 
-        BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
+        Jexler jexler = new Jexler(file, new JexlerContainer(dir));
 
         MockService.setTestInstance(jexler, "mock-service");
         MockService mockService = MockService.getTestInstance();
@@ -357,7 +353,7 @@ public final class BasicJexlerTest
         //File file = new File(dir, "test.groovy");
 
         // note that passing dir as jexler file!
-        BasicJexler jexler = new BasicJexler(dir, new BasicJexlerContainer(dir, new JexlerFactory()));
+        Jexler jexler = new Jexler(dir, new JexlerContainer(dir));
         assertTrue("must be true", jexler.getIssues().isEmpty());
 
         jexler.getMetaInfo();
@@ -401,7 +397,7 @@ public final class BasicJexlerTest
                 "}\n");
         writer.close();
 
-        BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
+        Jexler jexler = new Jexler(file, new JexlerContainer(dir));
         jexler.start();
         jexler.waitForStartup(10000);
         assertTrue("must be true", jexler.getIssues().isEmpty());
@@ -444,8 +440,8 @@ public final class BasicJexlerTest
 
     @Test
     public void shallowTestOfWrappingGrapeEngine() throws Exception {
-        final BasicJexler.WorkaroundGroovy7407WrappingGrapeEngine engine =
-                new BasicJexler.WorkaroundGroovy7407WrappingGrapeEngine("lock", new MockEngine());
+        final Jexler.WorkaroundGroovy7407WrappingGrapeEngine engine =
+                new Jexler.WorkaroundGroovy7407WrappingGrapeEngine("lock", new MockEngine());
         final Map<String,Object> testMap = new HashMap<>();
         testMap.put("calleeDepth", 3);
         assertNull("must be null", engine.grab("dummy endorsed"));

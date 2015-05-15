@@ -21,7 +21,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import net.jexler.RunState;
-import net.jexler.internal.MockJexler;
+import net.jexler.MockJexler;
 import net.jexler.test.FastTests;
 
 import org.junit.Test;

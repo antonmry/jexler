@@ -14,11 +14,8 @@
    limitations under the License.
 */
 
-package net.jexler.internal;
+package net.jexler;
 
-import net.jexler.Issue;
-import net.jexler.JexlerFactory;
-import net.jexler.RunState;
 import net.jexler.test.FastTests;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.junit.After;
@@ -40,12 +37,12 @@ import static org.junit.Assert.assertTrue;
  * @author $(whois jexler.net)
  */
 @Category(FastTests.class)
-public final class BasicJexlerWorkaroundGroovy7407Test
+public final class JexlerWorkaroundGroovy7407Test
 {
     private void reset() {
-        System.clearProperty(BasicJexler.WorkaroundGroovy7407.GRAPE_ENGINE_WRAP_PROPERTY_NAME);
-        BasicJexler.WorkaroundGroovy7407.resetForUnitTests();
-        BasicJexler.WorkaroundGroovy7407WrappingGrapeEngine.setEngine(null);
+        System.clearProperty(Jexler.WorkaroundGroovy7407.GRAPE_ENGINE_WRAP_PROPERTY_NAME);
+        Jexler.WorkaroundGroovy7407.resetForUnitTests();
+        Jexler.WorkaroundGroovy7407WrappingGrapeEngine.setEngine(null);
     }
 
     @Before
@@ -60,21 +57,21 @@ public final class BasicJexlerWorkaroundGroovy7407Test
 
     @Test
     public void testConstructors() throws Exception {
-        new BasicJexler.WorkaroundGroovy7407();
-        new BasicJexler.WorkaroundGroovy7407WrappingGrapeEngine("lock", null);
+        new Jexler.WorkaroundGroovy7407();
+        new Jexler.WorkaroundGroovy7407WrappingGrapeEngine("lock", null);
     }
 
     @Test
     public void testCompileOkWithWrapping() throws Exception {
 
-        System.setProperty(BasicJexler.WorkaroundGroovy7407.GRAPE_ENGINE_WRAP_PROPERTY_NAME, "true");
+        System.setProperty(Jexler.WorkaroundGroovy7407.GRAPE_ENGINE_WRAP_PROPERTY_NAME, "true");
 
         File dir = Files.createTempDirectory(null).toFile();
         File file = new File(dir, "test.groovy");
 
         Files.createFile(file.toPath());
 
-        BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
+        Jexler jexler = new Jexler(file, new JexlerContainer(dir));
         jexler.start();
         jexler.waitForStartup(10000);
         assertEquals("must be same", RunState.OFF, jexler.getRunState());
@@ -84,7 +81,7 @@ public final class BasicJexlerWorkaroundGroovy7407Test
     @Test
     public void testCompileFailsWithWrapping() throws Exception {
 
-        System.setProperty(BasicJexler.WorkaroundGroovy7407.GRAPE_ENGINE_WRAP_PROPERTY_NAME, "true");
+        System.setProperty(Jexler.WorkaroundGroovy7407.GRAPE_ENGINE_WRAP_PROPERTY_NAME, "true");
 
         File dir = Files.createTempDirectory(null).toFile();
         File file = new File(dir, "test.groovy");
@@ -93,7 +90,7 @@ public final class BasicJexlerWorkaroundGroovy7407Test
         writer.append("&%!+\n");
         writer.close();
 
-        BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
+        Jexler jexler = new Jexler(file, new JexlerContainer(dir));
         jexler.start();
         jexler.waitForStartup(10000);
         assertEquals("must be same", RunState.OFF, jexler.getRunState());

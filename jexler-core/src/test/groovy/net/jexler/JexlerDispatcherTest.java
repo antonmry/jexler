@@ -16,8 +16,6 @@
 
 package net.jexler;
 
-import net.jexler.internal.BasicJexler;
-import net.jexler.internal.BasicJexlerContainer;
 import net.jexler.service.MockService;
 import net.jexler.test.FastTests;
 import org.junit.Test;
@@ -68,7 +66,7 @@ public final class JexlerDispatcherTest
                 "}\n");
         writer.close();
 
-        BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
+        Jexler jexler = new Jexler(file, new JexlerContainer(dir));
         assertEquals("must be same", RunState.OFF, jexler.getRunState());
         assertEquals("must be same", 0, jexler.getMetaInfo().size());
         assertTrue("must be true", jexler.getIssues().isEmpty());
@@ -142,7 +140,7 @@ public final class JexlerDispatcherTest
                 "}\n");
         writer.close();
 
-        BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
+        Jexler jexler = new Jexler(file, new JexlerContainer(dir));
         assertEquals("must be same", RunState.OFF, jexler.getRunState());
         assertEquals("must be same", 0, jexler.getMetaInfo().size());
         assertTrue("must be true", jexler.getIssues().isEmpty());
@@ -206,7 +204,7 @@ public final class JexlerDispatcherTest
                 "}\n");
         writer.close();
 
-        BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
+        Jexler jexler = new Jexler(file, new JexlerContainer(dir));
         assertEquals("must be same", RunState.OFF, jexler.getRunState());
         assertEquals("must be same", 0, jexler.getMetaInfo().size());
         assertTrue("must be true", jexler.getIssues().isEmpty());
@@ -308,7 +306,7 @@ public final class JexlerDispatcherTest
                 "}\n");
         writer.close();
 
-        BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
+        Jexler jexler = new Jexler(file, new JexlerContainer(dir));
         assertEquals("must be same", RunState.OFF, jexler.getRunState());
         assertEquals("must be same", 0, jexler.getMetaInfo().size());
         assertTrue("must be true", jexler.getIssues().isEmpty());
@@ -410,7 +408,7 @@ public final class JexlerDispatcherTest
                 "}\n");
         writer.close();
 
-        BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
+        Jexler jexler = new Jexler(file, new JexlerContainer(dir));
         assertEquals("must be same", RunState.OFF, jexler.getRunState());
         assertEquals("must be same", 0, jexler.getMetaInfo().size());
         assertTrue("must be true", jexler.getIssues().isEmpty());
@@ -520,7 +518,7 @@ public final class JexlerDispatcherTest
                 "}\n");
         writer.close();
 
-        BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
+        Jexler jexler = new Jexler(file, new JexlerContainer(dir));
         assertEquals("must be same", RunState.OFF, jexler.getRunState());
         assertEquals("must be same", 0, jexler.getMetaInfo().size());
         assertTrue("must be true", jexler.getIssues().isEmpty());
@@ -623,7 +621,7 @@ public final class JexlerDispatcherTest
                 "}\n");
         writer.close();
 
-        BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
+        Jexler jexler = new Jexler(file, new JexlerContainer(dir));
         assertEquals("must be same", RunState.OFF, jexler.getRunState());
         assertEquals("must be same", 0, jexler.getMetaInfo().size());
         assertTrue("must be true", jexler.getIssues().isEmpty());

@@ -14,14 +14,13 @@
    limitations under the License.
 */
 
-package net.jexler.internal;
+package net.jexler;
 
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 import net.jexler.Issue;
-import net.jexler.IssueTracker;
 import net.jexler.service.Service;
 
 import org.slf4j.Logger;

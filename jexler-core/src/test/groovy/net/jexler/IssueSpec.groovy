@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-package net.jexler.internal
+package net.jexler
 
 import net.jexler.Issue
 import net.jexler.service.MockService

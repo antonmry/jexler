@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-package net.jexler.internal;
+package net.jexler;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -37,7 +37,7 @@ import org.junit.experimental.categories.Category;
  * @author $(whois jexler.net)
  */
 @Category(FastTests.class)
-public final class BasicMetaInfoTest
+public final class MetaInfoTest
 {
 
     @Test

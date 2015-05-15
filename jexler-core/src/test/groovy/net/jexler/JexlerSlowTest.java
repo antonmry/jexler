@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-package net.jexler.internal;
+package net.jexler;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -23,8 +23,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Files;
 
-import net.jexler.Issue;
-import net.jexler.JexlerFactory;
 import net.jexler.test.SlowTests;
 
 import org.junit.Test;
@@ -36,7 +34,7 @@ import org.junit.experimental.categories.Category;
  * @author $(whois jexler.net)
  */
 @Category(SlowTests.class)
-public final class BasicJexlerSlowTest
+public final class JexlerSlowTest
 {
     private final static long MS_5_SEC = 5000;
     private final static long MS_20_SEC = 20000;
@@ -64,7 +62,7 @@ public final class BasicJexlerSlowTest
         writer.append(jexlerTemplateSlow);
         writer.close();
 
-        BasicJexler jexler = new BasicJexler(file, new BasicJexlerContainer(dir, new JexlerFactory()));
+        Jexler jexler = new Jexler(file, new JexlerContainer(dir));
 
         jexler.start();
         jexler.waitForStartup(MS_5_SEC);

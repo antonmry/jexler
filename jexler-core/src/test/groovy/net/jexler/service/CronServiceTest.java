@@ -17,7 +17,7 @@
 package net.jexler.service;
 
 import it.sauronsoftware.cron4j.Scheduler;
-import net.jexler.internal.MockJexler;
+import net.jexler.MockJexler;
 import net.jexler.test.FastTests;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
