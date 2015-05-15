@@ -123,14 +123,14 @@ class Jexler implements Service, IssueTracker {
         // prepare for compile
         WorkaroundGroovy7407.wrapGrapeEngineIfConfigured(this)
         final CompilerConfiguration config = new CompilerConfiguration()
-        if (JexlerUtil.isMetaInfoOn(getMetaInfo(), "autoimport", true)) {
+        if (metaInfo.autoimport == null || metaInfo.autoimport) {
             ImportCustomizer importCustomizer = new ImportCustomizer()
             importCustomizer.addStarImports(
                     "net.jexler", "net.jexler.service", "net.jexler.tool")
             config.addCompilationCustomizers(importCustomizer)
         }
-        final GroovyClassLoader loader = new GroovyClassLoader(Thread.currentThread().getContextClassLoader(), config)
-        loader.addClasspath(file.getParent())
+        final GroovyClassLoader loader = new GroovyClassLoader(Thread.currentThread().contextClassLoader, config)
+        loader.addClasspath(file.parent)
 
         // compile
         final Class<?> clazz
@@ -166,13 +166,13 @@ class Jexler implements Service, IssueTracker {
                         }
 
                         // run script
-                        final Binding binding = new Binding()
-                        binding.setVariable("jexler", thisJexler)
-                        binding.setVariable("container", container)
-                        binding.setVariable("events", events)
-                        binding.setVariable("services", services)
-                        binding.setVariable("log", log)
-                        script.setBinding(binding)
+                        script.setBinding(new Binding([
+                                'jexler' : thisJexler,
+                                'container' : container,
+                                'events' : events,
+                                'services' : services,
+                                'log' : log,
+                        ]))
                         try {
                             script.run()
                         } catch (Throwable t) {

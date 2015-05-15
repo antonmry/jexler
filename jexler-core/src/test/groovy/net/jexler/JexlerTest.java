@@ -231,8 +231,8 @@ public final class JexlerTest {
         Jexler jexler = new Jexler(file, new JexlerContainer(dir));
         assertEquals("must be same", RunState.OFF, jexler.getRunState());
         assertEquals("must be same", 2, jexler.getMetaInfo().size());
-        assertFalse("must be false", JexlerUtil.isMetaInfoOn(jexler.getMetaInfo(), "autostart", true));
-        assertFalse("must be false", JexlerUtil.isMetaInfoOn(jexler.getMetaInfo(), "autostart", false));
+        assertFalse("must be false", isMetaInfoOn(jexler.getMetaInfo(), "autostart", true));
+        assertFalse("must be false", isMetaInfoOn(jexler.getMetaInfo(), "autostart", false));
         assertEquals("must be same", "bar", jexler.getMetaInfo().get("foo"));
         assertTrue("must be true", jexler.getIssues().isEmpty());
 
@@ -298,6 +298,15 @@ public final class JexlerTest {
         assertEquals("must be same", RunState.OFF, jexler.getRunState());
         assertTrue("must be true", jexler.isOff());
         assertTrue("must be true", jexler.getIssues().isEmpty());
+    }
+
+    private static boolean isMetaInfoOn(Map<String,Object> metaInfo, String name, boolean defaultValue) {
+        Object o = metaInfo.get(name);
+        if (o != null && o instanceof Boolean) {
+            return (Boolean)o;
+        } else {
+            return defaultValue;
+        }
     }
 
     @Test

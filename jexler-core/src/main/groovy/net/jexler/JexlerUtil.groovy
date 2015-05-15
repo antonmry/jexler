@@ -87,21 +87,4 @@ class JexlerUtil {
         }
     }
 
-    // TODO later not needed any more, because one-liner in Groovy...
-    /**
-     * Convenience method to get a boolean flag value from meta info.
-     * @param metaInfo meta info
-     * @param name flag name
-     * @param defaultValue default value to use
-     * @return value from meta info if indicated, otherwise default value
-     */
-    static boolean isMetaInfoOn(Map<String,Object> metaInfo, String name, boolean defaultValue) {
-        Object o = metaInfo.get(name)
-        if (o != null && o instanceof Boolean) {
-            return (Boolean)o
-        } else {
-            return defaultValue
-        }
-    }
-
 }

@@ -111,7 +111,7 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
      */
     void autostart() {
         for (Jexler jexler : getJexlers()) {
-            if (JexlerUtil.isMetaInfoOn(jexler.getMetaInfo(), "autostart", false)) {
+            if (jexler.metaInfo.autostart) {
                 jexler.start()
             }
         }
