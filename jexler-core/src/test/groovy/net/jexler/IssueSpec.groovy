@@ -31,7 +31,6 @@ class IssueSpec extends Specification {
 
     def "construct and get without cause"() {
         expect:
-        def issue = new Issue(service, message, cause)
         issue.service == service
         issue.message == message
         issue.cause == cause
@@ -43,11 +42,11 @@ class IssueSpec extends Specification {
                 "Issue: [message=null,service=null,cause=null,stackTrace='']"
         MockService.setTestInstance(null,"mockid") | 'hi \r a \n b \r\n c \r\n\r\n' | null |
                 "Issue: [message='hi %n a %n b %n c %n%n',service='${MockService.class.name}:mockid',cause=null,stackTrace='']"
+        issue = new Issue(service, message, cause)
     }
 
     def "construct and get with cause"() {
         expect:
-        def issue = new Issue(service, message, cause)
         issue.service == service
         issue.message == message
         issue.cause == cause
@@ -60,13 +59,16 @@ class IssueSpec extends Specification {
         MockService.setTestInstance(null,"mockid") | 'hi' | new RuntimeException('run') |
                 "Issue: [message='hi',service='${MockService.class.name}:mockid'" +
                 ",cause='java.lang.RuntimeException: run',stackTrace='java.lang.RuntimeException: run"
+        issue = new Issue(service, message, cause)
     }
 
     def "compare"() {
-        expect:
+        when:
         def issueEarlier = new Issue(null, null, null)
         Thread.sleep(10)
         def issueLater = new Issue(null, null, null)
+
+        then:
         issueEarlier.compareTo(issueLater) > 0
         issueLater.compareTo(issueEarlier) < 0
     }

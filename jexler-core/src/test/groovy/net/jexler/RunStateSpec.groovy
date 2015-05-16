@@ -28,65 +28,29 @@ import spock.lang.Specification;
 @Category(FastTests.class)
 class RunStateSpec extends Specification {
 
-    def "general"() {
+    def "elementary"() {
         expect:
-        "off" == RunState.OFF.getInfo()
+        "off" == RunState.OFF.info
         RunState.OFF == RunState.valueOf("OFF")
     }
 
-    def "off"() {
+    def "state matrix"() {
         expect:
-        RunState.OFF.isOff()
-        !RunState.OFF.isOn()
-        !RunState.OFF.isOperational()
-        !RunState.OFF.isBusyStarting()
-        !RunState.OFF.isIdle()
-        !RunState.OFF.isBusyEvent()
-        !RunState.OFF.isBusyStopping()
-    }
+        state.off == off
+        state.on == on
+        state.operational == operational
+        state.busyStarting == busyStarting
+        state.idle == idle
+        state.busyEvent == busyEvent
+        state.busyStopping == busyStopping
 
-    def "busy (starting)"() {
-        expect:
-        !RunState.BUSY_STARTING.isOff()
-        RunState.BUSY_STARTING.isOn()
-        !RunState.BUSY_STARTING.isOperational()
-        RunState.BUSY_STARTING.isBusyStarting()
-        !RunState.BUSY_STARTING.isIdle()
-        !RunState.BUSY_STARTING.isBusyEvent()
-        !RunState.BUSY_STARTING.isBusyStopping()
-    }
-
-    def "idle"() {
-        expect:
-        !RunState.IDLE.isOff()
-        RunState.IDLE.isOn()
-        RunState.IDLE.isOperational()
-        !RunState.IDLE.isBusyStarting()
-        RunState.IDLE.isIdle()
-        !RunState.IDLE.isBusyEvent()
-        !RunState.IDLE.isBusyStopping()
-    }
-
-    def "busy (event)"() {
-        expect:
-        !RunState.BUSY_EVENT.isOff()
-        RunState.BUSY_EVENT.isOn()
-        RunState.BUSY_EVENT.isOperational()
-        !RunState.BUSY_EVENT.isBusyStarting()
-        !RunState.BUSY_EVENT.isIdle()
-        RunState.BUSY_EVENT.isBusyEvent()
-        !RunState.BUSY_EVENT.isBusyStopping()
-    }
-
-    def "busy (stopping)"() {
-        expect:
-        !RunState.BUSY_STOPPING.isOff()
-        RunState.BUSY_STOPPING.isOn()
-        !RunState.BUSY_STOPPING.isOperational()
-        !RunState.BUSY_STOPPING.isBusyStarting()
-        !RunState.BUSY_STOPPING.isIdle()
-        !RunState.BUSY_STOPPING.isBusyEvent()
-        RunState.BUSY_STOPPING.isBusyStopping()
+        where:
+        state                  | off   | on    | operational | busyStarting | idle  | busyEvent | busyStopping
+        RunState.OFF           | true  | false | false       | false        | false | false     | false
+        RunState.BUSY_STARTING | false | true  | false       | true         | false | false     | false
+        RunState.IDLE          | false | true  | true        | false        | true  | false     | false
+        RunState.BUSY_EVENT    | false | true  | true        | false        | false | true      | false
+        RunState.BUSY_STOPPING | false | true  | false       | false        | false | false     | true
     }
 
 }
