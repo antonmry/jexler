@@ -40,7 +40,7 @@ class IssueSpec extends Specification {
         service | message | cause | string
         null | null | null |
                 "Issue: [message=null,service=null,cause=null,stackTrace='']"
-        MockService.setTestInstance(null,"mockid") | 'hi \r a \n b \r\n c \r\n\r\n' | null |
+        MockService.setTestInstance(null, 'mockid') | 'hi \r a \n b \r\n c \r\n\r\n' | null |
                 "Issue: [message='hi %n a %n b %n c %n%n',service='${MockService.class.name}:mockid',cause=null,stackTrace='']"
         issue = new Issue(service, message, cause)
     }
@@ -51,12 +51,12 @@ class IssueSpec extends Specification {
         issue.message == message
         issue.cause == cause
         issue.toString().startsWith(string)
-        !issue.toString().contains("\r")
-        !issue.toString().contains("\n")
+        !issue.toString().contains('\r')
+        !issue.toString().contains('\n')
 
         where:
         service | message | cause | string
-        MockService.setTestInstance(null,"mockid") | 'hi' | new RuntimeException('run') |
+        MockService.setTestInstance(null, 'mockid') | 'hi' | new RuntimeException('run') |
                 "Issue: [message='hi',service='${MockService.class.name}:mockid'" +
                 ",cause='java.lang.RuntimeException: run',stackTrace='java.lang.RuntimeException: run"
         issue = new Issue(service, message, cause)

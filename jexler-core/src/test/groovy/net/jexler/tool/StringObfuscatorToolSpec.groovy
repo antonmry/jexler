@@ -17,13 +17,8 @@
 package net.jexler.tool;
 
 import net.jexler.test.FastTests;
-import org.junit.Test;
 import org.junit.experimental.categories.Category
 import spock.lang.Specification;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.fail;
 
 /**
  * Tests the respective class.
@@ -35,7 +30,7 @@ class StringObfuscatorToolSpec extends Specification {
 
     def "default instance, plain fits"() {
         given:
-        StringObfuscatorTool tool = new StringObfuscatorTool()
+        def tool = new StringObfuscatorTool()
         int byteBufferPadLen = 64
         int blockSize = 16
         int expectedObfuscatedLen = 2 * (byteBufferPadLen + blockSize)
@@ -56,21 +51,20 @@ class StringObfuscatorToolSpec extends Specification {
 
     def "default instance, plain too long (in UTF-8)"() {
         given:
-        StringObfuscatorTool tool = new StringObfuscatorTool()
+        def tool = new StringObfuscatorTool()
 
         when:
-        String plain = "12345678901234567890123456789012345678901234567\u1234"
-        tool.obfuscate(plain)
+        tool.obfuscate('12345678901234567890123456789012345678901234567\u1234')
 
         then:
         IllegalArgumentException e = thrown()
-        e.message == "Input string too long (50 bytes UTF-8 encoded, max allowed: 47)"
+        e.message == 'Input string too long (50 bytes UTF-8 encoded, max allowed: 47)'
     }
 
     def "custom instance, plain fits"() {
         given:
-        StringObfuscatorTool tool = new StringObfuscatorTool()
-        tool.setParameters("0011223344556677", "aabbccddeeff0011", "DES", "DES/CBC/PKCS5Padding")
+        def tool = new StringObfuscatorTool()
+        tool.setParameters('0011223344556677', 'aabbccddeeff0011', 'DES', 'DES/CBC/PKCS5Padding')
         int byteBufferPadLen = 128
         tool.setByteBufferPadLen(byteBufferPadLen)
         int blockSize = 8
@@ -94,26 +88,26 @@ class StringObfuscatorToolSpec extends Specification {
 
     def "custom instance, plain too long (in UTF-8)"() {
         given:
-        StringObfuscatorTool tool = new StringObfuscatorTool()
-        tool.setParameters("0011223344556677", "aabbccddeeff0011", "DES", "DES/CBC/PKCS5Padding")
+        def tool = new StringObfuscatorTool()
+        tool.setParameters('0011223344556677', 'aabbccddeeff0011', 'DES', 'DES/CBC/PKCS5Padding')
         int byteBufferPadLen = 128
         tool.setByteBufferPadLen(byteBufferPadLen)
 
         when:
-        String plain = "12345678901234567890123456789012345678901234567890" +
-                "12345678901234567890123456789012345678901234567890" +
-                "1234567890\u1234"
+        def plain = '12345678901234567890123456789012345678901234567890' +
+                '12345678901234567890123456789012345678901234567890' +
+                '1234567890\u1234'
         tool.obfuscate(plain)
 
         then:
         IllegalArgumentException e = thrown()
-        e.message == "Input string too long (113 bytes UTF-8 encoded, max allowed: 111)"
+        e.message == 'Input string too long (113 bytes UTF-8 encoded, max allowed: 111)'
     }
 
     def "custom instance, different byte buffer pad len"() {
         given:
-        StringObfuscatorTool tool = new StringObfuscatorTool()
-        tool.setParameters("0011223344556677", "aabbccddeeff0011", "DES", "DES/CBC/PKCS5Padding")
+        def tool = new StringObfuscatorTool()
+        tool.setParameters('0011223344556677', 'aabbccddeeff0011', 'DES', 'DES/CBC/PKCS5Padding')
         int byteBufferPadLen = 128
         tool.setByteBufferPadLen(byteBufferPadLen)
 

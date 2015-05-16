@@ -40,10 +40,14 @@ class ShellTool {
      */
     @CompileStatic
     static class Result {
-        // TODO make properties when porting tests to groovy
-        public int rc
-        public String stdout
-        public String stderr
+        int rc
+        String stdout
+        String stderr
+        Result(int rc, String stdout, String stderr) {
+            this.rc = rc
+            this.stdout = stdout
+            this.stderr = stderr
+        }
         @Override
         String toString() {
             return "[rc=" + rc + ",stdout='" + JexlerUtil.toSingleLine(stdout) +
@@ -183,24 +187,17 @@ class ShellTool {
         OutputCollector errCollector = new OutputCollector(proc.getErrorStream(), stderrLineHandler, "stderr collector")
         outCollector.start()
         errCollector.start()
-        Result result = new Result()
-        result.rc = proc.waitFor()
+        int rc = proc.waitFor()
         outCollector.join()
         errCollector.join()
-        result.stdout = outCollector.getOutput()
-        result.stderr = errCollector.getOutput()
-        return result
+        return new Result(rc, outCollector.getOutput(), errCollector.getOutput())
     }
 
     /**
      * Get result in case where an exception occurred.
      */
     private Result getExceptionResult(String stackTrace) {
-        Result result = new Result()
-        result.rc = -1
-        result.stdout = ""
-        result.stderr = stackTrace
-        return result
+        return new Result(-1, "", stackTrace)
     }
 
     /**
