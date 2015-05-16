@@ -14,11 +14,11 @@
    limitations under the License.
 */
 
-package net.jexler;
+package net.jexler
 
-import net.jexler.test.FastTests;
-import org.junit.experimental.categories.Category;
-import spock.lang.Specification;
+import net.jexler.test.FastTests
+import org.junit.experimental.categories.Category
+import spock.lang.Specification
 
 /**
  * Tests the respective class.
@@ -30,8 +30,8 @@ class RunStateSpec extends Specification {
 
     def "elementary"() {
         expect:
-        "off" == RunState.OFF.info
-        RunState.OFF == RunState.valueOf("OFF")
+        RunState.OFF.info == 'off'
+        RunState.valueOf('OFF') == RunState.OFF
     }
 
     def "state matrix"() {

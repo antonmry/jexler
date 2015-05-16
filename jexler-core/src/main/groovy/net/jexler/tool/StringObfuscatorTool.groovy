@@ -60,9 +60,9 @@ class StringObfuscatorTool {
      * (resp. less if some plain string characters need more than one byte UTF-8 encoded).
      */
     StringObfuscatorTool() throws NoSuchAlgorithmException, NoSuchPaddingException {
-        setParameters("62e0c45a20dfe429543212be640c3254", "b42de953243ab9edf03bdac61344bec5",
-                "AES", "AES/CBC/PKCS5Padding")
-        setByteBufferPadLen(DEFAULT_BYTE_BUFFER_PAD_LEN)
+        setParameters('62e0c45a20dfe429543212be640c3254', 'b42de953243ab9edf03bdac61344bec5',
+                'AES', 'AES/CBC/PKCS5Padding')
+        byteBufferPadLen = DEFAULT_BYTE_BUFFER_PAD_LEN
     }
     
     /**
@@ -95,12 +95,12 @@ class StringObfuscatorTool {
             throws InvalidKeyException, IllegalBlockSizeException,
             BadPaddingException, UnsupportedEncodingException,
             InvalidAlgorithmParameterException {
-        byte[] plainBytes = plain.getBytes("UTF-8")
+        byte[] plainBytes = plain.getBytes('UTF-8')
         int lenActual = plainBytes.length
         int lenMaxAllowed = byteBufferPadLen - MIN_SALT_LEN - LEN_BYTES_LEN
         if (lenActual > lenMaxAllowed) {
-            throw new IllegalArgumentException("Input string too long (" +
-                    lenActual + " bytes UTF-8 encoded, max allowed: " + lenMaxAllowed + ")")
+            throw new IllegalArgumentException(
+                    "Input string too long ($lenActual bytes UTF-8 encoded, max allowed: $lenMaxAllowed)")
         }
         byte[] plainPaddedBytes = new byte[byteBufferPadLen]
         int lenSaltBytes = byteBufferPadLen - lenActual - LEN_BYTES_LEN
@@ -112,8 +112,7 @@ class StringObfuscatorTool {
         plainPaddedBytes[byteBufferPadLen-1] = (byte)lenActual
         cipher.init(Cipher.ENCRYPT_MODE, key, iv)
         byte[] enc = cipher.doFinal(plainPaddedBytes)
-        String encHex = DatatypeConverter.printHexBinary(enc)
-        return encHex
+        return DatatypeConverter.printHexBinary(enc)
     }
     
     /**
@@ -128,12 +127,12 @@ class StringObfuscatorTool {
         cipher.init(Cipher.DECRYPT_MODE, key, iv)
         byte[] plain = cipher.doFinal(enc)
         if (plain.length != byteBufferPadLen) {
-            throw new IllegalArgumentException("Illegal length of deciphered buffer (" +
-                    plain.length + " bytes, expected " + byteBufferPadLen + ")")
+            throw new IllegalArgumentException(
+                    "Illegal length of deciphered buffer (${plain.length} bytes, expected $byteBufferPadLen)")
         }
         int lenPlainBytes = plain[byteBufferPadLen-1] & 0xff
         int offs = byteBufferPadLen - LEN_BYTES_LEN - lenPlainBytes
-        return new String(plain, offs, lenPlainBytes, "UTF-8")
+        return new String(plain, offs, lenPlainBytes, 'UTF-8')
     }
 
 }
