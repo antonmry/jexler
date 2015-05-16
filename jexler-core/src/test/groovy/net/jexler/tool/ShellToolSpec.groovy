@@ -121,14 +121,15 @@ class ShellToolSpec extends Specification {
         given:
         def tool = new ShellTool()
 
-        when:
-        def result = tool.run('there-is-no-such-command')
-
-        then:
+        expect:
+        def result = tool.run(cmd)
         result.rc != 0
         result.stdout == ''
         result.stderr != ''
         result.stderr.contains('java.io.IOException')
+
+        where:
+        cmd << [ 'there-is-no-such-command', [ 'there-is-no-such-command', 'arg' ] ]
     }
 
     def "result to string"() {

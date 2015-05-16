@@ -61,10 +61,10 @@ class ShellTool {
     @CompileStatic
     static class OutputCollector extends Thread {
         private final InputStream is
-        private final Closure<?> lineHandler
+        private final Closure lineHandler
         private final String threadName
         private String output
-        OutputCollector(InputStream is, Closure<?> lineHandler, String threadName) {
+        OutputCollector(InputStream is, Closure lineHandler, String threadName) {
             this.is = is
             this.lineHandler = lineHandler
             this.threadName = threadName
@@ -93,8 +93,8 @@ class ShellTool {
 
     private File workingDirectory
     private Map<String,String> env
-    private Closure<?> stdoutLineHandler
-    private Closure<?> stderrLineHandler
+    private Closure stdoutLineHandler
+    private Closure stderrLineHandler
 
     /**
      * Constructor.
@@ -128,7 +128,7 @@ class ShellTool {
      * If not set or set to null, do nothing.
      * @return this (for chaining calls)
      */
-    ShellTool setStdoutLineHandler(Closure<?> handler) {
+    ShellTool setStdoutLineHandler(Closure handler) {
         stdoutLineHandler = handler
         return this
     }
@@ -138,7 +138,7 @@ class ShellTool {
      * If not set or set to null, do nothing.
      * @return this (for chaining calls)
      */
-    ShellTool setStderrLineHandler(Closure<?> handler) {
+    ShellTool setStderrLineHandler(Closure handler) {
         stderrLineHandler = handler
         return this
     }
@@ -153,7 +153,7 @@ class ShellTool {
      */
     Result run(String command) {
         try {
-            Process proc = Runtime.getRuntime().exec(command, toEnvArray(env), workingDirectory)
+            Process proc = Runtime.runtime.exec(command, toEnvArray(env), workingDirectory)
             return getResult(proc)
         } catch (Exception e ) {
             return getExceptionResult(JexlerUtil.getStackTrace(e))
@@ -172,7 +172,7 @@ class ShellTool {
         String[] cmdArray = new String[cmdList.size()]
         cmdList.toArray(cmdArray)
         try {
-            Process proc = Runtime.getRuntime().exec(cmdArray, toEnvArray(env), workingDirectory)
+            Process proc = Runtime.runtime.exec(cmdArray, toEnvArray(env), workingDirectory)
             return getResult(proc)
         } catch (Exception e ) {
             return getExceptionResult(JexlerUtil.getStackTrace(e))
@@ -183,36 +183,32 @@ class ShellTool {
      * Get result of given process.
      */
     private Result getResult(Process proc) throws Exception {
-        OutputCollector outCollector = new OutputCollector(proc.getInputStream(), stdoutLineHandler, "stdout collector")
-        OutputCollector errCollector = new OutputCollector(proc.getErrorStream(), stderrLineHandler, "stderr collector")
+        OutputCollector outCollector = new OutputCollector(proc.inputStream, stdoutLineHandler, 'stdout collector')
+        OutputCollector errCollector = new OutputCollector(proc.errorStream, stderrLineHandler, 'stderr collector')
         outCollector.start()
         errCollector.start()
         int rc = proc.waitFor()
         outCollector.join()
         errCollector.join()
-        return new Result(rc, outCollector.getOutput(), errCollector.getOutput())
+        return new Result(rc, outCollector.output, errCollector.output)
     }
 
     /**
      * Get result in case where an exception occurred.
      */
     private Result getExceptionResult(String stackTrace) {
-        return new Result(-1, "", stackTrace)
+        return new Result(-1, '', stackTrace)
     }
 
     /**
      * Convert map of name and value to array of name=value.
      */
     private String[] toEnvArray(Map<String,String> env) {
-        if (env == null) {
-            return null
+        List envList = []
+        env?.each { key, value ->
+            envList.add("$key=$value")
         }
-        List<String> envList = new LinkedList<>()
-        for (Entry<String, String> entry : env.entrySet()) {
-            envList.add(entry.getKey() + "=" + entry.getValue())
-        }
-        String[] envArray = new String[envList.size()]
-        return envList.toArray(envArray)
+        return envList as String[]
     }
 
 }
