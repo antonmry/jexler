@@ -28,45 +28,30 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class JexlerUtil {
 
-    @SuppressWarnings("serial")
-    static class NoInstanceException extends Exception {
-    }
-
-    /**
-     * Don't use, class contains only static utility methods.
-     * @throws NoInstanceException Always.
-     */
-    JexlerUtil() throws NoInstanceException {
-        throw new NoInstanceException()
-    }
-
     /**
      * Get stack trace for given throwable as a string.
      * @return stack trace, never null, empty if throwable is null or could not obtain
      */
     static String getStackTrace(Throwable throwable) {
         if (throwable == null) {
-            return ""
+            return ''
         }
         try {
             Writer result = new StringWriter()
             throwable.printStackTrace(new PrintWriter(result))
-            return result.toString()
+            return result
         } catch (RuntimeException e) {
-            return ""
+            return ''
         }
     }
     
     /**
-     * Replace line breaks in string with "%n".
-     * Replaces CRLF, CR, LF with "%n", in that order.
+     * Replace line breaks in string with '%n'.
+     * Replaces CRLF, CR, LF with '%n', in that order.
      * return string with replacements, null if given string is null
      */
     static String toSingleLine(String multi) {
-        if (multi == null) {
-            return null
-        }
-        return multi.replace("\r\n", "%n").replace("\r", "%n").replace("\n", "%n")
+        return multi?.replace('\r\n', '%n')?.replace('\r', '%n')?.replace('\n', '%n')
     }
 
     /**

@@ -29,19 +29,6 @@ import net.jexler.JexlerUtil
 @CompileStatic
 class ServiceUtil {
 
-    @SuppressWarnings("serial")
-    @CompileStatic
-    static class NoInstanceException extends Exception {
-    }
-
-    /**
-     * Don't use, class contains only static utility methods.
-     * @throws NoInstanceException Always.
-     */
-    ServiceUtil() throws NoInstanceException {
-        throw new NoInstanceException()
-    }
-
     static boolean waitForStartup(Service service, long timeout) {
         long t0 = System.currentTimeMillis()
         while (true) {
