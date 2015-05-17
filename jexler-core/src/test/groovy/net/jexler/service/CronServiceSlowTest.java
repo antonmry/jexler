@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import net.jexler.MockJexler;
+import net.jexler.TestJexler;
 import net.jexler.test.SlowTests;
 
 import org.junit.Test;
@@ -45,7 +45,7 @@ public final class CronServiceSlowTest {
     @Test
     public void testEveryMinute() throws Exception {
 
-        MockJexler jexler = new MockJexler();
+        TestJexler jexler = new TestJexler();
         CronService service = new CronService(jexler, "cronid");
         service.setCron(CRON_EVERY_MIN);
         assertEquals("must be same", "cronid", service.getId());
@@ -102,7 +102,7 @@ public final class CronServiceSlowTest {
     @Test
     public void testNow() throws Exception {
 
-        MockJexler jexler = new MockJexler();
+        TestJexler jexler = new TestJexler();
         CronService service = new CronService(jexler, "cronid");
         service.setCron(CronService.CRON_NOW);
         Event event = jexler.takeEvent(MS_10_SEC);
@@ -145,7 +145,7 @@ public final class CronServiceSlowTest {
     @Test
     public void testNowPlusStop() throws Exception {
 
-        MockJexler jexler = new MockJexler();
+        TestJexler jexler = new TestJexler();
         CronService service = new CronService(jexler, "cronid");
         service.setCron(CronService.CRON_NOW_AND_STOP);
         Event event = jexler.takeEvent(MS_10_SEC);

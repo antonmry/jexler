@@ -21,7 +21,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import net.jexler.RunState;
-import net.jexler.MockJexler;
+import net.jexler.TestJexler;
 import net.jexler.test.FastTests;
 
 import org.junit.Test;
@@ -38,7 +38,7 @@ public final class BasicServiceGroupTest {
     @Test
     public void testBasic() throws Exception {
 
-        MockJexler jexler = new MockJexler();
+        TestJexler jexler = new TestJexler();
         MockService service1 = new MockService(jexler, "service1");
         MockService service2 = new MockService(jexler, "service2");
         MockService service3 = new MockService(jexler, "service2");
@@ -72,7 +72,7 @@ public final class BasicServiceGroupTest {
     @Test
     public void testStartStop() throws Exception {
 
-        MockJexler jexler = new MockJexler();
+        TestJexler jexler = new TestJexler();
         MockService service1 = new MockService(jexler, "service1");
         MockService service2 = new MockService(jexler, "service2");
         MockService service3 = new MockService(jexler, "service2");
@@ -117,7 +117,7 @@ public final class BasicServiceGroupTest {
     @Test
     public void testStopRuntimeException() throws Exception {
 
-        MockJexler jexler = new MockJexler();
+        TestJexler jexler = new TestJexler();
         MockService service1 = new MockService(jexler, "service1");
         MockService service2 = new MockService(jexler, "service2");
         MockService service3 = new MockService(jexler, "service2");

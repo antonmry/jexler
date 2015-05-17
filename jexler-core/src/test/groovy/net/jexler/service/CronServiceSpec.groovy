@@ -17,7 +17,7 @@
 package net.jexler.service
 
 import it.sauronsoftware.cron4j.Scheduler
-import net.jexler.MockJexler
+import net.jexler.TestJexler
 import net.jexler.test.FastTests
 import org.junit.experimental.categories.Category
 import spock.lang.Specification
@@ -32,7 +32,7 @@ class CronServiceSpec extends Specification {
 
     def "basic construct and set"() {
         given:
-        def jexler = new MockJexler()
+        def jexler = new TestJexler()
         def service = new CronService(jexler, "cronid")
         service.setCron("* * * * *")
         service.setScheduler(new Scheduler())

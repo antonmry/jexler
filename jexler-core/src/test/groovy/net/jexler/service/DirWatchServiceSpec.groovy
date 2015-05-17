@@ -17,17 +17,9 @@
 package net.jexler.service
 
 import spock.lang.Specification
-
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertNotNull
-import static org.junit.Assert.assertTrue
-
 import it.sauronsoftware.cron4j.Scheduler
-import net.jexler.Issue
-import net.jexler.MockJexler
+import net.jexler.TestJexler
 import net.jexler.test.FastTests
-
-import org.junit.Test
 import org.junit.experimental.categories.Category
 
 /**
@@ -41,7 +33,7 @@ class DirWatchServiceSpec extends Specification {
     def "no watch dir"() {
         given:
         def watchDir = new File("does-not-exist")
-        def jexler = new MockJexler()
+        def jexler = new TestJexler()
 
         when:
         def service = new DirWatchService(jexler, "watchid")

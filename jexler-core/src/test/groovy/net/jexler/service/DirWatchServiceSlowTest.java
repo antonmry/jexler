@@ -26,7 +26,7 @@ import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.StandardWatchEventKinds;
 
-import net.jexler.MockJexler;
+import net.jexler.TestJexler;
 import net.jexler.test.SlowTests;
 
 import org.junit.Test;
@@ -51,7 +51,7 @@ public final class DirWatchServiceSlowTest {
         
         File watchDir = Files.createTempDirectory(null).toFile();
         
-        MockJexler jexler = new MockJexler();
+        TestJexler jexler = new TestJexler();
         DirWatchService service = new DirWatchService(jexler, "watchid");
         service.setDir(watchDir);
         service.setCron("* * * * *");
@@ -100,7 +100,7 @@ public final class DirWatchServiceSlowTest {
         assertTrue("must be true", service.isOff());
     }
 
-    private void checkEvents(MockJexler jexler, DirWatchService service,
+    private void checkEvents(TestJexler jexler, DirWatchService service,
             File watchDir) throws Exception {
 
         // create file

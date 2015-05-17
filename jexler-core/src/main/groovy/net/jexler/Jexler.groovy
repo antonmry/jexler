@@ -65,7 +65,7 @@ class Jexler implements Service, IssueTracker {
     private final String id
     private final JexlerContainer container
     private volatile RunState runState
-    private final Events events
+    protected final Events events
 
     /**
      * Group of services.
