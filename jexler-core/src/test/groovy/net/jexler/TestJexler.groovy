@@ -23,7 +23,8 @@ import java.nio.file.Files
 import net.jexler.service.Event
 
 /**
- * Jexler implementation for unit tests, allows to poll events from event queue.
+ * Jexler for unit tests, no args constructor
+ * and allows to poll events from event queue with timeout.
  *
  * @author $(whois jexler.net)
  */
