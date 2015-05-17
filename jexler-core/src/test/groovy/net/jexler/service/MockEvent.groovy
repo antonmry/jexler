@@ -14,9 +14,7 @@
    limitations under the License.
 */
 
-package net.jexler.service;
-
-
+package net.jexler.service
 
 /**
  * Mock service event for unit tests.
@@ -26,7 +24,7 @@ package net.jexler.service;
 public class MockEvent extends EventBase {
 
     public MockEvent(Service service) {
-        super(service);
+        super(service)
     }
 
 }

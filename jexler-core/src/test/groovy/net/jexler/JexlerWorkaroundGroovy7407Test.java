@@ -17,6 +17,8 @@
 package net.jexler;
 
 import groovy.grape.Grape;
+import groovy.grape.GrapeEngine;
+import groovy.lang.GroovyClassLoader;
 import net.jexler.test.FastTests;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.junit.After;
@@ -26,11 +28,17 @@ import org.junit.experimental.categories.Category;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.net.URI;
 import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -111,6 +119,36 @@ public final class JexlerWorkaroundGroovy7407Test {
         assertTrue("must be true", issue.getCause() instanceof CompilationFailedException);
 
         assertTrue("must be true", Grape.getInstance() instanceof Jexler.WorkaroundGroovy7407WrappingGrapeEngine);
+    }
+
+    private static class MockEngine implements GrapeEngine {
+        @Override public Object grab(String endorsedModule) { return null; }
+        @Override public Object grab(Map args) { return null; }
+        @Override public Object grab(Map args, Map... dependencies) { return null; }
+        @Override public Map<String, Map<String, List<String>>> enumerateGrapes() { return null; }
+        @Override public URI[] resolve(Map args, Map... dependencies) { return null; }
+        @Override public URI[] resolve(Map args, List depsInfo, Map... dependencies) { return null; }
+        @Override public Map[] listDependencies(ClassLoader classLoader) { return null; }
+        @Override public void addResolver(Map<String, Object> args) {}
+    }
+
+    @Test
+    public void shallowTestOfWrappingGrapeEngine() throws Exception {
+        final Jexler.WorkaroundGroovy7407WrappingGrapeEngine engine =
+                new Jexler.WorkaroundGroovy7407WrappingGrapeEngine("lock", new MockEngine());
+        final Map<String,Object> testMap = new HashMap<>();
+        testMap.put("calleeDepth", 3);
+        assertNull("must be null", engine.grab("dummy endorsed"));
+        assertNull("must be null", engine.grab(new HashMap()));
+        assertNull("must be null", engine.grab(new HashMap(), new HashMap()));
+        assertNull("must be null", engine.grab(testMap));
+        assertNull("must be null", engine.grab(testMap, testMap));
+        assertNull("must be null", engine.enumerateGrapes());
+        assertNull("must be null", engine.resolve(new HashMap(), new HashMap()));
+        assertNull("must be null", engine.resolve(testMap, new HashMap()));
+        assertNull("must be null", engine.resolve(new HashMap(), new LinkedList(), new HashMap()));
+        assertNull("must be null", engine.listDependencies(new GroovyClassLoader()));
+        engine.addResolver(new HashMap<String, Object>());
     }
 
 }

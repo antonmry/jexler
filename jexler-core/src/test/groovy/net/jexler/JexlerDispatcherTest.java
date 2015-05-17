@@ -58,7 +58,7 @@ public final class JexlerDispatcherTest
 
         FileWriter writer = new FileWriter(file);
         writer.append("//\n" +
-                "mockService = MockService.getTestInstance()\n" +
+                "mockService = new MockService(jexler, 'MockService')\n" +
                 "JexlerDispatcher.dispatch(this)\n" +
                 "void start() {\n" +
                 "  services.add(mockService)\n" +
@@ -71,19 +71,17 @@ public final class JexlerDispatcherTest
         assertEquals("must be same", 0, jexler.getMetaInfo().size());
         assertTrue("must be true", jexler.getIssues().isEmpty());
 
-        MockService.setTestInstance(jexler, "MockService");
-        MockService mockService = MockService.getTestInstance();
-
         jexler.start();
         jexler.waitForStartup(10000);
+        MockService mockService = MockService.getInstance("MockService");
         assertEquals("must be same", RunState.IDLE, jexler.getRunState());
         assertTrue("must be true", jexler.isOn());
         assertTrue("must be true", jexler.getIssues().isEmpty());
 
-        assertEquals("must be same", 1, mockService.getNStarted());
-        assertEquals("must be same", 0, mockService.getNStopped());
-        assertEquals("must be same", 0, mockService.getNEventsSent());
-        assertEquals("must be same", 0, mockService.getNEventsGotBack());
+        assertEquals("must be same", 1, mockService.getnStarted());
+        assertEquals("must be same", 0, mockService.getnStopped());
+        assertEquals("must be same", 0, mockService.getnEventsSent());
+        assertEquals("must be same", 0, mockService.getnEventsGotBack());
 
         jexler.start();
         jexler.waitForStartup(10000);
@@ -93,10 +91,10 @@ public final class JexlerDispatcherTest
 
         mockService.notifyJexler();
         JexlerUtil.waitAtLeast(1000);
-        assertEquals("must be same", 1, mockService.getNStarted());
-        assertEquals("must be same", 0, mockService.getNStopped());
-        assertEquals("must be same", 1, mockService.getNEventsSent());
-        assertEquals("must be same", 0, mockService.getNEventsGotBack());
+        assertEquals("must be same", 1, mockService.getnStarted());
+        assertEquals("must be same", 0, mockService.getnStopped());
+        assertEquals("must be same", 1, mockService.getnEventsSent());
+        assertEquals("must be same", 0, mockService.getnEventsGotBack());
         assertEquals("must be same", 1, jexler.getIssues().size());
         assertEquals("must be same",
                 "Dispatch: No handler for event MockEvent from service MockService.",
@@ -112,10 +110,10 @@ public final class JexlerDispatcherTest
         assertTrue("must be true", jexler.isOff());
         assertTrue("must be true", jexler.getIssues().isEmpty());
 
-        assertEquals("must be same", 1, mockService.getNStarted());
-        assertEquals("must be same", 1, mockService.getNStopped());
-        assertEquals("must be same", 1, mockService.getNEventsSent());
-        assertEquals("must be same", 0, mockService.getNEventsGotBack());
+        assertEquals("must be same", 1, mockService.getnStarted());
+        assertEquals("must be same", 1, mockService.getnStopped());
+        assertEquals("must be same", 1, mockService.getnEventsSent());
+        assertEquals("must be same", 0, mockService.getnEventsGotBack());
 
         jexler.stop();
         jexler.waitForShutdown(10000);
@@ -132,7 +130,7 @@ public final class JexlerDispatcherTest
 
         FileWriter writer = new FileWriter(file);
         writer.append("//\n" +
-                "mockService = MockService.getTestInstance()\n" +
+                "mockService = new MockService(jexler, 'MockService')\n" +
                 "JexlerDispatcher.dispatch(this)\n" +
                 "void noStartMethod() {\n" +
                 "  services.add(mockService)\n" +
@@ -186,7 +184,7 @@ public final class JexlerDispatcherTest
         writer.append("//\n" +
                 "JexlerDispatcher.dispatch(this)\n" +
                 "void declare() {\n" +
-                "  mockService = MockService.getTestInstance()\n" +
+                "  mockService = new MockService(jexler, 'MockService')\n" +
                 "  testState = JexlerDispatcherTest.getTestStateInstance()\n" +
                 "  testState.declareCalled = true\n" +
                 "}\n" +
@@ -209,21 +207,20 @@ public final class JexlerDispatcherTest
         assertEquals("must be same", 0, jexler.getMetaInfo().size());
         assertTrue("must be true", jexler.getIssues().isEmpty());
 
-        MockService.setTestInstance(jexler, "MockService");
-        MockService mockService = MockService.getTestInstance();
         setTestStateInstance();
         TestState testState = getTestStateInstance();
 
         jexler.start();
         jexler.waitForStartup(10000);
+        MockService mockService = MockService.getInstance("MockService");
         assertEquals("must be same", RunState.IDLE, jexler.getRunState());
         assertTrue("must be true", jexler.isOn());
         assertTrue("must be true", jexler.getIssues().isEmpty());
 
-        assertEquals("must be same", 1, mockService.getNStarted());
-        assertEquals("must be same", 0, mockService.getNStopped());
-        assertEquals("must be same", 0, mockService.getNEventsSent());
-        assertEquals("must be same", 0, mockService.getNEventsGotBack());
+        assertEquals("must be same", 1, mockService.getnStarted());
+        assertEquals("must be same", 0, mockService.getnStopped());
+        assertEquals("must be same", 0, mockService.getnEventsSent());
+        assertEquals("must be same", 0, mockService.getnEventsGotBack());
 
         assertTrue("must be true", testState.declareCalled);
         assertTrue("must be true", testState.startCalled);
@@ -240,10 +237,10 @@ public final class JexlerDispatcherTest
 
         mockService.notifyJexler();
         JexlerUtil.waitAtLeast(1000);
-        assertEquals("must be same", 1, mockService.getNStarted());
-        assertEquals("must be same", 0, mockService.getNStopped());
-        assertEquals("must be same", 1, mockService.getNEventsSent());
-        assertEquals("must be same", 1, mockService.getNEventsGotBack());
+        assertEquals("must be same", 1, mockService.getnStarted());
+        assertEquals("must be same", 0, mockService.getnStopped());
+        assertEquals("must be same", 1, mockService.getnEventsSent());
+        assertEquals("must be same", 1, mockService.getnEventsGotBack());
         assertTrue("must be true", jexler.getIssues().isEmpty());
 
         assertTrue("must be true", testState.declareCalled);
@@ -259,10 +256,10 @@ public final class JexlerDispatcherTest
         assertTrue("must be true", jexler.isOff());
         assertTrue("must be true", jexler.getIssues().isEmpty());
 
-        assertEquals("must be same", 1, mockService.getNStarted());
-        assertEquals("must be same", 1, mockService.getNStopped());
-        assertEquals("must be same", 1, mockService.getNEventsSent());
-        assertEquals("must be same", 1, mockService.getNEventsGotBack());
+        assertEquals("must be same", 1, mockService.getnStarted());
+        assertEquals("must be same", 1, mockService.getnStopped());
+        assertEquals("must be same", 1, mockService.getnEventsSent());
+        assertEquals("must be same", 1, mockService.getnEventsGotBack());
 
         assertTrue("must be true", testState.declareCalled);
         assertTrue("must be true", testState.startCalled);
@@ -288,7 +285,7 @@ public final class JexlerDispatcherTest
         writer.append("//\n" +
                 "JexlerDispatcher.dispatch(this)\n" +
                 "void declare() {\n" +
-                "  mockService = MockService.getTestInstance()\n" +
+                "  mockService = new MockService(jexler, 'MockService')\n" +
                 "  testState = JexlerDispatcherTest.getTestStateInstance()\n" +
                 "  testState.declareCalled = true\n" +
                 "}\n" +
@@ -311,21 +308,20 @@ public final class JexlerDispatcherTest
         assertEquals("must be same", 0, jexler.getMetaInfo().size());
         assertTrue("must be true", jexler.getIssues().isEmpty());
 
-        MockService.setTestInstance(jexler, "MockService");
-        MockService mockService = MockService.getTestInstance();
         setTestStateInstance();
         TestState testState = getTestStateInstance();
 
         jexler.start();
         jexler.waitForStartup(10000);
+        MockService mockService = MockService.getInstance("MockService");
         assertEquals("must be same", RunState.IDLE, jexler.getRunState());
         assertTrue("must be true", jexler.isOn());
         assertTrue("must be true", jexler.getIssues().isEmpty());
 
-        assertEquals("must be same", 1, mockService.getNStarted());
-        assertEquals("must be same", 0, mockService.getNStopped());
-        assertEquals("must be same", 0, mockService.getNEventsSent());
-        assertEquals("must be same", 0, mockService.getNEventsGotBack());
+        assertEquals("must be same", 1, mockService.getnStarted());
+        assertEquals("must be same", 0, mockService.getnStopped());
+        assertEquals("must be same", 0, mockService.getnEventsSent());
+        assertEquals("must be same", 0, mockService.getnEventsGotBack());
 
         assertTrue("must be true", testState.declareCalled);
         assertTrue("must be true", testState.startCalled);
@@ -342,10 +338,10 @@ public final class JexlerDispatcherTest
 
         mockService.notifyJexler();
         JexlerUtil.waitAtLeast(1000);
-        assertEquals("must be same", 1, mockService.getNStarted());
-        assertEquals("must be same", 0, mockService.getNStopped());
-        assertEquals("must be same", 1, mockService.getNEventsSent());
-        assertEquals("must be same", 1, mockService.getNEventsGotBack());
+        assertEquals("must be same", 1, mockService.getnStarted());
+        assertEquals("must be same", 0, mockService.getnStopped());
+        assertEquals("must be same", 1, mockService.getnEventsSent());
+        assertEquals("must be same", 1, mockService.getnEventsGotBack());
         assertTrue("must be true", jexler.getIssues().isEmpty());
 
         assertTrue("must be true", testState.declareCalled);
@@ -361,10 +357,10 @@ public final class JexlerDispatcherTest
         assertTrue("must be true", jexler.isOff());
         assertTrue("must be true", jexler.getIssues().isEmpty());
 
-        assertEquals("must be same", 1, mockService.getNStarted());
-        assertEquals("must be same", 1, mockService.getNStopped());
-        assertEquals("must be same", 1, mockService.getNEventsSent());
-        assertEquals("must be same", 1, mockService.getNEventsGotBack());
+        assertEquals("must be same", 1, mockService.getnStarted());
+        assertEquals("must be same", 1, mockService.getnStopped());
+        assertEquals("must be same", 1, mockService.getnEventsSent());
+        assertEquals("must be same", 1, mockService.getnEventsGotBack());
 
         assertTrue("must be true", testState.declareCalled);
         assertTrue("must be true", testState.startCalled);
@@ -390,7 +386,7 @@ public final class JexlerDispatcherTest
         writer.append("//\n" +
                 "JexlerDispatcher.dispatch(this)\n" +
                 "void declare() {\n" +
-                "  mockService = MockService.getTestInstance()\n" +
+                "  mockService = new MockService(jexler, 'MockService')\n" +
                 "  testState = JexlerDispatcherTest.getTestStateInstance()\n" +
                 "  testState.declareCalled = true\n" +
                 "}\n" +
@@ -413,21 +409,20 @@ public final class JexlerDispatcherTest
         assertEquals("must be same", 0, jexler.getMetaInfo().size());
         assertTrue("must be true", jexler.getIssues().isEmpty());
 
-        MockService.setTestInstance(jexler, "MockService");
-        MockService mockService = MockService.getTestInstance();
         setTestStateInstance();
         TestState testState = getTestStateInstance();
 
         jexler.start();
         jexler.waitForStartup(10000);
+        MockService mockService = MockService.getInstance("MockService");
         assertEquals("must be same", RunState.IDLE, jexler.getRunState());
         assertTrue("must be true", jexler.isOn());
         assertTrue("must be true", jexler.getIssues().isEmpty());
 
-        assertEquals("must be same", 1, mockService.getNStarted());
-        assertEquals("must be same", 0, mockService.getNStopped());
-        assertEquals("must be same", 0, mockService.getNEventsSent());
-        assertEquals("must be same", 0, mockService.getNEventsGotBack());
+        assertEquals("must be same", 1, mockService.getnStarted());
+        assertEquals("must be same", 0, mockService.getnStopped());
+        assertEquals("must be same", 0, mockService.getnEventsSent());
+        assertEquals("must be same", 0, mockService.getnEventsGotBack());
 
         assertTrue("must be true", testState.declareCalled);
         assertTrue("must be true", testState.startCalled);
@@ -444,10 +439,10 @@ public final class JexlerDispatcherTest
 
         mockService.notifyJexler();
         JexlerUtil.waitAtLeast(1000);
-        assertEquals("must be same", 1, mockService.getNStarted());
-        assertEquals("must be same", 0, mockService.getNStopped());
-        assertEquals("must be same", 1, mockService.getNEventsSent());
-        assertEquals("must be same", 1, mockService.getNEventsGotBack());
+        assertEquals("must be same", 1, mockService.getnStarted());
+        assertEquals("must be same", 0, mockService.getnStopped());
+        assertEquals("must be same", 1, mockService.getnEventsSent());
+        assertEquals("must be same", 1, mockService.getnEventsGotBack());
         assertTrue("must be true", jexler.getIssues().isEmpty());
 
         assertTrue("must be true", testState.declareCalled);
@@ -463,10 +458,10 @@ public final class JexlerDispatcherTest
         assertTrue("must be true", jexler.isOff());
         assertTrue("must be true", jexler.getIssues().isEmpty());
 
-        assertEquals("must be same", 1, mockService.getNStarted());
-        assertEquals("must be same", 1, mockService.getNStopped());
-        assertEquals("must be same", 1, mockService.getNEventsSent());
-        assertEquals("must be same", 1, mockService.getNEventsGotBack());
+        assertEquals("must be same", 1, mockService.getnStarted());
+        assertEquals("must be same", 1, mockService.getnStopped());
+        assertEquals("must be same", 1, mockService.getnEventsSent());
+        assertEquals("must be same", 1, mockService.getnEventsGotBack());
 
         assertTrue("must be true", testState.declareCalled);
         assertTrue("must be true", testState.startCalled);
@@ -492,7 +487,7 @@ public final class JexlerDispatcherTest
         writer.append("//\n" +
                 "JexlerDispatcher.dispatch(this)\n" +
                 "void declare() {\n" +
-                "  mockService = MockService.getTestInstance()\n" +
+                "  mockService = new MockService(jexler, 'MockService')\n" +
                 "  testState = JexlerDispatcherTest.getTestStateInstance()\n" +
                 "  testState.declareCalled = true\n" +
                 "}\n" +
@@ -523,21 +518,20 @@ public final class JexlerDispatcherTest
         assertEquals("must be same", 0, jexler.getMetaInfo().size());
         assertTrue("must be true", jexler.getIssues().isEmpty());
 
-        MockService.setTestInstance(jexler, "MockService");
-        MockService mockService = MockService.getTestInstance();
         setTestStateInstance();
         TestState testState = getTestStateInstance();
 
         jexler.start();
         jexler.waitForStartup(10000);
+        MockService mockService = MockService.getInstance("MockService");
         assertEquals("must be same", RunState.IDLE, jexler.getRunState());
         assertTrue("must be true", jexler.isOn());
         assertTrue("must be true", jexler.getIssues().isEmpty());
 
-        assertEquals("must be same", 1, mockService.getNStarted());
-        assertEquals("must be same", 0, mockService.getNStopped());
-        assertEquals("must be same", 0, mockService.getNEventsSent());
-        assertEquals("must be same", 0, mockService.getNEventsGotBack());
+        assertEquals("must be same", 1, mockService.getnStarted());
+        assertEquals("must be same", 0, mockService.getnStopped());
+        assertEquals("must be same", 0, mockService.getnEventsSent());
+        assertEquals("must be same", 0, mockService.getnEventsGotBack());
 
         assertTrue("must be true", testState.declareCalled);
         assertTrue("must be true", testState.startCalled);
@@ -554,10 +548,10 @@ public final class JexlerDispatcherTest
 
         mockService.notifyJexler();
         JexlerUtil.waitAtLeast(1000);
-        assertEquals("must be same", 1, mockService.getNStarted());
-        assertEquals("must be same", 0, mockService.getNStopped());
-        assertEquals("must be same", 1, mockService.getNEventsSent());
-        assertEquals("must be same", 1, mockService.getNEventsGotBack());
+        assertEquals("must be same", 1, mockService.getnStarted());
+        assertEquals("must be same", 0, mockService.getnStopped());
+        assertEquals("must be same", 1, mockService.getnEventsSent());
+        assertEquals("must be same", 1, mockService.getnEventsGotBack());
         assertTrue("must be true", jexler.getIssues().isEmpty());
 
         assertTrue("must be true", testState.declareCalled);
@@ -573,10 +567,10 @@ public final class JexlerDispatcherTest
         assertTrue("must be true", jexler.isOff());
         assertTrue("must be true", jexler.getIssues().isEmpty());
 
-        assertEquals("must be same", 1, mockService.getNStarted());
-        assertEquals("must be same", 1, mockService.getNStopped());
-        assertEquals("must be same", 1, mockService.getNEventsSent());
-        assertEquals("must be same", 1, mockService.getNEventsGotBack());
+        assertEquals("must be same", 1, mockService.getnStarted());
+        assertEquals("must be same", 1, mockService.getnStopped());
+        assertEquals("must be same", 1, mockService.getnEventsSent());
+        assertEquals("must be same", 1, mockService.getnEventsGotBack());
 
         assertTrue("must be true", testState.declareCalled);
         assertTrue("must be true", testState.startCalled);
@@ -602,7 +596,7 @@ public final class JexlerDispatcherTest
         writer.append("//\n" +
                 "JexlerDispatcher.dispatch(this)\n" +
                 "void declare() {\n" +
-                "  mockService = MockService.getTestInstance()\n" +
+                "  mockService = new MockService(jexler, 'MockService')\n" +
                 "  testState = JexlerDispatcherTest.getTestStateInstance()\n" +
                 "  testState.declareCalled = true\n" +
                 "}\n" +
@@ -626,21 +620,20 @@ public final class JexlerDispatcherTest
         assertEquals("must be same", 0, jexler.getMetaInfo().size());
         assertTrue("must be true", jexler.getIssues().isEmpty());
 
-        MockService.setTestInstance(jexler, "MockService");
-        MockService mockService = MockService.getTestInstance();
         setTestStateInstance();
         TestState testState = getTestStateInstance();
 
         jexler.start();
         jexler.waitForStartup(10000);
+        MockService mockService = MockService.getInstance("MockService");
         assertEquals("must be same", RunState.IDLE, jexler.getRunState());
         assertTrue("must be true", jexler.isOn());
         assertTrue("must be true", jexler.getIssues().isEmpty());
 
-        assertEquals("must be same", 1, mockService.getNStarted());
-        assertEquals("must be same", 0, mockService.getNStopped());
-        assertEquals("must be same", 0, mockService.getNEventsSent());
-        assertEquals("must be same", 0, mockService.getNEventsGotBack());
+        assertEquals("must be same", 1, mockService.getnStarted());
+        assertEquals("must be same", 0, mockService.getnStopped());
+        assertEquals("must be same", 0, mockService.getnEventsSent());
+        assertEquals("must be same", 0, mockService.getnEventsGotBack());
 
         assertTrue("must be true", testState.declareCalled);
         assertTrue("must be true", testState.startCalled);
@@ -657,10 +650,10 @@ public final class JexlerDispatcherTest
 
         mockService.notifyJexler();
         JexlerUtil.waitAtLeast(1000);
-        assertEquals("must be same", 1, mockService.getNStarted());
-        assertEquals("must be same", 0, mockService.getNStopped());
-        assertEquals("must be same", 1, mockService.getNEventsSent());
-        assertEquals("must be same", 1, mockService.getNEventsGotBack());
+        assertEquals("must be same", 1, mockService.getnStarted());
+        assertEquals("must be same", 0, mockService.getnStopped());
+        assertEquals("must be same", 1, mockService.getnEventsSent());
+        assertEquals("must be same", 1, mockService.getnEventsGotBack());
 
         assertEquals("must be same", 1, jexler.getIssues().size());
         assertEquals("must be same",
@@ -687,10 +680,10 @@ public final class JexlerDispatcherTest
         assertTrue("must be true", jexler.isOff());
         assertTrue("must be true", jexler.getIssues().isEmpty());
 
-        assertEquals("must be same", 1, mockService.getNStarted());
-        assertEquals("must be same", 1, mockService.getNStopped());
-        assertEquals("must be same", 1, mockService.getNEventsSent());
-        assertEquals("must be same", 1, mockService.getNEventsGotBack());
+        assertEquals("must be same", 1, mockService.getnStarted());
+        assertEquals("must be same", 1, mockService.getnStopped());
+        assertEquals("must be same", 1, mockService.getnEventsSent());
+        assertEquals("must be same", 1, mockService.getnEventsGotBack());
 
         assertTrue("must be true", testState.declareCalled);
         assertTrue("must be true", testState.startCalled);
