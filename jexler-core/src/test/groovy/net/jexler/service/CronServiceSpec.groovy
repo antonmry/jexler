@@ -14,13 +14,13 @@
    limitations under the License.
 */
 
-package net.jexler.service;
+package net.jexler.service
 
-import it.sauronsoftware.cron4j.Scheduler;
-import net.jexler.MockJexler;
-import net.jexler.test.FastTests;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import it.sauronsoftware.cron4j.Scheduler
+import net.jexler.MockJexler
+import net.jexler.test.FastTests
+import org.junit.experimental.categories.Category
+import spock.lang.Specification
 
 /**
  * Tests the respective class.
@@ -28,14 +28,14 @@ import org.junit.experimental.categories.Category;
  * @author $(whois jexler.net)
  */
 @Category(FastTests.class)
-public final class CronServiceTest {
+class CronServiceSpec extends Specification {
 
-    @Test
-    public void testConstruct() throws Exception {
-        MockJexler jexler = new MockJexler();
-        CronService service = new CronService(jexler, "cronid");
-        service.setCron("* * * * *");
-        service.setScheduler(new Scheduler());
+    def "basic construct and set"() {
+        given:
+        def jexler = new MockJexler()
+        def service = new CronService(jexler, "cronid")
+        service.setCron("* * * * *")
+        service.setScheduler(new Scheduler())
     }
 
 }

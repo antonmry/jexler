@@ -33,34 +33,22 @@ import net.jexler.service.StopEvent
 @CompileStatic
 class JexlerDispatcher {
 
-    @SuppressWarnings("serial")
-    public static class NoInstanceException extends Exception {
-    }
-
-    /**
-     * Don't use, class contains only static utility methods.
-     * @throws NoInstanceException Always.
-     */
-    JexlerDispatcher() throws NoInstanceException {
-        throw new NoInstanceException()
-    }
-
     static void dispatch(Script script) {
 
-        Jexler jexler = (Jexler)script.getBinding().getVariable("jexler")
-        Events events = (Events)script.getBinding().getVariable("events")
+        Jexler jexler = (Jexler)script.binding.variables.jexler
+        Events events = (Events)script.binding.variables.events
 
-        MetaClass mc = script.getMetaClass()
+        MetaClass mc = script.metaClass
         Object[] noArgs = []
 
-        MetaMethod mm = mc.getMetaMethod("declare", noArgs)
+        MetaMethod mm = mc.getMetaMethod('declare', noArgs)
         if (mm != null) {
             mm.invoke(script, noArgs)
         }
 
-        mm = mc.getMetaMethod("start", noArgs)
+        mm = mc.getMetaMethod('start', noArgs)
         if (mm == null) {
-            jexler.trackIssue(jexler, "Dispatch: Mandatory start() method missing.", null)
+            jexler.trackIssue(jexler, 'Dispatch: Mandatory start() method missing.', null)
             return
         } else {
             mm.invoke(script, noArgs)
@@ -70,32 +58,28 @@ class JexlerDispatcher {
             Event event = events.take()
 
             if (event instanceof StopEvent) {
-                mm = mc.getMetaMethod("stop", noArgs)
+                mm = mc.getMetaMethod('stop', noArgs)
                 if (mm != null) {
                     mm.invoke(script, noArgs)
                 }
                 return
             }
 
-            String eventClassName = event.getClass().getSimpleName()
-            String eventServiceId = event.getService().getId()
-            Object[] eventArgs = [ Event.class ]
-
-            mm = mc.getMetaMethod("handle" + eventClassName + eventServiceId, eventArgs)
+            mm = mc.getMetaMethod("handle${event.class.simpleName}${event.service.id}", [ Event.class ])
             if (mm == null) {
-                mm = mc.getMetaMethod("handle" + eventClassName, eventArgs)
+                mm = mc.getMetaMethod("handle${event.class.simpleName}", [ Event.class ])
                 if (mm == null) {
-                    mm = mc.getMetaMethod("handle", eventArgs)
+                    mm = mc.getMetaMethod('handle', [ Event.class ])
                 }
             }
             if (mm == null) {
-                jexler.trackIssue(jexler, "Dispatch: No handler for event " + eventClassName
-                        + " from service " + eventServiceId + ".", null)
+                jexler.trackIssue(jexler, "Dispatch: No handler for event ${event.class.simpleName}" +
+                        " from service ${event.service.id}.", null)
             } else {
                 try {
                     mm.invoke(script, [ event ])
                 } catch (Throwable t) {
-                    jexler.trackIssue(jexler, "Dispatch: Handler " + mm.getName() + " failed.", t)
+                    jexler.trackIssue(jexler, "Dispatch: Handler ${mm.name} failed.", t)
                 }
             }
         }

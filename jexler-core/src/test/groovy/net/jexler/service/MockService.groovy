@@ -73,4 +73,9 @@ class MockService extends ServiceBase {
         nEventsSent++
     }
 
+    void notifyJexler(Event event) {
+        jexler.handle(event)
+        nEventsSent++
+    }
+
 }

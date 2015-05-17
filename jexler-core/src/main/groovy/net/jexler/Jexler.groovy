@@ -262,7 +262,7 @@ class Jexler implements Service, IssueTracker {
 
     @Override
     List<Issue> getIssues() {
-        return issueTracker.getIssues()
+        return issueTracker.issues
     }
 
     @Override
@@ -286,7 +286,7 @@ class Jexler implements Service, IssueTracker {
      * Get directory that contains script file.
      */
     File getDir() {
-        return file.getParentFile()
+        return file.parentFile
     }
 
     /**

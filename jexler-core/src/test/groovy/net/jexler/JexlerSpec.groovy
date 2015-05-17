@@ -86,27 +86,27 @@ class JexlerSpec extends Specification {
 
         text << [
                 """\
-[ 'autostart' : false, 'foo' : 'bar' ]
-# does not compile...
-""",
+                    [ 'autostart' : false, 'foo' : 'bar' ]
+                    # does not compile...
+                """,
                 """\
-public class Test extends Script {
-  static { throw new RuntimeException() }
-  public def run() {}
-}
-""",
+                    public class Test extends Script {
+                      static { throw new RuntimeException() }
+                      public def run() {}
+                    }
+                """,
                 """\
-[ 'autostart' : false, 'foo' : 'bar' ]
-throw new IllegalArgumentException()
-""",
+                    [ 'autostart' : false, 'foo' : 'bar' ]
+                    throw new IllegalArgumentException()
+                """,
                 """\
-[]
-throw new FileNotFoundException()
-""",
+                    []
+                    throw new FileNotFoundException()
+                    """,
                 """\
-[ 'autostart' : true ]
-throw new NoClassDefFoundError()
-"""
+                    [ 'autostart' : true ]
+                    throw new NoClassDefFoundError()
+                """
         ]
     }
 
@@ -115,19 +115,19 @@ throw new NoClassDefFoundError()
         def dir = Files.createTempDirectory(null).toFile()
         def file = new File(dir, 'Test.groovy')
         file.text = """\
-[ 'autostart' : false, 'foo' : 'bar' ]
-def mockService = new MockService(jexler, 'mock-service')
-services.add(mockService)
-services.start()
-while (true) {
-  event = events.take()
-  if (event instanceof MockEvent) {
-    mockService.notifyGotEvent()
-  } else if (event instanceof StopEvent) {
-    return
-  }
-}
-"""
+            [ 'autostart' : false, 'foo' : 'bar' ]
+            def mockService = new MockService(jexler, 'mock-service')
+            services.add(mockService)
+            services.start()
+            while (true) {
+              event = events.take()
+              if (event instanceof MockEvent) {
+                mockService.notifyGotEvent()
+              } else if (event instanceof StopEvent) {
+                return
+              }
+            }
+            """
         when:
         def jexler = new Jexler(file, new JexlerContainer(dir))
 
@@ -218,20 +218,20 @@ while (true) {
         def dir = Files.createTempDirectory(null).toFile()
         def file = new File(dir, 'Test.groovy')
         file.text = """\
-[ 'autostart' : false, 'foo' : 'bar' ]
-def mockService = new MockService(jexler, 'mock-service')
-mockService.setStopRuntimeException(new RuntimeException())
-services.add(mockService)
-services.start()
-while (true) {
-  event = events.take()
-  if (event instanceof MockEvent) {
-    mockService.notifyGotEvent()
-  } else if (event instanceof StopEvent) {
-    return
-  }
-}
-"""
+            [ 'autostart' : false, 'foo' : 'bar' ]
+            def mockService = new MockService(jexler, 'mock-service')
+            mockService.setStopRuntimeException(new RuntimeException())
+            services.add(mockService)
+            services.start()
+            while (true) {
+              event = events.take()
+              if (event instanceof MockEvent) {
+                mockService.notifyGotEvent()
+              } else if (event instanceof StopEvent) {
+                return
+              }
+            }
+            """
         when:
         def jexler = new Jexler(file, new JexlerContainer(dir))
         jexler.start()
@@ -319,14 +319,14 @@ while (true) {
         def dir = Files.createTempDirectory(null).toFile()
         def file = new File(dir, 'Test.groovy')
         file.text = """\
-[ 'autoimport' : false ]
-while (true) {
-  event = events.take()
-  if (event instanceof net.jexler.service.StopEvent) {
-    return
-  }
-}
-"""
+            [ 'autoimport' : false ]
+            while (true) {
+              event = events.take()
+              if (event instanceof net.jexler.service.StopEvent) {
+                return
+              }
+            }
+            """
         when:
         def jexler = new Jexler(file, new JexlerContainer(dir))
         jexler.start()
