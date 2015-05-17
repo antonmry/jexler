@@ -31,7 +31,10 @@ import java.nio.file.Files
  */
 @Category(FastTests.class)
 class JexlerSpec extends Specification {
-    
+
+    private final static long MS_1_SEC = 1000
+    private final static long MS_10_SEC = 10000
+
     def "script simple run (exit immediately or silently not even started if not Script instance)"() {
         given:
         def dir = Files.createTempDirectory(null).toFile()
@@ -41,7 +44,7 @@ class JexlerSpec extends Specification {
         file.setText(text)
         def jexler = new Jexler(file, new JexlerContainer(dir))
         jexler.start()
-        jexler.waitForStartup(10000)
+        jexler.waitForStartup(MS_10_SEC)
         jexler.dir.absolutePath == dir.absolutePath
         jexler.file.absolutePath == file.absolutePath
         jexler.id == 'Test'
@@ -67,7 +70,7 @@ class JexlerSpec extends Specification {
         file.setText(text)
         def jexler = new Jexler(file, new JexlerContainer(dir))
         jexler.start()
-        jexler.waitForStartup(10000)
+        jexler.waitForStartup(MS_10_SEC)
         jexler.runState == RunState.OFF
         jexler.off
         jexler.metaInfo.size() == metaInfoSize
@@ -141,7 +144,7 @@ class JexlerSpec extends Specification {
 
         when:
         jexler.start()
-        jexler.waitForStartup(10000)
+        jexler.waitForStartup(MS_10_SEC)
         def mockService = MockService.getInstance('mock-service')
 
         then:
@@ -155,7 +158,7 @@ class JexlerSpec extends Specification {
 
         when:
         jexler.start()
-        jexler.waitForStartup(10000)
+        jexler.waitForStartup(MS_10_SEC)
 
         then:
         jexler.runState == RunState.IDLE
@@ -164,7 +167,7 @@ class JexlerSpec extends Specification {
 
         when:
         mockService.notifyJexler()
-        JexlerUtil.waitAtLeast(1000)
+        JexlerUtil.waitAtLeast(MS_1_SEC)
 
         then:
         jexler.issues.empty
@@ -191,7 +194,7 @@ class JexlerSpec extends Specification {
 
         when:
         jexler.stop()
-        jexler.waitForShutdown(10000)
+        jexler.waitForShutdown(MS_10_SEC)
 
         then:
         jexler.runState == RunState.OFF
@@ -204,7 +207,7 @@ class JexlerSpec extends Specification {
 
         when:
         jexler.stop()
-        jexler.waitForShutdown(10000)
+        jexler.waitForShutdown(MS_10_SEC)
 
         then:
         jexler.runState == RunState.OFF
@@ -235,7 +238,7 @@ class JexlerSpec extends Specification {
         when:
         def jexler = new Jexler(file, new JexlerContainer(dir))
         jexler.start()
-        jexler.waitForStartup(10000)
+        jexler.waitForStartup(MS_10_SEC)
         def mockService = MockService.getInstance('mock-service')
 
         then:
@@ -245,7 +248,7 @@ class JexlerSpec extends Specification {
 
         when:
         jexler.stop()
-        jexler.waitForShutdown(10000)
+        jexler.waitForShutdown(MS_10_SEC)
 
         then:
         jexler.runState == RunState.OFF
@@ -330,7 +333,7 @@ class JexlerSpec extends Specification {
         when:
         def jexler = new Jexler(file, new JexlerContainer(dir))
         jexler.start()
-        jexler.waitForStartup(10000)
+        jexler.waitForStartup(MS_10_SEC)
 
         then:
         jexler.issues.empty
@@ -349,7 +352,7 @@ class JexlerSpec extends Specification {
 
         when:
         scriptThread.interrupt()
-        JexlerUtil.waitAtLeast(500)
+        JexlerUtil.waitAtLeast(MS_1_SEC)
 
         then:
         jexler.runState == RunState.IDLE
@@ -360,7 +363,7 @@ class JexlerSpec extends Specification {
         jexler.issues.first().cause instanceof InterruptedException
 
         jexler.stop()
-        jexler.waitForShutdown(10000)
+        jexler.waitForShutdown(MS_10_SEC)
     }
 
 }

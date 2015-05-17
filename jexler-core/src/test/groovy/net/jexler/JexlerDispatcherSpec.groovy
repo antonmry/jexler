@@ -35,6 +35,9 @@ import java.nio.file.WatchEvent
 @Category(FastTests.class)
 class JexlerDispatcherSpec extends Specification {
 
+    private final static long MS_1_SEC = 1000
+    private final static long MS_10_SEC = 10000
+
     static class TestState {
         boolean declareCalled
         boolean startCalled
@@ -66,7 +69,7 @@ class JexlerDispatcherSpec extends Specification {
         when:
         def jexler = new Jexler(file, new JexlerContainer(dir))
         jexler.start()
-        jexler.waitForStartup(10000)
+        jexler.waitForStartup(MS_10_SEC)
 
         then:
         jexler.runState == RunState.IDLE
@@ -83,7 +86,7 @@ class JexlerDispatcherSpec extends Specification {
 
         when:
         mockService.notifyJexler()
-        JexlerUtil.waitAtLeast(1000)
+        JexlerUtil.waitAtLeast(MS_1_SEC)
 
         then:
         jexler.issues.size() == 1
@@ -103,7 +106,7 @@ class JexlerDispatcherSpec extends Specification {
 
         when:
         jexler.stop()
-        jexler.waitForShutdown(10000)
+        jexler.waitForShutdown(MS_10_SEC)
 
         then:
         jexler.runState == RunState.OFF
@@ -130,7 +133,7 @@ class JexlerDispatcherSpec extends Specification {
         when:
         def jexler = new Jexler(file, new JexlerContainer(dir))
         jexler.start()
-        jexler.waitForStartup(10000)
+        jexler.waitForStartup(MS_10_SEC)
 
         then:
         jexler.runState == RunState.OFF
@@ -176,7 +179,7 @@ class JexlerDispatcherSpec extends Specification {
         when:
         def jexler = new Jexler(file, new JexlerContainer(dir))
         jexler.start()
-        jexler.waitForStartup(10000)
+        jexler.waitForStartup(MS_10_SEC)
 
         then:
         jexler.runState == RunState.IDLE
@@ -199,7 +202,7 @@ class JexlerDispatcherSpec extends Specification {
 
         when:
         mockService.notifyJexler()
-        JexlerUtil.waitAtLeast(1000)
+        JexlerUtil.waitAtLeast(MS_1_SEC)
 
         then:
         jexler.runState == RunState.IDLE
@@ -217,7 +220,7 @@ class JexlerDispatcherSpec extends Specification {
 
         when:
         mockService.notifyJexler(new CronEvent(jexler, "* * * * *"))
-        JexlerUtil.waitAtLeast(1000)
+        JexlerUtil.waitAtLeast(MS_1_SEC)
 
         then:
         jexler.runState == RunState.IDLE
@@ -235,7 +238,7 @@ class JexlerDispatcherSpec extends Specification {
 
         when:
         mockService.notifyJexler(new DirWatchEvent(jexler, new File('.'), StandardWatchEventKinds.ENTRY_CREATE))
-        JexlerUtil.waitAtLeast(1000)
+        JexlerUtil.waitAtLeast(MS_1_SEC)
 
         then:
         jexler.runState == RunState.IDLE
@@ -253,7 +256,7 @@ class JexlerDispatcherSpec extends Specification {
 
         when:
         jexler.stop()
-        jexler.waitForShutdown(10000)
+        jexler.waitForShutdown(MS_10_SEC)
 
         then:
         jexler.runState == RunState.OFF
@@ -299,7 +302,7 @@ class JexlerDispatcherSpec extends Specification {
         when:
         def jexler = new Jexler(file, new JexlerContainer(dir))
         jexler.start()
-        jexler.waitForStartup(10000)
+        jexler.waitForStartup(MS_10_SEC)
 
         then:
         jexler.runState == RunState.IDLE
@@ -308,7 +311,7 @@ class JexlerDispatcherSpec extends Specification {
         when:
         def mockService = MockService.getInstance('MockService')
         mockService.notifyJexler()
-        JexlerUtil.waitAtLeast(1000)
+        JexlerUtil.waitAtLeast(MS_1_SEC)
 
         then:
         jexler.runState == RunState.IDLE
@@ -321,7 +324,7 @@ class JexlerDispatcherSpec extends Specification {
         when:
         jexler.forgetIssues()
         jexler.stop()
-        jexler.waitForShutdown(10000)
+        jexler.waitForShutdown(MS_10_SEC)
 
         then:
         jexler.runState == RunState.OFF
