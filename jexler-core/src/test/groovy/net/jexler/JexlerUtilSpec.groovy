@@ -35,7 +35,7 @@ class JexlerUtilSpec extends Specification {
         }
     }
 
-    def "getStackTrace: empty stack trace"() {
+    def 'TEST getStackTrace: empty stack trace'() {
         expect:
         JexlerUtil.getStackTrace(cause).empty
 
@@ -43,7 +43,7 @@ class JexlerUtilSpec extends Specification {
         cause << [ null, new NoStackTraceException() ]
     }
 
-    def "getStackTrace: nonempty stack trace"() {
+    def 'TEST getStackTrace: nonempty stack trace'() {
         when:
         def stackTrace = JexlerUtil.getStackTrace(new Exception())
 
@@ -52,7 +52,7 @@ class JexlerUtilSpec extends Specification {
         stackTrace.contains("${this.class.simpleName}.groovy")
     }
 
-    def "toSingleLine: general"() {
+    def 'TEST toSingleLine: general'() {
         expect:
         JexlerUtil.toSingleLine(input) == output
 
@@ -65,7 +65,7 @@ class JexlerUtilSpec extends Specification {
 
     }
 
-    def "waitAtLeast: general"() {
+    def 'TEST waitAtLeast: general'() {
         expect:
         long t0 = System.currentTimeMillis()
         JexlerUtil.waitAtLeast(ms)

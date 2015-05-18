@@ -56,49 +56,49 @@ class JexlerContainerView {
     private Jexler targetJexler
 
     JexlerContainerView() {
-        container = JexlerContextListener.getContainer()
-        logfile = JexlerContextListener.getLogfile()
-        startTimeout = JexlerContextListener.getStartTimeout()
-        stopTimeout = JexlerContextListener.getStopTimeout()
+        container = JexlerContextListener.container
+        logfile = JexlerContextListener.logfile
+        startTimeout = JexlerContextListener.startTimeout
+        stopTimeout = JexlerContextListener.stopTimeout
     }
 
     private void setJexler(Jexler jexler) {
         this.jexler = jexler
-        jexlerId = jexler.getId()
+        jexlerId = jexler.id
     }
 
     String handleCommands(HttpServletRequest request) {
         this.request = request
         container.refresh()
         // set jexler from request parameter
-        targetJexlerId = request.getParameter("jexler")
+        targetJexlerId = request.getParameter('jexler')
         if (targetJexlerId != null) {
             targetJexler = container.getJexler(targetJexlerId)
         }
 
-        String cmd = request.getParameter("cmd")
+        String cmd = request.getParameter('cmd')
         if (cmd != null) {
             switch (cmd) {
-            case "start":
+            case 'start':
                 handleStart()
                 break
-            case "stop":
+            case 'stop':
                 handleStop()
                 break
-            case "restart":
+            case 'restart':
                 handleStop()
                 handleStart()
                 break
-            case "save":
+            case 'save':
                 handleSaveAs()
                 break
-            case "delete":
+            case 'delete':
                 handleDelete()
                 break
-            case "forget":
+            case 'forget':
                 handleForget()
                 break
-            case "forgetall":
+            case 'forgetall':
                 handleForgetAll()
                 break
             default:
@@ -109,20 +109,19 @@ class JexlerContainerView {
 
         container.refresh()
 
-        return ""
+        return ''
     }
 
     String getVersion() {
-        return JexlerContextListener.getVersion()
+        return JexlerContextListener.version
     }
     
     Map<String,JexlerContainerView> getJexlers() {
-        List<Jexler> jexlerList = container.getJexlers()
         Map<String,JexlerContainerView> jexlersViews = new LinkedHashMap<>()
-        for (Jexler jexler : jexlerList) {
+        container.jexlers.each() { jexler ->
             JexlerContainerView view = new JexlerContainerView()
-            view.setJexler(jexler)
-            jexlersViews.put(jexler.getId(), view)
+            view.jexler = jexler
+            jexlersViews.put(jexler.id, view)
         }
         return jexlersViews
     }
@@ -133,51 +132,51 @@ class JexlerContainerView {
 
     String getJexlerIdLink() {
         // italic if busy ("running")
-        RunState runState = jexler.getRunState()
+        RunState runState = jexler.runState
         boolean isBusy = (runState == RunState.BUSY_STARTING
                 || runState == RunState.BUSY_EVENT
                 || runState == RunState.BUSY_STOPPING)
         String id = jexlerId
         if (isBusy) {
-            id = "<em>" + id + "</em>"
+            id = "<em>$id</em>"
         }
-        return "<a href='?cmd=info" + getJexlerParam() + "'>" + id + "</a>"
+        return "<a href='?cmd=info$jexlerParam'>$id</a>"
     }
 
     String getStartStop() {
-        boolean isOn
+        boolean on
         if (jexlerId == null) {
-            isOn = container.isOn()
+            on = container.on
         } else {
-            isOn = jexler.isOn()
+            on = jexler.on
         }
-        if (isOn) {
-            return "<a href='?cmd=stop" + getJexlerParam() + "'><img src='stop.gif'></a>"
+        if (on) {
+            return "<a href='?cmd=stop$jexlerParam'><img src='stop.gif'></a>"
         } else {
-            return "<a href='?cmd=start" + getJexlerParam() + "'><img src='start.gif'></a>"
+            return "<a href='?cmd=start$jexlerParam'><img src='start.gif'></a>"
         }
     }
 
     String getRestart() {
-        return "<a href='?cmd=restart" + getJexlerParam() + "'><img src='restart.gif'></a>"
+        return "<a href='?cmd=restart$jexlerParam'><img src='restart.gif'></a>"
     }
     
     String getRunStateInfo() {
-        return jexler.getRunState().getInfo()
+        return jexler.runState.info
     }
 
     String getLog() {
          if (jexlerId == null) {
-            if (container.getIssues().size() == 0) {
-                return "<a href='?cmd=log" + getJexlerParam() + "'><img src='log.gif'></a>"
+            if (container.issues.size() == 0) {
+                return "<a href='?cmd=log$jexlerParam'><img src='log.gif'></a>"
             } else {
-                return "<a href='?cmd=log" + getJexlerParam() + "'><img src='error.gif'></a>"
+                return "<a href='?cmd=log$jexlerParam'><img src='error.gif'></a>"
             }
         } else {
-            if (jexler.getIssues().size() == 0) {
-                return "<a href='?cmd=log" + getJexlerParam() + "'><img src='ok.gif'></a>"
+            if (jexler.issues.size() == 0) {
+                return "<a href='?cmd=log$jexlerParam'><img src='ok.gif'></a>"
             } else {
-                return "<a href='?cmd=log" + getJexlerParam() + "'><img src='error.gif'></a>"
+                return "<a href='?cmd=log$jexlerParam'><img src='error.gif'></a>"
             }
 
         }
@@ -186,69 +185,69 @@ class JexlerContainerView {
     String getIssues() {
         List<Issue> issues
         if (jexler == null) {
-            issues = container.getIssues()
+            issues = container.issues
         } else {
-            issues = jexler.getIssues()
+            issues = jexler.issues
         }
         if (issues.size() == 0) {
-            return ""
+            return''
         }
         StringBuilder builder = new StringBuilder()
         builder.append("<pre class='issues'>")
-        for (Issue issue : issues) {
-            builder.append("\n")
-            SimpleDateFormat format = new SimpleDateFormat("EEE dd MMM yyyy HH:mm:ss.SSS")
-            builder.append("<strong>Date:      </strong>" + format.format(issue.getDate()) + "\n")
-            builder.append("<strong>Message:   </strong>" + issue.getMessage() + "\n")
-            Service service = issue.getService()
+        issues.each() { issue ->
+            builder.append('\n')
+            SimpleDateFormat format = new SimpleDateFormat('EEE dd MMM yyyy HH:mm:ss.SSS')
+            builder.append("<strong>Date:      </strong>${format.format(issue.date)}\n")
+            builder.append("<strong>Message:   </strong>$issue.message\n")
+            Service service = issue.service
             String s
             if (service == null) {
-                s = "-"
+                s = '-'
             } else {
-                s = service.getClass().getName() + ":" + service.getId()
+                s = "${service.class.name}:$service.id"
             }
-            builder.append("<strong>Service:   </strong>" + s + "\n")
-            Throwable cause = issue.getCause()
+            builder.append("<strong>Service:   </strong>$s\n")
+            Throwable cause = issue.cause
             s = (cause==null) ? "-" : cause.toString()
-            builder.append("<strong>Cause: </strong>" + s.replace("<", "&lt") + "\n")
-            s = issue.getStackTrace()
+            builder.append("<strong>Cause: </strong>${s.replace('<', '&lt')}\n")
+            s = issue.stackTrace
             if (s != null) {
-                builder.append(s.isEmpty() ? "" : "<span class='trace'>"+ s.replace("<", "&lt") + "</span>\n")
+                builder.append(s.empty ?: "<span class='trace'>${s.replace('<', '&lt')}</span>\n")
             }
         }
-        builder.append("</pre>")
+        builder.append('</pre>')
         return builder.toString()
     }
 
     String getLogfile() {
         if (jexlerId != null) {
-            return ""
+            return ''
         }
         StringBuilder builder = new StringBuilder()
         builder.append("<pre class='log'>\n")
         try {
             String logData = readTextFileReversedLines(logfile)
-            logData = logData.replace("<", "&lt")
+            logData = logData.replace('<', '&lt')
             builder.append(logData)
         } catch (IOException e) {
-            String msg = "Could not read logfile '" + logfile.getAbsolutePath() + "'."
+            String msg = "Could not read logfile '$logfile.absolutePath'."
             container.trackIssue(null, msg, e)
             builder.append(msg)
         }
-        builder.append("</pre>\n")
+        builder.append('</pre>\n')
         String s = builder.toString()
         return s
     }
 
     String getSource() {
         if (jexler == null) {
-            return ""
+            return ''
         }
-        File file = jexler.getFile()
+        File file = jexler.file
         try {
             return new String(Files.readAllBytes(file.toPath()))
         } catch (IOException e) {
-            String msg = "Could not read jexler script file '" + file.getAbsolutePath() + "'."
+            String msg = "Could not read jexler script file '$file.absolutePath'."
             jexler.trackIssue(null, msg, e)
             return msg
         }
@@ -256,11 +255,11 @@ class JexlerContainerView {
 
     String getMimeType() {
         if (jexler == null) {
-            return "text/plain"
+            return 'text/plain'
         }
         MimetypesFileTypeMap map = new MimetypesFileTypeMap()
-        map.addMimeTypes("text/x-groovy groovy")
-        String mimeType = map.getContentType(jexler.getFile())
+        map.addMimeTypes('text/x-groovy groovy')
+        String mimeType = map.getContentType(jexler.file)
         return mimeType
     }
     
@@ -271,7 +270,7 @@ class JexlerContainerView {
     String getDisabledIfReadonly() {
         boolean allowEdit = JexlerContextListener.scriptAllowEdit()
         if (allowEdit) {
-            return ""
+            return ''
         } else {
             return " disabled='disabled'"
         }
@@ -309,9 +308,9 @@ class JexlerContainerView {
         if (!JexlerContextListener.scriptAllowEdit()) {
             return
         }
-        String source = request.getParameter("source")
+        String source = request.getParameter('source')
         if (source != null) {
-            source = source.replace("\r\n", "\n")
+            source = source.replace('\r\n', '\n')
             File file = container.getJexlerFile(targetJexlerId)
             try {
                 file.text = source
@@ -344,26 +343,20 @@ class JexlerContainerView {
 
     private void handleForgetAll() {
         container.forgetIssues()
-        List<Jexler> jexlersList = container.getJexlers()
-        for (Jexler jexler : jexlersList) {
+        container.jexlers.each() { jexler ->
             jexler.forgetIssues()
         }
     }
 
     private String urlEncode(String s) {
-        try {
-            return URLEncoder.encode(s, "UTF-8")
-        } catch (UnsupportedEncodingException e) {
-            // practically never happens, Java must support UTF-8
-            throw new RuntimeException(e)
-        }
+        return URLEncoder.encode(s, 'UTF-8')
     }
 
     private String getJexlerParam() {
         if (jexlerId == null) {
-            return ""
+            return ''
         } else {
-            return "&jexler=" + urlEncode(jexlerId)
+            return "&jexler=${urlEncode(jexlerId)}"
         }
     }
     

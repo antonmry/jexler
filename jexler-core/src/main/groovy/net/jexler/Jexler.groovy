@@ -43,7 +43,6 @@ class Jexler implements Service, IssueTracker {
 
     private static final Logger log = LoggerFactory.getLogger(Jexler.class)
 
-    @SuppressWarnings("serial")
     @CompileStatic
     class Events extends LinkedBlockingQueue<Event> {
         @Override
@@ -55,7 +54,7 @@ class Jexler implements Service, IssueTracker {
                     runState = RunState.BUSY_EVENT
                     return event
                 } catch (InterruptedException e) {
-                    trackIssue(Jexler.this, "Could not take event.", e)
+                    trackIssue(Jexler.this, 'Could not take event.', e)
                 }
             }
         }
@@ -90,7 +89,7 @@ class Jexler implements Service, IssueTracker {
         id = container.getJexlerId(file)
         runState = RunState.OFF
         events = new Events()
-        services = new ServiceGroup(id + ".services")
+        services = new ServiceGroup("${id}.services")
         issueTracker = new IssueTrackerBase()
     }
 
@@ -106,8 +105,8 @@ class Jexler implements Service, IssueTracker {
      */
     @Override
     void start() {
-        log.info("*** Jexler start: " + id)
-        if (isOn()) {
+        log.info("*** Jexler start:$id")
+        if (on) {
             return
         }
         runState = RunState.BUSY_STARTING
@@ -115,7 +114,7 @@ class Jexler implements Service, IssueTracker {
         forgetIssues()
 
         metaInfoAtStart = readMetaInfo()
-        if (!getIssues().isEmpty()) {
+        if (!issues.empty) {
             runState = RunState.OFF
             return
         }
@@ -126,7 +125,7 @@ class Jexler implements Service, IssueTracker {
         if (metaInfo.autoimport == null || metaInfo.autoimport) {
             ImportCustomizer importCustomizer = new ImportCustomizer()
             importCustomizer.addStarImports(
-                    "net.jexler", "net.jexler.service", "net.jexler.tool")
+                    'net.jexler', 'net.jexler.service', 'net.jexler.tool')
             config.addCompilationCustomizers(importCustomizer)
         }
         final GroovyClassLoader loader = new GroovyClassLoader(Thread.currentThread().contextClassLoader, config)
@@ -138,7 +137,7 @@ class Jexler implements Service, IssueTracker {
             clazz = loader.parseClass(file)
         } catch (Throwable t) {
             // (may throw almost anything, checked or not)
-            trackIssue(this, "Script compile failed.", t)
+            trackIssue(this, 'Script compile failed.', t)
             runState = RunState.OFF
             return
         }
@@ -160,24 +159,24 @@ class Jexler implements Service, IssueTracker {
                             script = (Script)clazz.newInstance()
                         } catch (Throwable t) {
                             // (may throw anything, checked or not)
-                            trackIssue(thisJexler, "Script create failed.", t)
+                            trackIssue(thisJexler, 'Script create failed.', t)
                             runState = RunState.OFF
                             return
                         }
 
                         // run script
-                        script.setBinding(new Binding([
+                        script.binding = new Binding([
                                 'jexler' : thisJexler,
                                 'container' : container,
                                 'events' : events,
                                 'services' : services,
                                 'log' : log,
-                        ]))
+                        ])
                         try {
                             script.run()
                         } catch (Throwable t) {
                             // (script may throw anything, checked or not)
-                            trackIssue(thisJexler, "Script run failed.", t)
+                            trackIssue(thisJexler, 'Script run failed.', t)
                         }
 
                         runState = RunState.BUSY_STOPPING
@@ -185,16 +184,16 @@ class Jexler implements Service, IssueTracker {
                         try {
                             services.stop()
                         } catch (Throwable t) {
-                            trackIssue(services, "Could not stop services.", t)
+                            trackIssue(services, 'Could not stop services.', t)
                         }
                         events.clear()
-                        services.getServices().clear()
+                        services.services.clear()
 
                         runState = RunState.OFF
                     }
                 })
-        scriptThread.setDaemon(true)
-        scriptThread.setName(id)
+        scriptThread.daemon = true
+        scriptThread.name = id
         scriptThread.start()
     }
 
@@ -202,7 +201,7 @@ class Jexler implements Service, IssueTracker {
     boolean waitForStartup(long timeout) {
         boolean ok = ServiceUtil.waitForStartup(this, timeout)
         if (!ok) {
-            trackIssue(this, "Timeout waiting for jexler startup.", null)
+            trackIssue(this, 'Timeout waiting for jexler startup.', null)
         }
         return ok
     }
@@ -219,8 +218,8 @@ class Jexler implements Service, IssueTracker {
      */
     @Override
     void stop() {
-        log.info("*** Jexler stop: " + id)
-        if (isOff()) {
+        log.info("*** Jexler stop: $id")
+        if (off) {
             return
         }
         handle(new StopEvent(this))
@@ -230,7 +229,7 @@ class Jexler implements Service, IssueTracker {
     boolean waitForShutdown(long timeout) {
         boolean ok = ServiceUtil.waitForShutdown(this, timeout)
         if (!ok) {
-            trackIssue(this, "Timeout waiting for jexler shutdown.", null)
+            trackIssue(this, 'Timeout waiting for jexler shutdown.', null)
         }
         return ok
     }
@@ -242,12 +241,12 @@ class Jexler implements Service, IssueTracker {
 
     @Override
     boolean isOn() {
-        return runState.isOn()
+        return runState.on
     }
 
     @Override
     boolean isOff() {
-        return runState.isOff()
+        return runState.off
     }
 
     @Override
@@ -310,7 +309,7 @@ class Jexler implements Service, IssueTracker {
      * to an object which is not a map.
      */
     Map<String,Object> getMetaInfo() {
-        if (isOn()) {
+        if (on) {
             return metaInfoAtStart
         } else {
             return readMetaInfo()
@@ -328,12 +327,12 @@ class Jexler implements Service, IssueTracker {
         try {
             lines = file.readLines()
         } catch (IOException e) {
-            String msg = "Could not read meta info from jexler file '${file.absolutePath}'."
+            String msg = "Could not read meta info from jexler file '$file.absolutePath'."
             trackIssue(this, msg, e)
             return info
         }
 
-        if (lines.isEmpty()) {
+        if (lines.empty) {
             return info
         }
         String line = lines.first()
@@ -355,7 +354,6 @@ class Jexler implements Service, IssueTracker {
         }
 
         // set map
-        @SuppressWarnings("unchecked")
         Map<String,Object> map = (Map<String,Object>)obj
         info.putAll(map)
 
@@ -375,20 +373,21 @@ class Jexler implements Service, IssueTracker {
     @CompileStatic
     static class WorkaroundGroovy7407 {
         // boolean whether to wrap the GrapeEngine in the Grape class with a synchronized version
-        public static final String GRAPE_ENGINE_WRAP_PROPERTY_NAME = "net.jexler.workaround.groovy.7407.grape.engine.wrap"
-        public static final String LOG_PREFIX = "workaround GROOVY-7407: "
+        public static final String GRAPE_ENGINE_WRAP_PROPERTY_NAME =
+                'net.jexler.workaround.groovy.7407.grape.engine.wrap'
+        public static final String LOG_PREFIX = 'workaround GROOVY-7407:'
         private static volatile Boolean isWrapGrapeEngine
         static void wrapGrapeEngineIfConfigured(Jexler thisJexler) {
             if (isWrapGrapeEngine == null) {
                 isWrapGrapeEngine = Boolean.valueOf(System.getProperty(GRAPE_ENGINE_WRAP_PROPERTY_NAME))
                 if (isWrapGrapeEngine) {
-                    log.trace(LOG_PREFIX + "wrapping GrapeEngine...")
+                    log.trace("$LOG_PREFIX wrapping GrapeEngine...")
                     try {
                         WorkaroundGroovy7407WrappingGrapeEngine.createAndSet()
-                        log.trace(LOG_PREFIX + "successfully wrapped GrapeEngine")
+                        log.trace("$LOG_PREFIX successfully wrapped GrapeEngine")
                     } catch (Exception e) {
                         String msg = "failed to wrap GrapeEngine: $e"
-                        log.trace(LOG_PREFIX + "failed to wrap GrapeEngine: $e")
+                        log.trace("$LOG_PREFIX failed to wrap GrapeEngine: $e")
                         thisJexler.trackIssue(thisJexler, msg, e)
                     }
 
@@ -437,14 +436,14 @@ class Jexler implements Service, IssueTracker {
         }
 
         static void setEngine(GrapeEngine engine) throws Exception {
-            Field field = Grape.class.getDeclaredField("instance")
-            field.setAccessible(true)
+            Field field = Grape.class.getDeclaredField('instance')
+            field.accessible = true
             field.set(Grape.class, engine)
         }
 
         // call this somewhere during initialization to apply the workaround
         static void createAndSet() throws Exception {
-            setEngine(new WorkaroundGroovy7407WrappingGrapeEngine(Grape.class, Grape.getInstance()))
+            engine = new WorkaroundGroovy7407WrappingGrapeEngine(Grape.class, Grape.instance)
         }
 
         @Override
@@ -457,8 +456,8 @@ class Jexler implements Service, IssueTracker {
         @Override
         Object grab(Map args) {
             synchronized(lock) {
-                if (args.get("calleeDepth") == null) {
-                    args.put("calleeDepth", DEFAULT_DEPTH + 1)
+                if (args.get('calleeDepth') == null) {
+                    args.put('calleeDepth', DEFAULT_DEPTH + 1)
                 }
                 return innerEngine.grab(args)
             }
@@ -467,8 +466,8 @@ class Jexler implements Service, IssueTracker {
         @Override
         Object grab(Map args, Map... dependencies) {
             synchronized(lock) {
-                if (args.get("calleeDepth") == null) {
-                    args.put("calleeDepth", DEFAULT_DEPTH)
+                if (args.get('calleeDepth') == null) {
+                    args.put('calleeDepth', DEFAULT_DEPTH)
                 }
                 return innerEngine.grab(args, dependencies)
             }
@@ -484,15 +483,14 @@ class Jexler implements Service, IssueTracker {
         @Override
         URI[] resolve(Map args, Map... dependencies) {
             synchronized(lock) {
-                if (args.get("calleeDepth") == null) {
-                    args.put("calleeDepth", DEFAULT_DEPTH)
+                if (args.get('calleeDepth') == null) {
+                    args.put('calleeDepth', DEFAULT_DEPTH)
                 }
                 return innerEngine.resolve(args, dependencies)
             }
         }
 
         @Override
-        @SuppressWarnings("rawtypes")
         URI[] resolve(Map args, List depsInfo, Map... dependencies) {
             synchronized(lock) {
                 return innerEngine.resolve(args, depsInfo, dependencies)
@@ -500,7 +498,6 @@ class Jexler implements Service, IssueTracker {
         }
 
         @Override
-        @SuppressWarnings("rawtypes")
         Map[] listDependencies(ClassLoader classLoader) {
             synchronized(lock) {
                 return innerEngine.listDependencies(classLoader)

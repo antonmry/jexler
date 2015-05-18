@@ -30,7 +30,7 @@ import java.nio.file.Files
 @Category(FastTests.class)
 class ShellToolSpec extends Specification {
     
-    def "default"() {
+    def 'TEST default'() {
         given:
         def tool = new ShellTool()
 
@@ -42,11 +42,11 @@ class ShellToolSpec extends Specification {
         result.stderr == ''
 
         where:
-        cmd << [ (isWindows() ? 'cmd /c dir'           : 'ls -l'),
-                 (isWindows() ? [ 'cmd', '/c', 'dir' ] : [ 'ls', '-l' ]) ]
+        cmd << [ (windows ? 'cmd /c dir'           : 'ls -l'),
+                 (windows ? [ 'cmd', '/c', 'dir' ] : [ 'ls', '-l' ]) ]
     }
 
-    def "with working directory and stdout line handler"() {
+    def 'TEST with working directory and stdout line handler'() {
         given:
         def tool = new ShellTool()
 
@@ -72,11 +72,11 @@ class ShellToolSpec extends Specification {
         testStdout.contains('file2')
 
         where:
-        cmd << [ (isWindows() ? 'cmd /c dir'           : 'ls -l'),
-                 (isWindows() ? [ 'cmd', '/c', 'dir' ] : [ 'ls', '-l' ]) ]
+        cmd << [ (windows ? 'cmd /c dir'           : 'ls -l'),
+                 (windows ? [ 'cmd', '/c', 'dir' ] : [ 'ls', '-l' ]) ]
     }
 
-    def "with custom environment and stdout line handler"() {
+    def 'TEST with custom environment and stdout line handler'() {
         given:
         def tool = new ShellTool()
         tool.environment = [ 'MYVAR' : 'there' ]
@@ -85,7 +85,7 @@ class ShellToolSpec extends Specification {
         tool.stdoutLineHandler = { stdout += it }
 
         when:
-        def cmd = (isWindows() ? [ 'cmd', '/c', 'echo hello %MyVar%' ] : [ 'sh', '-c', 'echo hello $MYVAR' ])
+        def cmd = (windows ? [ 'cmd', '/c', 'echo hello %MyVar%' ] : [ 'sh', '-c', 'echo hello $MYVAR' ])
         def result = tool.run(cmd)
 
         then:
@@ -97,7 +97,7 @@ class ShellToolSpec extends Specification {
         stdout.contains('hello there')
     }
 
-    def "error in command, with stderr line handler"() {
+    def 'TEST error in command, with stderr line handler'() {
         given:
         def tool = new ShellTool()
 
@@ -117,7 +117,7 @@ class ShellToolSpec extends Specification {
         !stderr.contains('Exception')
     }
 
-    def "exception if no such command"() {
+    def 'TEST exception if no such command'() {
         given:
         def tool = new ShellTool()
 
@@ -132,7 +132,7 @@ class ShellToolSpec extends Specification {
         cmd << [ 'there-is-no-such-command', [ 'there-is-no-such-command', 'arg' ] ]
     }
 
-    def "result to string"() {
+    def 'TEST result to string'() {
         expect:
         result.toString() == string
 

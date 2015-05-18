@@ -35,7 +35,7 @@ class CronServiceSlowSpec extends Specification {
     private final static long MS_10_SEC = 10000
     private final static String CRON_EVERY_MIN = '* * * * *'
 
-    def "cron every minute (~4 min)"() {
+    def 'TEST SLOW (4 min) cron every minute'() {
         given:
         def jexler = new TestJexler()
 
@@ -109,7 +109,7 @@ class CronServiceSlowSpec extends Specification {
         jexler.container.close()
     }
 
-    def "cron now (~1 min)"() {
+    def 'TEST SLOW (1 min) cron now'() {
         given:
         def jexler = new TestJexler()
 
@@ -167,7 +167,7 @@ class CronServiceSlowSpec extends Specification {
         jexler.takeEvent(MS_10_SEC) == null
     }
 
-    def "cron now+stop (~1 min)"() {
+    def 'TEST SLOW (1 min) cron now+stop'() {
         given:
         def jexler = new TestJexler()
 

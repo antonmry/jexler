@@ -55,7 +55,7 @@ class ServiceGroup implements Service {
     @Override
     void start() {
         synchronized(services) {
-            for (Service service : services) {
+            services.each() { service ->
                 service.start()
             }
         }
@@ -75,14 +75,14 @@ class ServiceGroup implements Service {
     void stop() {
         RuntimeException ex = null
         synchronized(services) {
-            for (Service service : services) {
+            services.each() { service ->
                 try {
                     service.stop()
                 } catch (RuntimeException e) {
                     if (ex == null) {
                         ex = e
                     }
-                    log.trace("Could not stop service '" + id + "'", e)
+                    log.trace("Could not stop service '$id'", e)
                 }
             }
         }
@@ -107,8 +107,8 @@ class ServiceGroup implements Service {
     RunState getRunState() {
         Set<RunState> set = new HashSet<>()
         synchronized(services) {
-            for (Service service : services) {
-                set.add(service.getRunState())
+            services.each() { service ->
+                set.add(service.runState)
             }
         }
         switch (set.size()) {
@@ -130,8 +130,9 @@ class ServiceGroup implements Service {
     @Override
     boolean isOn() {
         synchronized(services) {
+            // no "services.each() {...}" because jumping out when found
             for (Service service : services) {
-                if (service.isOn()) {
+                if (service.on) {
                     return true
                 }
             }
@@ -145,7 +146,7 @@ class ServiceGroup implements Service {
      */
     @Override
     boolean isOff() {
-        return !isOn()
+        return !on
     }
 
     @Override

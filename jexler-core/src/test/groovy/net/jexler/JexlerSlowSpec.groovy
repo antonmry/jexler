@@ -33,7 +33,7 @@ class JexlerSlowSpec extends Specification {
     private final static long MS_5_SEC = 5000
     private final static long MS_20_SEC = 20000
     
-    def "jexer start or shutdown too slow"() {
+    def 'TEST SLOW (30 sec) jexler start or shutdown too slow'() {
         given:
         File dir = Files.createTempDirectory(null).toFile()
         File file = new File(dir, 'Test.groovy')
@@ -48,7 +48,7 @@ class JexlerSlowSpec extends Specification {
                 return
               }
             }
-            """
+            """.stripIndent()
         when:
         def jexler = new Jexler(file, new JexlerContainer(dir))
         jexler.start()

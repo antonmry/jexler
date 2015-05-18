@@ -28,7 +28,7 @@ import spock.lang.Specification
 @Category(FastTests.class)
 class IssueTrackerBaseSpec extends Specification {
 
-    def "track and forget"() {
+    def 'TEST track and forget'() {
         when:
         def tracker = new IssueTrackerBase()
 
@@ -40,16 +40,16 @@ class IssueTrackerBaseSpec extends Specification {
 
         then:
         tracker.issues.size() == 1
-        tracker.issues.first().message == "issue1"
+        tracker.issues.first().message == 'issue1'
 
         when:
         JexlerUtil.waitAtLeast(10)
-        tracker.trackIssue(null, "issue2", null)
+        tracker.trackIssue(null, 'issue2', null)
 
         then:
         tracker.issues.size() == 2
-        tracker.issues.first().message == "issue2"
-        tracker.issues.get(1).message == "issue1"
+        tracker.issues.first().message == 'issue2'
+        tracker.issues.get(1).message == 'issue1'
 
         when:
         tracker.forgetIssues()

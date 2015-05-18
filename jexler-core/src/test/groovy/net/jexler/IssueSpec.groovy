@@ -29,7 +29,7 @@ import spock.lang.Specification
 @Category(FastTests.class)
 class IssueSpec extends Specification {
 
-    def "construct and get without cause"() {
+    def 'TEST construct and get without cause'() {
         expect:
         issue.service == service
         issue.message == message
@@ -45,7 +45,7 @@ class IssueSpec extends Specification {
         issue = new Issue(service, message, cause)
     }
 
-    def "construct and get with cause"() {
+    def 'TEST construct and get with cause'() {
         expect:
         issue.service == service
         issue.message == message
@@ -62,7 +62,7 @@ class IssueSpec extends Specification {
         issue = new Issue(service, message, cause)
     }
 
-    def "compare"() {
+    def 'TEST compare'() {
         when:
         def issueEarlier = new Issue(null, null, null)
         Thread.sleep(10)

@@ -35,24 +35,24 @@ class JexlerJettyTest {
 
     @Test
     void demo() throws Exception {
-        System.setProperty("groovy.grape.report.downloads", "true")
+        System.setProperty('groovy.grape.report.downloads', 'true')
         final int port = 9080
         final Server server = new Server(port)
         WebAppContext wac = new WebAppContext()
         wac.with {
-            resourceBase = "./src/main/webapp"
-            descriptor = "WEB-INF/web.xml"
-            contextPath = "/"
+            resourceBase = './src/main/webapp'
+            descriptor = 'WEB-INF/web.xml'
+            contextPath = '/'
             parentLoaderPriority = true
         }
         server.handler = wac
         server.start()
 
         println()
-        println("***************************************************************")
-        println("Jexler in embedded jetty running on http://localhost:" + port + "/")
-        println("Press ctrl-c to stop.")
-        println("***************************************************************")
+        println('***************************************************************')
+        println("Jexler in embedded jetty running on http://localhost:$port/")
+        println('Press ctrl-c to stop.')
+        println('***************************************************************')
         
         server.join()
     }

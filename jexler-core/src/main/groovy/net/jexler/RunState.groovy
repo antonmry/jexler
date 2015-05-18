@@ -27,15 +27,15 @@ import groovy.transform.CompileStatic
 enum RunState  {
 
     /** Service is off. */
-    OFF ("off"),
+    OFF ('off'),
     /** Service is busy starting. */
-    BUSY_STARTING("busy (starting)"),
+    BUSY_STARTING('busy (starting)'),
     /** Service is running and idle. */
-    IDLE("idle"),
+    IDLE('idle'),
     /** Service is running and busy processing an event. */
-    BUSY_EVENT("busy (event)"),
+    BUSY_EVENT('busy (event)'),
     /** Service is busy stopping. */
-    BUSY_STOPPING("busy (stopping)")
+    BUSY_STOPPING('busy (stopping)')
 
     /**
      * Human readable info about the run state.

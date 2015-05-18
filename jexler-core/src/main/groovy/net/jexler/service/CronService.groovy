@@ -79,7 +79,7 @@ class CronService extends ServiceBase {
             return
         }
         if (cron.startsWith(CRON_NOW)) {
-            log.trace("new cron event: " + cron)
+            log.trace("new cron event: $cron")
             jexler.handle(new CronEvent(this, cron))
             runState = RunState.IDLE
             if (cron.equals(CRON_NOW_AND_STOP)) {
@@ -91,8 +91,8 @@ class CronService extends ServiceBase {
         final CronService thisService = this
         Thread cronThread = new Thread() {
             void run() {
-                currentThread().setName(getJexler().getId() + "|" + thisService.getId())
-                log.trace("new cron event: " + cron)
+                currentThread().name = "$jexler.id|$thisService.id"
+                log.trace("new cron event: $cron")
                 jexler.handle(new CronEvent(thisService, cron))
             }
         }

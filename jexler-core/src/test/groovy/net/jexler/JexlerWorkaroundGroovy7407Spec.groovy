@@ -35,7 +35,7 @@ class JexlerWorkaroundGroovy7407Spec extends Specification {
     private void reset() throws Exception {
         System.clearProperty(Jexler.WorkaroundGroovy7407.GRAPE_ENGINE_WRAP_PROPERTY_NAME)
         Jexler.WorkaroundGroovy7407.resetForUnitTests()
-        Jexler.WorkaroundGroovy7407WrappingGrapeEngine.setEngine(null)
+        Jexler.WorkaroundGroovy7407WrappingGrapeEngine.engine = null
     }
 
     def setup() {
@@ -46,19 +46,19 @@ class JexlerWorkaroundGroovy7407Spec extends Specification {
         reset()
     }
 
-    def "constructors"() {
+    def 'TEST constructors'() {
         given:
         new Jexler.WorkaroundGroovy7407()
-        new Jexler.WorkaroundGroovy7407WrappingGrapeEngine("lock", null)
+        new Jexler.WorkaroundGroovy7407WrappingGrapeEngine('lock', null)
     }
 
-    def "compile with wrapping: compile ok"() {
+    def 'TEST compile with wrapping: compile ok'() {
         given:
         def dir = Files.createTempDirectory(null).toFile()
-        def file = new File(dir, "test.groovy")
+        def file = new File(dir, 'test.groovy')
         file.text = 'return 5'
-        assert !(Grape.getInstance() instanceof Jexler.WorkaroundGroovy7407WrappingGrapeEngine)
-        System.setProperty(Jexler.WorkaroundGroovy7407.GRAPE_ENGINE_WRAP_PROPERTY_NAME, "true")
+        assert !(Grape.instance instanceof Jexler.WorkaroundGroovy7407WrappingGrapeEngine)
+        System.setProperty(Jexler.WorkaroundGroovy7407.GRAPE_ENGINE_WRAP_PROPERTY_NAME, 'true')
 
         when:
         def jexler = new Jexler(file, new JexlerContainer(dir))
@@ -68,16 +68,16 @@ class JexlerWorkaroundGroovy7407Spec extends Specification {
         then:
         jexler.runState == RunState.OFF
         jexler.issues.empty
-        Grape.getInstance() instanceof Jexler.WorkaroundGroovy7407WrappingGrapeEngine
+        Grape.instance instanceof Jexler.WorkaroundGroovy7407WrappingGrapeEngine
     }
 
-    def "compile with wrapping: compile fails"() {
+    def 'TEST compile with wrapping: compile fails'() {
         given:
         def dir = Files.createTempDirectory(null).toFile()
-        def file = new File(dir, "test.groovy")
+        def file = new File(dir, 'test.groovy')
         file.text = '&%!+'
-        assert !(Grape.getInstance() instanceof Jexler.WorkaroundGroovy7407WrappingGrapeEngine)
-        System.setProperty(Jexler.WorkaroundGroovy7407.GRAPE_ENGINE_WRAP_PROPERTY_NAME, "true")
+        assert !(Grape.instance instanceof Jexler.WorkaroundGroovy7407WrappingGrapeEngine)
+        System.setProperty(Jexler.WorkaroundGroovy7407.GRAPE_ENGINE_WRAP_PROPERTY_NAME, 'true')
 
         when:
         def jexler = new Jexler(file, new JexlerContainer(dir))
@@ -88,16 +88,16 @@ class JexlerWorkaroundGroovy7407Spec extends Specification {
         jexler.runState == RunState.OFF
         jexler.issues.size() == 1
         jexler.issues.first().message == 'Script compile failed.'
-        Grape.getInstance() instanceof Jexler.WorkaroundGroovy7407WrappingGrapeEngine
+        Grape.instance instanceof Jexler.WorkaroundGroovy7407WrappingGrapeEngine
     }
 
-    def "shallow test of wrapping grape engine"() {
+    def 'TEST shallow test of wrapping grape engine'() {
         when:
-        def engine = new Jexler.WorkaroundGroovy7407WrappingGrapeEngine("lock", Mock(GrapeEngine))
+        def engine = new Jexler.WorkaroundGroovy7407WrappingGrapeEngine('lock', Mock(GrapeEngine))
         def testMap =  [ 'calleeDepth' : 3 ]
         
         then:
-        engine.grab("dummy endorsed") == null
+        engine.grab('dummy endorsed') == null
         engine.grab([:]) == null
         engine.grab([:], [:]) == null
         engine.grab([:]) == null

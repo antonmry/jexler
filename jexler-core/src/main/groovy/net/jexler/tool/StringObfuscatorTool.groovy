@@ -128,7 +128,7 @@ class StringObfuscatorTool {
         byte[] plain = cipher.doFinal(enc)
         if (plain.length != byteBufferPadLen) {
             throw new IllegalArgumentException(
-                    "Illegal length of deciphered buffer (${plain.length} bytes, expected $byteBufferPadLen)")
+                    "Illegal length of deciphered buffer ($plain.length bytes, expected $byteBufferPadLen)")
         }
         int lenPlainBytes = plain[byteBufferPadLen-1] & 0xff
         int offs = byteBufferPadLen - LEN_BYTES_LEN - lenPlainBytes

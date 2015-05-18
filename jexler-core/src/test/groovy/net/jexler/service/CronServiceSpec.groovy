@@ -30,12 +30,11 @@ import spock.lang.Specification
 @Category(FastTests.class)
 class CronServiceSpec extends Specification {
 
-    def "basic construct and set"() {
+    def 'TEST basic construct and set'() {
         given:
         def jexler = new TestJexler()
-        def service = new CronService(jexler, "cronid")
-        service.setCron("* * * * *")
-        service.setScheduler(new Scheduler())
+        def service = new CronService(jexler, 'cronid')
+        service.setCron('* * * * *').setScheduler(new Scheduler())
     }
 
 }

@@ -34,7 +34,7 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
 
     private static final Logger log = LoggerFactory.getLogger(JexlerContainer.class)
 
-    private static final String EXT = ".groovy"
+    private static final String EXT = '.groovy'
 
     private final File dir
     private final String id
@@ -53,14 +53,14 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
      * @throws RuntimeException if given dir is not a directory or does not exist
      */
     JexlerContainer(File dir) {
-        super(dir.exists() ? dir.getName() : null)
+        super(dir.exists() ? dir.name : null)
         if (!dir.exists()) {
-            throw new RuntimeException("Directory '" + dir.getAbsolutePath() + "' does not exist.")
+            throw new RuntimeException("Directory '$dir.absolutePath' does not exist.")
         } else  if (!dir.isDirectory()) {
-            throw new RuntimeException("File '" + dir.getAbsolutePath() + "' is not a directory.")
+            throw new RuntimeException("File '$dir.absolutePath' is not a directory.")
         }
         this.dir = dir
-        id = super.getId()
+        id = super.id
         jexlerMap = new TreeMap<>()
         issueTracker = new IssueTrackerBase()
         schedulerLock = new Object()
@@ -75,33 +75,29 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
     void refresh() {
         synchronized (jexlerMap) {
             // list directory and create jexlers in map for new script files in directory
-            File[] files = dir.listFiles()
-            files = files != null ? files : new File[0]
-            for (File file : files) {
+            dir.listFiles()?.each { File file ->
                 if (file.isFile() && !file.isHidden()) {
                     String id = getJexlerId(file)
                     if (id != null && !jexlerMap.containsKey(id)) {
                         Jexler jexler = new Jexler(file, this)
-                        jexlerMap.put(jexler.getId(), jexler)
+                        jexlerMap.put(jexler.id, jexler)
                     }
                 }
             }
 
             // recreate list while omitting jexlers without script file that are stopped
-            @SuppressWarnings("unchecked")
-            List<Jexler> jexlers = (List<Jexler>)(List<?>)getServices()
-            jexlers.clear()
-            for (String id : jexlerMap.keySet()) {
-                Jexler jexler = jexlerMap.get(id)
-                if (jexler.getFile().exists() || jexler.isOn()) {
-                    jexlers.add(jexler)
+            // TODO not thread safe on services level... (matters?)
+            services.clear()
+            jexlerMap.each { id, jexler ->
+                if (jexler.file.exists() || jexler.on) {
+                    services.add(jexler)
                 }
             }
 
             // recreate map with list entries
             jexlerMap.clear()
-            for (Jexler jexler : jexlers) {
-                jexlerMap.put(jexler.getId(), jexler)
+            jexlers.each() { jexler ->
+                jexlerMap.put(jexler.id, jexler)
             }
         }
     }
@@ -110,7 +106,7 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
      * Start jexlers that are marked as autostart.
      */
     void autostart() {
-        for (Jexler jexler : getJexlers()) {
+        jexlers.each() { jexler ->
             if (jexler.metaInfo.autostart) {
                 jexler.start()
             }
@@ -121,9 +117,9 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
     boolean waitForStartup(long timeout) {
         boolean ok = super.waitForStartup(timeout)
         if (!ok) {
-            for (Jexler jexler : getJexlers()) {
-                if (jexler.getRunState() == RunState.BUSY_STARTING) {
-                    trackIssue(jexler, "Timeout waiting for jexler startup.", null)
+            jexlers.each() { jexler ->
+                if (jexler.runState == RunState.BUSY_STARTING) {
+                    trackIssue(jexler, 'Timeout waiting for jexler startup.', null)
                 }
             }
         }
@@ -134,9 +130,9 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
     boolean waitForShutdown(long timeout) {
         boolean ok = super.waitForShutdown(timeout)
         if (!ok) {
-            for (Jexler jexler : getJexlers()) {
-                if (jexler.getRunState() != RunState.OFF) {
-                    trackIssue(jexler, "Timeout waiting for jexler shutdown.", null)
+            jexlers.each() { jexler ->
+                if (jexler.runState != RunState.OFF) {
+                    trackIssue(jexler, 'Timeout waiting for jexler shutdown.', null)
                 }
             }
         }
@@ -155,7 +151,7 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
 
     @Override
     List<Issue> getIssues() {
-        return issueTracker.getIssues()
+        return issueTracker.issues
     }
 
     @Override
@@ -185,11 +181,10 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
      * and trying to add or remove list elements throws
      * an UnsupportedOperationException.
      */
-    @SuppressWarnings("unchecked")
     List<Jexler> getJexlers() {
         List<Jexler> jexlers = new LinkedList<>()
         synchronized(jexlerMap) {
-            jexlers.addAll((List<Jexler>)(List<?>)getServices())
+            jexlers.addAll((List<Jexler>)(List<?>)services)
         }
         return Collections.unmodifiableList(jexlers)
     }
@@ -209,7 +204,7 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
      * even if no such file exists (yet).
      */
     File getJexlerFile(String id) {
-        return new File(dir, id + EXT)
+        return new File(dir, "$id$EXT")
     }
 
     /**
@@ -218,7 +213,7 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
      * or null if not a jexler script.
      */
     String getJexlerId(File jexlerFile) {
-        String name = jexlerFile.getName()
+        String name = jexlerFile.name
         if (name.endsWith(EXT)) {
             return name.substring(0, name.length() - EXT.length())
         } else {
@@ -250,6 +245,5 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
             }
         }
     }
-
 
 }

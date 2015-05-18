@@ -34,7 +34,7 @@ class JexlerContainerSpec extends Specification {
     private final static long MS_1_SEC = 1000
     private final static long MS_10_SEC = 10000
 
-    def "main functionality in detail"() {
+    def 'TEST main functionality in detail'() {
         given:
         def dir = Files.createTempDirectory(null).toFile()
         def jexlerBody = """\
@@ -44,11 +44,11 @@ class JexlerContainerSpec extends Specification {
                 return
               }
             }
-            """
+            """.stripIndent()
         new File(dir, 'Jexler1.groovy').text = "[ 'autostart' : false ]\n$jexlerBody"
         new File(dir, 'Jexler2.groovy').text = "[ 'autostart' : true ]\n$jexlerBody"
         new File(dir, 'Jexler3.groovy').text = "[ 'autostart' : false ]\n$jexlerBody"
-        new File(dir, 'Jexler4.script').text = "foo.bar=xyz"
+        new File(dir, 'Jexler4.script').text = 'foo.bar=xyz'
 
         when:
         def container = new JexlerContainer(dir)
@@ -202,27 +202,27 @@ class JexlerContainerSpec extends Specification {
         container.off
     }
 
-    def "constructor throws because directory does not exist"() {
+    def 'TEST constructor throws because directory does not exist'() {
         when:
         def dir = new File('does-not-exist')
         new JexlerContainer(dir)
 
         then:
         RuntimeException e = thrown()
-        e.message == "Directory '${dir.absolutePath}' does not exist."
+        e.message == "Directory '$dir.absolutePath' does not exist."
     }
 
-    def "constructor throws because file is not a directory"() {
+    def 'TEST constructor throws because file is not a directory'() {
         when:
-        def file = Files.createTempFile(null, ".tmp").toFile()
+        def file = Files.createTempFile(null, '.tmp').toFile()
         new JexlerContainer(file)
 
         then:
         RuntimeException e = thrown()
-        e.message == "File '${file.absolutePath}' is not a directory."
+        e.message == "File '$file.absolutePath' is not a directory."
     }
 
-    def "get jexler id"() {
+    def 'TEST get jexler id'() {
         when:
         def dir = Files.createTempDirectory(null).toFile()
         def container = new JexlerContainer(dir)
@@ -235,7 +235,7 @@ class JexlerContainerSpec extends Specification {
         container.getJexlerId(new File('Foo.groovy.java')) == null
     }
 
-    def "get jexler file"() {
+    def 'TEST get jexler file'() {
         given:
         def dir = Files.createTempDirectory(null).toFile()
         def container = new JexlerContainer(dir)
@@ -247,7 +247,7 @@ class JexlerContainerSpec extends Specification {
         file.canonicalPath == new File(dir, 'Foo.groovy').canonicalPath
     }
 
-    def "shared scheduler and close"() {
+    def 'TEST shared scheduler and close'() {
         given:
         def dir = Files.createTempDirectory(null).toFile()
         def container = new JexlerContainer(dir)

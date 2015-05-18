@@ -28,13 +28,13 @@ import spock.lang.Specification
 @Category(FastTests.class)
 class RunStateSpec extends Specification {
 
-    def "elementary"() {
+    def 'TEST elementary'() {
         expect:
         RunState.OFF.info == 'off'
         RunState.valueOf('OFF') == RunState.OFF
     }
 
-    def "state matrix"() {
+    def 'TEST state matrix'() {
         expect:
         state.off == off
         state.on == on

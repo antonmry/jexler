@@ -66,9 +66,9 @@ class ServiceUtilSlowSpec extends Specification {
         }
     }
 
-    def "wait for startup (6 sec)"() {
+    def 'TEST SLOW (6 sec) wait for startup'() {
         given:
-        def service = new MockService(null, "mock")
+        def service = new MockService(null, 'mock')
 
         when:
         service.runState = RunState.BUSY_STARTING
@@ -87,9 +87,9 @@ class ServiceUtilSlowSpec extends Specification {
         service.runState == RunState.IDLE
     }
 
-    def "wait for shutdown (6 sec)"() {
+    def 'TEST SLOW (6 sec) wait for shutdown'() {
         given:
-        def service = new MockService(null, "mock")
+        def service = new MockService(null, 'mock')
 
         when:
         service.runState = RunState.IDLE

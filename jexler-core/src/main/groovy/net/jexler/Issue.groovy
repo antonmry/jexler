@@ -80,10 +80,11 @@ class Issue implements Comparable<Issue> {
      */
     @Override
     public String toString() {
-        return """Issue: [message=${message==null ? 'null' : "'${JexlerUtil.toSingleLine(message)}'"}\
-,service=${service == null ? 'null' : "'${service.class.name + ":" + service.id}'"}\
-,cause=${cause == null ? 'null' : "'${JexlerUtil.toSingleLine(cause.toString())}'"}\
-,stackTrace='${JexlerUtil.toSingleLine(stackTrace)}']"""
+        return """\
+            Issue: [message=${message==null ? 'null' : "'${JexlerUtil.toSingleLine(message)}'"}
+            ,service=${service == null ? 'null' : "'${service.class.name}:$service.id'"}
+            ,cause=${cause == null ? 'null' : "'${JexlerUtil.toSingleLine(cause.toString())}'"}
+            ,stackTrace='${JexlerUtil.toSingleLine(stackTrace)}']""".stripIndent().replace('\r','').replace('\n','')
     }
 
 }

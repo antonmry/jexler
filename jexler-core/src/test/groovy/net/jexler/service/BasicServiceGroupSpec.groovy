@@ -30,7 +30,7 @@ import spock.lang.Specification
 @Category(FastTests.class)
 class BasicServiceGroupSpec extends Specification {
 
-    def "basics including group run state"() {
+    def 'TEST basics including group run state'() {
         given:
         def jexler = new TestJexler()
         def service1 = new MockService(jexler, 'service1')
@@ -81,7 +81,7 @@ class BasicServiceGroupSpec extends Specification {
         group.runState == RunState.BUSY_STOPPING
     }
 
-    def "start and stop"() {
+    def 'TEST start and stop'() {
         given:
         def jexler = new TestJexler()
         def service1 = new MockService(jexler, 'service1')
@@ -147,7 +147,7 @@ class BasicServiceGroupSpec extends Specification {
         group.off
     }
 
-    def "runtime exceptions when stopping services"() {
+    def 'TEST runtime exceptions when stopping services'() {
         given:
         def jexler = new TestJexler()
         def service1 = new MockService(jexler, 'service1')
@@ -170,8 +170,8 @@ class BasicServiceGroupSpec extends Specification {
         when:
         RuntimeException ex1 = new RuntimeException()
         RuntimeException ex2 = new RuntimeException()
-        service1.setStopRuntimeException(ex1)
-        service2.setStopRuntimeException(ex2)
+        service1.stopRuntimeException = ex1
+        service2.stopRuntimeException = ex2
         group.stop()
 
         then:
@@ -183,9 +183,9 @@ class BasicServiceGroupSpec extends Specification {
         group.runState == RunState.IDLE
     }
 
-    def "empty service group"() {
+    def 'TEST empty service group'() {
         when:
-        def group = new ServiceGroup("group")
+        def group = new ServiceGroup('group')
 
         then:
         group.runState == RunState.OFF

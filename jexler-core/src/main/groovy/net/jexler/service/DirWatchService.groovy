@@ -59,8 +59,8 @@ class DirWatchService extends ServiceBase {
     DirWatchService(Jexler jexler, String id) {
         super(jexler, id)
         thisService = this
-        watchDir = jexler.getDir()
-        this.cron = "* * * * *"
+        watchDir = jexler.dir
+        this.cron = '* * * * *'
     }
 
     /**
@@ -97,46 +97,46 @@ class DirWatchService extends ServiceBase {
 
     @Override
     void start() {
-        if (!isOff()) {
+        if (!off) {
             return
         }
         Path path = watchDir.toPath()
         try {
-            watchService = path.getFileSystem().newWatchService()
+            watchService = path.fileSystem.newWatchService()
             watchKey = path.register(watchService,
                     StandardWatchEventKinds.ENTRY_CREATE,
                     StandardWatchEventKinds.ENTRY_MODIFY,
                     StandardWatchEventKinds.ENTRY_DELETE)
         } catch (IOException e) {
-            getJexler().trackIssue(this, "Could not create watch service or key for directory '"
-                    + watchDir.getAbsolutePath() + "'.", e)
+            jexler.trackIssue(this,
+                    "Could not create watch service or key for directory '$watchDir.absolutePath'.", e)
             return
         }
 
         Thread watchThread = new Thread() {
             void run() {
-                currentThread().setName(getJexler().getId() + "|" + thisService.getId())
-                for (WatchEvent<?> event : watchKey.pollEvents()) {
+                currentThread().name = "$jexler.id|$thisService.id"
+                watchKey.pollEvents().each() { event ->
                     Path contextPath = ((Path) event.context())
-                    File file = new File(watchDir, contextPath.toFile().getName())
+                    File file = new File(watchDir, contextPath.toFile().name)
                     WatchEvent.Kind<?> kind = event.kind()
-                    log.trace("event " + kind + " '" + file.getAbsolutePath() + "'")
-                    getJexler().handle(new DirWatchEvent(thisService, file, kind))
+                    log.trace("event $kind '$file.absolutePath'")
+                    jexler.handle(new DirWatchEvent(thisService, file, kind))
                 }
             }
         }
 
-        watchThread.setDaemon(true)
-        setRunState(RunState.IDLE)
+        watchThread.daemon = true
+        runState = RunState.IDLE
         if (scheduler == null) {
-            scheduler = getJexler().getContainer().getSharedScheduler()
+            scheduler = jexler.container.sharedScheduler
         }
         scheduledId = scheduler.schedule(cron, watchThread)
     }
 
     @Override
     void stop() {
-        if (isOff()) {
+        if (off) {
             return
         }
         scheduler.deschedule(scheduledId)
@@ -144,9 +144,9 @@ class DirWatchService extends ServiceBase {
         try {
             watchService.close()
         } catch (IOException e) {
-            log.trace("failed to close watch service", e)
+            log.trace('failed to close watch service', e)
         }
-        setRunState(RunState.OFF)
+        runState = RunState.OFF
     }
 
 }

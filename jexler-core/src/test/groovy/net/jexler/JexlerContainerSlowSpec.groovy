@@ -33,7 +33,7 @@ class JexlerContainerSlowSpec extends Specification {
     private final static long MS_5_SEC = 5000
     private final static long MS_20_SEC = 20000
     
-    def "startup and shutdown too slower than time waited"() {
+    def 'TEST SLOW (30 sec) startup and shutdown too slower than time waited'() {
         given:
         def dir = Files.createTempDirectory(null).toFile()
         def jexlerBodyFast = """\
@@ -43,7 +43,7 @@ class JexlerContainerSlowSpec extends Specification {
                 return
               }
             }
-            """
+            """.stripIndent()
         def jexlerBodySlow = """\
             log.info('before startup wait ' + jexler.id)
             JexlerUtil.waitAtLeast(10000)
@@ -57,7 +57,7 @@ class JexlerContainerSlowSpec extends Specification {
                 return
               }
             }
-            """
+            """.stripIndent()
         new File(dir, 'Jexler1.groovy').text = "//\n$jexlerBodySlow"
         new File(dir, 'Jexler2.groovy').text = "//\n$jexlerBodyFast"
         new File(dir, 'Jexler3.groovy').text = "//\n$jexlerBodySlow"
@@ -86,7 +86,7 @@ class JexlerContainerSlowSpec extends Specification {
         jexler3.runState == RunState.BUSY_STARTING
         container.issues.size() == 2
         container.issues.each { issue ->
-            issue.message == 'Timeout waiting for jexler startup.'
+            assert issue.message == 'Timeout waiting for jexler startup.'
         }
 
         when:
@@ -111,7 +111,7 @@ class JexlerContainerSlowSpec extends Specification {
         jexler3.runState == RunState.BUSY_STOPPING
         container.issues.size() == 2
         container.issues.each { issue ->
-            issue.message == 'Timeout waiting for jexler shutdown.'
+            assert issue.message == 'Timeout waiting for jexler shutdown.'
         }
 
         when:

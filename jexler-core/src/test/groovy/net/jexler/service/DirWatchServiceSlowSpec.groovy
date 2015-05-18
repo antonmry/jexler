@@ -37,7 +37,7 @@ class DirWatchServiceSlowSpec extends Specification {
     private final static long MS_1_MIN_10_SEC = 70000
     private final static long MS_30_SEC = 30000
 
-    def "create/modify/remove files in watch dir (~12 min)"() {
+    def 'TEST SLOW (12 min) create/modify/remove files in watch dir'() {
         given:
         def watchDir = Files.createTempDirectory(null).toFile()
         def jexler = new TestJexler();

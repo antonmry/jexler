@@ -40,7 +40,7 @@ class TestJexler extends Jexler {
     }
 
     TestJexler() throws Exception {
-        this(new File(Files.createTempDirectory(null).toFile(), "TestJexler.groovy"))
+        this(new File(Files.createTempDirectory(null).toFile(), 'TestJexler.groovy'))
     }
 
     /**

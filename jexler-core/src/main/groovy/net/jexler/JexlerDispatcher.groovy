@@ -65,7 +65,7 @@ class JexlerDispatcher {
                 return
             }
 
-            mm = mc.getMetaMethod("handle${event.class.simpleName}${event.service.id}", [ Event.class ])
+            mm = mc.getMetaMethod("handle${event.class.simpleName}$event.service.id", [ Event.class ])
             if (mm == null) {
                 mm = mc.getMetaMethod("handle${event.class.simpleName}", [ Event.class ])
                 if (mm == null) {
@@ -74,12 +74,12 @@ class JexlerDispatcher {
             }
             if (mm == null) {
                 jexler.trackIssue(jexler, "Dispatch: No handler for event ${event.class.simpleName}" +
-                        " from service ${event.service.id}.", null)
+                        " from service $event.service.id.", null)
             } else {
                 try {
                     mm.invoke(script, [ event ])
                 } catch (Throwable t) {
-                    jexler.trackIssue(jexler, "Dispatch: Handler ${mm.name} failed.", t)
+                    jexler.trackIssue(jexler, "Dispatch: Handler $mm.name failed.", t)
                 }
             }
         }

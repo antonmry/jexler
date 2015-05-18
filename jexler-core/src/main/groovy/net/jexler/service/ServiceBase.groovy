@@ -67,12 +67,12 @@ abstract class ServiceBase implements Service {
 
     @Override
     boolean isOn() {
-        return runState.isOn()
+        return runState.on
     }
 
     @Override
     boolean isOff() {
-        return runState.isOff()
+        return runState.off
     }
 
     @Override

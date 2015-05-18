@@ -42,7 +42,7 @@ class JexlerContextListener implements ServletContextListener    {
 
     private static final Logger log = LoggerFactory.getLogger(JexlerContextListener.class)
 
-    private static final String guiVersion = "1.0.17-SNAPSHOT" // IMPORTANT: keep in sync with version in main build.gradle
+    private static final String guiVersion = '1.0.17-SNAPSHOT' // IMPORTANT: keep in sync with version in main build.gradle
 
     private static String version
     private static ServletContext servletContext
@@ -58,67 +58,66 @@ class JexlerContextListener implements ServletContextListener    {
     @Override
     void contextInitialized(ServletContextEvent event) {
 
-        String coreVersion = Jexler.class.getPackage().getImplementationVersion()
+        String coreVersion = Jexler.class.package.implementationVersion
         // no version in eclipse/unit tests (no jar with MANIFEST.MF)
-        coreVersion = (coreVersion == null) ? "0.0.0" : coreVersion
-        String groovyVersion = GroovyClassLoader.class.getPackage().getImplementationVersion()
-        groovyVersion = (groovyVersion == null) ? "0.0.0" : groovyVersion
-        version = guiVersion + " (core " + coreVersion + " / groovy " + groovyVersion + ")"
+        coreVersion = (coreVersion == null) ? '0.0.0' : coreVersion
+        String groovyVersion = GroovyClassLoader.class.package.implementationVersion
+        groovyVersion = (groovyVersion == null) ? '0.0.0' : groovyVersion
+        version = "$guiVersion (core $coreVersion / groovy $groovyVersion)"
 
-        log.info("Welcome to jexler. Version: " + version)
-        servletContext = event.getServletContext()
-        String webappPath = servletContext.getRealPath("/")
-        container = new JexlerContainer(new File(webappPath, "WEB-INF/jexlers"))
+        log.info("Welcome to jexler. Version: $version")
+        servletContext = event.servletContext
+        String webappPath = servletContext.getRealPath('/')
+        container = new JexlerContainer(new File(webappPath, 'WEB-INF/jexlers'))
         container.autostart()
 
         // determine log file
         logfile = null
-        LoggerContext context = (LoggerContext)LoggerFactory.getILoggerFactory()
-        for (Logger logger : context.getLoggerList()) {
+        LoggerContext context = (LoggerContext)LoggerFactory.ILoggerFactory
+        context.loggerList.each() { logger ->
             if (logger instanceof ch.qos.logback.classic.Logger) {
                 ch.qos.logback.classic.Logger classicLogger = (ch.qos.logback.classic.Logger)logger
-                for (Iterator<Appender<ILoggingEvent>> index = classicLogger.iteratorForAppenders(); index.hasNext(); ) {
-                    Appender<ILoggingEvent> appender = index.next()
+                classicLogger.iteratorForAppenders().each() { appender ->
                     if (appender instanceof ch.qos.logback.core.FileAppender) {
-                        logfile = new File(((ch.qos.logback.core.FileAppender)appender).getFile())
+                        logfile = new File(((ch.qos.logback.core.FileAppender)appender).file)
                     }
                 }
             }
         }
-        log.trace("logfile: '" + logfile.getAbsolutePath() + "'")
+        log.trace("logfile: '$logfile.absolutePath'")
         
-        String param = servletContext.getInitParameter("jexler.start.timeout")
+        String param = servletContext.getInitParameter('jexler.start.timeout')
         startTimeout = 10000
         if (param != null) {
             startTimeout = Long.parseLong(param)
         }
-        log.trace("jexler start timeout: " + startTimeout + " ms")
+        log.trace("jexler start timeout: $startTimeout ms")
         
-        param = servletContext.getInitParameter("jexler.stop.timeout")
+        param = servletContext.getInitParameter('jexler.stop.timeout')
         stopTimeout = 10000
         if (param != null) {
             stopTimeout = Long.parseLong(param)
         }
-        log.trace("jexler stop timeout: " + stopTimeout + " ms")
+        log.trace("jexler stop timeout: $stopTimeout ms")
 
-        param = servletContext.getInitParameter("jexler.security.script.allowEdit")
+        param = servletContext.getInitParameter('jexler.security.script.allowEdit')
         scriptAllowEdit = Boolean.parseBoolean(param)
-        log.trace("allow to edit jexler scripts: " + scriptAllowEdit)
+        log.trace("allow to edit jexler scripts: $scriptAllowEdit")
 
-        param = servletContext.getInitParameter("jexler.safety.script.confirmSave")
+        param = servletContext.getInitParameter('jexler.safety.script.confirmSave')
         scriptConfirmSave = Boolean.parseBoolean(param)
-        log.trace("confirm jexler script save: " + scriptConfirmSave)
+        log.trace("confirm jexler script save: $scriptConfirmSave")
 
-        param = servletContext.getInitParameter("jexler.safety.script.confirmDelete")
+        param = servletContext.getInitParameter('jexler.safety.script.confirmDelete')
         scriptConfirmDelete = Boolean.parseBoolean(param)
-        log.trace("confirm jexler script delete: " + scriptConfirmDelete)
+        log.trace("confirm jexler script delete: $scriptConfirmDelete")
     }
 
     @Override
     void contextDestroyed(ServletContextEvent event) {
         container.stop()
         container.close()
-        log.info("Jexler done.")
+        log.info('Jexler done.')
     }
 
     static String getVersion() {

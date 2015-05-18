@@ -30,15 +30,15 @@ import org.junit.experimental.categories.Category
 @Category(FastTests.class)
 class DirWatchServiceSpec extends Specification {
 
-    def "no watch dir"() {
+    def 'TEST no watch dir'() {
         given:
-        def watchDir = new File("does-not-exist")
+        def watchDir = new File('does-not-exist')
         def jexler = new TestJexler()
 
         when:
-        def service = new DirWatchService(jexler, "watchid")
+        def service = new DirWatchService(jexler, 'watchid')
         service.dir = watchDir
-        service.cron = "* * * * *"
+        service.cron = '* * * * *'
         service.scheduler = new Scheduler()
         service.start()
 

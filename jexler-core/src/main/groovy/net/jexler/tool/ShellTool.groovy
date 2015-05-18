@@ -50,8 +50,8 @@ class ShellTool {
         }
         @Override
         String toString() {
-            return "[rc=" + rc + ",stdout='" + JexlerUtil.toSingleLine(stdout) +
-                    "',stderr='" + JexlerUtil.toSingleLine(stderr) + "']"
+            return "[rc=$rc,stdout='${JexlerUtil.toSingleLine(stdout)}'," +
+                    "stderr='${JexlerUtil.toSingleLine(stderr)}']"
         }
     }
     

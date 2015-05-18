@@ -28,7 +28,7 @@ import spock.lang.Specification
 @Category(FastTests.class)
 class StringObfuscatorToolSpec extends Specification {
 
-    def "default instance, plain fits"() {
+    def 'TEST default instance, plain fits'() {
         given:
         def tool = new StringObfuscatorTool()
         int byteBufferPadLen = 64
@@ -49,7 +49,7 @@ class StringObfuscatorToolSpec extends Specification {
                    '12345678901234567890123456789012345678901234567' ] // maximal length
     }
 
-    def "default instance, plain too long (in UTF-8)"() {
+    def 'TEST default instance, plain too long (in UTF-8)'() {
         given:
         def tool = new StringObfuscatorTool()
 
@@ -61,12 +61,12 @@ class StringObfuscatorToolSpec extends Specification {
         e.message == 'Input string too long (50 bytes UTF-8 encoded, max allowed: 47)'
     }
 
-    def "custom instance, plain fits"() {
+    def 'TEST custom instance, plain fits'() {
         given:
         def tool = new StringObfuscatorTool()
         tool.setParameters('0011223344556677', 'aabbccddeeff0011', 'DES', 'DES/CBC/PKCS5Padding')
         int byteBufferPadLen = 128
-        tool.setByteBufferPadLen(byteBufferPadLen)
+        tool.byteBufferPadLen = byteBufferPadLen
         int blockSize = 8
         int expectedObfuscatedLen = 2 * (byteBufferPadLen + blockSize)
 
@@ -86,12 +86,12 @@ class StringObfuscatorToolSpec extends Specification {
                    '12345678901' ] // maximal length
     }
 
-    def "custom instance, plain too long (in UTF-8)"() {
+    def 'TEST custom instance, plain too long (in UTF-8)'() {
         given:
         def tool = new StringObfuscatorTool()
         tool.setParameters('0011223344556677', 'aabbccddeeff0011', 'DES', 'DES/CBC/PKCS5Padding')
         int byteBufferPadLen = 128
-        tool.setByteBufferPadLen(byteBufferPadLen)
+        tool.byteBufferPadLen = byteBufferPadLen
 
         when:
         def plain = '12345678901234567890123456789012345678901234567890' +
@@ -104,16 +104,16 @@ class StringObfuscatorToolSpec extends Specification {
         e.message == 'Input string too long (113 bytes UTF-8 encoded, max allowed: 111)'
     }
 
-    def "custom instance, different byte buffer pad len"() {
+    def 'TEST custom instance, different byte buffer pad len'() {
         given:
         def tool = new StringObfuscatorTool()
         tool.setParameters('0011223344556677', 'aabbccddeeff0011', 'DES', 'DES/CBC/PKCS5Padding')
         int byteBufferPadLen = 128
-        tool.setByteBufferPadLen(byteBufferPadLen)
+        tool.byteBufferPadLen = byteBufferPadLen
 
         when:
         def obfus = tool.obfuscate('test')
-        tool.setByteBufferPadLen(64)
+        tool.byteBufferPadLen = 64
         tool.deobfuscate(obfus)
 
         then:

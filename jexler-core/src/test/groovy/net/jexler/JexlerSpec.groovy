@@ -35,7 +35,7 @@ class JexlerSpec extends Specification {
     private final static long MS_1_SEC = 1000
     private final static long MS_10_SEC = 10000
 
-    def "script simple run (exit immediately or silently not even started if not Script instance)"() {
+    def 'TEST script simple run (exit immediately or silently not even started if not Script instance)'() {
         given:
         def dir = Files.createTempDirectory(null).toFile()
         def file = new File(dir, 'Test.groovy')
@@ -61,7 +61,7 @@ class JexlerSpec extends Specification {
         0            | 'class NotInstanceOfScript {}'
     }
 
-    def "script compile, create or run fails"() {
+    def 'TEST script compile, create or run fails'() {
         given:
         def dir = Files.createTempDirectory(null).toFile()
         def file = new File(dir, 'Test.groovy')
@@ -91,29 +91,29 @@ class JexlerSpec extends Specification {
                 """\
                     [ 'autostart' : false, 'foo' : 'bar' ]
                     # does not compile...
-                """,
+                """.stripIndent(),
                 """\
                     public class Test extends Script {
                       static { throw new RuntimeException() }
                       public def run() {}
                     }
-                """,
+                """.stripIndent(),
                 """\
                     [ 'autostart' : false, 'foo' : 'bar' ]
                     throw new IllegalArgumentException()
-                """,
+                """.stripIndent(),
                 """\
                     []
                     throw new FileNotFoundException()
-                    """,
+                """.stripIndent(),
                 """\
                     [ 'autostart' : true ]
                     throw new NoClassDefFoundError()
-                """
+                """.stripIndent()
         ]
     }
 
-    def "simple jexler script life cycle"() {
+    def 'TEST simple jexler script life cycle'() {
         given:
         def dir = Files.createTempDirectory(null).toFile()
         def file = new File(dir, 'Test.groovy')
@@ -130,7 +130,7 @@ class JexlerSpec extends Specification {
                 return
               }
             }
-            """
+            """.stripIndent()
         when:
         def jexler = new Jexler(file, new JexlerContainer(dir))
 
@@ -178,12 +178,12 @@ class JexlerSpec extends Specification {
 
         when:
         def ex = new RuntimeException()
-        jexler.trackIssue(mockService, "mock issue", ex)
+        jexler.trackIssue(mockService, 'mock issue', ex)
 
         then:
         jexler.issues.size() == 1
         jexler.issues.first().service == mockService
-        jexler.issues.first().message == "mock issue"
+        jexler.issues.first().message == 'mock issue'
         jexler.issues.first().cause == ex
 
         when:
@@ -215,7 +215,7 @@ class JexlerSpec extends Specification {
         jexler.issues.empty
     }
 
-    def "runtime exception at jexler shutdown"() {
+    def 'TEST runtime exception at jexler shutdown'() {
 
         given:
         def dir = Files.createTempDirectory(null).toFile()
@@ -223,7 +223,7 @@ class JexlerSpec extends Specification {
         file.text = """\
             [ 'autostart' : false, 'foo' : 'bar' ]
             def mockService = new MockService(jexler, 'mock-service')
-            mockService.setStopRuntimeException(new RuntimeException())
+            mockService.stopRuntimeException = new RuntimeException()
             services.add(mockService)
             services.start()
             while (true) {
@@ -234,7 +234,7 @@ class JexlerSpec extends Specification {
                 return
               }
             }
-            """
+            """.stripIndent()
         when:
         def jexler = new Jexler(file, new JexlerContainer(dir))
         jexler.start()
@@ -263,7 +263,7 @@ class JexlerSpec extends Specification {
 
     }
 
-    def "meta info: no file"() {
+    def 'TEST meta info: no file'() {
         given:
         def dir = Files.createTempDirectory(null).toFile()
         def file = new File(dir, 'Test.groovy')
@@ -283,7 +283,7 @@ class JexlerSpec extends Specification {
         jexler.issues.empty
     }
 
-    def "meta info: IOException while reading file"() {
+    def 'TEST meta info: IOException while reading file'() {
         given:
         def dir = Files.createTempDirectory(null).toFile()
 
@@ -304,7 +304,7 @@ class JexlerSpec extends Specification {
         jexler.issues.first().cause instanceof IOException
     }
 
-    def "meta info: default to empty"() {
+    def 'TEST meta info: default to empty'() {
         given:
         def dir = Files.createTempDirectory(null).toFile()
         def file = new File(dir, 'Test.groovy')
@@ -317,7 +317,7 @@ class JexlerSpec extends Specification {
         text << [ '', "[ 'not-a-map' ]", '#does not compile' ]
     }
     
-    def "interrupt event take in jexler event loop"() {
+    def 'TEST interrupt event take in jexler event loop'() {
         given:
         def dir = Files.createTempDirectory(null).toFile()
         def file = new File(dir, 'Test.groovy')
@@ -329,7 +329,7 @@ class JexlerSpec extends Specification {
                 return
               }
             }
-            """
+            """.stripIndent()
         when:
         def jexler = new Jexler(file, new JexlerContainer(dir))
         jexler.start()
