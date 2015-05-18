@@ -116,10 +116,10 @@ class DirWatchService extends ServiceBase {
         Thread watchThread = new Thread() {
             void run() {
                 currentThread().name = "$jexler.id|$thisService.id"
-                watchKey.pollEvents().each() { event ->
-                    Path contextPath = ((Path) event.context())
+                for (WatchEvent watchEvent : watchKey.pollEvents()) {
+                    Path contextPath = ((Path) watchEvent.context())
                     File file = new File(watchDir, contextPath.toFile().name)
-                    WatchEvent.Kind<?> kind = event.kind()
+                    WatchEvent.Kind kind = watchEvent.kind()
                     log.trace("event $kind '$file.absolutePath'")
                     jexler.handle(new DirWatchEvent(thisService, file, kind))
                 }

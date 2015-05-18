@@ -183,7 +183,7 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
     List<Jexler> getJexlers() {
         List<Jexler> jexlers = new LinkedList<>()
         synchronized(jexlerMap) {
-            jexlers.addAll((List<Jexler>)(List<?>)services)
+            jexlers.addAll((List<Jexler>)(List)services)
         }
         return Collections.unmodifiableList(jexlers)
     }

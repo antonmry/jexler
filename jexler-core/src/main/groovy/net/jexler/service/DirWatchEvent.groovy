@@ -29,7 +29,7 @@ import java.nio.file.WatchEvent
 class DirWatchEvent extends EventBase {
 
     private final File file
-    private final WatchEvent.Kind<?> kind
+    private final WatchEvent.Kind kind
     
     /**
      * Constructor.
@@ -37,7 +37,7 @@ class DirWatchEvent extends EventBase {
      * @param file the file that has been created, modified or deleted
      * @param kind what happened with the file
      */
-    DirWatchEvent(Service service, File file, WatchEvent.Kind<?> kind) {
+    DirWatchEvent(Service service, File file, WatchEvent.Kind kind) {
         super(service)
         this.file = file
         this.kind = kind
@@ -53,7 +53,7 @@ class DirWatchEvent extends EventBase {
     /**
      * Get what happened with the file.
      */
-    WatchEvent.Kind<?> getKind() {
+    WatchEvent.Kind getKind() {
         return kind
     }
 

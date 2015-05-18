@@ -132,7 +132,7 @@ class Jexler implements Service, IssueTracker {
         loader.addClasspath(file.parent)
 
         // compile
-        final Class<?> clazz
+        final Class clazz
         try {
             clazz = loader.parseClass(file)
         } catch (Throwable t) {
