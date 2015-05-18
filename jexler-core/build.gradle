@@ -14,5 +14,6 @@ jar {
 
 dependencies {
   compile 'it.sauronsoftware.cron4j:cron4j:2.2.5'
+  compile 'org.quartz-scheduler:quartz:2.2.1'
 }
 

@@ -95,7 +95,7 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
 
             // recreate map with list entries
             jexlerMap.clear()
-            jexlers.each() { jexler ->
+            for (Jexler jexler : jexlers) {
                 jexlerMap.put(jexler.id, jexler)
             }
         }
@@ -105,7 +105,7 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
      * Start jexlers that are marked as autostart.
      */
     void autostart() {
-        jexlers.each() { jexler ->
+        for (Jexler jexler : jexlers) {
             if (jexler.metaInfo.autostart) {
                 jexler.start()
             }
@@ -116,7 +116,7 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
     boolean waitForStartup(long timeout) {
         boolean ok = super.waitForStartup(timeout)
         if (!ok) {
-            jexlers.each() { jexler ->
+            for (Jexler jexler : jexlers) {
                 if (jexler.runState == RunState.BUSY_STARTING) {
                     trackIssue(jexler, 'Timeout waiting for jexler startup.', null)
                 }
@@ -129,7 +129,7 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
     boolean waitForShutdown(long timeout) {
         boolean ok = super.waitForShutdown(timeout)
         if (!ok) {
-            jexlers.each() { jexler ->
+            for (Jexler jexler : jexlers) {
                 if (jexler.runState != RunState.OFF) {
                     trackIssue(jexler, 'Timeout waiting for jexler shutdown.', null)
                 }

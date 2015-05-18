@@ -74,7 +74,7 @@ class JexlerContextListener implements ServletContextListener    {
         // determine log file
         logfile = null
         LoggerContext context = (LoggerContext)LoggerFactory.ILoggerFactory
-        context.loggerList.each() { logger ->
+        for (Logger logger : context.loggerList) {
             if (logger instanceof ch.qos.logback.classic.Logger) {
                 ch.qos.logback.classic.Logger classicLogger = (ch.qos.logback.classic.Logger)logger
                 classicLogger.iteratorForAppenders().each() { appender ->

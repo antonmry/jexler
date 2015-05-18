@@ -118,7 +118,7 @@ class JexlerContainerView {
     
     Map<String,JexlerContainerView> getJexlers() {
         Map<String,JexlerContainerView> jexlersViews = new LinkedHashMap<>()
-        container.jexlers.each() { jexler ->
+        for (Jexler jexler : container.jexlers) {
             JexlerContainerView view = new JexlerContainerView()
             view.jexler = jexler
             jexlersViews.put(jexler.id, view)
@@ -194,7 +194,7 @@ class JexlerContainerView {
         }
         StringBuilder builder = new StringBuilder()
         builder.append("<pre class='issues'>")
-        issues.each() { issue ->
+        for (Issue issue : issues) {
             builder.append('\n')
             SimpleDateFormat format = new SimpleDateFormat('EEE dd MMM yyyy HH:mm:ss.SSS')
             builder.append("<strong>Date:      </strong>${format.format(issue.date)}\n")
@@ -343,7 +343,7 @@ class JexlerContainerView {
 
     private void handleForgetAll() {
         container.forgetIssues()
-        container.jexlers.each() { jexler ->
+        for (Jexler jexler : container.jexlers) {
             jexler.forgetIssues()
         }
     }

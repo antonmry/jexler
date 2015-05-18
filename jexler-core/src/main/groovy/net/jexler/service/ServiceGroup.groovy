@@ -55,7 +55,7 @@ class ServiceGroup implements Service {
     @Override
     void start() {
         synchronized(services) {
-            services.each() { service ->
+            for (Service service : services) {
                 service.start()
             }
         }
@@ -75,7 +75,7 @@ class ServiceGroup implements Service {
     void stop() {
         RuntimeException ex = null
         synchronized(services) {
-            services.each() { service ->
+            for (Service service : services) {
                 try {
                     service.stop()
                 } catch (RuntimeException e) {
@@ -107,7 +107,7 @@ class ServiceGroup implements Service {
     RunState getRunState() {
         Set<RunState> set = new HashSet<>()
         synchronized(services) {
-            services.each() { service ->
+            for (Service service : services) {
                 set.add(service.runState)
             }
         }
@@ -130,7 +130,6 @@ class ServiceGroup implements Service {
     @Override
     boolean isOn() {
         synchronized(services) {
-            // no "services.each() {...}" because jumping out when found
             for (Service service : services) {
                 if (service.on) {
                     return true
