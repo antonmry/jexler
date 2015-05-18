@@ -31,7 +31,7 @@ class JexlerUtilSpec extends Specification {
     private static class NoStackTraceException extends Exception {
         @Override
         public void printStackTrace(PrintWriter writer) {
-            throw new RuntimeException();
+            throw new RuntimeException()
         }
     }
 

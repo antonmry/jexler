@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-package net.jexler;
+package net.jexler
 
 import net.jexler.service.StopEvent
 import net.jexler.test.FastTests

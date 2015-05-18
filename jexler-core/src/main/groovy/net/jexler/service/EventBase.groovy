@@ -16,7 +16,7 @@
 
 package net.jexler.service
 
-import groovy.transform.CompileStatic;
+import groovy.transform.CompileStatic
 
 /**
  * Abstract event base implementation.
@@ -26,19 +26,19 @@ import groovy.transform.CompileStatic;
 @CompileStatic
 abstract class EventBase implements Event {
 
-    private final Service service;
+    private final Service service
 
     /**
      * Constructor.
      * @param service the service that created the event
      */
     EventBase(Service service) {
-        this.service = service;
+        this.service = service
     }
 
     @Override
     Service getService() {
-        return service;
+        return service
     }
 
 }

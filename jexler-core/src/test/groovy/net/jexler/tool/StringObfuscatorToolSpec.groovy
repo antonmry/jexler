@@ -14,11 +14,11 @@
    limitations under the License.
 */
 
-package net.jexler.tool;
+package net.jexler.tool
 
-import net.jexler.test.FastTests;
+import net.jexler.test.FastTests
 import org.junit.experimental.categories.Category
-import spock.lang.Specification;
+import spock.lang.Specification
 
 /**
  * Tests the respective class.
