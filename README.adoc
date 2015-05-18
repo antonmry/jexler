@@ -9,7 +9,7 @@ of their choice.
 Comes as a library (JAR) plus a simple relaxed web GUI (WAR).
 
 * Groovy (Java VM 7 or later), Gradle, Apache License
-* Web GUI: Java 7, Servlet 2.5 (Tomcat 6 or later)
+* Web GUI: Groovy, Servlet 2.5 (Tomcat 6 or later)
 * Unit tests written with Spock
 
 == Build
