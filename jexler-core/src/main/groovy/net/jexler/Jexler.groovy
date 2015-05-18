@@ -105,7 +105,7 @@ class Jexler implements Service, IssueTracker {
      */
     @Override
     void start() {
-        log.info("*** Jexler start:$id")
+        log.info("*** Jexler start: $id")
         if (on) {
             return
         }

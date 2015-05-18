@@ -67,7 +67,7 @@ subprojects {
   }
 
   task slowTests(type: Test, dependsOn: 'test') {
-    testLogging.showStandardStreams = true
+    //testLogging.showStandardStreams = true
     useJUnit {
       includeCategories 'net.jexler.test.SlowTests'
     }
