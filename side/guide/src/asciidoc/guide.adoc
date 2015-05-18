@@ -2,7 +2,7 @@ image:http://www.jexler.net/jexler.jpg["jexler logo", link="http:www.jexler.net/
 
 == jexler
 
-Jexler is a simple relaxed Java 7 framework for starting/stopping
+Jexler is a simple relaxed Groovy framework for starting/stopping
 Groovy scripts as services and enabling them to react to events
 of their choice.
 
@@ -92,7 +92,7 @@ or stop them in the GUI, or look at the log file, edit the scripts, etc.
 If you want to try it out and play with jexler immediately:
 
 * Get the jexler source from github: https://github.com/jexler/jexler
-* Install the Java 7 JDK and Gradle
+* Install the Java 7 JDK (or later) and Gradle
 * `gradle demo`
 * Open http://localhost:9080/ in a web browser
 * See the README at github for alternatives...
