@@ -28,7 +28,7 @@ import net.jexler.RunState
 @CompileStatic
 class MockService extends ServiceBase {
 
-    private static Map<String,MockService> instances = new HashMap<>()
+    private static final Map<String,MockService> instances = new HashMap<>()
 
     volatile int nStarted = 0
     volatile int nStopped = 0
