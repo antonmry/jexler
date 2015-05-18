@@ -35,10 +35,9 @@ class CronService extends ServiceBase {
 
     private static final Logger log = LoggerFactory.getLogger(CronService.class)
     
-    public static final String CRON_NOW = "now"
-    public static final String CRON_NOW_AND_STOP = CRON_NOW + "+stop"
+    public static final String CRON_NOW = 'now'
+    public static final String CRON_NOW_AND_STOP = "$CRON_NOW+stop"
 
-    private final CronService thisService
     private Scheduler scheduler
     private String cron
     private String scheduledId
@@ -50,7 +49,6 @@ class CronService extends ServiceBase {
      */
     CronService(Jexler jexler, String id) {
         super(jexler, id)
-        thisService = this
     }
 
     /**
@@ -77,42 +75,44 @@ class CronService extends ServiceBase {
 
     @Override
     void start() {
-        if (!isOff()) {
+        if (!off) {
             return
         }
         if (cron.startsWith(CRON_NOW)) {
             log.trace("new cron event: " + cron)
-            getJexler().handle(new CronEvent(thisService, cron))
-            setRunState(RunState.IDLE)
+            jexler.handle(new CronEvent(this, cron))
+            runState = RunState.IDLE
             if (cron.equals(CRON_NOW_AND_STOP)) {
-                getJexler().handle(new StopEvent(thisService))
+                jexler.handle(new StopEvent(this))
+                runState = RunState.OFF
             }
             return
         }
+        final CronService thisService = this
         Thread cronThread = new Thread() {
             void run() {
                 currentThread().setName(getJexler().getId() + "|" + thisService.getId())
                 log.trace("new cron event: " + cron)
-                getJexler().handle(new CronEvent(thisService, cron))
+                jexler.handle(new CronEvent(thisService, cron))
             }
         }
-        cronThread.setDaemon(true)
-        setRunState(RunState.IDLE)
+        cronThread.daemon = true
+        runState = RunState.IDLE
         if (scheduler == null) {
-            scheduler = getJexler().getContainer().getSharedScheduler()
+            scheduler = jexler.container.sharedScheduler
         }
         scheduledId = scheduler.schedule(cron, cronThread)
     }
 
     @Override
     void stop() {
-        if (isOff()) {
+        if (off) {
             return
         }
-        if (!cron.startsWith(CRON_NOW)) {
+        if (scheduler != null) {
             scheduler.deschedule(scheduledId)
         }
-        setRunState(RunState.OFF)
+        runState = RunState.OFF
     }
 
 }
