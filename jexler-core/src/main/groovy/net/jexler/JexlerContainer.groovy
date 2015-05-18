@@ -86,7 +86,6 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
             }
 
             // recreate list while omitting jexlers without script file that are stopped
-            // TODO not thread safe on services level... (matters?)
             services.clear()
             jexlerMap.each { id, jexler ->
                 if (jexler.file.exists() || jexler.on) {
