@@ -242,7 +242,7 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
     }
 
     /**
-     * Stop the shared cron4j scheduler, plus close maybe other things.
+     * Stop the shared quartz scheduler, plus close maybe other things.
      */
     void close() {
         synchronized (schedulerLock) {

@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory
 
 /**
  * A cron service, creates events at configurable times.
- * Implemented using the cron4j library.
+ * Implemented using the quartz library.
  *
  * @author $(whois jexler.net)
  */
@@ -71,7 +71,7 @@ class CronService extends ServiceBase {
     }
 
     /**
-     * Set cron4j scheduler.
+     * Set quartz scheduler.
      * Default is a scheduler shared by all jexlers in the same jexler container.
      * @return this (for chaining calls)
      */

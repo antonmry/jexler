@@ -89,7 +89,7 @@ class DirWatchService extends ServiceBase {
     }
 
     /**
-     * Set cron4j scheduler.
+     * Set quartz scheduler.
      * Default is a scheduler shared by all jexlers in the same jexler container.
      * @return this (for chaining calls)
      */
