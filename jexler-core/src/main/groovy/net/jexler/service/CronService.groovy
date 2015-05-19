@@ -17,10 +17,15 @@
 package net.jexler.service
 
 import groovy.transform.CompileStatic
-import it.sauronsoftware.cron4j.Scheduler
 import net.jexler.Jexler
 import net.jexler.RunState
-
+import org.quartz.CronScheduleBuilder
+import org.quartz.JobBuilder
+import org.quartz.JobDetail
+import org.quartz.Scheduler
+import org.quartz.Trigger
+import org.quartz.TriggerBuilder
+import org.quartz.TriggerKey
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -40,7 +45,9 @@ class CronService extends ServiceBase {
 
     private Scheduler scheduler
     private String cron
-    private String scheduledId
+    private TriggerKey triggerKey
+
+    private static Map<String,Object> contextMap
 
     /**
      * Constructor.
@@ -59,7 +66,7 @@ class CronService extends ServiceBase {
      * @return this (for chaining calls)
      */
     CronService setCron(String cron) {
-        this.cron = cron
+        this.cron = ServiceUtil.toQuartzStyleCron(cron)
         return this
     }
 
@@ -88,20 +95,34 @@ class CronService extends ServiceBase {
             }
             return
         }
+
         final CronService thisService = this
-        Thread cronThread = new Thread() {
+        Class jobClass = ServiceUtil.newJobClassForRunnable(new Runnable() {
             void run() {
-                currentThread().name = "$jexler.id|$thisService.id"
+                String savedName = Thread.currentThread().name
+                Thread.currentThread().name = "$jexler.id|$thisService.id"
                 log.trace("new cron event: $cron")
                 jexler.handle(new CronEvent(thisService, cron))
+                Thread.currentThread().name = savedName
             }
-        }
-        cronThread.daemon = true
-        runState = RunState.IDLE
+        })
+
+        String uuid = UUID.randomUUID()
+        JobDetail job = JobBuilder.newJob(jobClass)
+                .withIdentity("job-$id-$uuid", jexler.id)
+                .build()
+        Trigger trigger = TriggerBuilder.newTrigger()
+                .withIdentity("trigger-$id-$uuid", jexler.id)
+                .startNow()
+                .withSchedule(CronScheduleBuilder.cronSchedule(cron))
+                .build()
+        triggerKey = trigger.key
+
         if (scheduler == null) {
-            scheduler = jexler.container.sharedScheduler
+            scheduler = jexler.container.scheduler
         }
-        scheduledId = scheduler.schedule(cron, cronThread)
+        runState = RunState.IDLE
+        scheduler.scheduleJob(job, trigger)
     }
 
     @Override
@@ -110,7 +131,7 @@ class CronService extends ServiceBase {
             return
         }
         if (scheduler != null) {
-            scheduler.deschedule(scheduledId)
+            scheduler.unscheduleJob(triggerKey)
         }
         runState = RunState.OFF
     }

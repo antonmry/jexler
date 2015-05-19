@@ -16,7 +16,6 @@
 
 package net.jexler.service
 
-import it.sauronsoftware.cron4j.Scheduler
 import net.jexler.TestJexler
 import net.jexler.test.FastTests
 import org.junit.experimental.categories.Category
@@ -34,7 +33,7 @@ class CronServiceSpec extends Specification {
         given:
         def jexler = new TestJexler()
         def service = new CronService(jexler, 'cronid')
-        service.setCron('* * * * *').setScheduler(new Scheduler())
+        service.setCron('* * * * *').setScheduler(null)
     }
 
 }

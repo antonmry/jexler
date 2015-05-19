@@ -12,8 +12,10 @@ void declare() {
 // mandatory, called after declare(), before the event loop
 void start() {
   log.trace("-- start()")
+  // "old-style" cron string with 5 items
   services.add(new CronService(jexler, "EveryMinute").setCron(cron))
-  services.add(new CronService(jexler, "EveryTwoMinutes").setCron("*/2 * * * *"))
+  // "quartz-style" cron string with 6 (or 7) items, first item is for seconds
+  services.add(new CronService(jexler, "Every30Seconds").setCron("0/30 * * * * ?"))
   services.add(new CronService(jexler, "OnceImmediately").setCron("now"))
   services.start()
 }
@@ -27,9 +29,9 @@ void handleCronEventEveryMinute(def event) {
 
 // optional*, called during event loop
 // handle<event-class><service-id>(event), searched second
-void handleCronEventEveryTwoMinutes(def event) {
-  log.trace("-- handleCronEventEveryTwoMinutes(event)")
-  log.trace("every two minutes")
+void handleCronEventEvery30Seconds(def event) {
+  log.trace("-- handleCronEventEvery30Seconds(event)")
+  log.trace("every 30 seconds")
 }
 
 // optional*, called during event loop

@@ -18,9 +18,12 @@ package net.jexler
 
 import groovy.transform.CompileStatic
 
-import it.sauronsoftware.cron4j.Scheduler
 import net.jexler.service.ServiceGroup
 import net.jexler.service.Service
+import org.quartz.Scheduler
+import org.quartz.impl.DirectSchedulerFactory
+import org.quartz.simpl.RAMJobStore
+import org.quartz.simpl.SimpleThreadPool
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -221,12 +224,17 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
     }
 
     /**
-     * Get shared cron4j scheduler, already started.
+     * Get shared quartz scheduler, already started.
      */
-    Scheduler getSharedScheduler() {
+    Scheduler getScheduler() {
         synchronized (schedulerLock) {
             if (scheduler == null) {
-                scheduler = new Scheduler()
+                String uuid = UUID.randomUUID()
+                String name = "JexlerContainerScheduler-$id-$uuid"
+                String instanceId = name
+                DirectSchedulerFactory.getInstance().createScheduler(name, instanceId,
+                        new SimpleThreadPool(5, Thread.currentThread().priority), new RAMJobStore())
+                scheduler = DirectSchedulerFactory.getInstance().getScheduler(name)
                 scheduler.start()
             }
             return scheduler
@@ -234,12 +242,13 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
     }
 
     /**
-     * Stop the shared scheduler, plus close maybe other things.
+     * Stop the shared cron4j scheduler, plus close maybe other things.
      */
     void close() {
         synchronized (schedulerLock) {
             if (scheduler != null) {
-                scheduler.stop()
+                DirectSchedulerFactory.getInstance().allSchedulers
+                scheduler.shutdown()
                 scheduler = null
             }
         }

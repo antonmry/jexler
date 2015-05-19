@@ -17,7 +17,6 @@
 package net.jexler.service
 
 import spock.lang.Specification
-import it.sauronsoftware.cron4j.Scheduler
 import net.jexler.TestJexler
 import net.jexler.test.FastTests
 import org.junit.experimental.categories.Category
@@ -39,7 +38,7 @@ class DirWatchServiceSpec extends Specification {
         def service = new DirWatchService(jexler, 'watchid')
         service.dir = watchDir
         service.cron = '* * * * *'
-        service.scheduler = new Scheduler()
+        service.scheduler = null
         service.start()
 
         then:

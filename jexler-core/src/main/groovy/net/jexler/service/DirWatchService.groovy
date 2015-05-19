@@ -17,6 +17,13 @@
 package net.jexler.service
 
 import groovy.transform.CompileStatic
+import org.quartz.CronScheduleBuilder
+import org.quartz.JobBuilder
+import org.quartz.JobDetail
+import org.quartz.Scheduler
+import org.quartz.Trigger
+import org.quartz.TriggerBuilder
+import org.quartz.TriggerKey
 
 import java.nio.file.Path
 import java.nio.file.StandardWatchEventKinds
@@ -24,7 +31,6 @@ import java.nio.file.WatchEvent
 import java.nio.file.WatchKey
 import java.nio.file.WatchService
 
-import it.sauronsoftware.cron4j.Scheduler
 import net.jexler.Jexler
 import net.jexler.RunState
 
@@ -42,12 +48,11 @@ class DirWatchService extends ServiceBase {
 
     private static final Logger log = LoggerFactory.getLogger(DirWatchService.class)
 
-    private final DirWatchService thisService
     private File watchDir
     private Scheduler scheduler
     private String cron
+    private TriggerKey triggerKey
 
-    private String scheduledId
     private WatchService watchService
     private WatchKey watchKey
 
@@ -58,9 +63,8 @@ class DirWatchService extends ServiceBase {
      */
     DirWatchService(Jexler jexler, String id) {
         super(jexler, id)
-        thisService = this
         watchDir = jexler.dir
-        this.cron = '* * * * *'
+        this.cron = '*/5 * * * * ?'
     }
 
     /**
@@ -113,9 +117,11 @@ class DirWatchService extends ServiceBase {
             return
         }
 
-        Thread watchThread = new Thread() {
+        final DirWatchService thisService = this
+        Class jobClass = ServiceUtil.newJobClassForRunnable(new Runnable() {
             void run() {
-                currentThread().name = "$jexler.id|$thisService.id"
+                String savedName = Thread.currentThread().name
+                Thread.currentThread().name = "$jexler.id|$thisService.id"
                 for (WatchEvent watchEvent : watchKey.pollEvents()) {
                     Path contextPath = ((Path) watchEvent.context())
                     File file = new File(watchDir, contextPath.toFile().name)
@@ -123,15 +129,26 @@ class DirWatchService extends ServiceBase {
                     log.trace("event $kind '$file.absolutePath'")
                     jexler.handle(new DirWatchEvent(thisService, file, kind))
                 }
+                Thread.currentThread().name = savedName
             }
-        }
+        })
 
-        watchThread.daemon = true
-        runState = RunState.IDLE
+        String uuid = UUID.randomUUID()
+        JobDetail job = JobBuilder.newJob(jobClass)
+                .withIdentity("job-$id-$uuid", jexler.id)
+                .build()
+        Trigger trigger = TriggerBuilder.newTrigger()
+                .withIdentity("trigger-$id-$uuid", jexler.id)
+                .startNow()
+                .withSchedule(CronScheduleBuilder.cronSchedule(cron))
+                .build()
+        triggerKey = trigger.key
+
         if (scheduler == null) {
-            scheduler = jexler.container.sharedScheduler
+            scheduler = jexler.container.scheduler
         }
-        scheduledId = scheduler.schedule(cron, watchThread)
+        runState = RunState.IDLE
+        scheduler.scheduleJob(job, trigger)
     }
 
     @Override
@@ -139,7 +156,7 @@ class DirWatchService extends ServiceBase {
         if (off) {
             return
         }
-        scheduler.deschedule(scheduledId)
+        scheduler.unscheduleJob(triggerKey)
         watchKey.cancel()
         try {
             watchService.close()

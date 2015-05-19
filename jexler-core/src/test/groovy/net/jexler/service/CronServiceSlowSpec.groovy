@@ -30,52 +30,51 @@ import spock.lang.Specification
 @Category(SlowTests.class)
 class CronServiceSlowSpec extends Specification {
 
-    private final static long MS_1_MIN_10_SEC = 70000
-    private final static long MS_30_SEC = 30000
-    private final static long MS_10_SEC = 10000
-    private final static String CRON_EVERY_MIN = '* * * * *'
+    private final static long MS_15_SEC = 15000
+    private final static long MS_1_SEC = 1000
+    private final static String QUARTZ_CRON_EVERY_10_SECS = '*/10 * * * * ?'
 
-    def 'TEST SLOW (4 min) cron every minute'() {
+    def 'TEST SLOW (1.5 min) cron every minute'() {
         given:
         def jexler = new TestJexler()
 
         when:
         def service = new CronService(jexler, 'cronid')
-        service.cron = CRON_EVERY_MIN
+        service.cron = QUARTZ_CRON_EVERY_10_SECS
 
         then:
         service.id == 'cronid'
-        service.cron == CRON_EVERY_MIN
+        service.cron == QUARTZ_CRON_EVERY_10_SECS
 
         when:
         service.start()
 
         then:
         service.on
-        service.waitForStartup(MS_30_SEC)
+        service.waitForStartup(MS_15_SEC)
 
         when:
-        def event = jexler.takeEvent(MS_1_MIN_10_SEC)
+        def event = jexler.takeEvent(MS_15_SEC)
 
         then:
         event.service.is(service)
         event instanceof CronEvent
-        event.cron == CRON_EVERY_MIN
+        event.cron == QUARTZ_CRON_EVERY_10_SECS
 
         when:
         service.stop()
 
         then:
-        service.waitForShutdown(MS_30_SEC)
+        service.waitForShutdown(MS_15_SEC)
         service.off
-        jexler.takeEvent(MS_1_MIN_10_SEC) == null
+        jexler.takeEvent(MS_15_SEC) == null
 
         when:
         service.start()
 
         then:
         service.on
-        service.waitForStartup(MS_30_SEC)
+        service.waitForStartup(MS_15_SEC)
 
         when:
         service.start()
@@ -84,20 +83,20 @@ class CronServiceSlowSpec extends Specification {
         service.runState == RunState.IDLE
 
         when:
-        event = jexler.takeEvent(MS_1_MIN_10_SEC)
+        event = jexler.takeEvent(MS_15_SEC)
 
         then:
         event.service.is(service)
         event instanceof CronEvent
-        event.cron == CRON_EVERY_MIN
+        event.cron == QUARTZ_CRON_EVERY_10_SECS
 
         when:
         service.stop()
 
         then:
-        service.waitForShutdown(MS_30_SEC)
+        service.waitForShutdown(MS_15_SEC)
         service.off
-        jexler.takeEvent(MS_1_MIN_10_SEC) == null
+        jexler.takeEvent(MS_15_SEC) == null
 
         when:
         service.stop()
@@ -109,13 +108,13 @@ class CronServiceSlowSpec extends Specification {
         jexler.container.close()
     }
 
-    def 'TEST SLOW (1 min) cron now'() {
+    def 'TEST SLOW (10 sec) cron now'() {
         given:
         def jexler = new TestJexler()
 
         when:
         def service = new CronService(jexler, 'cronid').setCron(CronService.CRON_NOW)
-        def event = jexler.takeEvent(MS_10_SEC)
+        def event = jexler.takeEvent(MS_1_SEC)
 
         then:
         event == null
@@ -127,21 +126,21 @@ class CronServiceSlowSpec extends Specification {
         service.on
 
         when:
-        event = jexler.takeEvent(MS_10_SEC)
+        event = jexler.takeEvent(MS_1_SEC)
 
         then:
         event.service.is(service)
         event instanceof CronEvent
         event.cron == CronService.CRON_NOW
-        jexler.takeEvent(MS_10_SEC) == null
+        jexler.takeEvent(MS_1_SEC) == null
 
         when:
         service.stop()
 
         then:
-        service.waitForShutdown(MS_10_SEC)
+        service.waitForShutdown(MS_15_SEC)
         service.off
-        jexler.takeEvent(MS_10_SEC) == null
+        jexler.takeEvent(MS_1_SEC) == null
 
         when:
         service.start()
@@ -150,30 +149,30 @@ class CronServiceSlowSpec extends Specification {
         service.on
 
         when:
-        event = jexler.takeEvent(MS_10_SEC)
+        event = jexler.takeEvent(MS_1_SEC)
 
         then:
         event.service.is(service)
         event instanceof CronEvent
         event.cron == CronService.CRON_NOW
-        jexler.takeEvent(MS_10_SEC) == null
+        jexler.takeEvent(MS_1_SEC) == null
 
         when:
         service.stop()
 
         then:
-        service.waitForShutdown(MS_10_SEC)
+        service.waitForShutdown(MS_15_SEC)
         service.off
-        jexler.takeEvent(MS_10_SEC) == null
+        jexler.takeEvent(MS_1_SEC) == null
     }
 
-    def 'TEST SLOW (1 min) cron now+stop'() {
+    def 'TEST SLOW (10 sec) cron now+stop'() {
         given:
         def jexler = new TestJexler()
 
         when:
         def service = new CronService(jexler, 'cronid').setCron(CronService.CRON_NOW_AND_STOP)
-        def event = jexler.takeEvent(MS_10_SEC)
+        def event = jexler.takeEvent(MS_1_SEC)
 
         then:
         event == null
@@ -185,7 +184,7 @@ class CronServiceSlowSpec extends Specification {
         service.off
 
         when:
-        event = jexler.takeEvent(MS_10_SEC)
+        event = jexler.takeEvent(MS_1_SEC)
 
         then:
         event.service.is(service)
@@ -193,11 +192,11 @@ class CronServiceSlowSpec extends Specification {
         event.cron == CronService.CRON_NOW_AND_STOP
 
         when:
-        event = jexler.takeEvent(MS_10_SEC)
+        event = jexler.takeEvent(MS_1_SEC)
 
         then:
         event instanceof StopEvent
-        jexler.takeEvent(MS_10_SEC) == null
+        jexler.takeEvent(MS_1_SEC) == null
 
         when:
         service.start()
@@ -206,7 +205,7 @@ class CronServiceSlowSpec extends Specification {
         service.off
 
         when:
-        event = jexler.takeEvent(MS_10_SEC)
+        event = jexler.takeEvent(MS_1_SEC)
 
         then:
         event.service.is(service)
@@ -214,11 +213,11 @@ class CronServiceSlowSpec extends Specification {
         event.cron == CronService.CRON_NOW_AND_STOP
 
         when:
-        event = jexler.takeEvent(MS_10_SEC)
+        event = jexler.takeEvent(MS_1_SEC)
 
         then:
         event instanceof StopEvent
-        jexler.takeEvent(MS_10_SEC) == null
+        jexler.takeEvent(MS_1_SEC) == null
     }
 
 }

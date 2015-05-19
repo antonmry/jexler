@@ -1,7 +1,10 @@
 [ "autostart" : true ]
 
+
+// "old-style" cron string with 5 items
 services.add(new CronService(jexler, "every-minute").setCron("* * * * *"))
-services.add(new CronService(jexler, "every-two-minutes").setCron("*/2 * * * *"))
+// "quartz-style" cron string with 6 (or 7) items, first item is for seconds
+services.add(new CronService(jexler, "every-30-seconds").setCron("*/30 * * * * ?"))
 services.add(new CronService(jexler, "once-immediately").setCron("now"))
 services.start()
 

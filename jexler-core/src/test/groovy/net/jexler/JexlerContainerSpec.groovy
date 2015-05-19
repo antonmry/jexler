@@ -253,29 +253,36 @@ class JexlerContainerSpec extends Specification {
         def container = new JexlerContainer(dir)
 
         when:
-        def scheduler1 = container.getSharedScheduler()
-        def scheduler2 = container.getSharedScheduler()
+        def scheduler1 = container.scheduler
+        def scheduler2 = container.scheduler
 
         then:
         // must be same reference
         scheduler1.is(scheduler2)
         scheduler1.started
+        !scheduler1.shutdown
 
         when:
         container.close()
-        def scheduler3 = container.getSharedScheduler()
+
+        then:
+        scheduler1.shutdown
+
+        when:
+        def scheduler3 = container.scheduler
 
         then:
         // must get a new reference
         !scheduler1.is(scheduler3)
-        !scheduler1.started
+        scheduler1.shutdown
         scheduler3.started
+        !scheduler3.shutdown
 
         when:
         container.close()
 
         then:
-        !scheduler3.started
+        scheduler3.shutdown
     }
 
 }

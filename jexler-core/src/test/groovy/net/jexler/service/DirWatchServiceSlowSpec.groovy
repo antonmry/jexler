@@ -34,10 +34,10 @@ import java.nio.file.StandardWatchEventKinds
 @Category(SlowTests.class)
 class DirWatchServiceSlowSpec extends Specification {
 
-    private final static long MS_1_MIN_10_SEC = 70000
-    private final static long MS_30_SEC = 30000
+    private final static long MS_15_SEC = 15000
+    private final static String QUARTZ_CRON_EVERY_2_SECS = '*/2 * * * * ?'
 
-    def 'TEST SLOW (12 min) create/modify/remove files in watch dir'() {
+    def 'TEST SLOW (3 min) create/modify/remove files in watch dir'() {
         given:
         def watchDir = Files.createTempDirectory(null).toFile()
         def jexler = new TestJexler();
@@ -45,7 +45,7 @@ class DirWatchServiceSlowSpec extends Specification {
         when:
         def service = new DirWatchService(jexler, 'watchid')
         service.dir = watchDir
-        service.cron = '* * * * *'
+        service.cron = QUARTZ_CRON_EVERY_2_SECS
 
         then:
         service.id == 'watchid'
@@ -55,8 +55,8 @@ class DirWatchServiceSlowSpec extends Specification {
 
         then:
         service.on
-        service.waitForStartup(MS_30_SEC)
-        jexler.takeEvent(MS_1_MIN_10_SEC) == null
+        service.waitForStartup(MS_15_SEC)
+        jexler.takeEvent(MS_15_SEC) == null
 
         when:
         checkCreateModifyDeleteEventsTriggered(jexler, service, watchDir)
@@ -65,14 +65,14 @@ class DirWatchServiceSlowSpec extends Specification {
 
         then:
         service.off
-        service.waitForShutdown(MS_30_SEC)
+        service.waitForShutdown(MS_15_SEC)
 
         when:
         // create file after service stop
         new File(watchDir, 'temp2').text = 'hello too'
 
         then:
-        jexler.takeEvent(MS_1_MIN_10_SEC) == null
+        jexler.takeEvent(MS_15_SEC) == null
 
         when:
         // different watch directory
@@ -82,8 +82,8 @@ class DirWatchServiceSlowSpec extends Specification {
 
         then:
         service.on
-        service.waitForStartup(MS_30_SEC)
-        jexler.takeEvent(MS_1_MIN_10_SEC) == null
+        service.waitForStartup(MS_15_SEC)
+        jexler.takeEvent(MS_15_SEC) == null
 
         when:
         service.start()
@@ -97,13 +97,13 @@ class DirWatchServiceSlowSpec extends Specification {
         then:
         // delete watch directory
         watchDir.delete()
-        jexler.takeEvent(MS_1_MIN_10_SEC) == null
+        jexler.takeEvent(MS_15_SEC) == null
 
         when:
         service.stop()
 
         then:
-        service.waitForShutdown(MS_30_SEC)
+        service.waitForShutdown(MS_15_SEC)
 
         when:
         service.stop()
@@ -118,32 +118,32 @@ class DirWatchServiceSlowSpec extends Specification {
         def tempFile = new File(watchDir, 'temp')
         Files.createFile(tempFile.toPath())
 
-        def event = jexler.takeEvent(MS_1_MIN_10_SEC)
+        def event = jexler.takeEvent(MS_15_SEC)
         assert event instanceof DirWatchEvent
         assert event.service == service
         assert event.file.canonicalPath == tempFile.canonicalPath
         assert event.kind == StandardWatchEventKinds.ENTRY_CREATE
-        assert jexler.takeEvent(MS_1_MIN_10_SEC) == null
+        assert jexler.takeEvent(MS_15_SEC) == null
 
         // modify file
         tempFile.text = 'hello there'
 
-        event = jexler.takeEvent(MS_1_MIN_10_SEC)
+        event = jexler.takeEvent(MS_15_SEC)
         assert event instanceof DirWatchEvent
         assert event.service == service
         assert event.file.canonicalPath == tempFile.canonicalPath
         assert event.kind == StandardWatchEventKinds.ENTRY_MODIFY
-        assert jexler.takeEvent(MS_1_MIN_10_SEC) == null
+        assert jexler.takeEvent(MS_15_SEC) == null
 
         // delete file
         assert tempFile.delete()
 
-        event = jexler.takeEvent(MS_1_MIN_10_SEC)
+        event = jexler.takeEvent(MS_15_SEC)
         assert event instanceof DirWatchEvent
         assert event.service == service
         assert event.file.canonicalPath == tempFile.canonicalPath
         assert event.kind == StandardWatchEventKinds.ENTRY_DELETE
-        assert jexler.takeEvent(MS_1_MIN_10_SEC) == null
+        assert jexler.takeEvent(MS_15_SEC) == null
     }
 
 }
