@@ -59,14 +59,14 @@ class CronService extends ServiceBase {
     }
 
     /**
-     * Set cron pattern, e.g. "* * * * *".
+     * Set cron pattern, e.g. "* * * * *" or with seconds "0 * * * * *".
      * Use "now" for now, i.e. for a single event immediately,
      * or "now+stop" for a single event immediately, followed
      * by a StopEvent, which can both be useful for testing.
      * @return this (for chaining calls)
      */
     CronService setCron(String cron) {
-        this.cron = ServiceUtil.toQuartzStyleCron(cron)
+        this.cron = ServiceUtil.toQuartzCron(cron)
         return this
     }
 

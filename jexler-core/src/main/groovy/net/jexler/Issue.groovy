@@ -84,7 +84,8 @@ class Issue implements Comparable<Issue> {
             Issue: [message=${message==null ? 'null' : "'${JexlerUtil.toSingleLine(message)}'"}
             ,service=${service == null ? 'null' : "'${service.class.name}:$service.id'"}
             ,cause=${cause == null ? 'null' : "'${JexlerUtil.toSingleLine(cause.toString())}'"}
-            ,stackTrace='${JexlerUtil.toSingleLine(stackTrace)}']""".stripIndent().replace('\r','').replace('\n','')
+            ,stackTrace='${JexlerUtil.toSingleLine(stackTrace)}']
+        """.stripIndent().replace('\r','').replace('\n','')
     }
 
 }

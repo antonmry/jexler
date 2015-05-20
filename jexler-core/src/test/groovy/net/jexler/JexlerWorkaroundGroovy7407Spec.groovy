@@ -97,7 +97,7 @@ class JexlerWorkaroundGroovy7407Spec extends Specification {
         def testMap =  [ 'calleeDepth' : 3 ]
         
         then:
-        engine.grab('dummy endorsed') == null
+        engine.grab('') == null
         engine.grab([:]) == null
         engine.grab([:], [:]) == null
         engine.grab([:]) == null
@@ -107,6 +107,7 @@ class JexlerWorkaroundGroovy7407Spec extends Specification {
         engine.resolve(testMap, [:]) == null
         engine.resolve([:], [], [:]) == null
         engine.listDependencies(new GroovyClassLoader()) == null
+        engine.addResolver([:]) == null
     }
 
 }

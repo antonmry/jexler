@@ -19,8 +19,11 @@ package net.jexler.service
 import ch.grengine.Grengine
 import groovy.transform.CompileStatic
 import net.jexler.JexlerUtil
+import org.quartz.CronExpression
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+
+import java.text.ParseException
 
 /**
  * Service utilities.
@@ -86,25 +89,49 @@ class ServiceUtil {
     }
 
     /**
-     * Convert "old-style" cron string to "quartz-style" cron with seconds
-     * (and optionally with year), does not touch the cron string if not 5 items.
+     * Convert to "quartz-style" cron with seconds:
+     * - leaves untouched if 'now' or 'now+stop'
+     * - adds '0' as first item (seconds) if contains 5 items,
+     *   i.e. if is an "old-style" cron string with minutes resolution
+     * - replaces '*' for day-of-month or day-of-week with '?' when needed
+     *   by quartz to parse such a cron string...
+     * - logs the new cron string if was modified above
+     * - validates the resulting cron string
+     * - if valid, logs the next date+time when the cron string would fire
+     *
+     * @throws IllegalArgumentException
      */
-    static String toQuartzStyleCron(String cron) {
-        List<String> list = cron.trim().split(/\s/) as List<String>
-        if (list.size() != 5) {
+    static String toQuartzCron(String cron) throws IllegalArgumentException {
+        if (CronService.CRON_NOW == cron | CronService.CRON_NOW_AND_STOP == cron) {
             return cron
         }
-        list.add(0, '0') // seconds, on every full minute
-        if (list[5] != '?' && list[3] != '?') {
+        List<String> list = cron.trim().split(/\s/) as List<String>
+        // add seconds if missing
+        if (list.size() == 5) {
+            list.add(0, '0') // on every full minute
+        }
+        // set at least one '?' for day-of-month or day-of-week
+        if (list.size() >= 6 && list[5] != '?' && list[3] != '?') {
             if (list[5] == '*') {
                 list[5] = '?'
             } else if (list[3] == '*') {
                 list[3] = '?'
             }
         }
-        String cronNew = list.join(' ')
-        log.trace("Translated old-style cron '$cron' to quartz-style cron with seconds '$cronNew'")
-        return cronNew
+
+        String quartzCron = list.join(' ')
+        if (quartzCron != cron) {
+            log.trace("cron '$cron' => '$quartzCron'")
+        }
+        CronExpression cronExpression
+        try {
+            cronExpression = new CronExpression(quartzCron)
+        } catch (ParseException e) {
+            throw new IllegalArgumentException("Could not parse cron '$quartzCron': $e.message", e)
+        }
+        String next = cronExpression.getNextValidTimeAfter(new Date())?.format('EEE dd MMM yyyy HH:mm:ss')
+        log.trace("next '$quartzCron' => $next")
+        return quartzCron
     }
 
 }

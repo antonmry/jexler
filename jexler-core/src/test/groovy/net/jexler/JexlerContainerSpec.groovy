@@ -180,13 +180,27 @@ class JexlerContainerSpec extends Specification {
         container.jexlers.size() == 2
 
         when:
-        container.trackIssue(null, 'some issue', new RuntimeException())
+        container.stop()
+        container.waitForShutdown(MS_10_SEC)
+
+        then:
+        container.off
+    }
+
+    def 'TEST track issue'() {
+        given:
+        def dir = Files.createTempDirectory(null).toFile()
+        def container = new JexlerContainer(dir)
+
+        when:
+        def e = new RuntimeException()
+        container.trackIssue(null, 'some issue', e)
 
         then:
         container.issues.size() == 1
         container.issues.first().service == null
         container.issues.first().message == 'some issue'
-        container.issues.first().cause instanceof RuntimeException
+        container.issues.first().cause == e
 
         when:
         container.forgetIssues()
@@ -195,11 +209,20 @@ class JexlerContainerSpec extends Specification {
         container.issues.empty
 
         when:
-        container.stop()
-        container.waitForShutdown(MS_10_SEC)
+        def t = new Throwable()
+        container.trackIssue(new Issue(container, 'container issue', t))
 
         then:
-        container.off
+        container.issues.size() == 1
+        container.issues.first().service == container
+        container.issues.first().message == 'container issue'
+        container.issues.first().cause == t
+
+        when:
+        container.forgetIssues()
+
+        then:
+        container.issues.empty
     }
 
     def 'TEST constructor throws because directory does not exist'() {

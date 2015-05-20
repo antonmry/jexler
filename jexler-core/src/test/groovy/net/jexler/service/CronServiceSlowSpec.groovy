@@ -32,6 +32,7 @@ class CronServiceSlowSpec extends Specification {
 
     private final static long MS_15_SEC = 15000
     private final static long MS_1_SEC = 1000
+    private final static String CRON_EVERY_10_SECS = '*/10 * * * * *'
     private final static String QUARTZ_CRON_EVERY_10_SECS = '*/10 * * * * ?'
 
     def 'TEST SLOW (1.5 min) cron every minute'() {
@@ -40,7 +41,7 @@ class CronServiceSlowSpec extends Specification {
 
         when:
         def service = new CronService(jexler, 'cronid')
-        service.cron = QUARTZ_CRON_EVERY_10_SECS
+        service.cron = CRON_EVERY_10_SECS
 
         then:
         service.id == 'cronid'

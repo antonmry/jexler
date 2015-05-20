@@ -61,6 +61,27 @@ class JexlerSpec extends Specification {
         0            | 'class NotInstanceOfScript {}'
     }
 
+    def 'TEST script cannot read meta info'() {
+        when:
+        def dir = Files.createTempDirectory(null).toFile()
+        def file = new File(dir, 'Test.groovy')
+        def jexler = new Jexler(file, new JexlerContainer(dir))
+
+        then:
+        // create directory with name of jexler script file
+        file.mkdir()
+
+        when:
+        jexler.start()
+        jexler.waitForStartup(MS_10_SEC)
+
+        then:
+        jexler.issues.size() == 1
+        jexler.issues.first().service == jexler
+        jexler.issues.first().message == "Could not read meta info from jexler file '$file.absolutePath'."
+        jexler.issues.first().cause instanceof IOException
+    }
+
     def 'TEST script compile, create or run fails'() {
         given:
         def dir = Files.createTempDirectory(null).toFile()
@@ -177,22 +198,6 @@ class JexlerSpec extends Specification {
         mockService.nStopped == 0
 
         when:
-        def ex = new RuntimeException()
-        jexler.trackIssue(mockService, 'mock issue', ex)
-
-        then:
-        jexler.issues.size() == 1
-        jexler.issues.first().service == mockService
-        jexler.issues.first().message == 'mock issue'
-        jexler.issues.first().cause == ex
-
-        when:
-        jexler.forgetIssues()
-
-        then:
-        jexler.issues.empty
-
-        when:
         jexler.stop()
         jexler.waitForShutdown(MS_10_SEC)
 
@@ -212,6 +217,46 @@ class JexlerSpec extends Specification {
         then:
         jexler.runState == RunState.OFF
         jexler.off
+        jexler.issues.empty
+    }
+
+    def 'TEST track issue'() {
+        given:
+        def dir = Files.createTempDirectory(null).toFile()
+        def file = new File(dir, 'Test.groovy')
+        def jexler = new Jexler(file, new JexlerContainer(dir))
+
+        when:
+        def mockService = MockService.getInstance('mock-service')
+        def e = new RuntimeException()
+        jexler.trackIssue(mockService, 'mock issue', e)
+
+        then:
+        jexler.issues.size() == 1
+        jexler.issues.first().service == mockService
+        jexler.issues.first().message == 'mock issue'
+        jexler.issues.first().cause == e
+
+        when:
+        jexler.forgetIssues()
+
+        then:
+        jexler.issues.empty
+
+        when:
+        def t = new Throwable()
+        jexler.trackIssue(new Issue(jexler, 'jexler issue', t))
+
+        then:
+        jexler.issues.size() == 1
+        jexler.issues.first().service == jexler
+        jexler.issues.first().message == 'jexler issue'
+        jexler.issues.first().cause == t
+
+        when:
+        jexler.forgetIssues()
+
+        then:
         jexler.issues.empty
     }
 

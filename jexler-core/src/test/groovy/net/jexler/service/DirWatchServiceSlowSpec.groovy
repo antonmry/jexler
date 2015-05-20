@@ -35,7 +35,7 @@ import java.nio.file.StandardWatchEventKinds
 class DirWatchServiceSlowSpec extends Specification {
 
     private final static long MS_15_SEC = 15000
-    private final static String QUARTZ_CRON_EVERY_2_SECS = '*/2 * * * * ?'
+    private final static String CRON_EVERY_2_SECS = '*/2 * * * * *'
 
     def 'TEST SLOW (3 min) create/modify/remove files in watch dir'() {
         given:
@@ -45,7 +45,7 @@ class DirWatchServiceSlowSpec extends Specification {
         when:
         def service = new DirWatchService(jexler, 'watchid')
         service.dir = watchDir
-        service.cron = QUARTZ_CRON_EVERY_2_SECS
+        service.cron = CRON_EVERY_2_SECS
 
         then:
         service.id == 'watchid'
