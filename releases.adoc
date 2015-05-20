@@ -2,9 +2,14 @@ image:http://www.jexler.net/jexler.jpg["jexler logo", link="http:www.jexler.net/
 
 = jexler releases
 
-=== 1.0.17 (2017-XX-XX)
+=== 2.0.0 (2015-05-20)
 
-* But if the little fox...
+* Jexler is now written in Groovy (unit tests with Spock), no longer
+  Java 7 (and JUnit).
+* Scheduling is now based on Quartz, no longer on Cron4j, which allows
+  now to schedule at shorter intervals (seconds instead of minutes).
+* Various small changes and simplifications, which should almost always
+  have no effect on existing jexler scripts.
 
 === 1.0.16 (2015-05-12)
 
