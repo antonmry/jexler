@@ -19,6 +19,7 @@ package net.jexler
 import groovy.grape.Grape
 import groovy.grape.GrapeEngine
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
 
 import java.lang.reflect.Field
 import java.util.concurrent.LinkedBlockingQueue
@@ -43,8 +44,21 @@ class Jexler implements Service, IssueTracker {
 
     private static final Logger log = LoggerFactory.getLogger(Jexler.class)
 
+    /**
+     * Blocking queue for events sent to a Jexler
+     * ('events' variable in jexler scripts).
+     *
+     * Typically events are taken with {@link take()} in an event loop
+     * in the jexler script.
+     *
+     * @author $(whois jexler.net)
+     */
+
     @CompileStatic
     class Events extends LinkedBlockingQueue<Event> {
+        /**
+         * Take event from queue (blocks).
+         */
         @Override
         Event take() {
             runState = RunState.IDLE
@@ -64,6 +78,7 @@ class Jexler implements Service, IssueTracker {
     private final String id
     private final JexlerContainer container
     private volatile RunState runState
+    /** Event queue. */
     protected final Events events
 
     /**
@@ -371,6 +386,7 @@ class Jexler implements Service, IssueTracker {
     //   "Compilation not thread safe if Grape / Ivy is used in Groovy scripts"
     //   https://issues.apache.org/jira/browse/GROOVY-7407
     @CompileStatic
+    @PackageScope
     static class WorkaroundGroovy7407 {
         // boolean whether to wrap the GrapeEngine in the Grape class with a synchronized version
         public static final String GRAPE_ENGINE_WRAP_PROPERTY_NAME =
@@ -422,6 +438,7 @@ class Jexler implements Service, IssueTracker {
      *   not publicly documented in the online JavaDoc of groovy-core.
      */
     @CompileStatic
+    @PackageScope
     static class WorkaroundGroovy7407WrappingGrapeEngine implements GrapeEngine {
 
         private final Object lock

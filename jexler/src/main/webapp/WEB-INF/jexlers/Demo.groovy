@@ -27,7 +27,7 @@ while (true) {
     httpget = new HttpGet("http://www.google.com/")
     responseHandler = new BasicResponseHandler()
     responseBody = httpclient.execute(httpget, responseHandler)
-    log.trace(responseBody)
+    log.trace("response body: ${JexlerUtil.toSingleLine(responseBody)}")
     
     Thread.sleep(30000)
     

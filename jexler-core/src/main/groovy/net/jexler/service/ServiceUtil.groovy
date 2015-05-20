@@ -99,7 +99,7 @@ class ServiceUtil {
      * - validates the resulting cron string
      * - if valid, logs the next date+time when the cron string would fire
      *
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException if the resulting cron string is not a valid quartz cron string
      */
     static String toQuartzCron(String cron) throws IllegalArgumentException {
         if (CronService.CRON_NOW == cron | CronService.CRON_NOW_AND_STOP == cron) {

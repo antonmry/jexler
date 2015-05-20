@@ -80,11 +80,11 @@ class DirWatchService extends ServiceBase {
 
     /**
      * Set cron pattern for when to check.
-     * Default is every minute, i.e. "* * * * *".
+     * Default is every 5 seconds.
      * @return this (for chaining calls)
      */
     DirWatchService setCron(String cron) {
-        this.cron = cron
+        this.cron = ServiceUtil.toQuartzCron(cron)
         return this
     }
 

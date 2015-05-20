@@ -33,28 +33,28 @@ import net.jexler.service.Service
 class Issue implements Comparable<Issue> {
 
     /**
-     * date and time when the issue occurred
+     * Date and time when the issue occurred.
      */
     final Date date
 
     /**
-     * service where the issue occurred, may be null
+     * Service where the issue occurred, may be null.
      */
     final Service service
 
     /**
-     * message that explains the issue, may be null
+     * Message that explains the issue, may be null.
      */
     final String message
 
     /**
-     * throwable that caused the issue, null if none
+     * Throwable that caused the issue, null if none.
      */
     final Throwable cause
 
     /**
-     * exception stack trace as a multi-line string,
-     * empty if could not get it or no causing throwable
+     * Exception stack trace as a multi-line string,
+     * empty if could not get it or no causing throwable.
      */
     final String stackTrace
 
@@ -69,9 +69,11 @@ class Issue implements Comparable<Issue> {
         stackTrace = JexlerUtil.getStackTrace(cause)
     }
 
+    /**
+     * Comparator, newer date is smaller (first).
+     */
     @Override
     public int compareTo(Issue issue) {
-        // newest date first
         return -date.compareTo(issue.date)
     }
 

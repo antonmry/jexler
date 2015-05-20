@@ -51,7 +51,7 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
     private final Object schedulerLock
 
     /**
-     * Constructor.
+     * Constructor from jexler script directory.
      * @param dir directory which contains jexler scripts
      * @throws RuntimeException if given dir is not a directory or does not exist
      */

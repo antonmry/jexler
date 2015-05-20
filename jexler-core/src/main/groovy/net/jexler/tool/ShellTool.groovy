@@ -17,6 +17,7 @@
 package net.jexler.tool
 
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
 
 import java.util.Map.Entry
 
@@ -37,6 +38,8 @@ class ShellTool {
 
     /**
      * Simple bean for the result of executing a shell command.
+     *
+     * @author $(whois jexler.net)
      */
     @CompileStatic
     static class Result {
@@ -59,6 +62,7 @@ class ShellTool {
      * Helper class for collecting stdout and stderr.
      */
     @CompileStatic
+    @PackageScope
     static class OutputCollector extends Thread {
         private final InputStream is
         private final Closure lineHandler
