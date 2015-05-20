@@ -2,6 +2,10 @@ image:http://www.jexler.net/jexler.jpg["jexler logo", link="http:www.jexler.net/
 
 = jexler releases
 
+=== 2.0.1-SNAPSHOT (20XX-XX-XX)
+
+* ...
+
 === 2.0.0 (2015-05-20)
 
 * Jexler is now written in Groovy (unit tests with Spock), no longer
