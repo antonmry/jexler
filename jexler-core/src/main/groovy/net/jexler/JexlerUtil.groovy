@@ -40,7 +40,7 @@ class JexlerUtil {
             Writer result = new StringWriter()
             throwable.printStackTrace(new PrintWriter(result))
             return result
-        } catch (RuntimeException e) {
+        } catch (RuntimeException ignore) {
             return ''
         }
     }
@@ -67,7 +67,7 @@ class JexlerUtil {
             }
             try {
                 Thread.sleep(ms - (t1-t0))
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ignored) {
             }
         }
     }

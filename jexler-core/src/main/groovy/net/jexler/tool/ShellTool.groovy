@@ -200,14 +200,14 @@ class ShellTool {
     /**
      * Get result in case where an exception occurred.
      */
-    private Result getExceptionResult(String stackTrace) {
+    private static Result getExceptionResult(String stackTrace) {
         return new Result(-1, '', stackTrace)
     }
 
     /**
      * Convert map of name and value to array of name=value.
      */
-    private String[] toEnvArray(Map<String,String> env) {
+    private static String[] toEnvArray(Map<String,String> env) {
         List envList = []
         env?.each { key, value ->
             envList.add("$key=$value")

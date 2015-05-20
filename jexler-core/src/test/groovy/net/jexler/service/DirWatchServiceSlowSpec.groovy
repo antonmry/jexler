@@ -112,7 +112,7 @@ class DirWatchServiceSlowSpec extends Specification {
         service.off
     }
 
-    private void checkCreateModifyDeleteEventsTriggered(Jexler jexler, Service service, File watchDir) {
+    private static void checkCreateModifyDeleteEventsTriggered(Jexler jexler, Service service, File watchDir) {
 
         // create file
         def tempFile = new File(watchDir, 'temp')

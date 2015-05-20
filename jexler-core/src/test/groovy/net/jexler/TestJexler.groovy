@@ -59,7 +59,7 @@ class TestJexler extends Jexler {
             }
             try {
                 Thread.sleep(10)
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ignored) {
             }
         }
     }

@@ -32,7 +32,7 @@ import java.nio.file.Files
 @Category(FastTests.class)
 class JexlerWorkaroundGroovy7407Spec extends Specification {
 
-    private void reset() throws Exception {
+    private static void reset() throws Exception {
         System.clearProperty(Jexler.WorkaroundGroovy7407.GRAPE_ENGINE_WRAP_PROPERTY_NAME)
         Jexler.WorkaroundGroovy7407.resetForUnitTests()
         Jexler.WorkaroundGroovy7407WrappingGrapeEngine.engine = null

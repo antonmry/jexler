@@ -48,8 +48,8 @@ class Jexler implements Service, IssueTracker {
      * Blocking queue for events sent to a Jexler
      * ('events' variable in jexler scripts).
      *
-     * Typically events are taken with {@link take()} in an event loop
-     * in the jexler script.
+     * Typically events are taken with {@link Events#take()}
+     * in an event loop in the jexler script.
      *
      * @author $(whois jexler.net)
      */
@@ -358,7 +358,7 @@ class Jexler implements Service, IssueTracker {
         Object obj
         try {
             obj = new GroovyShell().evaluate(line)
-        } catch (Throwable t) {
+        } catch (Throwable ignore) {
             // (script may throw anything, checked or not)
             return info
         }

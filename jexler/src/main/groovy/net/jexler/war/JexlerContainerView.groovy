@@ -348,7 +348,7 @@ class JexlerContainerView {
         }
     }
 
-    private String urlEncode(String s) {
+    private static String urlEncode(String s) {
         return URLEncoder.encode(s, 'UTF-8')
     }
 

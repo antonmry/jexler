@@ -16,14 +16,3 @@ dependencies {
   compile 'ch.grengine:grengine:1.0.3'
   compile 'org.quartz-scheduler:quartz:2.2.1'
 }
-
-test {
-  //testLogging.showStandardStreams = true
-  useJUnit {
-    includeCategories 'net.jexler.test.FastTests'
-  }
-  //afterTest { desc, result ->
-  //  println "Executing test ${desc.name} [${desc.className}] with result: ${result.resultType}"
-  //}
-}
-

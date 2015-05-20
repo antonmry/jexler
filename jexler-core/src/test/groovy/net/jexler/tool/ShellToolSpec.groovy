@@ -142,7 +142,7 @@ class ShellToolSpec extends Specification {
         new ShellTool.Result(-1, '', 'error')         | "[rc=-1,stdout='',stderr='error']"
     }
 
-    private boolean isWindows() {
+    private static boolean isWindows() {
         return System.getProperty('os.name').startsWith('Windows')
     }
 
