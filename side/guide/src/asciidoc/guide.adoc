@@ -39,7 +39,7 @@ Now instead of just logging the word "hello", let's send an email instead:
 @Grab('org.apache.commons:commons-email:1.3')
 import org.apache.commons.mail.*
 
-services.add(new CronService(jexler, "every-minute").setCron("* * * * *"))
+services.add(new CronService(jexler, "every-15-seconds").setCron("*/15 * * * * *"))
 services.start()
 
 while (true) {
@@ -104,7 +104,7 @@ methods that handle different life cycle stages and received events:
 
 [source,groovy]
 ----
-[ "autostart" : true ]
+[[ "autostart" : true ]
 
 // dispatch to methods below
 JexlerDispatcher.dispatch(this)
@@ -119,7 +119,7 @@ void declare() {
 void start() {
   log.trace("-- start()")
   services.add(new CronService(jexler, "EveryMinute").setCron(cron))
-  services.add(new CronService(jexler, "EveryTwoMinutes").setCron("*/2 * * * *"))
+  services.add(new CronService(jexler, "Every30Seconds").setCron("0/30 * * * * *"))
   services.add(new CronService(jexler, "OnceImmediately").setCron("now"))
   services.start()
 }
@@ -133,16 +133,16 @@ void handleCronEventEveryMinute(def event) {
 
 // optional*, called during event loop
 // handle<event-class><service-id>(event), searched second
-void handleCronEventEveryTwoMinutes(def event) {
-  log.trace("-- handleCronEventEveryTwoMinutes(event)")
-  log.trace("every two minutes")
+void handleCronEventEvery30Seconds(def event) {
+  log.trace("-- handleCronEventEvery30Seconds(event)")
+  log.trace("every 30 seconds")
 }
 
 // optional*, called during event loop
 // handle(event), fallback, searched last
 // * if no matching handler was found, an issue is tracked
 void handle(def event) {
-  log.trace("-- handle(event)")
+ log.trace("-- handle(event)")
   log.trace("got event $event.service.id")
 }
 
@@ -200,12 +200,27 @@ log.trace(cronEvent.cron)
     
 (Note that `cronEvent.cron` is a Groovy shortcut for `cronEvent.getCron()`.)
 
-Implemented using the Open Source http://www.sauronsoftware.it/projects/cron4j/[cron4j] library.
+Implemented using the Open Source http://quartz-scheduler.org[Quartz] library.
 
-By default, a cron4j `Scheduler` instance that is shared between all jexlers
+By default, a Quartz `Scheduler` instance that is shared between all jexlers
 is used (because each scheduler creates a new thread). Alternatively, the scheduler
 can be explicitly set when constructing the `CronService` instance:
 `setScheduler(Scheduler scheduler)`.
+
+==== Quartz Cron Strings
+
+Quartz allows to trigger with a resolution of seconds (and optionally allows
+also to define years). This means that Quartz cron strings contain 6 (or 7)
+fields, instead of the usual 5.
+
+Naively, you would configure a cron for every second as "* * * * * *", but
+for some strange reason (which escapes me), Quartz mandates that one of
+day-of month (position 4) or day-of-week (position 6) must be '?' (but not both).
+
+Don't worry, Jexler handles this for you, normal short cron strings like
+"* * * * *" are expanded to a valid quartz cron string like "0 * * * * ?"
+and also for long cron strings like "0 * * * * 1-5" a '?' is automatically
+replaced where needed, like to "0 * * ? * 1-5".
 
 === DirWatchService
 
@@ -232,8 +247,10 @@ There are three setters:
 * `setDir(File dir)`: The directory to watch,
    default if not set is the directory that contains the jexler.
 * `setCron(String cron)`: When to poll the file system,
-   default if not set is every minute ("* * * * *").
-* `setScheduler(Scheduler scheduler)`: Sets the cron4j scheduler,
+   default if not set is every 5 seconds ("*/5 * * * * ?").
+   Note that it may take even longer than that for the underlying
+   Java WatchService to register the change.
+* `setScheduler(Scheduler scheduler)`: Sets the Quartz scheduler,
    default if not set is a shared scheduler.
 
 The DirWatchEvent class has the following getters:
@@ -243,7 +260,7 @@ The DirWatchEvent class has the following getters:
    can be StandardWatchEventKinds.ENTRY_CREATE,
    .ENTRY_MODIFY or .ENTRY_DELETE.
 
-Implemented using a Java 7 WatchService (and cron4j).
+Implemented using a Java 7 WatchService (and Quartz).
 
 === More Services
 
@@ -256,7 +273,7 @@ So, for example, if you wanted a more sophisticated version of CronService, you 
 copy the CronService.java from the jexler source to a MyCronService.groovy in the
 jexlers directory in the jexler webapp and do the same for CronEvent.
 After a few boilerplate changes, you should have a MyCronService that does the same
-as CronService (this works, I tried it!) and then you could start adding new features, etc.
+as CronService (this works, I tried it once!) and then you could start adding new features, etc.
 
 And if you feel that it would be great if jexler had more services out-of-the-box,
 feel free to write your own Java or Groovy library of services and make it available.
@@ -574,18 +591,13 @@ The code is a Gradle project that contains two Java sub-projects:
 * *jexler-core*: The core jexler library (JAR) which contains also all services and tools.
 * *jexler*: The jexler web GUI, a simple Java webapp (WAR) with a single JSP.
 
-Java 7 is required.
-
-The jexler-core is deeply tested, close to 100% test coverage in jacoco, except for a few artefacts.
+jexler-core is deeply tested, close to 100% test coverage in jacoco,
+except for a few artefacts and except that jacoco underrates Groovy
+coverage for purely technical reasons.
+Unit tests are written with https://code.google.com/p/spock/[Spock],
+a *fantastic* test framework written in Groovy - fascinating...
 
 The jexler webapp is very simple and contains a demo unit test that starts it in a Jetty embedded web server.
-
-All interfaces and classes in jexler-core that are not in packages that end with ".internal"
-are basically public and should normally remain backwards compatible as long as the jexler
-major version does not change (i.e. jexler 4.5.6 would be backwards compatible with 4.0.0,
-but 5.0.0 would not; this numbering scheme is common practice). Of course, if only
-very few people use specific feature or if some new feature reveals itself to be
-really badly designed, exceptions may be made in order to make life easier for most users.
 
 Within a jexler, the following packages are automatically imported by default:
 
@@ -627,7 +639,7 @@ There are two boolean settings that jexler uses by default:
 
 * jexler-core is at http://search.maven.org/#search%7Cga%7C1%7Cjexler-core[Maven Central]
 * jexler webapp is at https://sourceforge.net/projects/jexler/[Sourceforge] (see "Files" tab)
-* http://www.jexler.net/[jexler.net] hosts http://www.jexler.net/javadoc/[Javadoc],
+* http://www.jexler.net/[jexler.net] hosts http://www.jexler.net/groovydoc/[Groovydoc],
   http://www.jexler.net/jacoco/[jacoco] and this http://www.jexler.net/guide/[guide]
 
 == Use Cases
@@ -664,9 +676,10 @@ a different story...
 
 === Checks and Cleanups
 
-At work I continue to use it for various minor maintenance things, e.g. for checking
-if certain Hudson nightly builds have really run or for warning if disk space is
-getting low resp. cleaning up right away in that case, and for a few more things.
+At work I continue to use it since 2013 for various minor maintenance things,
+e.g. for checking if certain Hudson nightly builds have really run or for warning
+if disk space is getting low resp. cleaning up right away in that case,
+and for a few more things.
 
 === More
 
@@ -678,11 +691,14 @@ Jexler is maybe more suited for tasks that have some leisure in them, but in pri
 you could also imagine to write a web server with jexlers as handlers or similar things.
 
 Keep me updated at mailto:jex@jexler.net[jex@jexler.net].
-(Please be patient, I might not read mails to that address regularly.)
 
 == Roadmap
 
 Well, there is none, except to keep jexler really small and to keep the quality high. :)
+
+Then again, in spring 2015 I migrated Jexler from Java 7/JUnit to Groovy/ Spock
+(and scheduling from Cron4j to Quartz which now allows scheduling per second)
+for Jexler 2, so you might never know...
 
 I will gladly link third party libraries and similar additions around jexler
 on my web site and, if you want to take it all to a new level, feel free to
