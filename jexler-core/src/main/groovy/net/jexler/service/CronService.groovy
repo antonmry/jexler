@@ -121,8 +121,8 @@ class CronService extends ServiceBase {
         if (scheduler == null) {
             scheduler = jexler.container.scheduler
         }
-        runState = RunState.IDLE
         scheduler.scheduleJob(job, trigger)
+        runState = RunState.IDLE
     }
 
     @Override
