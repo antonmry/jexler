@@ -172,7 +172,7 @@ void handleCronEvent(def event) {
 ----
 
 Under the hood, its still just a running Groovy script (and if you do not
-like the default behavior of `JexlerDispatcher`, get its Java source from the jexler
+like the default behavior of `JexlerDispatcher`, get its Groovy source from the jexler
 source at github and copy it to a  Groovy script called e.g. `MyJexlerDispatcher.groovy`
 put it into the jexlers directory, adjust it as needed, and then call
 `MyJexlerDispatcher.dispatch(this)` instead at the top of your jexler scripts).
@@ -270,13 +270,12 @@ in Groovy, even from within the jexler web GUI.
 The trick is that all Groovy scripts in the jexlers directory are part of the class path.
 
 So, for example, if you wanted a more sophisticated version of CronService, you could
-copy the CronService.java from the jexler source to a MyCronService.groovy in the
+copy the CronService.groovy from the jexler source to a MyCronService.groovy in the
 jexlers directory in the jexler webapp and do the same for CronEvent.
-After a few boilerplate changes, you should have a MyCronService that does the same
-as CronService (this works, I tried it once!) and then you could start adding new features, etc.
+After a few boilerplate changes you could start adding new features, etc.
 
 And if you feel that it would be great if jexler had more services out-of-the-box,
-feel free to write your own Java or Groovy library of services and make it available.
+feel free to write your own library of services and make it available.
 
 Side remark: If you wanted an additional service to be included with jexler itself,
 it would have to be something really, really, really central and generally useful and simple
@@ -351,7 +350,7 @@ Implemented using `Runtime.getRuntime().exec()`.
 === StringObfuscatorTool
 
 This tool can help to obfuscate passwords and other sensitive strings.
-By default, it uses 128 bit AES with a hard-coded key, see below plus code/javadoc for full details.
+By default, it uses 128 bit AES with a hard-coded key, see below plus code/groovydoc for full details.
 
 * `String obfuscate(String plain)`:
   UTF-8 encode, pad with random bytes, encipher and hex encode given string.
@@ -589,7 +588,7 @@ See there for instructions how to build.
 The code is a Gradle project that contains two Java sub-projects:
 
 * *jexler-core*: The core jexler library (JAR) which contains also all services and tools.
-* *jexler*: The jexler web GUI, a simple Java webapp (WAR) with a single JSP.
+* *jexler*: The jexler web GUI, a simple webapp (WAR) with a single JSP.
 
 jexler-core is deeply tested, close to 100% test coverage in jacoco,
 except for a few artefacts and except that jacoco underrates Groovy
@@ -696,7 +695,7 @@ Keep me updated at mailto:jex@jexler.net[jex@jexler.net].
 
 Well, there is none, except to keep jexler really small and to keep the quality high. :)
 
-Then again, in spring 2015 I migrated Jexler from Java 7/JUnit to Groovy/ Spock
+Then again, in spring 2015 I migrated Jexler from Java 7/JUnit to Groovy/Spock
 (and scheduling from Cron4j to Quartz which now allows scheduling per second)
 for Jexler 2, so you might never know...
 
