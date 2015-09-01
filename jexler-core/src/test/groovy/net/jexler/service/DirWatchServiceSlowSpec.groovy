@@ -80,7 +80,7 @@ class DirWatchServiceSlowSpec extends Specification {
 
         when:
         // different watch directory
-        watchDir = Files.createTempDirectory(null).toFile()
+        watchDir = tempFolder.newFolder()
         service.dir = watchDir
         service.start()
 
