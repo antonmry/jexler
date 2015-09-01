@@ -17,10 +17,10 @@
 package net.jexler
 
 import net.jexler.test.SlowTests
+import org.junit.Rule
 import org.junit.experimental.categories.Category
+import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
-
-import java.nio.file.Files
 
 /**
  * Tests the respective class.
@@ -30,12 +30,15 @@ import java.nio.file.Files
 @Category(SlowTests.class)
 class JexlerContainerSlowSpec extends Specification {
 
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
+
     private final static long MS_5_SEC = 5000
     private final static long MS_20_SEC = 20000
     
     def 'TEST SLOW (30 sec) startup and shutdown too slower than time waited'() {
         given:
-        def dir = Files.createTempDirectory(null).toFile()
+        def dir = tempFolder.root
         def jexlerBodyFast = """\
             while (true) {
               event = events.take()

@@ -19,10 +19,10 @@ package net.jexler
 import groovy.grape.Grape
 import groovy.grape.GrapeEngine
 import net.jexler.test.FastTests
+import org.junit.Rule
 import org.junit.experimental.categories.Category
+import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
-
-import java.nio.file.Files
 
 /**
  * Tests the respective class.
@@ -31,6 +31,9 @@ import java.nio.file.Files
  */
 @Category(FastTests.class)
 class JexlerWorkaroundGroovy7407Spec extends Specification {
+
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
 
     private static void reset() throws Exception {
         System.clearProperty(Jexler.WorkaroundGroovy7407.GRAPE_ENGINE_WRAP_PROPERTY_NAME)
@@ -54,7 +57,7 @@ class JexlerWorkaroundGroovy7407Spec extends Specification {
 
     def 'TEST compile with wrapping: compile ok'() {
         given:
-        def dir = Files.createTempDirectory(null).toFile()
+        def dir = tempFolder.root
         def file = new File(dir, 'test.groovy')
         file.text = 'return 5'
         assert !(Grape.instance instanceof Jexler.WorkaroundGroovy7407WrappingGrapeEngine)
@@ -73,7 +76,7 @@ class JexlerWorkaroundGroovy7407Spec extends Specification {
 
     def 'TEST compile with wrapping: compile fails'() {
         given:
-        def dir = Files.createTempDirectory(null).toFile()
+        def dir = tempFolder.root
         def file = new File(dir, 'test.groovy')
         file.text = '&%!+'
         assert !(Grape.instance instanceof Jexler.WorkaroundGroovy7407WrappingGrapeEngine)

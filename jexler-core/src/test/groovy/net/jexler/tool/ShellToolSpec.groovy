@@ -17,10 +17,10 @@
 package net.jexler.tool
 
 import net.jexler.test.FastTests
+import org.junit.Rule
 import org.junit.experimental.categories.Category
+import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
-
-import java.nio.file.Files
 
 /**
  * Tests the respective class.
@@ -29,7 +29,10 @@ import java.nio.file.Files
  */
 @Category(FastTests.class)
 class ShellToolSpec extends Specification {
-    
+
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
+
     def 'TEST default'() {
         given:
         def tool = new ShellTool()
@@ -50,11 +53,11 @@ class ShellToolSpec extends Specification {
         given:
         def tool = new ShellTool()
 
-        def dir = Files.createTempDirectory(null).toFile()
+        def dir = tempFolder.root
         def file1 = new File(dir, 'file1')
         def file2 = new File(dir, 'file2')
-        Files.createFile(file1.toPath())
-        Files.createFile(file2.toPath())
+        file1.createNewFile()
+        file2.createNewFile()
         tool.workingDirectory = dir
 
         def testStdout = ''

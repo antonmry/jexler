@@ -20,10 +20,11 @@ import net.jexler.Jexler
 import net.jexler.RunState
 import net.jexler.TestJexler
 import net.jexler.test.SlowTests
+import org.junit.Rule
 import org.junit.experimental.categories.Category
+import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
 
-import java.nio.file.Files
 import java.nio.file.StandardWatchEventKinds
 
 /**
@@ -34,12 +35,15 @@ import java.nio.file.StandardWatchEventKinds
 @Category(SlowTests.class)
 class DirWatchServiceSlowSpec extends Specification {
 
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
+
     private final static long MS_15_SEC = 15000
     private final static String CRON_EVERY_2_SECS = '*/2 * * * * *'
 
     def 'TEST SLOW (3 min) create/modify/remove files in watch dir'() {
         given:
-        def watchDir = Files.createTempDirectory(null).toFile()
+        def watchDir = tempFolder.root
         def jexler = new TestJexler();
 
         when:
@@ -116,7 +120,7 @@ class DirWatchServiceSlowSpec extends Specification {
 
         // create file
         def tempFile = new File(watchDir, 'temp')
-        Files.createFile(tempFile.toPath())
+        tempFile.createNewFile()
 
         def event = jexler.takeEvent(MS_15_SEC)
         assert event instanceof DirWatchEvent

@@ -20,12 +20,12 @@ import net.jexler.service.CronEvent
 import net.jexler.service.DirWatchEvent
 import net.jexler.service.MockService
 import net.jexler.test.FastTests
+import org.junit.Rule
 import org.junit.experimental.categories.Category
+import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
 
-import java.nio.file.Files
 import java.nio.file.StandardWatchEventKinds
-import java.nio.file.WatchEvent
 
 /**
  * Tests the respective class.
@@ -34,6 +34,9 @@ import java.nio.file.WatchEvent
  */
 @Category(FastTests.class)
 class JexlerDispatcherSpec extends Specification {
+
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
 
     private final static long MS_1_SEC = 1000
     private final static long MS_10_SEC = 10000
@@ -55,7 +58,7 @@ class JexlerDispatcherSpec extends Specification {
     
     def 'TEST minimal methods and no suitable event handler'() {
         given:
-        def dir = Files.createTempDirectory(null).toFile()
+        def dir = tempFolder.root
         def file = new File(dir, 'Test.groovy')
         file.text = """\
             //
@@ -119,7 +122,7 @@ class JexlerDispatcherSpec extends Specification {
 
     def 'TEST mandatory start method missing'() {
         given:
-        def dir = Files.createTempDirectory(null).toFile()
+        def dir = tempFolder.root
         def file = new File(dir, 'Test.groovy')
         file.text = """\
             //
@@ -145,7 +148,7 @@ class JexlerDispatcherSpec extends Specification {
 
     def 'TEST all methods and handlers'() {
         given:
-        def dir = Files.createTempDirectory(null).toFile()
+        def dir = tempFolder.root
         def file = new File(dir, 'Test.groovy')
         file.text = """\
             //
@@ -275,7 +278,7 @@ class JexlerDispatcherSpec extends Specification {
 
     def 'TEST handle throws'() {
         given:
-        def dir = Files.createTempDirectory(null).toFile()
+        def dir = tempFolder.root
         def file = new File(dir, 'Test.groovy')
         file.text = """
             //

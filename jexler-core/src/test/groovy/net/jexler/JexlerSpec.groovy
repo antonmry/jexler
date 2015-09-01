@@ -19,10 +19,10 @@ package net.jexler
 import net.jexler.service.MockService
 import net.jexler.test.FastTests
 import org.codehaus.groovy.control.CompilationFailedException
+import org.junit.Rule
 import org.junit.experimental.categories.Category
+import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
-
-import java.nio.file.Files
 
 /**
  * Tests the respective class.
@@ -32,12 +32,15 @@ import java.nio.file.Files
 @Category(FastTests.class)
 class JexlerSpec extends Specification {
 
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
+
     private final static long MS_1_SEC = 1000
     private final static long MS_10_SEC = 10000
 
     def 'TEST script simple run (exit immediately or silently not even started if not Script instance)'() {
         given:
-        def dir = Files.createTempDirectory(null).toFile()
+        def dir = tempFolder.root
         def file = new File(dir, 'Test.groovy')
 
         expect:
@@ -63,7 +66,7 @@ class JexlerSpec extends Specification {
 
     def 'TEST script cannot read meta info'() {
         when:
-        def dir = Files.createTempDirectory(null).toFile()
+        def dir = tempFolder.root
         def file = new File(dir, 'Test.groovy')
         def jexler = new Jexler(file, new JexlerContainer(dir))
 
@@ -84,7 +87,7 @@ class JexlerSpec extends Specification {
 
     def 'TEST script compile, create or run fails'() {
         given:
-        def dir = Files.createTempDirectory(null).toFile()
+        def dir = tempFolder.root
         def file = new File(dir, 'Test.groovy')
 
         expect:
@@ -136,7 +139,7 @@ class JexlerSpec extends Specification {
 
     def 'TEST simple jexler script life cycle'() {
         given:
-        def dir = Files.createTempDirectory(null).toFile()
+        def dir = tempFolder.root
         def file = new File(dir, 'Test.groovy')
         file.text = """\
             [ 'autostart' : false, 'foo' : 'bar' ]
@@ -222,7 +225,7 @@ class JexlerSpec extends Specification {
 
     def 'TEST track issue'() {
         given:
-        def dir = Files.createTempDirectory(null).toFile()
+        def dir = tempFolder.root
         def file = new File(dir, 'Test.groovy')
         def jexler = new Jexler(file, new JexlerContainer(dir))
 
@@ -263,7 +266,7 @@ class JexlerSpec extends Specification {
     def 'TEST runtime exception at jexler shutdown'() {
 
         given:
-        def dir = Files.createTempDirectory(null).toFile()
+        def dir = tempFolder.root
         def file = new File(dir, 'Test.groovy')
         file.text = """\
             [ 'autostart' : false, 'foo' : 'bar' ]
@@ -310,7 +313,7 @@ class JexlerSpec extends Specification {
 
     def 'TEST meta info: no file'() {
         given:
-        def dir = Files.createTempDirectory(null).toFile()
+        def dir = tempFolder.root
         def file = new File(dir, 'Test.groovy')
 
         when:
@@ -330,7 +333,7 @@ class JexlerSpec extends Specification {
 
     def 'TEST meta info: IOException while reading file'() {
         given:
-        def dir = Files.createTempDirectory(null).toFile()
+        def dir = tempFolder.root
 
         when:
         // passing dir as jexler file
@@ -351,7 +354,7 @@ class JexlerSpec extends Specification {
 
     def 'TEST meta info: default to empty'() {
         given:
-        def dir = Files.createTempDirectory(null).toFile()
+        def dir = tempFolder.root
         def file = new File(dir, 'Test.groovy')
 
         expect:
@@ -364,7 +367,7 @@ class JexlerSpec extends Specification {
     
     def 'TEST interrupt event take in jexler event loop'() {
         given:
-        def dir = Files.createTempDirectory(null).toFile()
+        def dir = tempFolder.root
         def file = new File(dir, 'Test.groovy')
         file.text = """\
             [ 'autoimport' : false ]

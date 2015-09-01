@@ -18,7 +18,6 @@ package net.jexler.war
 
 import groovy.transform.CompileStatic
 
-import java.nio.file.Files
 import java.text.SimpleDateFormat
 
 import javax.activation.MimetypesFileTypeMap
@@ -245,7 +244,7 @@ class JexlerContainerView {
         }
         File file = jexler.file
         try {
-            return new String(Files.readAllBytes(file.toPath()))
+            return file.text
         } catch (IOException e) {
             String msg = "Could not read jexler script file '$file.absolutePath'."
             jexler.trackIssue(null, msg, e)

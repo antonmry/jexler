@@ -18,8 +18,6 @@ package net.jexler
 
 import groovy.transform.CompileStatic
 
-import java.nio.file.Files
-
 import net.jexler.service.Event
 
 /**
@@ -40,7 +38,7 @@ class TestJexler extends Jexler {
     }
 
     TestJexler() throws Exception {
-        this(new File(Files.createTempDirectory(null).toFile(), 'TestJexler.groovy'))
+        this(File.createTempFile("TestJexler", ".groovy"))
     }
 
     /**

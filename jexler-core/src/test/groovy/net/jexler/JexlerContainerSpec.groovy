@@ -18,10 +18,10 @@ package net.jexler
 
 import net.jexler.service.StopEvent
 import net.jexler.test.FastTests
+import org.junit.Rule
 import org.junit.experimental.categories.Category
+import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
-
-import java.nio.file.Files
 
 /**
  * Tests the respective class.
@@ -31,12 +31,15 @@ import java.nio.file.Files
 @Category(FastTests.class)
 class JexlerContainerSpec extends Specification {
 
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
+
     private final static long MS_1_SEC = 1000
     private final static long MS_10_SEC = 10000
 
     def 'TEST main functionality in detail'() {
         given:
-        def dir = Files.createTempDirectory(null).toFile()
+        def dir = tempFolder.root
         def jexlerBody = """\
             while (true) {
               event = events.take()
@@ -189,7 +192,7 @@ class JexlerContainerSpec extends Specification {
 
     def 'TEST track issue'() {
         given:
-        def dir = Files.createTempDirectory(null).toFile()
+        def dir = tempFolder.root
         def container = new JexlerContainer(dir)
 
         when:
@@ -237,7 +240,9 @@ class JexlerContainerSpec extends Specification {
 
     def 'TEST constructor throws because file is not a directory'() {
         when:
-        def file = Files.createTempFile(null, '.tmp').toFile()
+        def dir = tempFolder.root
+        def file = new File(dir, "file.tmp")
+        file.createNewFile()
         new JexlerContainer(file)
 
         then:
@@ -247,7 +252,7 @@ class JexlerContainerSpec extends Specification {
 
     def 'TEST get jexler id'() {
         when:
-        def dir = Files.createTempDirectory(null).toFile()
+        def dir = tempFolder.root
         def container = new JexlerContainer(dir)
 
         then:
@@ -260,7 +265,7 @@ class JexlerContainerSpec extends Specification {
 
     def 'TEST get jexler file'() {
         given:
-        def dir = Files.createTempDirectory(null).toFile()
+        def dir = tempFolder.root
         def container = new JexlerContainer(dir)
 
         when:
@@ -272,7 +277,7 @@ class JexlerContainerSpec extends Specification {
 
     def 'TEST shared scheduler and close'() {
         given:
-        def dir = Files.createTempDirectory(null).toFile()
+        def dir = tempFolder.root
         def container = new JexlerContainer(dir)
 
         when:
