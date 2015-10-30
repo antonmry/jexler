@@ -2,6 +2,10 @@ image:http://www.jexler.net/jexler.jpg["jexler logo", link="http:www.jexler.net/
 
 = jexler releases
 
+=== 2.0.2-SNAPSHOT (20XX-XX-XX
+
+* ...
+
 === 2.0.1 (2015-10-31)
 
 * Jexler can now handle HTTP requests to the webapp its GUI is running in,

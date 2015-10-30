@@ -29,8 +29,8 @@ void handleHttp(def p) {
     <title>Jexler Http</title>
   </head>
   <body>
-    <h1>Jexler Http</h1>
     <a href="."><img src="jexler.jpg"></a>
+    <h1>Jexler Http</h1>
     <p>demo: <a href="?cmd=http&jexler=${jexler.id}&throw=true"><font color="red">throw exception</font></a></p>
     <h3>System Properties</h3>
     <pre>
