@@ -17,7 +17,10 @@
 package net.jexler.war
 
 import groovy.transform.CompileStatic
+import net.jexler.JexlerUtil
 
+import javax.servlet.http.HttpServletResponse
+import javax.servlet.jsp.PageContext
 import java.text.SimpleDateFormat
 
 import javax.activation.MimetypesFileTypeMap
@@ -50,7 +53,9 @@ class JexlerContainerView {
     private String jexlerId
     private Jexler jexler
 
+    private PageContext pageContext
     private HttpServletRequest request
+    private HttpServletResponse response
     private String targetJexlerId
     private Jexler targetJexler
 
@@ -66,8 +71,10 @@ class JexlerContainerView {
         jexlerId = jexler.id
     }
 
-    String handleCommands(HttpServletRequest request) {
-        this.request = request
+    String handleCommands(PageContext pageContext) {
+        this.pageContext = pageContext
+        request = (HttpServletRequest)pageContext.request
+        response = (HttpServletResponse)pageContext.response
         container.refresh()
         // set jexler from request parameter
         targetJexlerId = request.getParameter('jexler')
@@ -99,6 +106,9 @@ class JexlerContainerView {
                 break
             case 'forgetall':
                 handleForgetAll()
+                break
+            case 'http':
+                handleHttp()
                 break
             default:
                 // ignore
@@ -178,6 +188,27 @@ class JexlerContainerView {
                 return "<a href='?cmd=log$jexlerParam'><img src='error.gif'></a>"
             }
 
+        }
+    }
+
+    String getWeb() {
+        boolean available = false
+        if (jexlerId != null) {
+            Script script = jexler.getScript()
+            if (script != null && jexler.runState.operational) {
+                MetaClass mc = script.metaClass
+                Object[] args = [ PageContext.class ]
+                MetaMethod mm = mc.getMetaMethod('handleHttp', args)
+                if (mm != null) {
+                    available = true
+                }
+
+            }
+        }
+        if (available) {
+            return "<a href='?cmd=http$jexlerParam'><img src='web.gif'></a>"
+        } else {
+            return "<img src='white.gif'>"
         }
     }
 
@@ -347,6 +378,57 @@ class JexlerContainerView {
         }
     }
 
+    private void handleHttp() {
+        if (targetJexlerId == null) {
+            sendError(response, 404, 'No jexler parameter indicated.', null)
+            return
+        }
+        if (targetJexler == null) {
+            sendError(response, 404, "Jexler '$targetJexlerId' not found.", null)
+            return
+        }
+
+        Script script = targetJexler.getScript()
+        if (script == null || !targetJexler.runState.operational) {
+            sendError(response, 404, "Jexler '$targetJexlerId' is not operational.", null)
+            return
+        }
+
+        MetaClass mc = script.metaClass
+        Object[] args = [ PageContext.class ]
+
+        MetaMethod mm = mc.getMetaMethod('handleHttp', args)
+        if (mm == null) {
+            sendError(response, 404, "Jexler '$targetJexlerId' does not handle HTTP requests.", null)
+            return
+        }
+
+        try {
+            mm.invoke(script, [ pageContext ] as Object[])
+        } catch (Throwable t) {
+            targetJexler.trackIssue(jexler, "Handler 'handleHttp' failed.", t)
+            sendError(response, 500, "Jexler '$targetJexlerId': Handler 'handleHttp' failed.", t)
+        }
+    }
+
+    private void sendError(HttpServletResponse response, int status, String msg, Throwable t) {
+        response.status = status
+        String stacktrace = (t != null) ? "<hr><pre>${JexlerUtil.getStackTrace(t)}</pre><hr>" : ''
+        response.writer.println("""\
+<html>
+  <head>
+    <title>Error $status</title>
+  </head>
+  <body>
+    <a href="."><img src="jexler.jpg" title="${getVersion()}"></a>
+    <h1><font color="red">Error $status</font></h1>
+    <p>$msg</p>
+    $stacktrace
+  </body>
+</html>
+""")
+    }
+
     private static String urlEncode(String s) {
         return URLEncoder.encode(s, 'UTF-8')
     }
@@ -372,6 +454,5 @@ class JexlerContainerView {
         }
         return builder.toString()
     }
-
 
 }

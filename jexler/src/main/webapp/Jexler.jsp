@@ -3,9 +3,11 @@
 <%@ page trimDirectiveWhitespaces="true" %>
 
 <jsp:useBean id="container" class="net.jexler.war.JexlerContainerView">
-<%= container.handleCommands(request) %>
+<%= container.handleCommands(pageContext) %>
 <c:set var="jexler" value="${container.jexlers[param.jexler]}"/>
 <c:set var="jexler" value="${jexler != null ? jexler : container }"/>
+
+<c:if test="${param.cmd != 'http'}">
 
 <c:if test="${param.cmd != 'status'}">
 
@@ -189,6 +191,8 @@
       new Image().src = "start-dim.gif"
       new Image().src = "stop-dim.gif"
       new Image().src = "restart-dim.gif"
+      new Image().src = "web-dim.gif"
+      new Image().src = "white-dim.gif"
     </script>
   </div>
 
@@ -232,6 +236,7 @@
 <td class="status">${container.restart}</td>
 <td class="status">${container.log}</td>
 <td class="status status-name"><strong>Name</strong></td>
+<td class="status">${container.web}</td>
 </tr>
 
 <c:forEach items="${container.jexlers}" var="loopJexler">
@@ -240,6 +245,7 @@
   <td class="status">${loopJexler.value.restart}</td>
   <td class="status">${loopJexler.value.log}</td>
   <td class="status status-name" title="${loopJexler.value.runStateInfo}">${loopJexler.value.jexlerIdLink}</td>
+  <td class="status">${loopJexler.value.web}</td>
   </tr>
 </c:forEach>
 
@@ -286,6 +292,8 @@
   </body>
 
   </html>
+
+</c:if>
 
 </c:if>
 

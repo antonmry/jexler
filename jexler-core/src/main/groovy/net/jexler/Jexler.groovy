@@ -78,6 +78,7 @@ class Jexler implements Service, IssueTracker {
     private final String id
     private final JexlerContainer container
     private volatile RunState runState
+    private volatile Script script
     /** Event queue. */
     protected final Events events
 
@@ -164,24 +165,23 @@ class Jexler implements Service, IssueTracker {
         }
 
         // create script and run in a separate thread
-        final Jexler thisJexler = this
+        final Jexler jexler = this
         Thread scriptThread = new Thread(
                 new Runnable() {
                     void run() {
                         // create script instance
-                        final Script script
                         try {
                             script = (Script)clazz.newInstance()
                         } catch (Throwable t) {
                             // (may throw anything, checked or not)
-                            trackIssue(thisJexler, 'Script create failed.', t)
+                            trackIssue(jexler, 'Script create failed.', t)
                             runState = RunState.OFF
                             return
                         }
 
                         // run script
                         script.binding = new Binding([
-                                'jexler' : thisJexler,
+                                'jexler' : jexler,
                                 'container' : container,
                                 'events' : events,
                                 'services' : services,
@@ -191,7 +191,7 @@ class Jexler implements Service, IssueTracker {
                             script.run()
                         } catch (Throwable t) {
                             // (script may throw anything, checked or not)
-                            trackIssue(thisJexler, 'Script run failed.', t)
+                            trackIssue(jexler, 'Script run failed.', t)
                         }
 
                         runState = RunState.BUSY_STOPPING
@@ -204,6 +204,7 @@ class Jexler implements Service, IssueTracker {
                         events.clear()
                         services.services.clear()
 
+                        script = null
                         runState = RunState.OFF
                     }
                 })
@@ -301,6 +302,15 @@ class Jexler implements Service, IssueTracker {
      */
     File getDir() {
         return file.parentFile
+    }
+
+    /**
+     * Get script instance, may be null if script is not running.
+     *
+     * Normally only use if jexler.runState.operational is true.
+     */
+    Script getScript() {
+        return script
     }
 
     /**

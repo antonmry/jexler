@@ -177,6 +177,48 @@ source at github and copy it to a  Groovy script called e.g. `MyJexlerDispatcher
 put it into the jexlers directory, adjust it as needed, and then call
 `MyJexlerDispatcher.dispatch(this)` instead at the top of your jexler scripts).
 
+=== Handling HTTP Requests
+
+HTTP requests sent to the jexler webapp with request parameters `cmd=http&jexler=<jexler-id>`
+are passed to a method `handleHttp(PageContext p)`
+of the corresponding jexler, if found and the jexler is operational.
+The method parameter is a `javax.servlet.jsp.PageContext`, i.e. you can use
+things like `p.request`, `p.request.parameters.myparam`, `p.out`, `p.session`,
+`p.servletContext`, etc. in the handler.
+
+Simple example:
+
+[source,groovy]
+----
+void handleHttp(def p) {
+  p.response.status = 200
+  p.out.println("""\
+<html>
+  <head>
+    <title>Jexler Http</title>
+  </head>
+  <body>
+    <h1>Jexler Http</h1>
+    <a href="."><img src="jexler.jpg"></a>
+    <p>Status: $p.response.status</p>
+    </pre>
+  </body>
+</html>
+""")
+}
+----
+
+If an exception occurs in the handler, a simple 500 error page is returned.
+Similarly, if there is no corresponding operational jexler or it contains
+no handler with the above signature, a 404 error page is returned.
+
+In the GUI, a web icon is shown on the right when the jexler is available
+for HTTP requests and clicking the icon takes you there.
+
+Note that incoming HTTP requests are processed in parallel to the normal jexler
+event queue, possibly in several threads created by the web container.
+Make sure operations are thread-safe in these two respects.
+
 == Services
 
 === CronService
