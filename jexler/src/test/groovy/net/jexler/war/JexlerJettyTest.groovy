@@ -39,12 +39,10 @@ class JexlerJettyTest {
         final int port = 9080
         final Server server = new Server(port)
         WebAppContext wac = new WebAppContext()
-        wac.with {
-            resourceBase = './src/main/webapp'
-            descriptor = 'WEB-INF/web.xml'
-            contextPath = '/'
-            parentLoaderPriority = true
-        }
+        wac.resourceBase = './src/main/webapp'
+        wac.descriptor = 'WEB-INF/web.xml'
+        wac.contextPath = '/'
+        wac.parentLoaderPriority = true
         server.handler = wac
         server.start()
 
