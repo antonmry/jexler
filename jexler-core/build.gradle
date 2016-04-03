@@ -13,6 +13,6 @@ jar {
 }
 
 dependencies {
-  compile 'ch.grengine:grengine:1.0.3'
-  compile 'org.quartz-scheduler:quartz:2.2.1'
+  compile 'ch.grengine:grengine:1.0.5'
+  compile 'org.quartz-scheduler:quartz:2.2.2'
 }
