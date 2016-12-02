@@ -17,7 +17,7 @@ dependencies {
   //compile 'net.jexler:jexler-core:1.0.9'
   testCompile project (path: ":jexler-core", configuration: 'testArtifacts')
   // embedded jetty with jsp support
-  providedCompile 'org.eclipse.jetty.aggregate:jetty-all-server:8.1.16.v20140903'
+  providedCompile 'org.eclipse.jetty.aggregate:jetty-all-server:8.1.19.v20160209'
   providedCompile 'org.mortbay.jetty:jsp-2.1-glassfish:2.1.v20100127'
   runtime 'javax.servlet:jstl:1.2'
   runtime files('src/main/resources')

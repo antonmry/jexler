@@ -1,30 +1,29 @@
-// $ gradle asciidoctor
+// $ gradle clean asciidoctor
 
-apply plugin: 'org.asciidoctor.gradle.asciidoctor'
-
-description = "Jexler Users' Guide"
-
-project.group = 'net.jexler'
-
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.0'
-    }
+plugins {
+    id 'org.asciidoctor.convert' version '1.5.3'
 }
 
-asciidoctor { (1)
-    outputDir = new File("$buildDir/docs")
-    backends = [ 'html5' ]
-    options = [
-            doctype: 'book',
-            attributes: [
-                    'source-highlighter': 'prettify',
-                    //toc                 : '',
-                    idprefix            : '',
-                    idseparator         : '-'
-            ]
-    ]
+apply plugin: 'java'
+apply plugin: 'org.asciidoctor.convert'
+
+asciidoctorj {
+    version = '1.5.4'
+}
+
+asciidoctor {
+
+    resources {
+        from('src/docs/asciidoc') {
+            include '*.jpg'
+        }
+    }
+
+    attributes 'source-highlighter' : 'prettify',
+            'toc':'left',
+            'icons': 'font',
+            'setanchors':'true',
+            'idprefix':'',
+            'idseparator':'-',
+            'docinfo1':'true'
 }
