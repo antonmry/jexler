@@ -21,8 +21,8 @@
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
   <link rel="shortcut icon" href="favicon.ico"/>
   <link rel="icon" href="favicon.ico"/>
-  <link rel="stylesheet" href="jexler.css"/>
   <link rel="stylesheet" href="cm/lib/codemirror.css">
+  <link rel="stylesheet" href="jexler.css"/>
   <script src="cm/lib/codemirror.js"></script>
   <script src="cm/addon/edit/matchbrackets.js"></script>
   <script src="cm/mode/groovy/groovy.js"></script>
