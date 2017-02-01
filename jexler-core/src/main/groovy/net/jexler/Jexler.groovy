@@ -148,8 +148,10 @@ class Jexler implements Service, IssueTracker {
         loader.addClasspath(file.parent)
 
         // compile
+        final Class jexClazz
         final Class clazz
         try {
+            jexClazz = loader.parseClass('public class Jex { public static Map vars }')
             clazz = loader.parseClass(file)
         } catch (Throwable t) {
             // (may throw almost anything, checked or not)
@@ -180,13 +182,15 @@ class Jexler implements Service, IssueTracker {
                         }
 
                         // run script
-                        script.binding = new Binding([
+                        final Map map = [
                                 'jexler' : jexler,
                                 'container' : container,
                                 'events' : events,
                                 'services' : services,
                                 'log' : log,
-                        ])
+                        ]
+                        script.binding = new Binding(map)
+                        jexClazz.getDeclaredField('vars').set(null, map)
                         try {
                             script.run()
                         } catch (Throwable t) {

@@ -646,7 +646,7 @@ Within a jexler, the following packages are automatically imported by default:
 * net.jexler.service
 * net.jexler.tool
 
-and the following variables are available to jexler Groovy scripts:
+and the following variables are available to jexler Groovy scripts (binding):
 
 * `Jexler jexler`: The jexler instance.
 * `JexlerContainer container`: The jexler container instance, i.e. the class
@@ -657,6 +657,18 @@ and the following variables are available to jexler Groovy scripts:
    but often it is convenient that services added to this service group are automatically
    stopped if the jexler exits (regularly or due to an exception).
 * `Logger log`: The logback logger for the jexler instance.
+
+It is even possible to access the binding variables from other classes,
+use e.g. `Jex.vars.log` to access the logger:
+
+[source,groovy]
+----
+class Util {
+  void logJexler() {
+    Jex.vars.log.trace("Started by jexler '${Jex.vars.jexler.id}'")
+  }
+}
+----
 
 === Meta Info
 
