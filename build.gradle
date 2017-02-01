@@ -25,7 +25,7 @@ subprojects {
   }
 
   dependencies {
-    compile 'org.codehaus.groovy:groovy-all:2.4.6:indy'
+    compile 'org.codehaus.groovy:groovy-all:2.4.7:indy'
     compile 'org.apache.ivy:ivy:2.4.0'
     compile 'org.slf4j:slf4j-api:1.7.20'
     compile 'ch.qos.logback:logback-classic:1.1.7'
