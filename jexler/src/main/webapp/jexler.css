@@ -42,5 +42,5 @@ pre.log {color:gray}
 span.dim {color:gray}
 span.trace {
   color:gray;
-  font-size:65%;
+  /*font-size:65%;*/
 }

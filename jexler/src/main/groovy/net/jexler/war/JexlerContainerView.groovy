@@ -222,6 +222,17 @@ class JexlerContainerView {
         if (issues.size() == 0) {
             return''
         }
+
+        Map<String,String> replacements = new LinkedHashMap<String,String>()
+        replacements.put('<', '&lt')
+        replacements.put('Jexler.start', '<strong>Jexler.start</strong>')
+        replacements.put('Jexler$1.run', '<strong>Jexler$1.run</strong>')
+        for (Jexler jexler : container.jexlers) {
+            String original = "${jexler.id}.groovy"
+            String replacement = "<strong>$original</strong>"
+            replacements.put(original, replacement)
+        }
+
         StringBuilder builder = new StringBuilder()
         builder.append("<pre class='issues'>")
         for (Issue issue : issues) {
@@ -239,10 +250,16 @@ class JexlerContainerView {
             builder.append("<strong>Service:   </strong>$s\n")
             Throwable cause = issue.cause
             s = (cause==null) ? "-" : cause.toString()
-            builder.append("<strong>Cause: </strong>${s.replace('<', '&lt')}\n")
+            replacements.each { original, replacement ->
+                s = s.replace(original, replacement)
+            }
+            builder.append("<strong>Cause: </strong>$s\n")
             s = issue.stackTrace
             if (s != null) {
-                builder.append(s.empty ?: "<span class='trace'>${s.replace('<', '&lt')}</span>\n")
+                replacements.each { original, replacement ->
+                    s = s.replace(original, replacement)
+                }
+                builder.append(s.empty ?: "<span class='trace'>$s</span>\n")
             }
         }
         builder.append('</pre>')
