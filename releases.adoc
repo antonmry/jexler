@@ -2,9 +2,11 @@ image:http://www.jexler.net/jexler.jpg["jexler logo", link="http:www.jexler.net/
 
 = jexler releases
 
-=== 2.0.2-SNAPSHOT (20XX-XX-XX
+=== 2.0.2-SNAPSHOT (20XX-XX-XX)
 
-* ...
+* No longer duplicate groovy*.jar in jexler war.
+* Highlight jexlers in issue (stacktrace and cause) in GUI.
+* Google fonts.
 
 === 2.0.1 (2015-10-31)
 
