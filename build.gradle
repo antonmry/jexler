@@ -7,7 +7,7 @@ subprojects {
   sourceCompatibility = 1.7
   targetCompatibility = 1.7
 
-  version = '2.0.2-SNAPSHOT' // IMPORTANT: keep in sync with version in JexlerContextListener
+  version = '2.0.2' // IMPORTANT: keep in sync with version in JexlerContextListener
 
   project.group = 'net.jexler'
 
