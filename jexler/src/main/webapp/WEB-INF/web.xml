@@ -52,6 +52,7 @@
     <url-pattern>*.jpg</url-pattern>
     <url-pattern>*.htc</url-pattern>
     <url-pattern>*.gif</url-pattern>
+    <url-pattern>*.ttf</url-pattern>
   </servlet-mapping>
 
   <listener>
