@@ -2,7 +2,7 @@ image:http://www.jexler.net/jexler.jpg["jexler logo", link="http:www.jexler.net/
 
 = jexler releases
 
-=== 2.0.3-SNAPSHOT (20XX-XX-XX)
+=== 2.0.3 (2017-02-02)
 
 * Access to binding variables in other classes more robust.
 * More tooltips in GUI.
