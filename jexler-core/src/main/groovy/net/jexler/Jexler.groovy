@@ -147,11 +147,21 @@ class Jexler implements Service, IssueTracker {
         final GroovyClassLoader loader = new GroovyClassLoader(Thread.currentThread().contextClassLoader, config)
         loader.addClasspath(file.parent)
 
+        // provide access to binding in other classes via Jex.vars
+        final Jexler jexler = this
+        final Binding binding = new Binding([
+                'jexler' : jexler,
+                'container' : container,
+                'events' : events,
+                'services' : services,
+                'log' : log,
+        ])
+        final Class jexClazz = loader.parseClass('public class Jex { public static Map vars }')
+        jexClazz.getDeclaredField('vars').set(null, binding.variables)
+
         // compile
-        final Class jexClazz
         final Class clazz
         try {
-            jexClazz = loader.parseClass('public class Jex { public static Map vars }')
             clazz = loader.parseClass(file)
         } catch (Throwable t) {
             // (may throw almost anything, checked or not)
@@ -167,7 +177,6 @@ class Jexler implements Service, IssueTracker {
         }
 
         // create script and run in a separate thread
-        final Jexler jexler = this
         Thread scriptThread = new Thread(
                 new Runnable() {
                     void run() {
@@ -182,15 +191,7 @@ class Jexler implements Service, IssueTracker {
                         }
 
                         // run script
-                        final Map map = [
-                                'jexler' : jexler,
-                                'container' : container,
-                                'events' : events,
-                                'services' : services,
-                                'log' : log,
-                        ]
-                        script.binding = new Binding(map)
-                        jexClazz.getDeclaredField('vars').set(null, map)
+                        script.binding = binding
                         try {
                             script.run()
                         } catch (Throwable t) {

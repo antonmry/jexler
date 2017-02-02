@@ -10,6 +10,7 @@ while (true) {
   if (event instanceof CronEvent) {
     log.trace("It is now: " + new Date() + " (" + event.service.id + ")")
     log.trace("Util.hello(): " + Util.hello())
+    Util.logMethodCall()
   } else if (event instanceof StopEvent) {
     return
   }

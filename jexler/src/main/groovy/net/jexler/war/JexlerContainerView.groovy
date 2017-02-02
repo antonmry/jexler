@@ -121,8 +121,8 @@ class JexlerContainerView {
         return ''
     }
 
-    String getVersion() {
-        return JexlerContextListener.version
+    String getJexlerTooltip() {
+        return JexlerContextListener.jexlerTooltip
     }
     
     Map<String,JexlerContainerView> getJexlers() {
@@ -160,14 +160,14 @@ class JexlerContainerView {
             on = jexler.on
         }
         if (on) {
-            return "<a href='?cmd=stop$jexlerParam'><img src='stop.gif'></a>"
+            return "<a href='?cmd=stop$jexlerParam' title='stop'><img src='stop.gif'></a>"
         } else {
-            return "<a href='?cmd=start$jexlerParam'><img src='start.gif'></a>"
+            return "<a href='?cmd=start$jexlerParam' title='start'><img src='start.gif'></a>"
         }
     }
 
     String getRestart() {
-        return "<a href='?cmd=restart$jexlerParam'><img src='restart.gif'></a>"
+        return "<a href='?cmd=restart$jexlerParam' title='restart'><img src='restart.gif'></a>"
     }
     
     String getRunStateInfo() {
@@ -177,15 +177,15 @@ class JexlerContainerView {
     String getLog() {
          if (jexlerId == null) {
             if (container.issues.size() == 0) {
-                return "<a href='?cmd=log$jexlerParam'><img src='log.gif'></a>"
+                return "<a href='?cmd=log$jexlerParam' title='show log'><img src='log.gif'></a>"
             } else {
-                return "<a href='?cmd=log$jexlerParam'><img src='error.gif'></a>"
+                return "<a href='?cmd=log$jexlerParam' title='show log'><img src='error.gif'></a>"
             }
         } else {
             if (jexler.issues.size() == 0) {
-                return "<a href='?cmd=log$jexlerParam'><img src='ok.gif'></a>"
+                return "<a href='?cmd=log$jexlerParam' title='no issues'><img src='ok.gif'></a>"
             } else {
-                return "<a href='?cmd=log$jexlerParam'><img src='error.gif'></a>"
+                return "<a href='?cmd=log$jexlerParam' title='show issues'><img src='error.gif'></a>"
             }
 
         }
@@ -206,7 +206,7 @@ class JexlerContainerView {
             }
         }
         if (available) {
-            return "<a href='?cmd=http$jexlerParam'><img src='web.gif'></a>"
+            return "<a href='?cmd=http$jexlerParam' title='web'><img src='web.gif'></a>"
         } else {
             return "<img src='white.gif'>"
         }
@@ -223,17 +223,8 @@ class JexlerContainerView {
             return''
         }
 
-        Map<String,String> replacements = new LinkedHashMap<String,String>()
-        replacements.put('<', '&lt')
-        replacements.put('Jexler.start', '<strong>Jexler.start</strong>')
-        replacements.put('Jexler$1.run', '<strong>Jexler$1.run</strong>')
-        for (Jexler jexler : container.jexlers) {
-            String original = "${jexler.id}.groovy"
-            String replacement = "<strong>$original</strong>"
-            replacements.put(original, replacement)
-        }
-
         StringBuilder builder = new StringBuilder()
+        Map<String,String> replacements = getReplacements()
         builder.append("<pre class='issues'>")
         for (Issue issue : issues) {
             builder.append('\n')
@@ -430,14 +421,28 @@ class JexlerContainerView {
 
     private void sendError(HttpServletResponse response, int status, String msg, Throwable t) {
         response.status = status
-        String stacktrace = (t != null) ? "<hr><pre>${JexlerUtil.getStackTrace(t)}</pre><hr>" : ''
+        String stacktrace = ''
+        if (t != null) {
+            Map<String,String> replacements = getReplacements()
+            stacktrace = JexlerUtil.getStackTrace(t)
+            replacements.each { original, replacement ->
+                stacktrace = stacktrace.replace(original, replacement)
+            }
+            stacktrace = "<hr><pre class='log'>$stacktrace</pre><hr>"
+
+        }
+        //String stacktrace = (t != null) ? "<hr><pre>${JexlerUtil.getStackTrace(t)}</pre><hr>" : ''
         response.writer.println("""\
 <html>
   <head>
     <title>Error $status</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <link rel="shortcut icon" href="favicon.ico"/>
+    <link rel="icon" href="favicon.ico"/>
+    <link rel="stylesheet" href="jexler.css"/>
   </head>
   <body>
-    <a href="."><img src="jexler.jpg" title="${getVersion()}"></a>
+    <a href="."><img src="jexler.jpg" title="$jexlerTooltip}"></a>
     <h1><font color="red">Error $status</font></h1>
     <p>$msg</p>
     $stacktrace
@@ -470,6 +475,19 @@ class JexlerContainerView {
             builder.insert(0, line + System.lineSeparator())
         }
         return builder.toString()
+    }
+
+    private Map<String,String> getReplacements() {
+        Map<String,String> replacements = new LinkedHashMap<String,String>()
+        replacements.put('<', '&lt')
+        replacements.put('Jexler.start', '<strong>Jexler.start</strong>')
+        replacements.put('Jexler$1.run', '<strong>Jexler$1.run</strong>')
+        for (Jexler jexler : container.jexlers) {
+            String original = "${jexler.id}.groovy"
+            String replacement = "<strong>$original</strong>"
+            replacements.put(original, replacement)
+        }
+        return replacements
     }
 
 }

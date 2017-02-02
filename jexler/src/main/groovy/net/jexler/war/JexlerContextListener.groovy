@@ -17,6 +17,7 @@
 package net.jexler.war
 
 import groovy.transform.CompileStatic
+import net.jexler.JexlerUtil
 
 import javax.servlet.ServletContext
 import javax.servlet.ServletContextEvent
@@ -44,7 +45,7 @@ class JexlerContextListener implements ServletContextListener    {
 
     private static final String guiVersion = '2.0.3-SNAPSHOT' // IMPORTANT: keep in sync with version in main build.gradle
 
-    private static String version
+    private static String jexlerTooltip
     private static ServletContext servletContext
     private static JexlerContainer container
     private static File logfile
@@ -63,9 +64,14 @@ class JexlerContextListener implements ServletContextListener    {
         coreVersion = (coreVersion == null) ? '0.0.0' : coreVersion
         String groovyVersion = GroovyClassLoader.class.package.implementationVersion
         groovyVersion = (groovyVersion == null) ? '0.0.0' : groovyVersion
-        version = "$guiVersion (core $coreVersion / groovy $groovyVersion)"
-
-        log.info("Welcome to jexler. Version: $version")
+        jexlerTooltip = """\
+Jexler $guiVersion
+• jexler-core: $coreVersion
+• Groovy: $groovyVersion
+https://www.jexler.net/\
+"""
+        log.info("Welcome to jexler.")
+        log.info(JexlerUtil.toSingleLine(jexlerTooltip).replace('%n', ' / '))
         servletContext = event.servletContext
         String webappPath = servletContext.getRealPath('/')
         container = new JexlerContainer(new File(webappPath, 'WEB-INF/jexlers'))
@@ -120,8 +126,8 @@ class JexlerContextListener implements ServletContextListener    {
         log.info('Jexler done.')
     }
 
-    static String getVersion() {
-        return version
+    static String getJexlerTooltip() {
+        return jexlerTooltip
     }
 
     static ServletContext getServletContext() {

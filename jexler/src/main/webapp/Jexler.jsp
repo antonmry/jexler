@@ -26,7 +26,6 @@
   <script src="cm/lib/codemirror.js"></script>
   <script src="cm/addon/edit/matchbrackets.js"></script>
   <script src="cm/mode/groovy/groovy.js"></script>
-  <style type="text/css">.CodeMirror { border: 1px solid #eee; height: auto; }</style>
 
   <script>
     var savedSource;
@@ -201,7 +200,7 @@
   <table class="frame">
   <tr id="header">
   <td class="frame">
-  <a href="."><img src="jexler.jpg" title="${container.version}"></a>
+  <a href="."><img src="jexler.jpg" title="${container.jexlerTooltip}"></a>
   </td>
   <td class="frame frame-buttons">
     <c:choose>

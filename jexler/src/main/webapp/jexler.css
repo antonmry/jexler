@@ -1,6 +1,10 @@
 body {font-family: 'Droid Sans', sans-serif}
 pre {font-family: 'Roboto Mono', monospace}
-.CodeMirror {font-family: 'Roboto Mono', monospace}
+.CodeMirror {
+    font-family: 'Roboto Mono', monospace;
+    border: 1px solid #eee;
+    height: auto;
+}
 img {border:0px}
 table.frame {
   border-width: 0px 0px 0px 0px;

@@ -664,8 +664,12 @@ use e.g. `Jex.vars.log` to access the logger:
 [source,groovy]
 ----
 class Util {
-  void logJexler() {
-    Jex.vars.log.trace("Started by jexler '${Jex.vars.jexler.id}'")
+  static def log = Jex.vars.log
+  static {
+    log.trace("Class loaded for jexler '${Jex.vars.jexler.id}'")
+  }
+  static logMethodCall() {
+    log.trace("Method called for jexler '${Jex.vars.jexler.id}'")
   }
 }
 ----

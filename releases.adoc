@@ -2,9 +2,11 @@ image:http://www.jexler.net/jexler.jpg["jexler logo", link="http:www.jexler.net/
 
 = jexler releases
 
-=== 2.0.3 (20XX-XX-XX)
+=== 2.0.3-SNAPSHOT (20XX-XX-XX)
 
-* ...
+* Access to binding variables in other classes more robust.
+* More tooltips in GUI.
+* Web error page highlights jexlers and uses Google fonts.
 
 === 2.0.2 (2017-02-02)
 
