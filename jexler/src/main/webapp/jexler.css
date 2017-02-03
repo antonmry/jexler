@@ -1,10 +1,13 @@
 body {font-family: 'Droid Sans', sans-serif}
 pre {font-family: 'Roboto Mono', monospace}
 .CodeMirror {
-    font-family: 'Roboto Mono', monospace;
-    border: 1px solid #eee;
-    height: auto;
+  font-family: 'Roboto Mono', monospace;
+  /*font-size: small;*/
+  border: 1px solid #eee;
+  height: auto;
 }
+button {font-family: 'Droid Sans', sans-serif}
+input[type="text"] {font-family: 'Droid Sans', sans-serif}
 img {border:0px}
 table.frame {
   border-width: 0px 0px 0px 0px;
@@ -25,14 +28,19 @@ td.frame-text {
 }
 table.status {
   border-width: 1px 1px 1px 1px;
-  border-spacing: 1px;
   border-style: solid;
+  border-collapse: collapse;
   width: 100%;
+}
+tr.status:nth-child(even) {
+  background-color: #eee;
 }
 td.status {
   border-width: 1px 1px 1px 1px;
-  padding: 2px;
+  padding-left: 4px;
+  padding-right: 4px;
   border-style: solid;
+  border-color: #eee
 }
 td.status-name {
   width: 100%;
@@ -40,15 +48,19 @@ td.status-name {
 td.status-offline {
   color: gray;
 }
+input#newjexlername {width: 150%}
 div.autoscroll {
     vertical-align: top;
     overflow-y: auto;
 }
-pre.log {color:gray}
+pre.log {
+  color:gray;
+  /*font-size: small;*/
+}
 span.dim {color:gray}
 span.trace {
   color:gray;
-  /*font-size:65%;*/
+  /*font-size: small;*/
 }
 @font-face {
   font-family: 'Droid Sans';

@@ -4,7 +4,7 @@ image:http://www.jexler.net/jexler.jpg["jexler logo", link="http:www.jexler.net/
 
 === 2.0.5-SNAPSHOT (20XX-XX-XX)
 
-* ...
+* New look, a bit more professionally looking.
 
 === 2.0.4 (2017-02-03)
 

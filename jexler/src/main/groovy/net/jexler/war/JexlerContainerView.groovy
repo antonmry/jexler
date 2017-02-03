@@ -179,19 +179,23 @@ class JexlerContainerView {
     }
 
     String getStart() {
-        return "<a href='?cmd=start$jexlerParam' title='start'><img src='start.gif'></a>"
+        String title = jexlerId == null ? 'start all' : 'start'
+        return "<a href='?cmd=start$jexlerParam' title='$title'><img src='start.gif'></a>"
     }
 
     String getStop() {
-        return "<a href='?cmd=stop$jexlerParam' title='stop'><img src='stop.gif'></a>"
+        String title = jexlerId == null ? 'stop all' : 'stop'
+        return "<a href='?cmd=stop$jexlerParam' title='$title'><img src='stop.gif'></a>"
     }
 
     String getZap() {
-        return "<a href='?cmd=zap$jexlerParam' title='zap'><img src='zap.gif'></a>"
+        String title = jexlerId == null ? 'zap all' : 'zap'
+        return "<a href='?cmd=zap$jexlerParam' title='$title'><img src='zap.gif'></a>"
     }
 
     String getRestart() {
-        return "<a href='?cmd=restart$jexlerParam' title='restart'><img src='restart.gif'></a>"
+        String title = jexlerId == null ? 'stop all, then start all' : 'restart'
+        return "<a href='?cmd=restart$jexlerParam' title='$title'><img src='restart.gif'></a>"
     }
 
     String getRunStateInfo() {
@@ -207,7 +211,7 @@ class JexlerContainerView {
             }
         } else {
             if (jexler.issues.size() == 0) {
-                return "<a href='?cmd=log$jexlerParam' title='no issues'><img src='ok.gif'></a>"
+                return "<img src='ok.gif' title='no issues'>"
             } else {
                 return "<a href='?cmd=log$jexlerParam' title='show issues'><img src='error.gif'></a>"
             }
@@ -232,7 +236,7 @@ class JexlerContainerView {
         if (available) {
             return "<a href='?cmd=http$jexlerParam' title='web'><img src='web.gif'></a>"
         } else {
-            return "<img src='white.gif'>"
+            return "<img src='space.gif'>"
         }
     }
 

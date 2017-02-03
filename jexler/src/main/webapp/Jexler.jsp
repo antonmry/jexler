@@ -124,7 +124,7 @@
       } else if (hasSourceChanged) {
         document.getElementById('savestatus').setAttribute("src", "log.gif")
       } else {
-        document.getElementById('savestatus').setAttribute("src", "white.gif")
+        document.getElementById('savestatus').setAttribute("src", "space.gif")
       }
     }
 
@@ -145,7 +145,7 @@
             editor.focus();
             savedSource = currentSource;
             hasSourceChanged = false;
-            document.getElementById('savestatus').setAttribute("src", "white.gif")
+            document.getElementById('savestatus').setAttribute("src", "space.gif")
           }
         }
       };
@@ -192,7 +192,7 @@
       new Image().src = "restart-dim.gif"
       new Image().src = "zap-dim.gif"
       new Image().src = "web-dim.gif"
-      new Image().src = "white-dim.gif"
+      new Image().src = "space-dim.gif"
     </script>
   </div>
 
@@ -201,7 +201,7 @@
   <table class="frame">
   <tr id="header">
   <td class="frame">
-  <a href="."><img src="jexler.jpg" title="${container.jexlerTooltip}"></a>
+  <a href="."><img src="jexler-mini.jpg" title="${container.jexlerTooltip}"></a>
   </td>
   <td class="frame frame-buttons">
     <c:choose>
@@ -216,7 +216,7 @@
         <td><button type="submit" name="cmd" value="save" ${container.disabledIfReadonly} onclick="return isPostSave()">Save as...</button></td>
         <td><button type="submit" name="cmd" value="delete" ${container.disabledIfReadonly} onclick="return isPostDelete()">Delete...</button></td>
         <td><input id="newjexlername" type="text" name="jexler" onkeyup="updateSaveIndicator()" value="${jexler.jexlerId}" ${container.disabledIfReadonly}></td>
-        <td><img id="savestatus" src="white.gif"></td>
+        <td><img id="savestatus" src="space.gif"></td>
       </tr>
       </table>
     </c:otherwise>
@@ -231,7 +231,7 @@
 
 <table class="status" id="status">
 
-<tr>
+<tr class="status">
 <td class="status">${container.startStopZap}</td>
 <td class="status">${container.restart}</td>
 <td class="status">${container.log}</td>
@@ -240,7 +240,7 @@
 </tr>
 
 <c:forEach items="${container.jexlers}" var="loopJexler">
-  <tr>
+  <tr class="status">
   <td class="status">${loopJexler.value.startStopZap}</td>
   <td class="status">${loopJexler.value.restart}</td>
   <td class="status">${loopJexler.value.log}</td>
