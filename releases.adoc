@@ -2,6 +2,10 @@ image:http://www.jexler.net/jexler.jpg["jexler logo", link="http:www.jexler.net/
 
 = jexler releases
 
+=== 2.0.6-SNAPSHOT (20XX-XX-XX)
+
+* ...
+
 === 2.0.5 (2017-02-03)
 
 * New look, a bit more professionally looking.
