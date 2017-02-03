@@ -179,6 +179,7 @@ class JexlerSpec extends Specification {
         mockService.nEventsSent == 0
         mockService.nEventsGotBack == 0
         mockService.nStopped == 0
+        mockService.nZapped == 0
 
         when:
         jexler.start()
@@ -199,6 +200,7 @@ class JexlerSpec extends Specification {
         mockService.nEventsSent == 1
         mockService.nEventsGotBack == 1
         mockService.nStopped == 0
+        mockService.nZapped == 0
 
         when:
         jexler.stop()
@@ -212,6 +214,7 @@ class JexlerSpec extends Specification {
         mockService.nEventsSent == 1
         mockService.nEventsGotBack == 1
         mockService.nStopped == 1
+        mockService.nZapped == 0
 
         when:
         jexler.stop()
@@ -221,6 +224,90 @@ class JexlerSpec extends Specification {
         jexler.runState == RunState.OFF
         jexler.off
         jexler.issues.empty
+    }
+
+    def 'TEST zap hanging jexler'() {
+        given:
+        def dir = tempFolder.root
+        def file = new File(dir, 'Test.groovy')
+        file.text = """\
+            [ 'autostart' : false, 'foo' : 'bar' ]
+            def mockService = new MockService(jexler, 'mock-service')
+            services.add(mockService)
+            services.start()
+            while (true) {
+              event = events.take()
+              if (event instanceof MockEvent) {
+                while(true) {}
+              } else if (event instanceof StopEvent) {
+                return
+              }
+            }
+            """.stripIndent()
+        when:
+        def jexler = new Jexler(file, new JexlerContainer(dir))
+
+        then:
+        jexler.runState == RunState.OFF
+        jexler.off
+        jexler.metaInfo.size() == 2
+        jexler.metaInfo.autostart == false
+        jexler.metaInfo.foo == 'bar'
+        jexler.issues.empty
+
+        when:
+        jexler.start()
+        jexler.waitForStartup(MS_10_SEC)
+        def mockService = MockService.getInstance('mock-service')
+
+        then:
+        jexler.runState == RunState.IDLE
+        jexler.on
+        jexler.issues.empty
+        mockService.nStarted == 1
+        mockService.nEventsSent == 0
+        mockService.nEventsGotBack == 0
+        mockService.nStopped == 0
+        mockService.nZapped == 0
+
+        when:
+        jexler.start()
+        jexler.waitForStartup(MS_10_SEC)
+
+        then:
+        jexler.runState == RunState.IDLE
+        jexler.on
+        jexler.issues.empty
+
+        when:
+        mockService.notifyJexler()
+        JexlerUtil.waitAtLeast(MS_1_SEC)
+
+        then:
+        jexler.issues.empty
+        mockService.nStarted == 1
+        mockService.nEventsSent == 1
+        mockService.nEventsGotBack == 0
+        mockService.nStopped == 0
+        mockService.nZapped == 0
+
+        when:
+        jexler.zap()
+        jexler.waitForShutdown(MS_10_SEC)
+        Thread.sleep(MS_10_SEC)
+
+        then:
+        jexler.runState == RunState.OFF
+        jexler.off
+        jexler.issues.size() == 1
+        jexler.issues.first().message == 'Script run failed.'
+        jexler.issues.first().cause.class == java.lang.ThreadDeath
+        mockService.nStarted == 1
+        mockService.nEventsSent == 1
+        mockService.nEventsGotBack == 0
+        // called a second time because stopping thread throws
+        mockService.nStopped == 2
+        mockService.nZapped == 1
     }
 
     def 'TEST track issue'() {

@@ -278,6 +278,7 @@ class Jexler implements Service, IssueTracker {
 
     @Override
     void zap() {
+        log.info("*** Jexler zap: $id")
         if (off) {
             return
         }

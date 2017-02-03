@@ -35,7 +35,7 @@ class CronServiceSlowSpec extends Specification {
     private final static String CRON_EVERY_10_SECS = '*/10 * * * * *'
     private final static String QUARTZ_CRON_EVERY_10_SECS = '*/10 * * * * ?'
 
-    def 'TEST SLOW (1.5 min) cron every minute'() {
+    def 'TEST SLOW (1.5 min) cron every ten secs'() {
         given:
         def jexler = new TestJexler()
 
@@ -104,6 +104,18 @@ class CronServiceSlowSpec extends Specification {
 
         then:
         service.off
+
+        when:
+        service.start()
+
+        then:
+        service.runState == RunState.IDLE
+
+        when:
+        service.zap()
+
+        then:
+        service.runState == RunState.OFF
 
         cleanup:
         jexler.container.close()

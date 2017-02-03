@@ -188,6 +188,21 @@ class JexlerContainerSpec extends Specification {
 
         then:
         container.off
+
+        when:
+        new File(dir, 'Jexler5.groovy').text = "[ 'autostart' : true ]\nwhile(true){}"
+        container = new JexlerContainer(dir)
+        container.start()
+        container.waitForStartup(MS_10_SEC)
+
+        then:
+        container.runState == RunState.BUSY_STARTING
+
+        when:
+        container.zap()
+
+        then:
+        container.runState == RunState.OFF
     }
 
     def 'TEST track issue'() {

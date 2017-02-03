@@ -114,6 +114,22 @@ class DirWatchServiceSlowSpec extends Specification {
 
         then:
         service.off
+
+        when:
+        // different watch directory
+        watchDir = tempFolder.newFolder()
+        service.dir = watchDir
+        service.start()
+
+        then:
+        service.on
+
+        when:
+        service.zap()
+
+        then:
+        service.runState == RunState.OFF
+
     }
 
     private static void checkCreateModifyDeleteEventsTriggered(Jexler jexler, Service service, File watchDir) {
