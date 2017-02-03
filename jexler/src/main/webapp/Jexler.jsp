@@ -190,6 +190,7 @@
       new Image().src = "start-dim.gif"
       new Image().src = "stop-dim.gif"
       new Image().src = "restart-dim.gif"
+      new Image().src = "zap-dim.gif"
       new Image().src = "web-dim.gif"
       new Image().src = "white-dim.gif"
     </script>
@@ -231,7 +232,7 @@
 <table class="status" id="status">
 
 <tr>
-<td class="status">${container.startStop}</td>
+<td class="status">${container.startStopZap}</td>
 <td class="status">${container.restart}</td>
 <td class="status">${container.log}</td>
 <td class="status status-name"><strong>Name</strong></td>
@@ -240,7 +241,7 @@
 
 <c:forEach items="${container.jexlers}" var="loopJexler">
   <tr>
-  <td class="status">${loopJexler.value.startStop}</td>
+  <td class="status">${loopJexler.value.startStopZap}</td>
   <td class="status">${loopJexler.value.restart}</td>
   <td class="status">${loopJexler.value.log}</td>
   <td class="status status-name" title="${loopJexler.value.runStateInfo}">${loopJexler.value.jexlerIdLink}</td>

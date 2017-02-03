@@ -32,6 +32,7 @@ class MockService extends ServiceBase {
 
     volatile int nStarted = 0
     volatile int nStopped = 0
+    volatile int nZapped = 0
     volatile int nEventsSent = 0
     volatile int nEventsGotBack = 0
     volatile RuntimeException stopRuntimeException = null
@@ -61,6 +62,13 @@ class MockService extends ServiceBase {
         if (stopRuntimeException != null) {
             throw stopRuntimeException
         }
+        runState = RunState.OFF
+    }
+
+    @Override
+    void zap() {
+        nZapped++
+        nStopped++
         runState = RunState.OFF
     }
 

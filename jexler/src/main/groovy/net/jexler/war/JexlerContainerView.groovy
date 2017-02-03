@@ -95,6 +95,9 @@ class JexlerContainerView {
                 handleStop()
                 handleStart()
                 break
+            case 'zap':
+                handleZap()
+                break
             case 'save':
                 handleSaveAs()
                 break
@@ -152,24 +155,45 @@ class JexlerContainerView {
         return "<a href='?cmd=info$jexlerParam'>$id</a>"
     }
 
-    String getStartStop() {
+    String getStartStopZap() {
         boolean on
+        boolean zap = false
         if (jexlerId == null) {
             on = container.on
         } else {
             on = jexler.on
+            if (on) {
+                for (Issue issue : jexler.issues) {
+                    if (issue.getMessage() == 'Timeout waiting for jexler shutdown.') {
+                        zap = true
+                        break
+                    }
+                }
+            }
         }
         if (on) {
-            return "<a href='?cmd=stop$jexlerParam' title='stop'><img src='stop.gif'></a>"
+            return zap ? getZap() : getStop()
         } else {
-            return "<a href='?cmd=start$jexlerParam' title='start'><img src='start.gif'></a>"
+            return getStart()
         }
+    }
+
+    String getStart() {
+        return "<a href='?cmd=start$jexlerParam' title='start'><img src='start.gif'></a>"
+    }
+
+    String getStop() {
+        return "<a href='?cmd=stop$jexlerParam' title='stop'><img src='stop.gif'></a>"
+    }
+
+    String getZap() {
+        return "<a href='?cmd=zap$jexlerParam' title='zap'><img src='zap.gif'></a>"
     }
 
     String getRestart() {
         return "<a href='?cmd=restart$jexlerParam' title='restart'><img src='restart.gif'></a>"
     }
-    
+
     String getRunStateInfo() {
         return jexler.runState.info
     }
@@ -342,6 +366,14 @@ class JexlerContainerView {
         }
     }
 
+    private void handleZap() {
+        if (targetJexlerId == null) {
+            container.zap()
+        } else if (targetJexler != null) {
+            targetJexler.zap()
+        }
+    }
+
     private void handleSaveAs() {
         if (!JexlerContextListener.scriptAllowEdit()) {
             return
@@ -431,7 +463,6 @@ class JexlerContainerView {
             stacktrace = "<hr><pre class='log'>$stacktrace</pre><hr>"
 
         }
-        //String stacktrace = (t != null) ? "<hr><pre>${JexlerUtil.getStackTrace(t)}</pre><hr>" : ''
         response.writer.println("""\
 <html>
   <head>

@@ -80,6 +80,11 @@ abstract class ServiceBase implements Service {
         return id
     }
 
+    @Override
+    void zap() {
+        runState = RunState.OFF
+    }
+
     protected Jexler getJexler() {
         return jexler
     }

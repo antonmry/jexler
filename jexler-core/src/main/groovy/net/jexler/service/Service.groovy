@@ -70,6 +70,12 @@ interface Service {
     boolean isOff()
 
     /**
+     * Forcefully terminate service, as far as possible;
+     * should not wait for anything, nor throw anything.
+     */
+    void zap()
+
+    /**
      * Get service id.
      */
     String getId()

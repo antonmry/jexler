@@ -4,8 +4,11 @@ image:http://www.jexler.net/jexler.jpg["jexler logo", link="http:www.jexler.net/
 
 === 2.0.4-SNAPSHOT (20XX-XX-XX)
 
+* Added zap() method to Service interface for quick forceful
+  termination of services, including jexlers.
+* Allowing to zap unresponsive jexlers in GUI after failing to
+  stop after timeout (show zap icon instead of stop icon then).
 * Handling *.ttf with default servlet.
-* ...
 
 === 2.0.3 (2017-02-02)
 

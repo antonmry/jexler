@@ -136,4 +136,23 @@ class CronService extends ServiceBase {
         runState = RunState.OFF
     }
 
+    @Override
+    void zap() {
+        if (off) {
+            return
+        }
+        runState = RunState.OFF
+        if (scheduler != null) {
+            new Thread() {
+                void run() {
+                    try {
+                        scheduler.unscheduleJob(triggerKey)
+                    } catch (Throwable t) {
+                        log.trace('failed to unschedule cron job', t)
+                    }
+                }
+            }.start()
+        }
+    }
+
 }

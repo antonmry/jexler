@@ -149,6 +149,15 @@ class ServiceGroup implements Service {
     }
 
     @Override
+    void zap() {
+        synchronized(services) {
+            for (Service service : services) {
+                service.zap()
+            }
+        }
+    }
+
+    @Override
     String getId() {
         return id
     }

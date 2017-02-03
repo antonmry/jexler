@@ -166,4 +166,27 @@ class DirWatchService extends ServiceBase {
         runState = RunState.OFF
     }
 
+    @Override
+    void zap() {
+        if (off) {
+            return
+        }
+        runState = RunState.OFF
+        new Thread() {
+            void run() {
+                try {
+                    scheduler.unscheduleJob(triggerKey)
+                } catch (Throwable t) {
+                    log.trace('failed to unschedule cron job', t)
+                }
+                try {
+                    watchKey.cancel()
+                    watchService.close()
+                } catch (Throwable t) {
+                    log.trace('failed stop watching directory', t)
+                }
+            }
+        }
+    }
+
 }

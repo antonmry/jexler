@@ -79,6 +79,7 @@ class Jexler implements Service, IssueTracker {
     private final JexlerContainer container
     private volatile RunState runState
     private volatile Script script
+    private volatile Thread scriptThread
     /** Event queue. */
     protected final Events events
 
@@ -177,7 +178,7 @@ class Jexler implements Service, IssueTracker {
         }
 
         // create script and run in a separate thread
-        Thread scriptThread = new Thread(
+        scriptThread = new Thread(
                 new Runnable() {
                     void run() {
                         // create script instance
@@ -273,6 +274,31 @@ class Jexler implements Service, IssueTracker {
     @Override
     void trackIssue(Issue issue) {
         issueTracker.trackIssue(issue)
+    }
+
+    @Override
+    void zap() {
+        if (off) {
+            return
+        }
+        runState = RunState.OFF
+        final ServiceGroup services = this.services
+        final Thread scriptThread = this.scriptThread
+        final Jexler jexler = this
+        new Thread() {
+            void run() {
+                if (services != null) {
+                    services.zap()
+                }
+                if (scriptThread != null) {
+                    try {
+                        scriptThread.stop()
+                    } catch (Throwable t) {
+                        trackIssue(jexler, 'Failed to stop jexler thread.', t)
+                    }
+                }
+            }
+        }.start()
     }
 
     @Override
