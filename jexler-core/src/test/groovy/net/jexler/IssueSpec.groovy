@@ -18,6 +18,7 @@ package net.jexler
 
 import net.jexler.service.MockService
 import net.jexler.test.FastTests
+
 import org.junit.experimental.categories.Category
 import spock.lang.Specification
 

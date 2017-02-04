@@ -16,9 +16,9 @@
 
 package net.jexler
 
-import groovy.transform.CompileStatic
-
 import net.jexler.service.Event
+
+import groovy.transform.CompileStatic
 
 /**
  * Jexler for unit tests, no args constructor

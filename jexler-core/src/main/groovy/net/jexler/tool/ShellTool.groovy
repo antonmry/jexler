@@ -16,12 +16,10 @@
 
 package net.jexler.tool
 
+import net.jexler.JexlerUtil
+
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
-
-import java.util.Map.Entry
-
-import net.jexler.JexlerUtil
 
 /**
  * Tool for running shell commands, just a thin wrapper around

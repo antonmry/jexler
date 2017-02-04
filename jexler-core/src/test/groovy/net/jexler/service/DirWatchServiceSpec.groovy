@@ -16,10 +16,11 @@
 
 package net.jexler.service
 
-import spock.lang.Specification
 import net.jexler.TestJexler
 import net.jexler.test.FastTests
+
 import org.junit.experimental.categories.Category
+import spock.lang.Specification
 
 /**
  * Tests the respective class.

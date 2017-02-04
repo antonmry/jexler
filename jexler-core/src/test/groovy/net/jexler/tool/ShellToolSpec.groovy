@@ -17,6 +17,7 @@
 package net.jexler.tool
 
 import net.jexler.test.FastTests
+
 import org.junit.Rule
 import org.junit.experimental.categories.Category
 import org.junit.rules.TemporaryFolder

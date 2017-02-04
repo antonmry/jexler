@@ -16,9 +16,10 @@
 
 package net.jexler
 
+import net.jexler.test.FastTests
+
 import groovy.grape.Grape
 import groovy.grape.GrapeEngine
-import net.jexler.test.FastTests
 import org.junit.Rule
 import org.junit.experimental.categories.Category
 import org.junit.rules.TemporaryFolder

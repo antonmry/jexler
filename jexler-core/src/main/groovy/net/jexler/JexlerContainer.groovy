@@ -16,10 +16,10 @@
 
 package net.jexler
 
-import groovy.transform.CompileStatic
-
-import net.jexler.service.ServiceGroup
 import net.jexler.service.Service
+import net.jexler.service.ServiceGroup
+
+import groovy.transform.CompileStatic
 import org.quartz.Scheduler
 import org.quartz.impl.DirectSchedulerFactory
 import org.quartz.simpl.RAMJobStore

@@ -16,24 +16,22 @@
 
 package net.jexler.war
 
-import groovy.transform.CompileStatic
-import net.jexler.JexlerUtil
-
-import javax.servlet.http.HttpServletResponse
-import javax.servlet.jsp.PageContext
-import java.text.SimpleDateFormat
-
-import javax.activation.MimetypesFileTypeMap
-import javax.servlet.http.HttpServletRequest
-
 import net.jexler.Issue
 import net.jexler.Jexler
 import net.jexler.JexlerContainer
+import net.jexler.JexlerUtil
 import net.jexler.RunState
 import net.jexler.service.Service
 
+import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+
+import javax.activation.MimetypesFileTypeMap
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
+import javax.servlet.jsp.PageContext
+import java.text.SimpleDateFormat
 
 /**
  * Jexler(s) view.
@@ -213,7 +211,8 @@ class JexlerContainerView {
             if (jexler.issues.size() == 0) {
                 return "<img src='ok.gif' title='no issues'>"
             } else {
-                return "<a href='?cmd=log$jexlerParam' title='show issues'><img src='error.gif'></a>"
+                String title = "show issues (${jexler.issues.size()})"
+                return "<a href='?cmd=log$jexlerParam' title='$title'><img src='error.gif'></a>"
             }
 
         }

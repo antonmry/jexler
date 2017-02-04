@@ -68,7 +68,7 @@
             if (text == "") {
               text = previousStatusText;
               if (text.indexOf("(offline)") < 0) {
-                text = text.replace("<strong>Name</strong>", "<strong>(offline)</strong>");
+                text = text.replace("<strong>Scripts</strong>", "<strong>(offline)</strong>");
                 text = text.replace(/\.gif'/g, "-dim.gif'");
                 text = text.replace(/<a href='\?cmd=[a-z]+(&jexler=[A-Za-z0-9]+)?'>/g, "");
                 text = text.replace(/<\/a>/g, "");
@@ -235,7 +235,7 @@
 <td class="status">${container.startStopZap}</td>
 <td class="status">${container.restart}</td>
 <td class="status">${container.log}</td>
-<td class="status status-name"><strong>Name</strong></td>
+<td class="status status-name"><strong>Scripts</strong></td>
 <td class="status">${container.web}</td>
 </tr>
 

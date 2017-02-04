@@ -16,9 +16,10 @@
 
 package net.jexler.service
 
-import groovy.transform.CompileStatic
 import net.jexler.Jexler
 import net.jexler.RunState
+
+import groovy.transform.CompileStatic
 
 /**
  * Abstract service base implementation.

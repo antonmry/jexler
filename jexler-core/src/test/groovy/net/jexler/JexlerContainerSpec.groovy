@@ -18,6 +18,7 @@ package net.jexler
 
 import net.jexler.service.StopEvent
 import net.jexler.test.FastTests
+
 import org.junit.Rule
 import org.junit.experimental.categories.Category
 import org.junit.rules.TemporaryFolder

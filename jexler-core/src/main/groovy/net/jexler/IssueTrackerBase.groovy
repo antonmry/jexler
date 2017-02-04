@@ -16,9 +16,9 @@
 
 package net.jexler
 
-import groovy.transform.CompileStatic
 import net.jexler.service.Service
 
+import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 

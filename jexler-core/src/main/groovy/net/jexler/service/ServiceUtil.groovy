@@ -16,9 +16,10 @@
 
 package net.jexler.service
 
+import net.jexler.JexlerUtil
+
 import ch.grengine.Grengine
 import groovy.transform.CompileStatic
-import net.jexler.JexlerUtil
 import org.quartz.CronExpression
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

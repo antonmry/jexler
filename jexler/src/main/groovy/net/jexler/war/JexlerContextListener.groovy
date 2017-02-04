@@ -16,22 +16,18 @@
 
 package net.jexler.war
 
-import groovy.transform.CompileStatic
+import net.jexler.Jexler
+import net.jexler.JexlerContainer
 import net.jexler.JexlerUtil
+
+import ch.qos.logback.classic.LoggerContext
+import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 import javax.servlet.ServletContext
 import javax.servlet.ServletContextEvent
 import javax.servlet.ServletContextListener
-
-import net.jexler.Jexler
-import net.jexler.JexlerContainer
-
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-
-import ch.qos.logback.classic.LoggerContext
-import ch.qos.logback.classic.spi.ILoggingEvent
-import ch.qos.logback.core.Appender
 
 /**
  * Jexler context listener.
@@ -43,7 +39,7 @@ class JexlerContextListener implements ServletContextListener    {
 
     private static final Logger log = LoggerFactory.getLogger(JexlerContextListener.class)
 
-    private static final String guiVersion = '2.0.6-SNAPSHOT' // IMPORTANT: keep in sync with version in main build.gradle
+    private static final String guiVersion = '2.0.5' // IMPORTANT: keep in sync with version in main build.gradle
 
     private static String jexlerTooltip
     private static ServletContext servletContext

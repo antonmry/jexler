@@ -20,6 +20,7 @@ import net.jexler.Jexler
 import net.jexler.RunState
 import net.jexler.TestJexler
 import net.jexler.test.SlowTests
+
 import org.junit.Rule
 import org.junit.experimental.categories.Category
 import org.junit.rules.TemporaryFolder

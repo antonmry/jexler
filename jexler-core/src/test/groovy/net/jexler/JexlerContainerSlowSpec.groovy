@@ -17,6 +17,7 @@
 package net.jexler
 
 import net.jexler.test.SlowTests
+
 import org.junit.Rule
 import org.junit.experimental.categories.Category
 import org.junit.rules.TemporaryFolder

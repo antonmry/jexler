@@ -16,9 +16,9 @@
 
 package net.jexler
 
-import groovy.transform.CompileStatic
-
 import net.jexler.service.Service
+
+import groovy.transform.CompileStatic
 
 /**
  * Issue.

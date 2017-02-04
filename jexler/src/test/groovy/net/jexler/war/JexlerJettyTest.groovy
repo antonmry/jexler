@@ -16,9 +16,9 @@
 
 package net.jexler.war
 
-import groovy.transform.CompileStatic
 import net.jexler.test.DemoTests
 
+import groovy.transform.CompileStatic
 import org.eclipse.jetty.server.Server
 import org.eclipse.jetty.webapp.WebAppContext
 import org.junit.Test

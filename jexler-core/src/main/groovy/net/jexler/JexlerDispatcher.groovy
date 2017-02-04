@@ -16,10 +16,11 @@
 
 package net.jexler
 
-import groovy.transform.CompileStatic
 import net.jexler.Jexler.Events
 import net.jexler.service.Event
 import net.jexler.service.StopEvent
+
+import groovy.transform.CompileStatic
 
 /**
  * Jexler dispatcher.

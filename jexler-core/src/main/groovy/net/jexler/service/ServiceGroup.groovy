@@ -16,10 +16,9 @@
 
 package net.jexler.service
 
-import groovy.transform.CompileStatic
-
 import net.jexler.RunState
 
+import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 

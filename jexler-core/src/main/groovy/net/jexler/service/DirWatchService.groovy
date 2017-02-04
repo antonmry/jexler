@@ -16,6 +16,9 @@
 
 package net.jexler.service
 
+import net.jexler.Jexler
+import net.jexler.RunState
+
 import groovy.transform.CompileStatic
 import org.quartz.CronScheduleBuilder
 import org.quartz.JobBuilder
@@ -24,18 +27,14 @@ import org.quartz.Scheduler
 import org.quartz.Trigger
 import org.quartz.TriggerBuilder
 import org.quartz.TriggerKey
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 import java.nio.file.Path
 import java.nio.file.StandardWatchEventKinds
 import java.nio.file.WatchEvent
 import java.nio.file.WatchKey
 import java.nio.file.WatchService
-
-import net.jexler.Jexler
-import net.jexler.RunState
-
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
 /**
  * Directory watch service, creates an event when a file

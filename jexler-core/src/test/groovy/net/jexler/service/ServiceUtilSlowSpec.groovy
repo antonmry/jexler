@@ -19,6 +19,7 @@ package net.jexler.service
 import net.jexler.JexlerUtil
 import net.jexler.RunState
 import net.jexler.test.SlowTests
+
 import org.junit.experimental.categories.Category
 import spock.lang.Specification
 

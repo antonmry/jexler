@@ -16,23 +16,23 @@
 
 package net.jexler
 
-import groovy.grape.Grape
-import groovy.grape.GrapeEngine
-import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
-
-import java.lang.reflect.Field
-import java.util.concurrent.LinkedBlockingQueue
-
 import net.jexler.service.Event
 import net.jexler.service.Service
 import net.jexler.service.ServiceGroup
 import net.jexler.service.ServiceUtil
 import net.jexler.service.StopEvent
+
+import groovy.grape.Grape
+import groovy.grape.GrapeEngine
+import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
 import org.codehaus.groovy.control.CompilerConfiguration
 import org.codehaus.groovy.control.customizers.ImportCustomizer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+
+import java.lang.reflect.Field
+import java.util.concurrent.LinkedBlockingQueue
 
 /**
  * Jexler, runs a Groovy script that handles events.

@@ -20,6 +20,7 @@ import net.jexler.service.CronEvent
 import net.jexler.service.DirWatchEvent
 import net.jexler.service.MockService
 import net.jexler.test.FastTests
+
 import org.junit.Rule
 import org.junit.experimental.categories.Category
 import org.junit.rules.TemporaryFolder
