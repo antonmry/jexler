@@ -34,4 +34,4 @@ Comes as a library (JAR) plus a simple relaxed web GUI (WAR).
 
 == Screenshots
 
-image:https://a.fsdn.com/con/app/proj/jexler/screenshots/jexler-gui.jpg[screenshot]
+image:https://www.jexler.net/guide/jexler-gui.jpg[screenshot]
