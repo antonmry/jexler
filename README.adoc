@@ -32,6 +32,6 @@ Comes as a library (JAR) plus a simple relaxed web GUI (WAR).
 * Groovydoc (jexler-core): https://www.jexler.net/groovydoc/
 * Users' Guide: https://www.jexler.net/guide/
 
-== Screenshots
+== Screenshot
 
 image:https://www.jexler.net/guide/jexler-gui.jpg[screenshot]
