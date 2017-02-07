@@ -19,7 +19,8 @@ asciidoctor {
         }
     }
 
-    attributes 'source-highlighter' : 'prettify',
+    attributes \
+            'source-highlighter' : 'prettify',
             'toc':'left',
             'icons': 'font',
             'setanchors':'true',

@@ -86,7 +86,7 @@ jexler/
   ...
 ----
 
-The first three jexlers are running, the last one is off, and you could start
+The first two jexlers are running, the third one is off, and you could start
 or stop them in the GUI, or look at the log file, edit the scripts, etc.
 
 If you want to try it out and play with jexler immediately:
@@ -104,7 +104,7 @@ methods that handle different life cycle stages and received events:
 
 [source,groovy]
 ----
-[[ "autostart" : true ]
+[ "autostart" : true ]
 
 // dispatch to methods below
 JexlerDispatcher.dispatch(this)
@@ -171,7 +171,7 @@ void handleCronEvent(def event) {
 }
 ----
 
-Under the hood, its still just a running Groovy script (and if you do not
+Under the hood, it is still just a running Groovy script (and if you do not
 like the default behavior of `JexlerDispatcher`, get its Groovy source from the jexler
 source at github and copy it to a  Groovy script called e.g. `MyJexlerDispatcher.groovy`
 put it into the jexlers directory, adjust it as needed, and then call
@@ -496,14 +496,14 @@ like the CronService).
 
 Click the jexler logo to reload the main view. Note that the table with the run states
 is reloaded automatically every second by JavaScript. You typically only need to reload
-explicitly if JavaScript is off or for older Internet Explorer browsers for which
+explicitly if JavaScript is off or for very old Internet Explorer browsers for which
 this feature has not been supported in the jexler web GUI.
 
 Hover over the jexler logo to see the jexler release version.
 
 If a jexler becomes unresponsive, i.e. does not respond to stopping within the timeout,
 the stop icon changes to a flash icon in the GUI. This allows to "zap" the jexler, which
-means to stop the jexler thread with Thread#stop() and to stop all of its services.
+means to stop the jexler thread with `Thread#stop()` and to stop all of its services.
 Note that if the jexler script started more threads those won't be stopped and stopping
 a thread can also have other side effects, in fact it is generally considered unsafe.
 
@@ -642,15 +642,15 @@ jexler-core is deeply tested, close to 100% test coverage in jacoco,
 except for a few artefacts and except that jacoco underrates Groovy
 coverage for purely technical reasons.
 Unit tests are written with https://code.google.com/p/spock/[Spock],
-a *fantastic* test framework written in Groovy - fascinating...
+a *fascinating* test framework written in Groovy.
 
 The jexler webapp is very simple and contains a demo unit test that starts it in a Jetty embedded web server.
 
 Within a jexler, the following packages are automatically imported by default:
 
-* net.jexler
-* net.jexler.service
-* net.jexler.tool
+* `net.jexler`
+* `net.jexler.service`
+* `net.jexler.tool`
 
 and the following variables are available to jexler Groovy scripts (binding):
 
@@ -678,6 +678,15 @@ class Util {
     log.trace("Method called for jexler '${Jex.vars.jexler.id}'")
   }
 }
+----
+
+This is implemented by always adding the following class to the Groovy
+classpath and by setting its static variable `vars` to the map of the
+script binding via reflection:
+
+[source,groovy]
+----
+public class Jex { public static Map vars }
 ----
 
 === Meta Info
@@ -740,9 +749,9 @@ a different story...
 === Checks and Cleanups
 
 At work I continue to use it since 2013 for various minor maintenance things,
-e.g. for checking if certain Hudson nightly builds have really run or for warning
-if disk space is getting low resp. cleaning up right away in that case,
-and for a few more things.
+e.g. for checking if certain nightly builds have really run or for warning
+when disk space is getting low resp. cleaning up right away in that case,
+and for a few more things, including a few simple web GUIs.
 
 === More
 
