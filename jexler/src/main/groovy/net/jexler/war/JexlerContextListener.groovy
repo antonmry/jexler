@@ -41,16 +41,16 @@ class JexlerContextListener implements ServletContextListener    {
 
     private static final String guiVersion = '2.0.6-SNAPSHOT' // IMPORTANT: keep in sync with version in main build.gradle
 
-    private static String jexlerTooltip
-    private static ServletContext servletContext
-    private static JexlerContainer container
-    private static File logfile
-    
-    private static long startTimeout
-    private static long stopTimeout
-    private static boolean scriptAllowEdit
-    private static boolean scriptConfirmSave
-    private static boolean scriptConfirmDelete
+    static String jexlerTooltip
+    static ServletContext servletContext
+    static JexlerContainer container
+    static File logfile
+
+    static long startTimeout
+    static long stopTimeout
+    static boolean scriptAllowEdit
+    static boolean scriptConfirmSave
+    static boolean scriptConfirmDelete
 
     @Override
     void contextInitialized(ServletContextEvent event) {
@@ -61,13 +61,12 @@ class JexlerContextListener implements ServletContextListener    {
         String groovyVersion = GroovyClassLoader.class.package.implementationVersion
         groovyVersion = (groovyVersion == null) ? '0.0.0' : groovyVersion
         jexlerTooltip = """\
-Jexler $guiVersion
-• jexler-core: $coreVersion
-• Groovy: $groovyVersion
-https://www.jexler.net/\
-"""
+          Jexler $guiVersion
+          • jexler-core: $coreVersion
+          • Groovy: $groovyVersion
+          https://www.jexler.net/""".stripIndent()
         log.info("Welcome to jexler.")
-        log.info(JexlerUtil.toSingleLine(jexlerTooltip).replace('%n', ' / '))
+        log.info(JexlerUtil.toSingleLine(jexlerTooltip).replace('%n', ' | ').replace('• ', ''))
         servletContext = event.servletContext
         String webappPath = servletContext.getRealPath('/')
         container = new JexlerContainer(new File(webappPath, 'WEB-INF/jexlers'))
@@ -89,17 +88,11 @@ https://www.jexler.net/\
         log.trace("logfile: '$logfile.absolutePath'")
         
         String param = servletContext.getInitParameter('jexler.start.timeout')
-        startTimeout = 10000
-        if (param != null) {
-            startTimeout = Long.parseLong(param)
-        }
+        startTimeout = param ? Long.parseLong(param) : 10000
         log.trace("jexler start timeout: $startTimeout ms")
         
         param = servletContext.getInitParameter('jexler.stop.timeout')
-        stopTimeout = 10000
-        if (param != null) {
-            stopTimeout = Long.parseLong(param)
-        }
+        stopTimeout = param ? Long.parseLong(param) : 10000
         log.trace("jexler stop timeout: $stopTimeout ms")
 
         param = servletContext.getInitParameter('jexler.security.script.allowEdit')
@@ -120,42 +113,6 @@ https://www.jexler.net/\
         container.stop()
         container.close()
         log.info('Jexler done.')
-    }
-
-    static String getJexlerTooltip() {
-        return jexlerTooltip
-    }
-
-    static ServletContext getServletContext() {
-        return servletContext
-    }
-
-    static JexlerContainer getContainer() {
-        return container
-    }
-
-    static File getLogfile() {
-        return logfile
-    }
-
-    static long getStartTimeout() {
-        return startTimeout
-    }
-
-    static long getStopTimeout() {
-        return stopTimeout
-    }
-    
-    static boolean scriptAllowEdit() {
-        return scriptAllowEdit
-    }
-    
-    static boolean scriptConfirmSave() {
-        return scriptConfirmSave
-    }
-    
-    static boolean scriptConfirmDelete() {
-        return scriptConfirmDelete
     }
 
 }

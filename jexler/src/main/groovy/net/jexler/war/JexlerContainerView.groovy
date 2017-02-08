@@ -329,11 +329,11 @@ class JexlerContainerView {
     }
     
     String getScriptAllowEdit() {
-        return Boolean.toString(JexlerContextListener.scriptAllowEdit())
+        return Boolean.toString(JexlerContextListener.scriptAllowEdit)
     }
     
     String getDisabledIfReadonly() {
-        boolean allowEdit = JexlerContextListener.scriptAllowEdit()
+        boolean allowEdit = JexlerContextListener.scriptAllowEdit
         if (allowEdit) {
             return ''
         } else {
@@ -342,11 +342,11 @@ class JexlerContainerView {
     }
 
     boolean isConfirmSave() {
-        return JexlerContextListener.scriptConfirmSave()
+        return JexlerContextListener.scriptConfirmSave
     }
 
     boolean isConfirmDelete() {
-        return JexlerContextListener.scriptConfirmDelete()
+        return JexlerContextListener.scriptConfirmDelete
     }
 
     private void handleStart() {
@@ -378,7 +378,7 @@ class JexlerContainerView {
     }
 
     private void handleSaveAs() {
-        if (!JexlerContextListener.scriptAllowEdit()) {
+        if (!JexlerContextListener.scriptAllowEdit) {
             return
         }
         String source = request.getParameter('source')
@@ -399,7 +399,7 @@ class JexlerContainerView {
     }
 
     private void handleDelete() {
-        if (!JexlerContextListener.scriptAllowEdit()) {
+        if (!JexlerContextListener.scriptAllowEdit) {
             return
         }
         File file = container.getJexlerFile(targetJexlerId)
