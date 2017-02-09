@@ -53,7 +53,7 @@
 
     function getStatus() {
       if (isGetStatusPending) {
-        logGetStatus('skipping')
+        logGetStatus('skipping');
         return;
       }
       var xmlhttp = new XMLHttpRequest();
@@ -89,18 +89,19 @@
       xmlhttp.onabort = function() {
         logGetStatus('=> aborted');
         isGetStatusPending = false;
-      }
+      };
       xmlhttp.onerror = function() {
         logGetStatus('=> error');
         isGetStatusPending = false;
-      }
+      };
       xmlhttp.onload = function() {
         logGetStatus('=> loaded');
         isGetStatusPending = false;
-      }
+      };
       xmlhttp.ontimeout = function() {
         logGetStatus('=> timeout');
-        isGetStatusPending = false; }
+        isGetStatusPending = false;
+      };
       xmlhttp.open('GET', '?cmd=status', true);
       xmlhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
       xmlhttp.timeout = 5000;
@@ -140,7 +141,6 @@
       var xmlhttp = new XMLHttpRequest();
       xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState === 4) {
-          var text = xmlhttp.responseText;
           if (xmlhttp.status / 100 == 2 && xmlhttp.responseText != "") {
             editor.focus();
             savedSource = currentSource;
@@ -167,7 +167,7 @@
 
     window.onresize = function() {
       setHeight();
-    }
+    };
 
     function setHeight() {
       var hTotal = document.documentElement.clientHeight;
@@ -184,15 +184,15 @@
 
   <div class="hidden">
     <script>
-      new Image().src = "ok-dim.gif"
-      new Image().src = "error-dim.gif"
-      new Image().src = "log-dim.gif"
-      new Image().src = "start-dim.gif"
-      new Image().src = "stop-dim.gif"
-      new Image().src = "restart-dim.gif"
-      new Image().src = "zap-dim.gif"
-      new Image().src = "web-dim.gif"
-      new Image().src = "space-dim.gif"
+      new Image().src = "ok-dim.gif";
+      new Image().src = "error-dim.gif";
+      new Image().src = "log-dim.gif";
+      new Image().src = "start-dim.gif";
+      new Image().src = "stop-dim.gif";
+      new Image().src = "restart-dim.gif";
+      new Image().src = "zap-dim.gif";
+      new Image().src = "web-dim.gif";
+      new Image().src = "space-dim.gif";
     </script>
   </div>
 

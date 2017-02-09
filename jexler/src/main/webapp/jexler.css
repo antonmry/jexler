@@ -51,10 +51,10 @@ td.status-name {
 td.status-offline {
   color: gray;
 }
-input#newjexlername {width: 150%}
+input#newjexlername {width: 25em}
 div.autoscroll {
-    vertical-align: top;
-    overflow-y: auto;
+  vertical-align: top;
+  overflow-y: auto;
 }
 pre.log {
   color:gray;
