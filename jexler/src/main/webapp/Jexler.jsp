@@ -244,7 +244,7 @@
   <td class="status">${loopJexler.value.startStopZap}</td>
   <td class="status">${loopJexler.value.restart}</td>
   <td class="status">${loopJexler.value.log}</td>
-  <td class="status status-name" title="${loopJexler.value.runStateInfo}">${loopJexler.value.jexlerIdLink}</td>
+  <td class="status status-name" title="${loopJexler.value.stateInfo}">${loopJexler.value.jexlerIdLink}</td>
   <td class="status">${loopJexler.value.web}</td>
   </tr>
 </c:forEach>

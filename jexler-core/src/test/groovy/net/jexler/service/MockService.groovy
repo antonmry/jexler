@@ -17,7 +17,6 @@
 package net.jexler.service
 
 import net.jexler.Jexler
-import net.jexler.RunState
 
 import groovy.transform.CompileStatic
 
@@ -56,7 +55,7 @@ class MockService extends ServiceBase {
     @Override
     void start() {
         nStarted++
-        runState = RunState.IDLE
+        state = ServiceState.IDLE
     }
 
     @Override
@@ -65,14 +64,14 @@ class MockService extends ServiceBase {
         if (stopRuntimeException != null) {
             throw stopRuntimeException
         }
-        runState = RunState.OFF
+        state = ServiceState.OFF
     }
 
     @Override
     void zap() {
         nZapped++
         nStopped++
-        runState = RunState.OFF
+        state = ServiceState.OFF
     }
 
     void notifyGotEvent() {

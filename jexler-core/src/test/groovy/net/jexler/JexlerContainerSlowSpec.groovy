@@ -16,6 +16,7 @@
 
 package net.jexler
 
+import net.jexler.service.ServiceState
 import net.jexler.test.SlowTests
 
 import org.junit.Rule
@@ -56,7 +57,7 @@ class JexlerContainerSlowSpec extends Specification {
               event = events.take()
               if (event instanceof StopEvent) {
                 // set explicitly because cannot easily wait after returns
-                jexler.runState = RunState.BUSY_STOPPING
+                jexler.state = ServiceState.BUSY_STOPPING
                 JexlerUtil.waitAtLeast(10000)
                 return
               }
@@ -84,10 +85,10 @@ class JexlerContainerSlowSpec extends Specification {
         container.waitForStartup(MS_5_SEC)
 
         then:
-        container.runState == RunState.BUSY_STARTING
-        jexler1.runState == RunState.BUSY_STARTING
-        jexler2.runState == RunState.IDLE
-        jexler3.runState == RunState.BUSY_STARTING
+        container.state == ServiceState.BUSY_STARTING
+        jexler1.state == ServiceState.BUSY_STARTING
+        jexler2.state == ServiceState.IDLE
+        jexler3.state == ServiceState.BUSY_STARTING
         container.issues.size() == 2
         container.issues.each { issue ->
             assert issue.message == 'Timeout waiting for jexler startup.'
@@ -98,10 +99,10 @@ class JexlerContainerSlowSpec extends Specification {
         container.waitForStartup(MS_20_SEC)
 
         then:
-        container.runState == RunState.IDLE
-        jexler1.runState == RunState.IDLE
-        jexler2.runState == RunState.IDLE
-        jexler3.runState == RunState.IDLE
+        container.state == ServiceState.IDLE
+        jexler1.state == ServiceState.IDLE
+        jexler2.state == ServiceState.IDLE
+        jexler3.state == ServiceState.IDLE
         container.issues.empty
 
         when:
@@ -109,10 +110,10 @@ class JexlerContainerSlowSpec extends Specification {
         container.waitForShutdown(MS_5_SEC)
 
         then:
-        container.runState == RunState.IDLE
-        jexler1.runState == RunState.BUSY_STOPPING
-        jexler2.runState == RunState.OFF
-        jexler3.runState == RunState.BUSY_STOPPING
+        container.state == ServiceState.IDLE
+        jexler1.state == ServiceState.BUSY_STOPPING
+        jexler2.state == ServiceState.OFF
+        jexler3.state == ServiceState.BUSY_STOPPING
         container.issues.size() == 2
         container.issues.each { issue ->
             assert issue.message == 'Timeout waiting for jexler shutdown.'
@@ -123,10 +124,10 @@ class JexlerContainerSlowSpec extends Specification {
         container.waitForShutdown(MS_20_SEC)
 
         then:
-        container.runState == RunState.OFF
-        jexler1.runState == RunState.OFF
-        jexler2.runState == RunState.OFF
-        jexler3.runState == RunState.OFF
+        container.state == ServiceState.OFF
+        jexler1.state == ServiceState.OFF
+        jexler2.state == ServiceState.OFF
+        jexler3.state == ServiceState.OFF
         container.issues.empty
     }
 

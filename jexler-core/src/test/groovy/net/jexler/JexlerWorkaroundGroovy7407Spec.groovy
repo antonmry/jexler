@@ -16,6 +16,7 @@
 
 package net.jexler
 
+import net.jexler.service.ServiceState
 import net.jexler.test.FastTests
 
 import groovy.grape.Grape
@@ -70,7 +71,7 @@ class JexlerWorkaroundGroovy7407Spec extends Specification {
         jexler.waitForStartup(10000)
 
         then:
-        jexler.runState == RunState.OFF
+        jexler.state == ServiceState.OFF
         jexler.issues.empty
         Grape.instance instanceof Jexler.WorkaroundGroovy7407WrappingGrapeEngine
     }
@@ -89,7 +90,7 @@ class JexlerWorkaroundGroovy7407Spec extends Specification {
         jexler.waitForStartup(10000)
 
         then:
-        jexler.runState == RunState.OFF
+        jexler.state == ServiceState.OFF
         jexler.issues.size() == 1
         jexler.issues.first().message == 'Script compile failed.'
         Grape.instance instanceof Jexler.WorkaroundGroovy7407WrappingGrapeEngine

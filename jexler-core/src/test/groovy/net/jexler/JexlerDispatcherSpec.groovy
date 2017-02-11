@@ -19,6 +19,7 @@ package net.jexler
 import net.jexler.service.CronEvent
 import net.jexler.service.DirWatchEvent
 import net.jexler.service.MockService
+import net.jexler.service.ServiceState
 import net.jexler.test.FastTests
 
 import org.junit.Rule
@@ -76,7 +77,7 @@ class JexlerDispatcherSpec extends Specification {
         jexler.waitForStartup(MS_10_SEC)
 
         then:
-        jexler.runState == RunState.IDLE
+        jexler.state == ServiceState.IDLE
         jexler.issues.empty
 
         when:
@@ -113,7 +114,7 @@ class JexlerDispatcherSpec extends Specification {
         jexler.waitForShutdown(MS_10_SEC)
 
         then:
-        jexler.runState == RunState.OFF
+        jexler.state == ServiceState.OFF
         jexler.issues.empty
         mockService.nStarted == 1
         mockService.nEventsSent == 1
@@ -140,7 +141,7 @@ class JexlerDispatcherSpec extends Specification {
         jexler.waitForStartup(MS_10_SEC)
 
         then:
-        jexler.runState == RunState.OFF
+        jexler.state == ServiceState.OFF
         jexler.issues.size() == 1
         jexler.issues.first().service == jexler
         jexler.issues.first().message == 'Dispatch: Mandatory start() method missing.'
@@ -186,7 +187,7 @@ class JexlerDispatcherSpec extends Specification {
         jexler.waitForStartup(MS_10_SEC)
 
         then:
-        jexler.runState == RunState.IDLE
+        jexler.state == ServiceState.IDLE
         jexler.issues.empty
 
         when:
@@ -209,7 +210,7 @@ class JexlerDispatcherSpec extends Specification {
         JexlerUtil.waitAtLeast(MS_1_SEC)
 
         then:
-        jexler.runState == RunState.IDLE
+        jexler.state == ServiceState.IDLE
         jexler.issues.empty
         mockService.nStarted == 1
         mockService.nEventsSent == 1
@@ -227,7 +228,7 @@ class JexlerDispatcherSpec extends Specification {
         JexlerUtil.waitAtLeast(MS_1_SEC)
 
         then:
-        jexler.runState == RunState.IDLE
+        jexler.state == ServiceState.IDLE
         jexler.issues.empty
         mockService.nStarted == 1
         mockService.nEventsSent == 2
@@ -245,7 +246,7 @@ class JexlerDispatcherSpec extends Specification {
         JexlerUtil.waitAtLeast(MS_1_SEC)
 
         then:
-        jexler.runState == RunState.IDLE
+        jexler.state == ServiceState.IDLE
         jexler.issues.empty
         mockService.nStarted == 1
         mockService.nEventsSent == 3
@@ -263,7 +264,7 @@ class JexlerDispatcherSpec extends Specification {
         jexler.waitForShutdown(MS_10_SEC)
 
         then:
-        jexler.runState == RunState.OFF
+        jexler.state == ServiceState.OFF
         jexler.issues.empty
         mockService.nStarted == 1
         mockService.nEventsSent == 3
@@ -309,7 +310,7 @@ class JexlerDispatcherSpec extends Specification {
         jexler.waitForStartup(MS_10_SEC)
 
         then:
-        jexler.runState == RunState.IDLE
+        jexler.state == ServiceState.IDLE
         jexler.issues.empty
 
         when:
@@ -318,7 +319,7 @@ class JexlerDispatcherSpec extends Specification {
         JexlerUtil.waitAtLeast(MS_1_SEC)
 
         then:
-        jexler.runState == RunState.IDLE
+        jexler.state == ServiceState.IDLE
         jexler.issues.size() == 1
         jexler.issues.first().service == jexler
         jexler.issues.first().message == 'Dispatch: Handler handleMockEventMockService failed.'
@@ -331,7 +332,7 @@ class JexlerDispatcherSpec extends Specification {
         jexler.waitForShutdown(MS_10_SEC)
 
         then:
-        jexler.runState == RunState.OFF
+        jexler.state == ServiceState.OFF
         jexler.issues.empty
     }
 

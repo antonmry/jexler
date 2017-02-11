@@ -17,7 +17,6 @@
 package net.jexler.service
 
 import net.jexler.Jexler
-import net.jexler.RunState
 
 import groovy.transform.CompileStatic
 import org.quartz.CronScheduleBuilder
@@ -138,7 +137,7 @@ class DirWatchService extends ServiceBase {
             scheduler = jexler.container.scheduler
         }
         scheduler.scheduleJob(job, trigger)
-        runState = RunState.IDLE
+        state = ServiceState.IDLE
     }
 
     @Override
@@ -153,7 +152,7 @@ class DirWatchService extends ServiceBase {
         } catch (IOException e) {
             log.trace('failed to close watch service', e)
         }
-        runState = RunState.OFF
+        state = ServiceState.OFF
     }
 
     @Override
@@ -161,7 +160,7 @@ class DirWatchService extends ServiceBase {
         if (off) {
             return
         }
-        runState = RunState.OFF
+        state = ServiceState.OFF
         new Thread() {
             void run() {
                 try {

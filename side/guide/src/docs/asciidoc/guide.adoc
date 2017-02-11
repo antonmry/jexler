@@ -481,9 +481,9 @@ Jexler uses http://logback.qos.ch[logback] for logging, by default
 find the log file, unless you do something more fancy, like splitting up logging into several files.
 
 Click the name of any jexler in the fourth column to edit its script.
-Hover over the name to see the run state of the jexler.
+Hover over the name to see the service state of the jexler.
 
-There are five run states that apply to a jexler:
+There are five service states that apply to a jexler:
 
 * *off*: Not running.
 * *busy (starting)*: Busy starting, not ready to process events, yet.
@@ -491,13 +491,13 @@ There are five run states that apply to a jexler:
 * *busy (event)*: Busy processing an event.
 * *busy (stopping)*: Stopping, not processing events any more.
 
-These run states also apply to all jexlers as a group (and technically even to services,
-like the CronService).
+These states also apply to all jexlers as a group (and technically to all
+classes that implement the `Service` interface, like the CronService).
 
-Click the jexler logo to reload the main view. Note that the table with the run states
-is reloaded automatically every second by JavaScript. You typically only need to reload
-explicitly if JavaScript is off or for very old Internet Explorer browsers for which
-this feature has not been supported in the jexler web GUI.
+Click the jexler logo to reload the main view. Note that the table with the service
+states is reloaded automatically every second by JavaScript. You typically only need
+to reload explicitly if JavaScript is off or for very old Internet Explorer browsers
+for which this feature has not been supported in the jexler web GUI.
 
 Hover over the jexler logo to see the jexler release version.
 

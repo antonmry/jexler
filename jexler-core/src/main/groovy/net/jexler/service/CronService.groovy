@@ -17,7 +17,6 @@
 package net.jexler.service
 
 import net.jexler.Jexler
-import net.jexler.RunState
 
 import groovy.transform.CompileStatic
 import org.quartz.CronScheduleBuilder
@@ -95,10 +94,10 @@ class CronService extends ServiceBase {
         if (cron.startsWith(CRON_NOW)) {
             log.trace("new cron event: $cron")
             jexler.handle(new CronEvent(this, cron))
-            runState = RunState.IDLE
+            state = ServiceState.IDLE
             if (cron.equals(CRON_NOW_AND_STOP)) {
                 jexler.handle(new StopEvent(this))
-                runState = RunState.OFF
+                state = ServiceState.OFF
             }
             return
         }
@@ -119,7 +118,7 @@ class CronService extends ServiceBase {
             scheduler = jexler.container.scheduler
         }
         scheduler.scheduleJob(job, trigger)
-        runState = RunState.IDLE
+        state = ServiceState.IDLE
     }
 
     @Override
@@ -130,7 +129,7 @@ class CronService extends ServiceBase {
         if (scheduler != null) {
             scheduler.unscheduleJob(triggerKey)
         }
-        runState = RunState.OFF
+        state = ServiceState.OFF
     }
 
     @Override
@@ -138,7 +137,7 @@ class CronService extends ServiceBase {
         if (off) {
             return
         }
-        runState = RunState.OFF
+        state = ServiceState.OFF
         if (scheduler != null) {
             new Thread() {
                 void run() {

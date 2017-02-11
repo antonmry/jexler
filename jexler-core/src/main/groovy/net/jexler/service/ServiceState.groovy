@@ -14,17 +14,17 @@
    limitations under the License.
 */
 
-package net.jexler
+package net.jexler.service
 
 import groovy.transform.CompileStatic
 
 /**
- * Enum for the run state of a service.
+ * Enum for the state of a service.
  *
  * @author $(whois jexler.net)
  */
 @CompileStatic
-enum RunState  {
+enum ServiceState {
 
     /** Service is off. */
     OFF ('off'),
@@ -38,14 +38,14 @@ enum RunState  {
     BUSY_STOPPING('busy (stopping)')
 
     /**
-     * Human readable info about the run state.
+     * Human readable form of the state.
      */
     final String info
 
     /**
      * Constructor from info.
      */
-    RunState(String info) {
+    ServiceState(String info) {
         this.info = info
     }
 

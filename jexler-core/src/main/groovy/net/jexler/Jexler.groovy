@@ -19,6 +19,7 @@ package net.jexler
 import net.jexler.service.Event
 import net.jexler.service.Service
 import net.jexler.service.ServiceGroup
+import net.jexler.service.ServiceState
 import net.jexler.service.ServiceUtil
 import net.jexler.service.StopEvent
 
@@ -61,11 +62,11 @@ class Jexler implements Service, IssueTracker {
          */
         @Override
         Event take() {
-            runState = RunState.IDLE
+            state = ServiceState.IDLE
             while (true) {
                 try {
                     Event event = (Event)super.take()
-                    runState = RunState.BUSY_EVENT
+                    state = ServiceState.BUSY_EVENT
                     return event
                 } catch (InterruptedException e) {
                     trackIssue(Jexler.this, 'Could not take event.', e)
@@ -77,7 +78,7 @@ class Jexler implements Service, IssueTracker {
     private final File file
     private final String id
     private final JexlerContainer container
-    private volatile RunState runState
+    private volatile ServiceState state
     private volatile Script script
     private volatile Thread scriptThread
     /** Event queue. */
@@ -104,7 +105,7 @@ class Jexler implements Service, IssueTracker {
         this.file = file
         this.container = container
         id = container.getJexlerId(file)
-        runState = RunState.OFF
+        state = ServiceState.OFF
         events = new Events()
         services = new ServiceGroup("${id}.services")
         issueTracker = new IssueTrackerBase()
@@ -126,13 +127,13 @@ class Jexler implements Service, IssueTracker {
         if (on) {
             return
         }
-        runState = RunState.BUSY_STARTING
+        state = ServiceState.BUSY_STARTING
 
         forgetIssues()
 
         metaInfoAtStart = readMetaInfo()
         if (!issues.empty) {
-            runState = RunState.OFF
+            state = ServiceState.OFF
             return
         }
 
@@ -167,13 +168,13 @@ class Jexler implements Service, IssueTracker {
         } catch (Throwable t) {
             // (may throw almost anything, checked or not)
             trackIssue(this, 'Script compile failed.', t)
-            runState = RunState.OFF
+            state = ServiceState.OFF
             return
         }
 
         // not a runnable script?
         if (!Script.class.isAssignableFrom(clazz)) {
-            runState = RunState.OFF
+            state = ServiceState.OFF
             return
         }
 
@@ -187,7 +188,7 @@ class Jexler implements Service, IssueTracker {
                         } catch (Throwable t) {
                             // (may throw anything, checked or not)
                             trackIssue(jexler, 'Script create failed.', t)
-                            runState = RunState.OFF
+                            state = ServiceState.OFF
                             return
                         }
 
@@ -200,7 +201,7 @@ class Jexler implements Service, IssueTracker {
                             trackIssue(jexler, 'Script run failed.', t)
                         }
 
-                        runState = RunState.BUSY_STOPPING
+                        state = ServiceState.BUSY_STOPPING
 
                         try {
                             services.stop()
@@ -211,7 +212,7 @@ class Jexler implements Service, IssueTracker {
                         services.services.clear()
 
                         script = null
-                        runState = RunState.OFF
+                        state = ServiceState.OFF
                     }
                 })
         scriptThread.daemon = true
@@ -257,18 +258,18 @@ class Jexler implements Service, IssueTracker {
     }
 
     @Override
-    RunState getRunState() {
-        return runState
+    ServiceState getState() {
+        return state
     }
 
     @Override
     boolean isOn() {
-        return runState.on
+        return state.on
     }
 
     @Override
     boolean isOff() {
-        return runState.off
+        return state.off
     }
 
     @Override
@@ -282,7 +283,7 @@ class Jexler implements Service, IssueTracker {
         if (off) {
             return
         }
-        runState = RunState.OFF
+        state = ServiceState.OFF
         final ServiceGroup services = this.services
         final Thread scriptThread = this.scriptThread
         final Jexler jexler = this
@@ -339,7 +340,7 @@ class Jexler implements Service, IssueTracker {
     /**
      * Get script instance, may be null if script is not running.
      *
-     * Normally only use if jexler.runState.operational is true.
+     * Normally only use if jexler.state.operational is true.
      */
     Script getScript() {
         return script

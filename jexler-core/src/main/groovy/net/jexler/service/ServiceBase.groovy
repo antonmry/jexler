@@ -16,9 +16,6 @@
 
 package net.jexler.service
 
-import net.jexler.Jexler
-import net.jexler.RunState
-
 import groovy.transform.CompileStatic
 
 /**
@@ -30,7 +27,7 @@ import groovy.transform.CompileStatic
 abstract class ServiceBase implements Service {
 
     private final String id
-    private volatile RunState runState
+    private volatile ServiceState state
 
     /**
      * Constructor.
@@ -39,14 +36,14 @@ abstract class ServiceBase implements Service {
      */
     ServiceBase(String id) {
         this.id = id
-        runState = RunState.OFF
+        state = ServiceState.OFF
     }
 
     /**
-     * Set run state to given value.
+     * Set state to given value.
      */
-    void setRunState(RunState runState) {
-        this.runState = runState
+    void setState(ServiceState state) {
+        this.state = state
     }
         
     @Override
@@ -60,18 +57,18 @@ abstract class ServiceBase implements Service {
     }
     
     @Override
-    RunState getRunState() {
-        return runState
+    ServiceState getState() {
+        return state
     }
 
     @Override
     boolean isOn() {
-        return runState.on
+        return state.on
     }
 
     @Override
     boolean isOff() {
-        return runState.off
+        return state.off
     }
 
     @Override
@@ -81,7 +78,7 @@ abstract class ServiceBase implements Service {
 
     @Override
     void zap() {
-        runState = RunState.OFF
+        state = ServiceState.OFF
     }
 
 }

@@ -14,8 +14,9 @@
    limitations under the License.
 */
 
-package net.jexler
+package net.jexler.service
 
+import net.jexler.service.ServiceState
 import net.jexler.test.FastTests
 
 import org.junit.experimental.categories.Category
@@ -27,12 +28,12 @@ import spock.lang.Specification
  * @author $(whois jexler.net)
  */
 @Category(FastTests.class)
-class RunStateSpec extends Specification {
+class ServiceStateSpec extends Specification {
 
     def 'TEST elementary'() {
         expect:
-        RunState.OFF.info == 'off'
-        RunState.valueOf('OFF') == RunState.OFF
+        ServiceState.OFF.info == 'off'
+        ServiceState.valueOf('OFF') == ServiceState.OFF
     }
 
     def 'TEST state matrix'() {
@@ -46,12 +47,12 @@ class RunStateSpec extends Specification {
         state.busyStopping == busyStopping
 
         where:
-        state                  | off   | on    | operational | busyStarting | idle  | busyEvent | busyStopping
-        RunState.OFF           | true  | false | false       | false        | false | false     | false
-        RunState.BUSY_STARTING | false | true  | false       | true         | false | false     | false
-        RunState.IDLE          | false | true  | true        | false        | true  | false     | false
-        RunState.BUSY_EVENT    | false | true  | true        | false        | false | true      | false
-        RunState.BUSY_STOPPING | false | true  | false       | false        | false | false     | true
+        state                      | off   | on    | operational | busyStarting | idle  | busyEvent | busyStopping
+        ServiceState.OFF           | true  | false | false       | false        | false | false     | false
+        ServiceState.BUSY_STARTING | false | true  | false       | true         | false | false     | false
+        ServiceState.IDLE          | false | true  | true        | false        | true  | false     | false
+        ServiceState.BUSY_EVENT    | false | true  | true        | false        | false | true      | false
+        ServiceState.BUSY_STOPPING | false | true  | false       | false        | false | false     | true
     }
 
 }

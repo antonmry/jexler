@@ -16,6 +16,7 @@
 
 package net.jexler
 
+import net.jexler.service.ServiceState
 import net.jexler.service.Service
 import net.jexler.service.ServiceGroup
 
@@ -120,7 +121,7 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
         boolean ok = super.waitForStartup(timeout)
         if (!ok) {
             for (Jexler jexler : jexlers) {
-                if (jexler.runState == RunState.BUSY_STARTING) {
+                if (jexler.state == ServiceState.BUSY_STARTING) {
                     trackIssue(jexler, 'Timeout waiting for jexler startup.', null)
                 }
             }
@@ -133,7 +134,7 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
         boolean ok = super.waitForShutdown(timeout)
         if (!ok) {
             for (Jexler jexler : jexlers) {
-                if (jexler.runState != RunState.OFF) {
+                if (jexler.state != ServiceState.OFF) {
                     trackIssue(jexler, 'Timeout waiting for jexler shutdown.', null)
                 }
             }

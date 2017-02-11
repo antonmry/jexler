@@ -16,8 +16,6 @@
 
 package net.jexler.service
 
-import net.jexler.RunState
-
 import groovy.transform.CompileStatic
 
 /**
@@ -35,7 +33,7 @@ interface Service {
     void start()
 
     /**
-     * Wait until run state is not BUSY_STARTING or timeout.
+     * Wait until service state is not BUSY_STARTING or timeout.
      * @param timeout timeout in ms
      * @return true if no timeout, false otherwise
      */
@@ -48,24 +46,24 @@ interface Service {
     void stop()
     
     /**
-     * Wait until run state is not OFF or timeout.
+     * Wait until service state is not OFF or timeout.
      * @param timeout timeout in ms
      * @return true if no timeout, false otherwise
      */
     boolean waitForShutdown(long timeout)
 
     /**
-     * Get run state of the service.
+     * Get state of the service.
      */
-    RunState getRunState()
+    ServiceState getState()
 
     /**
-     * Convenience method for testing if run state is not OFF.
+     * Convenience method for testing if service state is not OFF.
      */
     boolean isOn()
 
     /**
-     * Convenience method for testing  if run state is OFF.
+     * Convenience method for testing  if service state is OFF.
      * @return true or false
      */
     boolean isOff()

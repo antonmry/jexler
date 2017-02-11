@@ -40,7 +40,7 @@ class ServiceUtil {
     static boolean waitForStartup(Service service, long timeout) {
         long t0 = System.currentTimeMillis()
         while (true) {
-            if (!service.runState.busyStarting) {
+            if (!service.state.busyStarting) {
                 return true
             }
             if (System.currentTimeMillis() - t0 >= timeout) {

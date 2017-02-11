@@ -16,6 +16,7 @@
 
 package net.jexler
 
+import net.jexler.service.ServiceState
 import net.jexler.service.StopEvent
 import net.jexler.test.FastTests
 
@@ -58,7 +59,7 @@ class JexlerContainerSpec extends Specification {
         def container = new JexlerContainer(dir)
 
         then:
-        container.runState == RunState.OFF
+        container.state == ServiceState.OFF
         container.off
         container.dir == dir
         container.id == dir.name
@@ -74,20 +75,20 @@ class JexlerContainerSpec extends Specification {
         jexler1.id == 'Jexler1'
         jexler2.id == 'Jexler2'
         jexler3.id == 'Jexler3'
-        jexler1.runState == RunState.OFF
-        jexler2.runState == RunState.OFF
-        jexler3.runState == RunState.OFF
+        jexler1.state == ServiceState.OFF
+        jexler2.state == ServiceState.OFF
+        jexler3.state == ServiceState.OFF
 
         when:
         container.start()
         container.waitForStartup(MS_10_SEC)
 
         then:
-        container.runState == RunState.IDLE
+        container.state == ServiceState.IDLE
         container.on
-        jexler1.runState == RunState.IDLE
-        jexler2.runState == RunState.IDLE
-        jexler3.runState == RunState.IDLE
+        jexler1.state == ServiceState.IDLE
+        jexler2.state == ServiceState.IDLE
+        jexler3.state == ServiceState.IDLE
         container.issues.empty
 
         when:
@@ -95,10 +96,10 @@ class JexlerContainerSpec extends Specification {
         container.waitForShutdown(MS_10_SEC)
 
         then:
-        container.runState == RunState.OFF
-        jexler1.runState == RunState.OFF
-        jexler2.runState == RunState.OFF
-        jexler3.runState == RunState.OFF
+        container.state == ServiceState.OFF
+        jexler1.state == ServiceState.OFF
+        jexler2.state == ServiceState.OFF
+        jexler3.state == ServiceState.OFF
         container.issues.empty
 
         when:
@@ -106,11 +107,11 @@ class JexlerContainerSpec extends Specification {
         container.waitForStartup(MS_10_SEC)
 
         then:
-        container.runState == RunState.IDLE
+        container.state == ServiceState.IDLE
         container.on
-        jexler1.runState == RunState.OFF
-        jexler2.runState == RunState.IDLE
-        jexler3.runState == RunState.OFF
+        jexler1.state == ServiceState.OFF
+        jexler2.state == ServiceState.IDLE
+        jexler3.state == ServiceState.OFF
         container.issues.empty
 
         when:
@@ -118,11 +119,11 @@ class JexlerContainerSpec extends Specification {
         container.waitForStartup(MS_10_SEC)
 
         then:
-        container.runState == RunState.IDLE
+        container.state == ServiceState.IDLE
         container.on
-        jexler1.runState == RunState.IDLE
-        jexler2.runState == RunState.IDLE
-        jexler3.runState == RunState.IDLE
+        jexler1.state == ServiceState.IDLE
+        jexler2.state == ServiceState.IDLE
+        jexler3.state == ServiceState.IDLE
         container.issues.empty
 
         when:
@@ -130,11 +131,11 @@ class JexlerContainerSpec extends Specification {
         JexlerUtil.waitAtLeast(MS_1_SEC)
 
         then:
-        container.runState == RunState.IDLE
+        container.state == ServiceState.IDLE
         container.on
-        jexler1.runState == RunState.IDLE
-        jexler2.runState == RunState.IDLE
-        jexler3.runState == RunState.OFF
+        jexler1.state == ServiceState.IDLE
+        jexler2.state == ServiceState.IDLE
+        jexler3.state == ServiceState.OFF
         container.issues.empty
 
         when:
@@ -158,10 +159,10 @@ class JexlerContainerSpec extends Specification {
         container.waitForShutdown(MS_10_SEC)
 
         then:
-        container.runState == RunState.OFF
-        jexler1.runState == RunState.OFF
-        jexler2.runState == RunState.OFF
-        jexler3.runState == RunState.OFF
+        container.state == ServiceState.OFF
+        jexler1.state == ServiceState.OFF
+        jexler2.state == ServiceState.OFF
+        jexler3.state == ServiceState.OFF
         container.issues.empty
         container.jexlers.size() == 3
 
@@ -170,7 +171,7 @@ class JexlerContainerSpec extends Specification {
         container.refresh()
 
         then:
-        container.runState == RunState.OFF
+        container.state == ServiceState.OFF
         container.issues.empty
         container.jexlers.size() == 2
 
@@ -179,7 +180,7 @@ class JexlerContainerSpec extends Specification {
         container.waitForStartup(MS_10_SEC)
 
         then:
-        container.runState == RunState.IDLE
+        container.state == ServiceState.IDLE
         container.issues.empty
         container.jexlers.size() == 2
 
@@ -197,13 +198,13 @@ class JexlerContainerSpec extends Specification {
         container.waitForStartup(MS_10_SEC)
 
         then:
-        container.runState == RunState.BUSY_STARTING
+        container.state == ServiceState.BUSY_STARTING
 
         when:
         container.zap()
 
         then:
-        container.runState == RunState.OFF
+        container.state == ServiceState.OFF
     }
 
     def 'TEST track issue'() {

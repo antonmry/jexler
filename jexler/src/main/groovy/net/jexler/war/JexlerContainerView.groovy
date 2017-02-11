@@ -20,7 +20,7 @@ import net.jexler.Issue
 import net.jexler.Jexler
 import net.jexler.JexlerContainer
 import net.jexler.JexlerUtil
-import net.jexler.RunState
+import net.jexler.service.ServiceState
 import net.jexler.service.Service
 
 import groovy.transform.CompileStatic
@@ -142,10 +142,10 @@ class JexlerContainerView {
 
     String getJexlerIdLink() {
         // italic if busy ("running")
-        RunState runState = jexler.runState
-        boolean isBusy = (runState == RunState.BUSY_STARTING
-                || runState == RunState.BUSY_EVENT
-                || runState == RunState.BUSY_STOPPING)
+        ServiceState state = jexler.state
+        boolean isBusy = (state == ServiceState.BUSY_STARTING
+                || state == ServiceState.BUSY_EVENT
+                || state == ServiceState.BUSY_STOPPING)
         String id = jexlerId
         if (isBusy) {
             id = "<em>$id</em>"
@@ -196,8 +196,8 @@ class JexlerContainerView {
         return "<a href='?cmd=restart$jexlerParam' title='$title'><img src='restart.gif'></a>"
     }
 
-    String getRunStateInfo() {
-        return jexler.runState.info
+    String getStateInfo() {
+        return jexler.state.info
     }
 
     String getLog() {
@@ -222,7 +222,7 @@ class JexlerContainerView {
         boolean available = false
         if (jexlerId != null) {
             Script script = jexler.getScript()
-            if (script != null && jexler.runState.operational) {
+            if (script != null && jexler.state.operational) {
                 MetaClass mc = script.metaClass
                 Object[] args = [ PageContext.class ]
                 MetaMethod mm = mc.getMetaMethod('handleHttp', args)
@@ -432,7 +432,7 @@ class JexlerContainerView {
         }
 
         Script script = targetJexler.getScript()
-        if (script == null || !targetJexler.runState.operational) {
+        if (script == null || !targetJexler.state.operational) {
             sendError(response, 404, "Jexler '$targetJexlerId' is not operational.", null)
             return
         }

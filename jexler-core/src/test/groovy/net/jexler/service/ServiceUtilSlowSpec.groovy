@@ -17,7 +17,6 @@
 package net.jexler.service
 
 import net.jexler.JexlerUtil
-import net.jexler.RunState
 import net.jexler.test.SlowTests
 
 import org.junit.experimental.categories.Category
@@ -51,19 +50,19 @@ class ServiceUtilSlowSpec extends Specification {
         }
     }
 
-    static class ServiceRunStateSettingThread extends Thread {
+    static class ServiceStateSettingThread extends Thread {
         Service service
-        RunState runStateToSet
+        ServiceState stateToSet
         long setAfterMs
-        ServiceRunStateSettingThread(Service service, RunState runStateToSet, long setAfterMs) {
+        ServiceStateSettingThread(Service service, ServiceState stateToSet, long setAfterMs) {
             this.service = service
-            this.runStateToSet = runStateToSet
+            this.stateToSet = stateToSet
             this.setAfterMs = setAfterMs
         }
         @Override
         void run() {
             JexlerUtil.waitAtLeast(setAfterMs)
-            service.runState = runStateToSet
+            service.state = stateToSet
         }
     }
 
@@ -72,7 +71,7 @@ class ServiceUtilSlowSpec extends Specification {
         def service = new MockService(null, 'mock')
 
         when:
-        service.runState = RunState.BUSY_STARTING
+        service.state = ServiceState.BUSY_STARTING
 
         then:
         !ServiceUtil.waitForStartup(service, 0)
@@ -80,12 +79,12 @@ class ServiceUtilSlowSpec extends Specification {
         when:
         def interruptingThread = new InterruptingThread(Thread.currentThread(), MS_3_SEC)
         interruptingThread.start()
-        new ServiceRunStateSettingThread(service, RunState.IDLE, MS_6_SEC).start()
+        new ServiceStateSettingThread(service, ServiceState.IDLE, MS_6_SEC).start()
 
         then:
         ServiceUtil.waitForStartup(service, MS_9_SEC)
         interruptingThread.hasInterrupted
-        service.runState == RunState.IDLE
+        service.state == ServiceState.IDLE
     }
 
     def 'TEST SLOW (6 sec) wait for shutdown'() {
@@ -93,7 +92,7 @@ class ServiceUtilSlowSpec extends Specification {
         def service = new MockService(null, 'mock')
 
         when:
-        service.runState = RunState.IDLE
+        service.state = ServiceState.IDLE
 
         then:
         !ServiceUtil.waitForShutdown(service, 0)
@@ -101,12 +100,12 @@ class ServiceUtilSlowSpec extends Specification {
         when:
         def interruptingThread = new InterruptingThread(Thread.currentThread(), MS_3_SEC)
         interruptingThread.start()
-        new ServiceRunStateSettingThread(service, RunState.OFF, MS_6_SEC).start()
+        new ServiceStateSettingThread(service, ServiceState.OFF, MS_6_SEC).start()
 
         then:
         ServiceUtil.waitForShutdown(service, MS_9_SEC)
         interruptingThread.hasInterrupted
-        service.runState == RunState.OFF
+        service.state == ServiceState.OFF
     }
 
 }

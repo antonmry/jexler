@@ -16,7 +16,6 @@
 
 package net.jexler.service
 
-import net.jexler.RunState
 import net.jexler.TestJexler
 import net.jexler.test.FastTests
 
@@ -31,7 +30,7 @@ import spock.lang.Specification
 @Category(FastTests.class)
 class BasicServiceGroupSpec extends Specification {
 
-    def 'TEST basics including group run state'() {
+    def 'TEST basics including group service state'() {
         given:
         def jexler = new TestJexler()
         def service1 = new MockService(jexler, 'service1')
@@ -52,34 +51,34 @@ class BasicServiceGroupSpec extends Specification {
 
         then:
         group.services.size() == 3
-        group.runState == RunState.OFF
+        group.state == ServiceState.OFF
 
         when:
-        service2.runState = RunState.BUSY_STARTING
+        service2.state = ServiceState.BUSY_STARTING
 
         then:
-        group.runState == RunState.BUSY_STARTING
+        group.state == ServiceState.BUSY_STARTING
 
         when:
-        service1.runState = RunState.IDLE
-        service3.runState = RunState.BUSY_EVENT
+        service1.state = ServiceState.IDLE
+        service3.state = ServiceState.BUSY_EVENT
 
         then:
-        group.runState == RunState.BUSY_STARTING
+        group.state == ServiceState.BUSY_STARTING
 
         when:
-        service2.runState = RunState.IDLE
+        service2.state = ServiceState.IDLE
 
         then:
-        group.runState == RunState.IDLE
+        group.state == ServiceState.IDLE
 
         when:
-        service1.runState = RunState.BUSY_STOPPING
-        service2.runState = RunState.BUSY_STOPPING
-        service3.runState = RunState.BUSY_STOPPING
+        service1.state = ServiceState.BUSY_STOPPING
+        service2.state = ServiceState.BUSY_STOPPING
+        service3.state = ServiceState.BUSY_STOPPING
 
         then:
-        group.runState == RunState.BUSY_STOPPING
+        group.state == ServiceState.BUSY_STOPPING
     }
 
     def 'TEST start and stop'() {
@@ -96,10 +95,10 @@ class BasicServiceGroupSpec extends Specification {
         group.add(service3)
 
         then:
-        service1.runState == RunState.OFF
-        service2.runState == RunState.OFF
-        service3.runState == RunState.OFF
-        group.runState == RunState.OFF
+        service1.state == ServiceState.OFF
+        service2.state == ServiceState.OFF
+        service3.state == ServiceState.OFF
+        group.state == ServiceState.OFF
         !group.on
         group.off
 
@@ -107,10 +106,10 @@ class BasicServiceGroupSpec extends Specification {
         service1.start()
 
         then:
-        service1.runState == RunState.IDLE
-        service2.runState == RunState.OFF
-        service3.runState == RunState.OFF
-        group.runState == RunState.IDLE
+        service1.state == ServiceState.IDLE
+        service2.state == ServiceState.OFF
+        service3.state == ServiceState.OFF
+        group.state == ServiceState.IDLE
         group.on
         !group.off
 
@@ -118,10 +117,10 @@ class BasicServiceGroupSpec extends Specification {
         group.start()
 
         then:
-        service1.runState == RunState.IDLE
-        service2.runState == RunState.IDLE
-        service3.runState == RunState.IDLE
-        group.runState == RunState.IDLE
+        service1.state == ServiceState.IDLE
+        service2.state == ServiceState.IDLE
+        service3.state == ServiceState.IDLE
+        group.state == ServiceState.IDLE
         group.on
         !group.off
 
@@ -129,10 +128,10 @@ class BasicServiceGroupSpec extends Specification {
         service3.stop()
 
         then:
-        service1.runState == RunState.IDLE
-        service2.runState == RunState.IDLE
-        service3.runState == RunState.OFF
-        group.runState == RunState.IDLE
+        service1.state == ServiceState.IDLE
+        service2.state == ServiceState.IDLE
+        service3.state == ServiceState.OFF
+        group.state == ServiceState.IDLE
         group.on
         !group.off
 
@@ -140,10 +139,10 @@ class BasicServiceGroupSpec extends Specification {
         group.stop()
 
         then:
-        service1.runState == RunState.OFF
-        service2.runState == RunState.OFF
-        service3.runState == RunState.OFF
-        group.runState == RunState.OFF
+        service1.state == ServiceState.OFF
+        service2.state == ServiceState.OFF
+        service3.state == ServiceState.OFF
+        group.state == ServiceState.OFF
         !group.on
         group.off
     }
@@ -163,10 +162,10 @@ class BasicServiceGroupSpec extends Specification {
         group.start()
 
         then:
-        service1.runState == RunState.IDLE
-        service2.runState == RunState.IDLE
-        service3.runState == RunState.IDLE
-        group.runState == RunState.IDLE
+        service1.state == ServiceState.IDLE
+        service2.state == ServiceState.IDLE
+        service3.state == ServiceState.IDLE
+        group.state == ServiceState.IDLE
 
         when:
         RuntimeException ex1 = new RuntimeException()
@@ -178,10 +177,10 @@ class BasicServiceGroupSpec extends Specification {
         then:
         RuntimeException e = thrown()
         e.is(ex1)
-        service1.runState == RunState.IDLE
-        service2.runState == RunState.IDLE
-        service3.runState == RunState.OFF
-        group.runState == RunState.IDLE
+        service1.state == ServiceState.IDLE
+        service2.state == ServiceState.IDLE
+        service3.state == ServiceState.OFF
+        group.state == ServiceState.IDLE
     }
 
     def 'TEST empty service group'() {
@@ -189,19 +188,19 @@ class BasicServiceGroupSpec extends Specification {
         def group = new ServiceGroup('group')
 
         then:
-        group.runState == RunState.OFF
+        group.state == ServiceState.OFF
 
         when:
         group.start()
 
         then:
-        group.runState == RunState.OFF
+        group.state == ServiceState.OFF
 
         when:
         group.stop()
 
         then:
-        group.runState == RunState.OFF
+        group.state == ServiceState.OFF
     }
 
 }

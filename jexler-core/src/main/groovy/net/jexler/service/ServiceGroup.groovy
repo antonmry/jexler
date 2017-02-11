@@ -16,8 +16,6 @@
 
 package net.jexler.service
 
-import net.jexler.RunState
-
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -96,28 +94,28 @@ class ServiceGroup implements Service {
     }
 
     /**
-     * Get run state of the group.
-     * @return If there is no service in the group, OFF is returned
-     *   if all services are in the same state, that state is returned
-     *   if a least one service is starting up, BUSY_STARTING is returned
+     * Get service state of the group.
+     * @return If there is no service in the group, OFF is returned,
+     *   if all services are in the same state, that state is returned,
+     *   if a least one service is starting up, BUSY_STARTING is returned,
      *   else IDLE is returned.
      */
     @Override
-    RunState getRunState() {
-        Set<RunState> set = new HashSet<>()
+    ServiceState getState() {
+        Set<ServiceState> set = new HashSet<>()
         synchronized(services) {
             for (Service service : services) {
-                set.add(service.runState)
+                set.add(service.state)
             }
         }
         switch (set.size()) {
-        case 0: return RunState.OFF
+        case 0: return ServiceState.OFF
         case 1: return set.iterator().next()
         default:
-            if (set.contains(RunState.BUSY_STARTING)) {
-                return RunState.BUSY_STARTING
+            if (set.contains(ServiceState.BUSY_STARTING)) {
+                return ServiceState.BUSY_STARTING
             } else {
-                return RunState.IDLE
+                return ServiceState.IDLE
             }
         }
     }

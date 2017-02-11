@@ -16,7 +16,6 @@
 
 package net.jexler.service
 
-import net.jexler.RunState
 import net.jexler.TestJexler
 import net.jexler.test.SlowTests
 
@@ -82,7 +81,7 @@ class CronServiceSlowSpec extends Specification {
         service.start()
 
         then:
-        service.runState == RunState.IDLE
+        service.state == ServiceState.IDLE
 
         when:
         event = jexler.takeEvent(MS_15_SEC)
@@ -110,13 +109,13 @@ class CronServiceSlowSpec extends Specification {
         service.start()
 
         then:
-        service.runState == RunState.IDLE
+        service.state == ServiceState.IDLE
 
         when:
         service.zap()
 
         then:
-        service.runState == RunState.OFF
+        service.state == ServiceState.OFF
 
         cleanup:
         jexler.container.close()

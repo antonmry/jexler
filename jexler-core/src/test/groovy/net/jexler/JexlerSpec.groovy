@@ -17,6 +17,7 @@
 package net.jexler
 
 import net.jexler.service.MockService
+import net.jexler.service.ServiceState
 import net.jexler.test.FastTests
 
 import org.codehaus.groovy.control.CompilationFailedException
@@ -52,7 +53,7 @@ class JexlerSpec extends Specification {
         jexler.dir.absolutePath == dir.absolutePath
         jexler.file.absolutePath == file.absolutePath
         jexler.id == 'Test'
-        jexler.runState == RunState.OFF
+        jexler.state == ServiceState.OFF
         jexler.off
         jexler.metaInfo.size() == metaInfoSize
         jexler.issues.empty
@@ -96,7 +97,7 @@ class JexlerSpec extends Specification {
         def jexler = new Jexler(file, new JexlerContainer(dir))
         jexler.start()
         jexler.waitForStartup(MS_10_SEC)
-        jexler.runState == RunState.OFF
+        jexler.state == ServiceState.OFF
         jexler.off
         jexler.metaInfo.size() == metaInfoSize
         jexler.issues.size() == 1
@@ -160,7 +161,7 @@ class JexlerSpec extends Specification {
         def jexler = new Jexler(file, new JexlerContainer(dir))
 
         then:
-        jexler.runState == RunState.OFF
+        jexler.state == ServiceState.OFF
         jexler.off
         jexler.metaInfo.size() == 2
         jexler.metaInfo.autostart == false
@@ -173,7 +174,7 @@ class JexlerSpec extends Specification {
         def mockService = MockService.getInstance('mock-service')
 
         then:
-        jexler.runState == RunState.IDLE
+        jexler.state == ServiceState.IDLE
         jexler.on
         jexler.issues.empty
         mockService.nStarted == 1
@@ -187,7 +188,7 @@ class JexlerSpec extends Specification {
         jexler.waitForStartup(MS_10_SEC)
 
         then:
-        jexler.runState == RunState.IDLE
+        jexler.state == ServiceState.IDLE
         jexler.on
         jexler.issues.empty
 
@@ -208,7 +209,7 @@ class JexlerSpec extends Specification {
         jexler.waitForShutdown(MS_10_SEC)
 
         then:
-        jexler.runState == RunState.OFF
+        jexler.state == ServiceState.OFF
         jexler.off
         jexler.issues.empty
         mockService.nStarted == 1
@@ -222,7 +223,7 @@ class JexlerSpec extends Specification {
         jexler.waitForShutdown(MS_10_SEC)
 
         then:
-        jexler.runState == RunState.OFF
+        jexler.state == ServiceState.OFF
         jexler.off
         jexler.issues.empty
     }
@@ -249,7 +250,7 @@ class JexlerSpec extends Specification {
         def jexler = new Jexler(file, new JexlerContainer(dir))
 
         then:
-        jexler.runState == RunState.OFF
+        jexler.state == ServiceState.OFF
         jexler.off
         jexler.metaInfo.size() == 2
         jexler.metaInfo.autostart == false
@@ -262,7 +263,7 @@ class JexlerSpec extends Specification {
         def mockService = MockService.getInstance('mock-service')
 
         then:
-        jexler.runState == RunState.IDLE
+        jexler.state == ServiceState.IDLE
         jexler.on
         jexler.issues.empty
         mockService.nStarted == 1
@@ -276,7 +277,7 @@ class JexlerSpec extends Specification {
         jexler.waitForStartup(MS_10_SEC)
 
         then:
-        jexler.runState == RunState.IDLE
+        jexler.state == ServiceState.IDLE
         jexler.on
         jexler.issues.empty
 
@@ -298,7 +299,7 @@ class JexlerSpec extends Specification {
         Thread.sleep(MS_10_SEC)
 
         then:
-        jexler.runState == RunState.OFF
+        jexler.state == ServiceState.OFF
         jexler.off
         jexler.issues.size() == 1
         jexler.issues.first().message == 'Script run failed.'
@@ -378,7 +379,7 @@ class JexlerSpec extends Specification {
         def mockService = MockService.getInstance('mock-service')
 
         then:
-        jexler.runState == RunState.IDLE
+        jexler.state == ServiceState.IDLE
         jexler.on
         jexler.issues.empty
 
@@ -387,7 +388,7 @@ class JexlerSpec extends Specification {
         jexler.waitForShutdown(MS_10_SEC)
 
         then:
-        jexler.runState == RunState.OFF
+        jexler.state == ServiceState.OFF
         jexler.off
         jexler.issues.size() == 1
         jexler.issues.first().message == 'Could not stop services.'
@@ -491,7 +492,7 @@ class JexlerSpec extends Specification {
         JexlerUtil.waitAtLeast(MS_1_SEC)
 
         then:
-        jexler.runState == RunState.IDLE
+        jexler.state == ServiceState.IDLE
         jexler.on
         jexler.issues.size() == 1
         jexler.issues.first().service == jexler
