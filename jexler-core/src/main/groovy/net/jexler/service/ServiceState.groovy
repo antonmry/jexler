@@ -93,10 +93,17 @@ enum ServiceState {
 
     /**
      * Convenience method, returns true if IDLE or BUSY_EVENT,
-     * in other words, if the service is up and doing what it should do.
+     * in other words, if the service is up and operational.
      */
     boolean isOperational() {
         return this == IDLE || this == BUSY_EVENT
+    }
+
+    /**
+     * Convenience method, returns true if busy.
+     */
+    boolean isBusy() {
+        return this == BUSY_STARTING || this == BUSY_EVENT || this == BUSY_STOPPING
     }
 
 }

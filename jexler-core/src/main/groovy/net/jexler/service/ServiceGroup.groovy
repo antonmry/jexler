@@ -127,14 +127,7 @@ class ServiceGroup implements Service {
      */
     @Override
     boolean isOn() {
-        synchronized(services) {
-            for (Service service : services) {
-                if (service.on) {
-                    return true
-                }
-            }
-        }
-        return false
+        return state.on
     }
 
     /**
@@ -143,7 +136,7 @@ class ServiceGroup implements Service {
      */
     @Override
     boolean isOff() {
-        return !on
+        return state.off
     }
 
     @Override

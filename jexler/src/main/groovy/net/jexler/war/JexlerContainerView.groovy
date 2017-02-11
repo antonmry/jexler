@@ -142,12 +142,8 @@ class JexlerContainerView {
 
     String getJexlerIdLink() {
         // italic if busy ("running")
-        ServiceState state = jexler.state
-        boolean isBusy = (state == ServiceState.BUSY_STARTING
-                || state == ServiceState.BUSY_EVENT
-                || state == ServiceState.BUSY_STOPPING)
         String id = jexlerId
-        if (isBusy) {
+        if (jexler.state.busy) {
             id = "<em>$id</em>"
         }
         return "<a href='?cmd=info$jexlerParam'>$id</a>"
