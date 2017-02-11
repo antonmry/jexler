@@ -56,7 +56,7 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
      * @throws RuntimeException if given dir is not a directory or does not exist
      */
     JexlerContainer(File dir) {
-        // use directory name as container ID, if directory exists
+        // service ID is directory name
         super(dir.exists() ? dir.name : null)
         if (!dir.exists()) {
             throw new RuntimeException("Directory '$dir.absolutePath' does not exist.")
