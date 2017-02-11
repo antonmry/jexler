@@ -94,17 +94,10 @@ class ShellTool {
         }
     }
 
-    /** Working directory for command. */
-    File workingDirectory
-
-    /** Environment variables for the command. */
-    Map<String,String> env
-
-    /** Closure for handling stdout lines. */
-    Closure stdoutLineHandler
-
-    /** Closure for handling stderr lines. */
-    Closure stderrLineHandler
+    private File workingDirectory
+    private Map<String,String> env
+    private Closure stdoutLineHandler
+    private Closure stderrLineHandler
 
     /**
      * Constructor.
@@ -151,6 +144,35 @@ class ShellTool {
     ShellTool setStderrLineHandler(Closure handler) {
         stderrLineHandler = handler
         return this
+    }
+
+    /**
+     * Get working directory for command.
+     */
+    File getWorkingDirectory() {
+        return workingDirectory
+    }
+
+    /**
+     * Get environment variables for the command.
+     */
+    Map<String, String> getEnv() {
+        return env
+    }
+
+    /**
+     * Get closure for handling stdout lines.
+     */
+    Closure getStdoutLineHandler() {
+        return stdoutLineHandler
+    }
+
+
+    /**
+     * Get closure for handling stderr lines.
+     */
+    Closure getStderrLineHandler() {
+        return stderrLineHandler
     }
 
     /**

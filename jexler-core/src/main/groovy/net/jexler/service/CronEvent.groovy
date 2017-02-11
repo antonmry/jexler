@@ -39,13 +39,6 @@ class CronEvent extends EventBase {
     }
 
     /**
-     * Get service.
-     */
-    Service getService() {
-        return super.service
-    }
-
-    /**
      * Get cron pattern.
      */
     String getCron() {

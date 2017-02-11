@@ -44,13 +44,6 @@ class DirWatchEvent extends EventBase {
     }
 
     /**
-     * Get service.
-     */
-    Service getService() {
-        return super.service
-    }
-
-    /**
      * Get file that has been created, modified or deleted.
      */
     File getFile() {

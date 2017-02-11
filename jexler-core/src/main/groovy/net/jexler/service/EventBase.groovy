@@ -36,9 +36,7 @@ abstract class EventBase implements Event {
         this.service = service
     }
 
-    /**
-     * Get service that created the event.
-     */
+    @Override
     Service getService() {
         return service
     }
