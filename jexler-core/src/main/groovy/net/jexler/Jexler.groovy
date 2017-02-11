@@ -74,20 +74,11 @@ class Jexler implements Service, IssueTracker {
         }
     }
 
-    /** Jexler script file. */
-    final File file
-
-    /** Jexler ID. */
-    final String id
-
-    /** Container that contains this jexler. */
-    final JexlerContainer container
-
-    /** Jexler service state. */
-    volatile ServiceState state
-
-    /** Jexler script instance, null if script is not running. */
-    volatile Script script
+    private final File file
+    private final String id
+    private final JexlerContainer container
+    private volatile ServiceState state
+    private volatile Script script
 
     private volatile Thread scriptThread
 
@@ -250,8 +241,8 @@ class Jexler implements Service, IssueTracker {
     }
 
     @Override
-    void trackIssue(Issue issue) {
-        issueTracker.trackIssue(issue)
+    ServiceState getState() {
+        return state
     }
 
     @Override
@@ -281,6 +272,16 @@ class Jexler implements Service, IssueTracker {
     }
 
     @Override
+    String getId() {
+        return id
+    }
+
+    @Override
+    void trackIssue(Issue issue) {
+        issueTracker.trackIssue(issue)
+    }
+
+    @Override
     void trackIssue(Service service, String message, Throwable cause) {
         issueTracker.trackIssue(service, message, cause)
     }
@@ -296,10 +297,31 @@ class Jexler implements Service, IssueTracker {
     }
 
     /**
+     * Get jexler script file.
+     */
+    File getFile() {
+        return file
+    }
+
+    /**
      * Get directory that contains script file.
      */
     File getDir() {
         return file.parentFile
+    }
+
+    /**
+     * Get container that contains this jexler.
+     */
+    JexlerContainer getContainer() {
+        return container
+    }
+
+    /**
+     * Get jexler script instance, null if script is not running.
+     */
+    Script getScript() {
+        return script
     }
 
     /**

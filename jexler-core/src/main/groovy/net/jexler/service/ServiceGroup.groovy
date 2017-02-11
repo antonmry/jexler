@@ -31,8 +31,7 @@ class ServiceGroup implements Service {
 
     private static final Logger log = LoggerFactory.getLogger(ServiceGroup.class)
 
-    /** Service group ID. */
-    final String id
+    private final String id
 
     /** List of services in this group. */
     private final List<Service> services
@@ -121,6 +120,11 @@ class ServiceGroup implements Service {
                 service.zap()
             }
         }
+    }
+
+    @Override
+    String getId() {
+        return id
     }
 
     /**

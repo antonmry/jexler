@@ -26,8 +26,7 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class CronEvent extends EventBase {
 
-    /** Cron pattern. */
-    final String cron
+    private final String cron
 
     /**
      * Constructor.
@@ -39,4 +38,17 @@ class CronEvent extends EventBase {
         this.cron = cron
     }
 
+    /**
+     * Get service.
+     */
+    Service getService() {
+        return super.service
+    }
+
+    /**
+     * Get cron pattern.
+     */
+    String getCron() {
+        return cron
+    }
 }

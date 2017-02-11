@@ -32,31 +32,11 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class Issue implements Comparable<Issue> {
 
-    /**
-     * Date and time when the issue occurred.
-     */
-    final Date date
-
-    /**
-     * Service where the issue occurred, may be null.
-     */
-    final Service service
-
-    /**
-     * Message that explains the issue, may be null.
-     */
-    final String message
-
-    /**
-     * Throwable that caused the issue, null if none.
-     */
-    final Throwable cause
-
-    /**
-     * Exception stack trace as a multi-line string,
-     * empty if could not get it or no causing throwable.
-     */
-    final String stackTrace
+    private final Date date
+    private final Service service
+    private final String message
+    private final Throwable cause
+    private final String stackTrace
 
     /**
      * Constructor from service, message and exception.
@@ -70,10 +50,46 @@ class Issue implements Comparable<Issue> {
     }
 
     /**
+     * Get date and time when the issue occurred.
+     */
+    Date getDate() {
+        return date
+    }
+
+    /**
+     * Get service where the issue occurred, may be null.
+     */
+    Service getService() {
+        return service
+    }
+
+    /**
+     * Get message that explains the issue, may be null.
+     */
+    String getMessage() {
+        return message
+    }
+
+    /**
+     * Get throwable that caused the issue, null if none.
+     */
+    Throwable getCause() {
+        return cause
+    }
+
+    /**
+     * Get exception stack trace as a multi-line string,
+     * empty if could not get it or no causing throwable.
+     */
+    String getStackTrace() {
+        return stackTrace
+    }
+
+    /**
      * Comparator, newer date is smaller (first).
      */
     @Override
-    public int compareTo(Issue issue) {
+    int compareTo(Issue issue) {
         return -date.compareTo(issue.date)
     }
 
@@ -81,7 +97,7 @@ class Issue implements Comparable<Issue> {
      * Create a single line string of all members, suitable for logging.
      */
     @Override
-    public String toString() {
+    String toString() {
         return """\
             Issue: [message=${message==null ? 'null' : "'${JexlerUtil.toSingleLine(message)}'"}
             ,service=${service == null ? 'null' : "'${service.class.name}:$service.id'"}

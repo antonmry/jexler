@@ -19,6 +19,7 @@ package net.jexler.service
 import net.jexler.Jexler
 
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
 import org.quartz.CronScheduleBuilder
 import org.quartz.Job
 import org.quartz.JobBuilder
@@ -47,15 +48,9 @@ class CronService extends ServiceBase {
     public static final String CRON_NOW = 'now'
     public static final String CRON_NOW_AND_STOP = "$CRON_NOW+stop"
 
-    /** Jexler. */
-    final Jexler jexler
-
-    /** Cron pattern. */
-    String cron
-
-    /** Quartz scheduler. */
-    Scheduler scheduler
-
+    private final Jexler jexler
+    private String cron
+    private Scheduler scheduler
     private TriggerKey triggerKey
 
     /**
@@ -88,6 +83,27 @@ class CronService extends ServiceBase {
     CronService setScheduler(Scheduler scheduler) {
         this.scheduler = scheduler
         return this
+    }
+
+    /**
+     * Get jexler.
+     */
+    Jexler getJexler() {
+        return jexler
+    }
+
+    /**
+     * Get cron pattern.
+     */
+    String getCron() {
+        return cron
+    }
+
+    /**
+     * Get quartz scheduler.
+     */
+    Scheduler getScheduler() {
+        return scheduler
     }
 
     @Override
@@ -155,7 +171,8 @@ class CronService extends ServiceBase {
         }
     }
 
-    private static class CronJob implements Job {
+    // must be public, else not called...
+    static class CronJob implements Job {
         void execute(JobExecutionContext ctx) throws JobExecutionException {
             CronService service = (CronService)ctx.jobDetail.jobDataMap.service
             String savedName = Thread.currentThread().name

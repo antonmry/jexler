@@ -50,17 +50,10 @@ class DirWatchService extends ServiceBase {
 
     private static final Logger log = LoggerFactory.getLogger(DirWatchService.class)
 
-    /** Jexler. */
-    final Jexler jexler
-
-    /** Directory to watch. */
-    File watchDir
-
-    /** Cron pattern. */
-    String cron
-
-    /** Quartz scheduler. */
-    Scheduler scheduler
+    private final Jexler jexler
+    private File watchDir
+    private String cron
+    private Scheduler scheduler
 
     private TriggerKey triggerKey
     private WatchService watchService
@@ -109,6 +102,33 @@ class DirWatchService extends ServiceBase {
         return this
     }
 
+    /**
+     * Get jexler.
+     */
+    Jexler getJexler() {
+        return jexler
+    }
+
+    /**
+     * Get directory to watch.
+     */
+    File getWatchDir() {
+        return watchDir
+    }
+
+    /**
+     * Get cron pattern.
+     */
+    String getCron() {
+        return cron
+    }
+
+    /**
+     * Get quartz scheduler.
+     */
+    Scheduler getScheduler() {
+        return scheduler
+    }
 
     @Override
     void start() {
@@ -185,7 +205,8 @@ class DirWatchService extends ServiceBase {
         }
     }
 
-    private static class DirWatchJob implements Job {
+    // must be public, else not called...
+    static class DirWatchJob implements Job {
         void execute(JobExecutionContext ctx) throws JobExecutionException {
             DirWatchService service = (DirWatchService)ctx.jobDetail.jobDataMap.service
             String savedName = Thread.currentThread().name

@@ -39,8 +39,7 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
 
     private static final String EXT = '.groovy'
 
-    /** Directory that contains the jexler Groovy scripts. */
-    final File dir
+    private final File dir
 
     /** Map of jexler ID to jexler. */
     private final Map<String,Jexler> jexlerMap
@@ -159,6 +158,13 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
         synchronized(jexlerMap) {
             return jexlerMap.get(id)
         }
+    }
+
+    /**
+     * Get container directory.
+     */
+    File getDir() {
+        return dir
     }
 
     /**
