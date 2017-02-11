@@ -25,15 +25,15 @@ subprojects {
   }
 
   dependencies {
-    compile 'org.codehaus.groovy:groovy-all:2.4.7:indy'
+    compile 'org.codehaus.groovy:groovy-all:2.4.8:indy'
     compile 'org.apache.ivy:ivy:2.4.0'
-    compile 'org.slf4j:slf4j-api:1.7.20'
-    compile 'ch.qos.logback:logback-classic:1.1.7'
+    compile 'org.slf4j:slf4j-api:1.7.22'
+    compile 'ch.qos.logback:logback-classic:1.2.1'
     testCompile('org.spockframework:spock-core:1.0-groovy-2.4') {
       exclude group: 'org.codehaus.groovy', module: 'groovy-all'
     }
     testCompile 'junit:junit:4.12'
-    jansiForGroovydoc 'org.fusesource.jansi:jansi:1.11'
+    jansiForGroovydoc 'org.fusesource.jansi:jansi:1.14'
   }
 
   groovydoc {
@@ -72,7 +72,7 @@ subprojects {
   }
 
   jacoco {
-    toolVersion = "0.7.4.201502262128"
+    toolVersion = "0.7.9"
   }
 
   task slowTests(type: Test, dependsOn: 'test') {

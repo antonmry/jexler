@@ -35,15 +35,37 @@ class JexlerJettyTest {
 
     @Test
     void demo() throws Exception {
+
+        // Embedded Jetty with JSP support
+        // See https://examples.javacodegeeks.com/enterprise-java/jetty/jetty-jsp-example/
+
         System.setProperty('groovy.grape.report.downloads', 'true')
+
+        // create server
         final int port = 9080
         final Server server = new Server(port)
-        WebAppContext wac = new WebAppContext()
-        wac.resourceBase = './src/main/webapp'
-        wac.descriptor = 'WEB-INF/web.xml'
-        wac.contextPath = '/'
-        wac.parentLoaderPriority = true
-        server.handler = wac
+
+        // create context
+        WebAppContext context = new WebAppContext()
+        context.resourceBase = './src/main/webapp'
+        context.descriptor = 'WEB-INF/web.xml'
+        context.contextPath = '/'
+        context.parentLoaderPriority = true
+
+        // "3. Including the JSTL jars for the webapp." in context
+        context.setAttribute('org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern','.*/[^/]*jstl.*\\.jar$')
+
+        // "4. Enabling the Annotation based configuration" in context
+        org.eclipse.jetty.webapp.Configuration.ClassList classlist =
+                org.eclipse.jetty.webapp.Configuration.ClassList.setServerDefault(server)
+        classlist.addAfter("org.eclipse.jetty.webapp.FragmentConfiguration",
+                "org.eclipse.jetty.plus.webapp.EnvConfiguration",
+                "org.eclipse.jetty.plus.webapp.PlusConfiguration")
+        classlist.addBefore("org.eclipse.jetty.webapp.JettyWebXmlConfiguration",
+                "org.eclipse.jetty.annotations.AnnotationConfiguration")
+
+        // setting handler and starting server
+        server.handler = context
         server.start()
 
         println()
