@@ -110,7 +110,7 @@ class JexlerContainerSlowSpec extends Specification {
         container.waitForShutdown(MS_5_SEC)
 
         then:
-        container.state == ServiceState.IDLE
+        container.state == ServiceState.BUSY_STOPPING
         jexler1.state == ServiceState.BUSY_STOPPING
         jexler2.state == ServiceState.OFF
         jexler3.state == ServiceState.BUSY_STOPPING

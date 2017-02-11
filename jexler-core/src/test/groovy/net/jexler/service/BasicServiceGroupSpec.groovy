@@ -70,7 +70,7 @@ class BasicServiceGroupSpec extends Specification {
         service2.state = ServiceState.IDLE
 
         then:
-        group.state == ServiceState.IDLE
+        group.state == ServiceState.BUSY_EVENT
 
         when:
         service1.state = ServiceState.BUSY_STOPPING

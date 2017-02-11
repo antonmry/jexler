@@ -97,8 +97,8 @@ class ServiceGroup implements Service {
      * Get service state of the group.
      * @return If there is no service in the group, OFF is returned,
      *   if all services are in the same state, that state is returned,
-     *   if a least one service is starting up, BUSY_STARTING is returned,
-     *   else IDLE is returned.
+     *   else BUSY_STARTING, BUSY_STOPPING, BUSY_EVENT, IDLE, OFF is returned,
+     *   in that order of priority, if it is the state of at least one service.
      */
     @Override
     ServiceState getState() {
@@ -108,15 +108,16 @@ class ServiceGroup implements Service {
                 set.add(service.state)
             }
         }
-        switch (set.size()) {
-        case 0: return ServiceState.OFF
-        case 1: return set.iterator().next()
-        default:
-            if (set.contains(ServiceState.BUSY_STARTING)) {
-                return ServiceState.BUSY_STARTING
-            } else {
-                return ServiceState.IDLE
-            }
+        if (set.contains(ServiceState.BUSY_STARTING)) {
+            return ServiceState.BUSY_STARTING
+        } else if (set.contains(ServiceState.BUSY_STOPPING)) {
+            return ServiceState.BUSY_STOPPING
+        } else if (set.contains(ServiceState.BUSY_EVENT)) {
+            return ServiceState.BUSY_EVENT
+        } else if (set.contains(ServiceState.IDLE)) {
+            return ServiceState.IDLE
+        } else {
+            return ServiceState.OFF
         }
     }
 
