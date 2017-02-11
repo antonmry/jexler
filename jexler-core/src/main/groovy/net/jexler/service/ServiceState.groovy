@@ -37,9 +37,7 @@ enum ServiceState {
     /** Service is busy stopping. */
     BUSY_STOPPING('busy (stopping)')
 
-    /**
-     * Human readable form of the state.
-     */
+    /** Human readable description of the state. */
     final String info
 
     /**
@@ -93,7 +91,7 @@ enum ServiceState {
 
     /**
      * Convenience method, returns true if IDLE or BUSY_EVENT,
-     * in other words, if the service is up and operational.
+     * in other words, if the service is up and processing events.
      */
     boolean isOperational() {
         return this == IDLE || this == BUSY_EVENT

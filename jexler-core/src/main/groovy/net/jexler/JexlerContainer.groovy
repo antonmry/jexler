@@ -37,14 +37,12 @@ import org.slf4j.LoggerFactory
 @CompileStatic
 class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Closeable {
 
-    private static final Logger log = LoggerFactory.getLogger(JexlerContainer.class)
-
     private static final String EXT = '.groovy'
 
-    private final File dir
-    private final String id
+    /** Directory that contains the jexler Groovy scripts. */
+    final File dir
 
-    /** key is jexler id */
+    /** Map of jexler ID to jexler. */
     private final Map<String,Jexler> jexlerMap
 
     private final IssueTracker issueTracker
@@ -58,6 +56,7 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
      * @throws RuntimeException if given dir is not a directory or does not exist
      */
     JexlerContainer(File dir) {
+        // use directory name as container ID, if directory exists
         super(dir.exists() ? dir.name : null)
         if (!dir.exists()) {
             throw new RuntimeException("Directory '$dir.absolutePath' does not exist.")
@@ -65,7 +64,6 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
             throw new RuntimeException("File '$dir.absolutePath' is not a directory.")
         }
         this.dir = dir
-        id = super.id
         jexlerMap = new TreeMap<>()
         issueTracker = new IssueTrackerBase()
         schedulerLock = new Object()
@@ -169,21 +167,6 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
     @Override
     void forgetIssues() {
         issueTracker.forgetIssues()
-    }
-
-    /**
-     * Get id, which is the name of the jexler container directory.
-     */
-    @Override
-    String getId() {
-        return id
-    }
-
-    /**
-     * Get directory that contains the jexler Groovy scripts.
-     */
-    File getDir() {
-        return dir
     }
 
     /**

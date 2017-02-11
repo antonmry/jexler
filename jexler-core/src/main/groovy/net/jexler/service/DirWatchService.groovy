@@ -50,12 +50,19 @@ class DirWatchService extends ServiceBase {
 
     private static final Logger log = LoggerFactory.getLogger(DirWatchService.class)
 
-    private Jexler jexler
-    private File watchDir
-    private Scheduler scheduler
-    private String cron
-    private TriggerKey triggerKey
+    /** Jexler. */
+    final Jexler jexler
 
+    /** Directory to watch. */
+    File watchDir
+
+    /** Cron pattern. */
+    String cron
+
+    /** Quartz scheduler. */
+    Scheduler scheduler
+
+    private TriggerKey triggerKey
     private WatchService watchService
     private WatchKey watchKey
 

@@ -32,6 +32,7 @@ class IssueTrackerBase implements IssueTracker {
 
     private static final Logger log = LoggerFactory.getLogger(IssueTrackerBase.class)
 
+    /** List of issues. */
     private final List<Issue> issues
 
     /**

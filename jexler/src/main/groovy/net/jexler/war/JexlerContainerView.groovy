@@ -217,7 +217,7 @@ class JexlerContainerView {
     String getWeb() {
         boolean available = false
         if (jexlerId != null) {
-            Script script = jexler.getScript()
+            Script script = jexler.script
             if (script != null && jexler.state.operational) {
                 MetaClass mc = script.metaClass
                 Object[] args = [ PageContext.class ]

@@ -62,10 +62,14 @@ class ShellTool {
     @CompileStatic
     @PackageScope
     static class OutputCollector extends Thread {
+
         private final InputStream is
         private final Closure lineHandler
         private final String threadName
-        private String output
+
+        /** Collected output. */
+        String output
+
         OutputCollector(InputStream is, Closure lineHandler, String threadName) {
             this.is = is
             this.lineHandler = lineHandler
@@ -88,15 +92,19 @@ class ShellTool {
             scanner.close()
             output = out.toString()
         }
-        public String getOutput() {
-            return output
-        }
     }
 
-    private File workingDirectory
-    private Map<String,String> env
-    private Closure stdoutLineHandler
-    private Closure stderrLineHandler
+    /** Working directory for command. */
+    File workingDirectory
+
+    /** Environment variables for the command. */
+    Map<String,String> env
+
+    /** Closure for handling stdout lines. */
+    Closure stdoutLineHandler
+
+    /** Closure for handling stderr lines. */
+    Closure stderrLineHandler
 
     /**
      * Constructor.

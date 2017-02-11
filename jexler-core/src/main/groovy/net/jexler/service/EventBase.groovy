@@ -26,7 +26,8 @@ import groovy.transform.CompileStatic
 @CompileStatic
 abstract class EventBase implements Event {
 
-    private final Service service
+    /** The service that created the event. */
+    final Service service
 
     /**
      * Constructor.
@@ -34,11 +35,6 @@ abstract class EventBase implements Event {
      */
     EventBase(Service service) {
         this.service = service
-    }
-
-    @Override
-    Service getService() {
-        return service
     }
 
 }

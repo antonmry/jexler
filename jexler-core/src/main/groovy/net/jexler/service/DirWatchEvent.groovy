@@ -28,8 +28,11 @@ import java.nio.file.WatchEvent
 @CompileStatic
 class DirWatchEvent extends EventBase {
 
-    private final File file
-    private final WatchEvent.Kind kind
+    /** File that has been created, modified or deleted. */
+    final File file
+
+    /** What happened with the file. */
+    final WatchEvent.Kind kind
     
     /**
      * Constructor.
@@ -41,20 +44,6 @@ class DirWatchEvent extends EventBase {
         super(service)
         this.file = file
         this.kind = kind
-    }
-    
-    /**
-     * Get file that has been created, modified or deleted.
-     */
-    File getFile() {
-        return file
-    }
-    
-    /**
-     * Get what happened with the file.
-     */
-    WatchEvent.Kind getKind() {
-        return kind
     }
 
 }

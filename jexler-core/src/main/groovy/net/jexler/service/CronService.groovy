@@ -47,12 +47,16 @@ class CronService extends ServiceBase {
     public static final String CRON_NOW = 'now'
     public static final String CRON_NOW_AND_STOP = "$CRON_NOW+stop"
 
-    private Jexler jexler
-    private Scheduler scheduler
-    private String cron
-    private TriggerKey triggerKey
+    /** Jexler. */
+    final Jexler jexler
 
-    private static Map<String,Object> contextMap
+    /** Cron pattern. */
+    String cron
+
+    /** Quartz scheduler. */
+    Scheduler scheduler
+
+    private TriggerKey triggerKey
 
     /**
      * Constructor.

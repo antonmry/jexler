@@ -38,7 +38,7 @@ interface Service {
     void stop()
 
     /**
-     * Get state of the service.
+     * Get service state.
      */
     ServiceState getState()
 

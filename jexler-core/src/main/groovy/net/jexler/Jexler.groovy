@@ -54,7 +54,6 @@ class Jexler implements Service, IssueTracker {
      *
      * @author $(whois jexler.net)
      */
-
     @CompileStatic
     class Events extends LinkedBlockingQueue<Event> {
         /**
@@ -75,12 +74,23 @@ class Jexler implements Service, IssueTracker {
         }
     }
 
-    private final File file
-    private final String id
-    private final JexlerContainer container
-    private volatile ServiceState state
-    private volatile Script script
+    /** Jexler script file. */
+    final File file
+
+    /** Jexler ID. */
+    final String id
+
+    /** Container that contains this jexler. */
+    final JexlerContainer container
+
+    /** Jexler service state. */
+    volatile ServiceState state
+
+    /** Jexler script instance, null if script is not running. */
+    volatile Script script
+
     private volatile Thread scriptThread
+
     /** Event queue. */
     protected final Events events
 
@@ -266,11 +276,6 @@ class Jexler implements Service, IssueTracker {
     }
 
     @Override
-    ServiceState getState() {
-        return state
-    }
-
-    @Override
     void trackIssue(Issue issue) {
         issueTracker.trackIssue(issue)
     }
@@ -316,32 +321,11 @@ class Jexler implements Service, IssueTracker {
         issueTracker.forgetIssues()
     }
 
-    @Override
-    String getId() {
-        return id
-    }
-
-    /**
-     * Get script file.
-     */
-    File getFile() {
-        return file
-    }
-
     /**
      * Get directory that contains script file.
      */
     File getDir() {
         return file.parentFile
-    }
-
-    /**
-     * Get script instance, may be null if script is not running.
-     *
-     * Normally only use if jexler.state.operational is true.
-     */
-    Script getScript() {
-        return script
     }
 
     /**
@@ -414,13 +398,6 @@ class Jexler implements Service, IssueTracker {
         info.putAll(map)
 
         return info
-    }
-
-    /**
-     * Get the container that contains this jexler.
-     */
-    JexlerContainer getContainer() {
-        return container
     }
 
     // Workaround for bug GROOVY-7407:

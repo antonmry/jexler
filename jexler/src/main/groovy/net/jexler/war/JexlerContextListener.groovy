@@ -39,7 +39,7 @@ class JexlerContextListener implements ServletContextListener    {
 
     private static final Logger log = LoggerFactory.getLogger(JexlerContextListener.class)
 
-    private static final String guiVersion = '3.0.0-SNAPSHOT' // IMPORTANT: keep in sync with version in main build.gradle
+    private static final String GUI_VERSION = '3.0.0-SNAPSHOT' // IMPORTANT: keep in sync with version in main build.gradle
 
     static String jexlerTooltip
     static ServletContext servletContext
@@ -61,7 +61,7 @@ class JexlerContextListener implements ServletContextListener    {
         String groovyVersion = GroovyClassLoader.class.package.implementationVersion
         groovyVersion = (groovyVersion == null) ? '0.0.0' : groovyVersion
         jexlerTooltip = """\
-          Jexler $guiVersion
+          Jexler $GUI_VERSION
           • jexler-core: $coreVersion
           • Groovy: $groovyVersion
           https://www.jexler.net/""".stripIndent()

@@ -55,7 +55,7 @@ class JexlerDispatcher {
             mm.invoke(script, noArgs)
         }
 
-        while(true) {
+        while (true) {
             Event event = events.take()
 
             if (event instanceof StopEvent) {
