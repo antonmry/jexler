@@ -90,8 +90,7 @@ class JexlerContainerView {
                 handleStop()
                 break
             case 'restart':
-                handleStop()
-                handleStart()
+                handleRestart()
                 break
             case 'zap':
                 handleZap()
@@ -362,6 +361,22 @@ class JexlerContainerView {
         } else if (targetJexler != null) {
             targetJexler.stop()
             runInNewThread { JexlerUtil.waitForShutdown(targetJexler, stopTimeout) }
+        }
+    }
+
+    private void handleRestart() {
+        if (targetJexlerId == null) {
+            container.stop()
+            if (JexlerUtil.waitForShutdown(container, startTimeout)) {
+                container.start()
+                runInNewThread { JexlerUtil.waitForStartup(container, startTimeout) }
+            }
+        } else if (targetJexler != null) {
+            targetJexler.stop()
+            if (JexlerUtil.waitForShutdown(targetJexler, stopTimeout)) {
+                targetJexler.start()
+                runInNewThread { JexlerUtil.waitForStartup(targetJexler, startTimeout) }
+            }
         }
     }
 
