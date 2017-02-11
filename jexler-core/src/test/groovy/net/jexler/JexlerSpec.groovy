@@ -54,7 +54,7 @@ class JexlerSpec extends Specification {
         jexler.file.absolutePath == file.absolutePath
         jexler.id == 'Test'
         jexler.state == ServiceState.OFF
-        jexler.off
+        jexler.state.off
         jexler.metaInfo.size() == metaInfoSize
         jexler.issues.empty
 
@@ -98,7 +98,7 @@ class JexlerSpec extends Specification {
         jexler.start()
         jexler.waitForStartup(MS_10_SEC)
         jexler.state == ServiceState.OFF
-        jexler.off
+        jexler.state.off
         jexler.metaInfo.size() == metaInfoSize
         jexler.issues.size() == 1
         jexler.issues.first().service == jexler
@@ -162,7 +162,7 @@ class JexlerSpec extends Specification {
 
         then:
         jexler.state == ServiceState.OFF
-        jexler.off
+        jexler.state.off
         jexler.metaInfo.size() == 2
         jexler.metaInfo.autostart == false
         jexler.metaInfo.foo == 'bar'
@@ -175,7 +175,7 @@ class JexlerSpec extends Specification {
 
         then:
         jexler.state == ServiceState.IDLE
-        jexler.on
+        jexler.state.on
         jexler.issues.empty
         mockService.nStarted == 1
         mockService.nEventsSent == 0
@@ -189,7 +189,7 @@ class JexlerSpec extends Specification {
 
         then:
         jexler.state == ServiceState.IDLE
-        jexler.on
+        jexler.state.on
         jexler.issues.empty
 
         when:
@@ -210,7 +210,7 @@ class JexlerSpec extends Specification {
 
         then:
         jexler.state == ServiceState.OFF
-        jexler.off
+        jexler.state.off
         jexler.issues.empty
         mockService.nStarted == 1
         mockService.nEventsSent == 1
@@ -224,7 +224,7 @@ class JexlerSpec extends Specification {
 
         then:
         jexler.state == ServiceState.OFF
-        jexler.off
+        jexler.state.off
         jexler.issues.empty
     }
 
@@ -251,7 +251,7 @@ class JexlerSpec extends Specification {
 
         then:
         jexler.state == ServiceState.OFF
-        jexler.off
+        jexler.state.off
         jexler.metaInfo.size() == 2
         jexler.metaInfo.autostart == false
         jexler.metaInfo.foo == 'bar'
@@ -264,7 +264,7 @@ class JexlerSpec extends Specification {
 
         then:
         jexler.state == ServiceState.IDLE
-        jexler.on
+        jexler.state.on
         jexler.issues.empty
         mockService.nStarted == 1
         mockService.nEventsSent == 0
@@ -278,7 +278,7 @@ class JexlerSpec extends Specification {
 
         then:
         jexler.state == ServiceState.IDLE
-        jexler.on
+        jexler.state.on
         jexler.issues.empty
 
         when:
@@ -300,7 +300,7 @@ class JexlerSpec extends Specification {
 
         then:
         jexler.state == ServiceState.OFF
-        jexler.off
+        jexler.state.off
         jexler.issues.size() == 1
         jexler.issues.first().message == 'Script run failed.'
         jexler.issues.first().cause.class == java.lang.ThreadDeath
@@ -380,7 +380,7 @@ class JexlerSpec extends Specification {
 
         then:
         jexler.state == ServiceState.IDLE
-        jexler.on
+        jexler.state.on
         jexler.issues.empty
 
         when:
@@ -389,7 +389,7 @@ class JexlerSpec extends Specification {
 
         then:
         jexler.state == ServiceState.OFF
-        jexler.off
+        jexler.state.off
         jexler.issues.size() == 1
         jexler.issues.first().message == 'Could not stop services.'
         jexler.issues.first().cause == mockService.stopRuntimeException
@@ -493,7 +493,7 @@ class JexlerSpec extends Specification {
 
         then:
         jexler.state == ServiceState.IDLE
-        jexler.on
+        jexler.state.on
         jexler.issues.size() == 1
         jexler.issues.first().service == jexler
         jexler.issues.first().message == 'Could not take event.'

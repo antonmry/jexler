@@ -88,7 +88,7 @@ class CronService extends ServiceBase {
 
     @Override
     void start() {
-        if (on) {
+        if (state.on) {
             return
         }
         if (cron.startsWith(CRON_NOW)) {
@@ -123,7 +123,7 @@ class CronService extends ServiceBase {
 
     @Override
     void stop() {
-        if (off) {
+        if (state.off) {
             return
         }
         if (scheduler != null) {
@@ -134,7 +134,7 @@ class CronService extends ServiceBase {
 
     @Override
     void zap() {
-        if (off) {
+        if (state.off) {
             return
         }
         state = ServiceState.OFF

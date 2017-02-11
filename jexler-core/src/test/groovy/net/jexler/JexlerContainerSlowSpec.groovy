@@ -75,10 +75,10 @@ class JexlerContainerSlowSpec extends Specification {
 
         then:
         container.jexlers.size() == 3
-        container.off
-        jexler1.off
-        jexler2.off
-        jexler3.off
+        container.state.off
+        jexler1.state.off
+        jexler2.state.off
+        jexler3.state.off
 
         when:
         container.start()

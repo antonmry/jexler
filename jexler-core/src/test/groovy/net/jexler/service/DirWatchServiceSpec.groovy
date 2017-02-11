@@ -43,7 +43,7 @@ class DirWatchServiceSpec extends Specification {
         service.start()
 
         then:
-        service.off
+        service.state.off
         jexler.issues.size() == 1
         jexler.issues.first().service == service
         jexler.issues.first().message.startsWith('Could not create watch service or key')

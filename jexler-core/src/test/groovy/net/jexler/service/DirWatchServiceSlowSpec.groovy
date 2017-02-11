@@ -58,7 +58,7 @@ class DirWatchServiceSlowSpec extends Specification {
         service.start()
 
         then:
-        service.on
+        service.state.on
         service.waitForStartup(MS_15_SEC)
         jexler.takeEvent(MS_15_SEC) == null
 
@@ -68,7 +68,7 @@ class DirWatchServiceSlowSpec extends Specification {
         service.stop()
 
         then:
-        service.off
+        service.state.off
         service.waitForShutdown(MS_15_SEC)
 
         when:
@@ -85,7 +85,7 @@ class DirWatchServiceSlowSpec extends Specification {
         service.start()
 
         then:
-        service.on
+        service.state.on
         service.waitForStartup(MS_15_SEC)
         jexler.takeEvent(MS_15_SEC) == null
 
@@ -113,7 +113,7 @@ class DirWatchServiceSlowSpec extends Specification {
         service.stop()
 
         then:
-        service.off
+        service.state.off
 
         when:
         // different watch directory
@@ -122,7 +122,7 @@ class DirWatchServiceSlowSpec extends Specification {
         service.start()
 
         then:
-        service.on
+        service.state.on
 
         when:
         service.zap()

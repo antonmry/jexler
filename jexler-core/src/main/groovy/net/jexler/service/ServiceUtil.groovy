@@ -53,7 +53,7 @@ class ServiceUtil {
     static boolean waitForShutdown(Service service, long timeout) {
         long t0 = System.currentTimeMillis()
         while (true) {
-            if (service.off) {
+            if (service.state.off) {
                 return true
             }
             if (System.currentTimeMillis() - t0 >= timeout) {

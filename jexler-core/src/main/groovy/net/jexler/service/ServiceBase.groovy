@@ -62,16 +62,6 @@ abstract class ServiceBase implements Service {
     }
 
     @Override
-    boolean isOn() {
-        return state.on
-    }
-
-    @Override
-    boolean isOff() {
-        return state.off
-    }
-
-    @Override
     String getId() {
         return id
     }

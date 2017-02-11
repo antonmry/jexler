@@ -92,7 +92,7 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
             // recreate list while omitting jexlers without script file that are stopped
             services.clear()
             jexlerMap.each { id, jexler ->
-                if (jexler.file.exists() || jexler.on) {
+                if (jexler.file.exists() || jexler.state.on) {
                     services.add(jexler)
                 }
             }

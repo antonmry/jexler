@@ -124,7 +124,7 @@ class Jexler implements Service, IssueTracker {
     @Override
     void start() {
         log.info("*** Jexler start: $id")
-        if (on) {
+        if (state.on) {
             return
         }
         state = ServiceState.BUSY_STARTING
@@ -242,7 +242,7 @@ class Jexler implements Service, IssueTracker {
     @Override
     void stop() {
         log.info("*** Jexler stop: $id")
-        if (off) {
+        if (state.off) {
             return
         }
         handle(new StopEvent(this))
@@ -263,16 +263,6 @@ class Jexler implements Service, IssueTracker {
     }
 
     @Override
-    boolean isOn() {
-        return state.on
-    }
-
-    @Override
-    boolean isOff() {
-        return state.off
-    }
-
-    @Override
     void trackIssue(Issue issue) {
         issueTracker.trackIssue(issue)
     }
@@ -280,7 +270,7 @@ class Jexler implements Service, IssueTracker {
     @Override
     void zap() {
         log.info("*** Jexler zap: $id")
-        if (off) {
+        if (state.off) {
             return
         }
         state = ServiceState.OFF
@@ -367,7 +357,7 @@ class Jexler implements Service, IssueTracker {
      * to an object which is not a map.
      */
     Map<String,Object> getMetaInfo() {
-        if (on) {
+        if (state.on) {
             return metaInfoAtStart
         } else {
             return readMetaInfo()

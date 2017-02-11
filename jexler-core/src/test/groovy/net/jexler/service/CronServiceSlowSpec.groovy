@@ -51,7 +51,7 @@ class CronServiceSlowSpec extends Specification {
         service.start()
 
         then:
-        service.on
+        service.state.on
         service.waitForStartup(MS_15_SEC)
 
         when:
@@ -67,14 +67,14 @@ class CronServiceSlowSpec extends Specification {
 
         then:
         service.waitForShutdown(MS_15_SEC)
-        service.off
+        service.state.off
         jexler.takeEvent(MS_15_SEC) == null
 
         when:
         service.start()
 
         then:
-        service.on
+        service.state.on
         service.waitForStartup(MS_15_SEC)
 
         when:
@@ -96,14 +96,14 @@ class CronServiceSlowSpec extends Specification {
 
         then:
         service.waitForShutdown(MS_15_SEC)
-        service.off
+        service.state.off
         jexler.takeEvent(MS_15_SEC) == null
 
         when:
         service.stop()
 
         then:
-        service.off
+        service.state.off
 
         when:
         service.start()
@@ -136,7 +136,7 @@ class CronServiceSlowSpec extends Specification {
         service.start()
 
         then:
-        service.on
+        service.state.on
 
         when:
         event = jexler.takeEvent(MS_1_SEC)
@@ -152,14 +152,14 @@ class CronServiceSlowSpec extends Specification {
 
         then:
         service.waitForShutdown(MS_15_SEC)
-        service.off
+        service.state.off
         jexler.takeEvent(MS_1_SEC) == null
 
         when:
         service.start()
 
         then:
-        service.on
+        service.state.on
 
         when:
         event = jexler.takeEvent(MS_1_SEC)
@@ -175,7 +175,7 @@ class CronServiceSlowSpec extends Specification {
 
         then:
         service.waitForShutdown(MS_15_SEC)
-        service.off
+        service.state.off
         jexler.takeEvent(MS_1_SEC) == null
     }
 
@@ -194,7 +194,7 @@ class CronServiceSlowSpec extends Specification {
         service.start()
 
         then:
-        service.off
+        service.state.off
 
         when:
         event = jexler.takeEvent(MS_1_SEC)
@@ -215,7 +215,7 @@ class CronServiceSlowSpec extends Specification {
         service.start()
 
         then:
-        service.off
+        service.state.off
 
         when:
         event = jexler.takeEvent(MS_1_SEC)

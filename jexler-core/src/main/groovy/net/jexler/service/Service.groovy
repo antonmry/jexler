@@ -58,17 +58,6 @@ interface Service {
     ServiceState getState()
 
     /**
-     * Convenience method for testing if service state is not OFF.
-     */
-    boolean isOn()
-
-    /**
-     * Convenience method for testing  if service state is OFF.
-     * @return true or false
-     */
-    boolean isOff()
-
-    /**
      * Forcefully terminate service, as far as possible;
      * should not wait for anything, nor throw anything.
      */

@@ -121,24 +121,6 @@ class ServiceGroup implements Service {
         }
     }
 
-    /**
-     * Check if service is on.
-     * Considered on if at least one service in the group is on.
-     */
-    @Override
-    boolean isOn() {
-        return state.on
-    }
-
-    /**
-     * Check if service is off.
-     * Considered only off if all services in the group are off.
-     */
-    @Override
-    boolean isOff() {
-        return state.off
-    }
-
     @Override
     void zap() {
         synchronized(services) {

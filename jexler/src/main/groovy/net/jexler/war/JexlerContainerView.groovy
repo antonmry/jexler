@@ -153,9 +153,9 @@ class JexlerContainerView {
         boolean on
         boolean zap = false
         if (jexlerId == null) {
-            on = container.on
+            on = container.state.on
         } else {
-            on = jexler.on
+            on = jexler.state.on
             if (on) {
                 for (Issue issue : jexler.issues) {
                     if (issue.getMessage() == 'Timeout waiting for jexler shutdown.') {

@@ -60,7 +60,7 @@ class JexlerContainerSpec extends Specification {
 
         then:
         container.state == ServiceState.OFF
-        container.off
+        container.state.off
         container.dir == dir
         container.id == dir.name
         container.jexlers.size() == 3
@@ -85,7 +85,7 @@ class JexlerContainerSpec extends Specification {
 
         then:
         container.state == ServiceState.IDLE
-        container.on
+        container.state.on
         jexler1.state == ServiceState.IDLE
         jexler2.state == ServiceState.IDLE
         jexler3.state == ServiceState.IDLE
@@ -108,7 +108,7 @@ class JexlerContainerSpec extends Specification {
 
         then:
         container.state == ServiceState.IDLE
-        container.on
+        container.state.on
         jexler1.state == ServiceState.OFF
         jexler2.state == ServiceState.IDLE
         jexler3.state == ServiceState.OFF
@@ -120,7 +120,7 @@ class JexlerContainerSpec extends Specification {
 
         then:
         container.state == ServiceState.IDLE
-        container.on
+        container.state.on
         jexler1.state == ServiceState.IDLE
         jexler2.state == ServiceState.IDLE
         jexler3.state == ServiceState.IDLE
@@ -132,7 +132,7 @@ class JexlerContainerSpec extends Specification {
 
         then:
         container.state == ServiceState.IDLE
-        container.on
+        container.state.on
         jexler1.state == ServiceState.IDLE
         jexler2.state == ServiceState.IDLE
         jexler3.state == ServiceState.OFF
@@ -189,7 +189,7 @@ class JexlerContainerSpec extends Specification {
         container.waitForShutdown(MS_10_SEC)
 
         then:
-        container.off
+        container.state.off
 
         when:
         new File(dir, 'Jexler5.groovy').text = "[ 'autostart' : true ]\nwhile(true){}"

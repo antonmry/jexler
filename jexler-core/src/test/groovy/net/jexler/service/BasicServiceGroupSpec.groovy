@@ -99,8 +99,8 @@ class BasicServiceGroupSpec extends Specification {
         service2.state == ServiceState.OFF
         service3.state == ServiceState.OFF
         group.state == ServiceState.OFF
-        !group.on
-        group.off
+        !group.state.on
+        group.state.off
 
         when:
         service1.start()
@@ -110,8 +110,8 @@ class BasicServiceGroupSpec extends Specification {
         service2.state == ServiceState.OFF
         service3.state == ServiceState.OFF
         group.state == ServiceState.IDLE
-        group.on
-        !group.off
+        group.state.on
+        !group.state.off
 
         when:
         group.start()
@@ -121,8 +121,8 @@ class BasicServiceGroupSpec extends Specification {
         service2.state == ServiceState.IDLE
         service3.state == ServiceState.IDLE
         group.state == ServiceState.IDLE
-        group.on
-        !group.off
+        group.state.on
+        !group.state.off
 
         when:
         service3.stop()
@@ -132,8 +132,8 @@ class BasicServiceGroupSpec extends Specification {
         service2.state == ServiceState.IDLE
         service3.state == ServiceState.OFF
         group.state == ServiceState.IDLE
-        group.on
-        !group.off
+        group.state.on
+        !group.state.off
 
         when:
         group.stop()
@@ -143,8 +143,8 @@ class BasicServiceGroupSpec extends Specification {
         service2.state == ServiceState.OFF
         service3.state == ServiceState.OFF
         group.state == ServiceState.OFF
-        !group.on
-        group.off
+        !group.state.on
+        group.state.off
     }
 
     def 'TEST runtime exceptions when stopping services'() {

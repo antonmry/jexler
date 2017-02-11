@@ -105,7 +105,7 @@ class DirWatchService extends ServiceBase {
 
     @Override
     void start() {
-        if (on) {
+        if (state.on) {
             return
         }
         Path path = watchDir.toPath()
@@ -142,7 +142,7 @@ class DirWatchService extends ServiceBase {
 
     @Override
     void stop() {
-        if (off) {
+        if (state.off) {
             return
         }
         scheduler.unscheduleJob(triggerKey)
@@ -157,7 +157,7 @@ class DirWatchService extends ServiceBase {
 
     @Override
     void zap() {
-        if (off) {
+        if (state.off) {
             return
         }
         state = ServiceState.OFF
