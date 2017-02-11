@@ -29,7 +29,6 @@ import groovy.transform.CompileStatic
 @CompileStatic
 abstract class ServiceBase implements Service {
 
-    private final Jexler jexler
     private final String id
     private volatile RunState runState
 
@@ -38,8 +37,7 @@ abstract class ServiceBase implements Service {
      * @param jexler the jexler to send events to
      * @param id the id of the service
      */
-    ServiceBase(Jexler jexler, String id) {
-        this.jexler = jexler
+    ServiceBase(String id) {
         this.id = id
         runState = RunState.OFF
     }
@@ -84,10 +82,6 @@ abstract class ServiceBase implements Service {
     @Override
     void zap() {
         runState = RunState.OFF
-    }
-
-    protected Jexler getJexler() {
-        return jexler
     }
 
 }

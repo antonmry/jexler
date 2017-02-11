@@ -44,6 +44,7 @@ class CronService extends ServiceBase {
     public static final String CRON_NOW = 'now'
     public static final String CRON_NOW_AND_STOP = "$CRON_NOW+stop"
 
+    private Jexler jexler
     private Scheduler scheduler
     private String cron
     private TriggerKey triggerKey
@@ -56,7 +57,8 @@ class CronService extends ServiceBase {
      * @param id the id of the service
      */
     CronService(Jexler jexler, String id) {
-        super(jexler, id)
+        super(id)
+        this.jexler = jexler
     }
 
     /**
@@ -83,7 +85,7 @@ class CronService extends ServiceBase {
 
     @Override
     void start() {
-        if (!off) {
+        if (on) {
             return
         }
         if (cron.startsWith(CRON_NOW)) {

@@ -47,6 +47,7 @@ class DirWatchService extends ServiceBase {
 
     private static final Logger log = LoggerFactory.getLogger(DirWatchService.class)
 
+    private Jexler jexler
     private File watchDir
     private Scheduler scheduler
     private String cron
@@ -61,7 +62,8 @@ class DirWatchService extends ServiceBase {
      * @param id the id of the service
      */
     DirWatchService(Jexler jexler, String id) {
-        super(jexler, id)
+        super(id)
+        this.jexler = jexler
         watchDir = jexler.dir
         this.cron = '*/5 * * * * ?'
     }
@@ -100,7 +102,7 @@ class DirWatchService extends ServiceBase {
 
     @Override
     void start() {
-        if (!off) {
+        if (on) {
             return
         }
         Path path = watchDir.toPath()

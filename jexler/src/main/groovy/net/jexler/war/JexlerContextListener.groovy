@@ -39,7 +39,7 @@ class JexlerContextListener implements ServletContextListener    {
 
     private static final Logger log = LoggerFactory.getLogger(JexlerContextListener.class)
 
-    private static final String guiVersion = '2.0.6-SNAPSHOT' // IMPORTANT: keep in sync with version in main build.gradle
+    private static final String guiVersion = '3.0.0-SNAPSHOT' // IMPORTANT: keep in sync with version in main build.gradle
 
     static String jexlerTooltip
     static ServletContext servletContext

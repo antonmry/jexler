@@ -31,6 +31,7 @@ class MockService extends ServiceBase {
 
     private static final Map<String,MockService> instances = new HashMap<>()
 
+    private Jexler jexler
     volatile int nStarted = 0
     volatile int nStopped = 0
     volatile int nZapped = 0
@@ -45,7 +46,8 @@ class MockService extends ServiceBase {
     }
 
     MockService(Jexler jexler, String id) {
-        super(jexler,id)
+        super(id)
+        this.jexler = jexler
         synchronized(instances) {
             instances.put(id, this)
         }
