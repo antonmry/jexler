@@ -21,8 +21,12 @@ import net.jexler.RunState
 
 import groovy.transform.CompileStatic
 import org.quartz.CronScheduleBuilder
+import org.quartz.Job
 import org.quartz.JobBuilder
+import org.quartz.JobDataMap
 import org.quartz.JobDetail
+import org.quartz.JobExecutionContext
+import org.quartz.JobExecutionException
 import org.quartz.Scheduler
 import org.quartz.Trigger
 import org.quartz.TriggerBuilder
@@ -99,20 +103,10 @@ class CronService extends ServiceBase {
             return
         }
 
-        final CronService thisService = this
-        Class jobClass = ServiceUtil.newJobClassForRunnable(new Runnable() {
-            void run() {
-                String savedName = Thread.currentThread().name
-                Thread.currentThread().name = "$jexler.id|$thisService.id"
-                log.trace("new cron event: $cron")
-                jexler.handle(new CronEvent(thisService, cron))
-                Thread.currentThread().name = savedName
-            }
-        })
-
         String uuid = UUID.randomUUID()
-        JobDetail job = JobBuilder.newJob(jobClass)
+        JobDetail job = JobBuilder.newJob(CronJob.class)
                 .withIdentity("job-$id-$uuid", jexler.id)
+                .usingJobData(['service':this] as JobDataMap)
                 .build()
         Trigger trigger = TriggerBuilder.newTrigger()
                 .withIdentity("trigger-$id-$uuid", jexler.id)
@@ -155,6 +149,17 @@ class CronService extends ServiceBase {
                     }
                 }
             }.start()
+        }
+    }
+
+    static class CronJob implements Job {
+        void execute(JobExecutionContext ctx) throws JobExecutionException {
+            CronService service = (CronService)ctx.jobDetail.jobDataMap.service
+            String savedName = Thread.currentThread().name
+            Thread.currentThread().name = "$service.jexler.id|$service.id"
+            log.trace("new cron event: $service.cron")
+            service.jexler.handle(new CronEvent(service, service.cron))
+            Thread.currentThread().name = savedName
         }
     }
 

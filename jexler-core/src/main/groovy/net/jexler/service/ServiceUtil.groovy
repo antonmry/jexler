@@ -18,7 +18,6 @@ package net.jexler.service
 
 import net.jexler.JexlerUtil
 
-import ch.grengine.Grengine
 import groovy.transform.CompileStatic
 import org.quartz.CronExpression
 import org.slf4j.Logger
@@ -37,25 +36,6 @@ import java.text.ParseException
 class ServiceUtil {
 
     private static final Logger log = LoggerFactory.getLogger(ServiceUtil.class)
-
-    private static final Grengine gren = new Grengine()
-
-    private static final String runnableWrappingJobScript = """\
-        import groovy.transform.CompileStatic
-        import org.quartz.*
-        @CompileStatic
-        class RunnableWrappingJob implements Job {
-           public static Runnable runnable
-          RunnableWrappingJob() {}
-          void execute(JobExecutionContext context) throws JobExecutionException {
-             runnable.run()
-          }
-        }
-        """.stripIndent()
-
-    static {
-        gren.load(runnableWrappingJobScript)
-    }
 
     static boolean waitForStartup(Service service, long timeout) {
         long t0 = System.currentTimeMillis()
@@ -81,12 +61,6 @@ class ServiceUtil {
             }
             JexlerUtil.waitAtLeast(10)
         }
-    }
-
-    static Class newJobClassForRunnable(Runnable runnable) {
-        Class jobClass = (Class)gren.load(gren.newDetachedLoader(), runnableWrappingJobScript)
-        jobClass.getDeclaredField('runnable').set(null, runnable)
-        return jobClass
     }
 
     /**

@@ -21,8 +21,12 @@ import net.jexler.RunState
 
 import groovy.transform.CompileStatic
 import org.quartz.CronScheduleBuilder
+import org.quartz.Job
 import org.quartz.JobBuilder
+import org.quartz.JobDataMap
 import org.quartz.JobDetail
+import org.quartz.JobExecutionContext
+import org.quartz.JobExecutionException
 import org.quartz.Scheduler
 import org.quartz.Trigger
 import org.quartz.TriggerBuilder
@@ -118,25 +122,10 @@ class DirWatchService extends ServiceBase {
             return
         }
 
-        final DirWatchService thisService = this
-        Class jobClass = ServiceUtil.newJobClassForRunnable(new Runnable() {
-            void run() {
-                String savedName = Thread.currentThread().name
-                Thread.currentThread().name = "$jexler.id|$thisService.id"
-                for (WatchEvent watchEvent : watchKey.pollEvents()) {
-                    Path contextPath = ((Path) watchEvent.context())
-                    File file = new File(watchDir, contextPath.toFile().name)
-                    WatchEvent.Kind kind = watchEvent.kind()
-                    log.trace("event $kind '$file.absolutePath'")
-                    jexler.handle(new DirWatchEvent(thisService, file, kind))
-                }
-                Thread.currentThread().name = savedName
-            }
-        })
-
         String uuid = UUID.randomUUID()
-        JobDetail job = JobBuilder.newJob(jobClass)
+        JobDetail job = JobBuilder.newJob(DirWatchJob.class)
                 .withIdentity("job-$id-$uuid", jexler.id)
+                .usingJobData(['service':this] as JobDataMap)
                 .build()
         Trigger trigger = TriggerBuilder.newTrigger()
                 .withIdentity("trigger-$id-$uuid", jexler.id)
@@ -187,6 +176,22 @@ class DirWatchService extends ServiceBase {
                     log.trace('failed stop watching directory', t)
                 }
             }
+        }
+    }
+
+    static class DirWatchJob implements Job {
+        void execute(JobExecutionContext ctx) throws JobExecutionException {
+            DirWatchService service = (DirWatchService)ctx.jobDetail.jobDataMap.service
+            String savedName = Thread.currentThread().name
+            Thread.currentThread().name = "$service.jexler.id|$service.id"
+            for (WatchEvent watchEvent : service.watchKey.pollEvents()) {
+                Path contextPath = ((Path) watchEvent.context())
+                File file = new File(service.watchDir, contextPath.toFile().name)
+                WatchEvent.Kind kind = watchEvent.kind()
+                log.trace("event $kind '$file.absolutePath'")
+                service.jexler.handle(new DirWatchEvent(service, file, kind))
+            }
+            Thread.currentThread().name = savedName
         }
     }
 

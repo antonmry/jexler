@@ -13,8 +13,5 @@ jar {
 }
 
 dependencies {
-  compile('ch.grengine:grengine:1.0.5') {
-    exclude group: 'org.codehaus.groovy', module: 'groovy'
-  }
   compile 'org.quartz-scheduler:quartz:2.2.3'
 }

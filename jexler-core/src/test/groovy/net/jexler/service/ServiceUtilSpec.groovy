@@ -29,17 +29,6 @@ import spock.lang.Specification
 @Category(FastTests.class)
 class ServiceUtilSpec extends Specification {
 
-    def 'TEST new job class for runnable'() {
-        when:
-        def runnable = new Runnable() {
-            void run() {}
-        }
-        def jobClass = ServiceUtil.newJobClassForRunnable(runnable)
-
-        then:
-        jobClass.runnable == runnable
-    }
-
     def 'TEST to quartz cron, valid values'() {
         expect:
         quartzCron == ServiceUtil.toQuartzCron(cron)
