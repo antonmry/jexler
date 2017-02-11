@@ -129,8 +129,8 @@ class DirWatchService extends ServiceBase {
                 .build()
         Trigger trigger = TriggerBuilder.newTrigger()
                 .withIdentity("trigger-$id-$uuid", jexler.id)
-                .startNow()
                 .withSchedule(CronScheduleBuilder.cronSchedule(cron))
+                .startNow()
                 .build()
         triggerKey = trigger.key
 
