@@ -59,7 +59,7 @@ class DirWatchServiceSlowSpec extends Specification {
 
         then:
         service.state.on
-        service.waitForStartup(MS_15_SEC)
+        ServiceUtil.waitForStartup(service, MS_15_SEC)
         jexler.takeEvent(MS_15_SEC) == null
 
         when:
@@ -69,7 +69,7 @@ class DirWatchServiceSlowSpec extends Specification {
 
         then:
         service.state.off
-        service.waitForShutdown(MS_15_SEC)
+        ServiceUtil.waitForShutdown(service, MS_15_SEC)
 
         when:
         // create file after service stop
@@ -86,7 +86,7 @@ class DirWatchServiceSlowSpec extends Specification {
 
         then:
         service.state.on
-        service.waitForStartup(MS_15_SEC)
+        ServiceUtil.waitForStartup(service, MS_15_SEC)
         jexler.takeEvent(MS_15_SEC) == null
 
         when:
@@ -107,7 +107,7 @@ class DirWatchServiceSlowSpec extends Specification {
         service.stop()
 
         then:
-        service.waitForShutdown(MS_15_SEC)
+        ServiceUtil.waitForShutdown(service, MS_15_SEC)
 
         when:
         service.stop()

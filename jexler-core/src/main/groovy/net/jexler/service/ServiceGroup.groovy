@@ -58,11 +58,6 @@ class ServiceGroup implements Service {
         }
     }
 
-    @Override
-    boolean waitForStartup(long timeout) {
-        return ServiceUtil.waitForStartup(this, timeout)
-    }
-
     /**
      * Stop all services in a group.
      * Runtime exceptions are only logged, hence it is always
@@ -86,11 +81,6 @@ class ServiceGroup implements Service {
         if (ex != null) {
             throw ex
         }
-    }
-
-    @Override
-    boolean waitForShutdown(long timeout) {
-        return ServiceUtil.waitForShutdown(this, timeout)
     }
 
     /**

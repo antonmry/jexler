@@ -37,6 +37,12 @@ class ServiceUtil {
 
     private static final Logger log = LoggerFactory.getLogger(ServiceUtil.class)
 
+    /**
+     * Wait until service state is not BUSY_STARTING or timeout.
+     * @param service service
+     * @param timeout timeout in ms
+     * @return true if no timeout, false otherwise
+     */
     static boolean waitForStartup(Service service, long timeout) {
         long t0 = System.currentTimeMillis()
         while (true) {
@@ -49,7 +55,13 @@ class ServiceUtil {
             JexlerUtil.waitAtLeast(10)
         }
     }
-    
+
+    /**
+     * Wait until service state is not OFF or timeout.
+     * @param service service
+     * @param timeout timeout in ms
+     * @return true if no timeout, false otherwise
+     */
     static boolean waitForShutdown(Service service, long timeout) {
         long t0 = System.currentTimeMillis()
         while (true) {

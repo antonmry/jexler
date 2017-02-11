@@ -47,16 +47,6 @@ abstract class ServiceBase implements Service {
     }
         
     @Override
-    boolean waitForStartup(long timeout) {
-           return ServiceUtil.waitForStartup(this, timeout)
-    }
-    
-    @Override
-    boolean waitForShutdown(long timeout) {
-           return ServiceUtil.waitForShutdown(this, timeout)
-    }
-    
-    @Override
     ServiceState getState() {
         return state
     }

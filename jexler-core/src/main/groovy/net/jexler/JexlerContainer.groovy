@@ -19,6 +19,7 @@ package net.jexler
 import net.jexler.service.ServiceState
 import net.jexler.service.Service
 import net.jexler.service.ServiceGroup
+import net.jexler.service.ServiceUtil
 
 import groovy.transform.CompileStatic
 import org.quartz.Scheduler
@@ -116,9 +117,13 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
         }
     }
 
-    @Override
+    /**
+     * TODO document
+     * @param timeout
+     * @return
+     */
     boolean waitForStartup(long timeout) {
-        boolean ok = super.waitForStartup(timeout)
+        boolean ok = ServiceUtil.waitForStartup(this, timeout)
         if (!ok) {
             for (Jexler jexler : jexlers) {
                 if (jexler.state == ServiceState.BUSY_STARTING) {
@@ -129,9 +134,13 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
         return ok
     }
 
-    @Override
+    /**
+     * TODO document
+     * @param timeout
+     * @return
+     */
     boolean waitForShutdown(long timeout) {
-        boolean ok = super.waitForShutdown(timeout)
+        boolean ok = ServiceUtil.waitForShutdown(this, timeout)
         if (!ok) {
             for (Jexler jexler : jexlers) {
                 if (jexler.state != ServiceState.OFF) {

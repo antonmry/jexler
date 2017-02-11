@@ -220,7 +220,11 @@ class Jexler implements Service, IssueTracker {
         scriptThread.start()
     }
 
-    @Override
+    /**
+     * TODO document
+     * @param timeout
+     * @return
+     */
     boolean waitForStartup(long timeout) {
         boolean ok = ServiceUtil.waitForStartup(this, timeout)
         if (!ok) {
@@ -248,7 +252,11 @@ class Jexler implements Service, IssueTracker {
         handle(new StopEvent(this))
     }
 
-    @Override
+    /**
+     * TODO document
+     * @param timeout
+     * @return
+     */
     boolean waitForShutdown(long timeout) {
         boolean ok = ServiceUtil.waitForShutdown(this, timeout)
         if (!ok) {

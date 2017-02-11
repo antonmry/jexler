@@ -52,7 +52,7 @@ class CronServiceSlowSpec extends Specification {
 
         then:
         service.state.on
-        service.waitForStartup(MS_15_SEC)
+        ServiceUtil.waitForStartup(service, MS_15_SEC)
 
         when:
         def event = jexler.takeEvent(MS_15_SEC)
@@ -66,7 +66,7 @@ class CronServiceSlowSpec extends Specification {
         service.stop()
 
         then:
-        service.waitForShutdown(MS_15_SEC)
+        ServiceUtil.waitForShutdown(service, MS_15_SEC)
         service.state.off
         jexler.takeEvent(MS_15_SEC) == null
 
@@ -75,7 +75,7 @@ class CronServiceSlowSpec extends Specification {
 
         then:
         service.state.on
-        service.waitForStartup(MS_15_SEC)
+        ServiceUtil.waitForStartup(service, MS_15_SEC)
 
         when:
         service.start()
@@ -95,7 +95,7 @@ class CronServiceSlowSpec extends Specification {
         service.stop()
 
         then:
-        service.waitForShutdown(MS_15_SEC)
+        ServiceUtil.waitForShutdown(service, MS_15_SEC)
         service.state.off
         jexler.takeEvent(MS_15_SEC) == null
 
@@ -151,7 +151,7 @@ class CronServiceSlowSpec extends Specification {
         service.stop()
 
         then:
-        service.waitForShutdown(MS_15_SEC)
+        ServiceUtil.waitForShutdown(service, MS_15_SEC)
         service.state.off
         jexler.takeEvent(MS_1_SEC) == null
 
@@ -174,7 +174,7 @@ class CronServiceSlowSpec extends Specification {
         service.stop()
 
         then:
-        service.waitForShutdown(MS_15_SEC)
+        ServiceUtil.waitForShutdown(service, MS_15_SEC)
         service.state.off
         jexler.takeEvent(MS_1_SEC) == null
     }

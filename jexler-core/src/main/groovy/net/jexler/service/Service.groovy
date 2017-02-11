@@ -33,24 +33,9 @@ interface Service {
     void start()
 
     /**
-     * Wait until service state is not BUSY_STARTING or timeout.
-     * @param timeout timeout in ms
-     * @return true if no timeout, false otherwise
-     */
-    boolean waitForStartup(long timeout)
-
-
-    /**
      * Initiate service stop.
      */
     void stop()
-    
-    /**
-     * Wait until service state is not OFF or timeout.
-     * @param timeout timeout in ms
-     * @return true if no timeout, false otherwise
-     */
-    boolean waitForShutdown(long timeout)
 
     /**
      * Get state of the service.
