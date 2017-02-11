@@ -304,6 +304,9 @@ class JexlerContainerView {
             return ''
         }
         File file = jexler.file
+        if (!file.exists()) {
+            return ''
+        }
         try {
             return file.text
         } catch (IOException e) {

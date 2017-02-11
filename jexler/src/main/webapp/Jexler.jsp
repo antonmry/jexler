@@ -23,178 +23,14 @@
   <link rel="icon" href="favicon.ico"/>
   <link rel="stylesheet" href="cm/lib/codemirror.css">
   <link rel="stylesheet" href="jexler.css"/>
+  <script src="jexler.js"></script>
   <script src="cm/lib/codemirror.js"></script>
   <script src="cm/addon/edit/matchbrackets.js"></script>
   <script src="cm/mode/groovy/groovy.js"></script>
 
-  <script>
-    var savedSource;
-    var currentSource;
-    var hasSourceChanged;
-    var hasJexlerChanged;
-    var isGetStatusPending;
-    var isLogGetStatus;
-
-    function onPageLoad() {
-      sourceElement = document.getElementById('source');
-      if (sourceElement != null) {
-        savedSource = sourceElement.value
-      }
-      currentSource = savedSource;
-      hasSourceChanged = false;
-      hasJexlerChanged = false;
-      setHeight();
-      isGetStatusPending = false;
-      isLogGetStatus = false;
-      window.setInterval(getStatus, 1000);
-    }
-        
-    var previousStatusText = "";
-
-    function getStatus() {
-      if (isGetStatusPending) {
-        logGetStatus('skipping');
-        return;
-      }
-      var xmlhttp = new XMLHttpRequest();
-      xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState === 4) {
-          try {
-            logGetStatus('=> readyState 4');
-            var text = xmlhttp.responseText;
-            if (xmlhttp.status / 100 != 2) {
-              text = ""
-            }
-            if (text == "") {
-              text = previousStatusText;
-              if (text.indexOf("(offline)") < 0) {
-                text = text.replace("<strong>Scripts</strong>", "<strong>(offline)</strong>");
-                text = text.replace(/\.gif'/g, "-dim.gif'");
-                text = text.replace(/<a href='\?cmd=[a-z]+(&jexler=[A-Za-z0-9]+)?'>/g, "");
-                text = text.replace(/<\/a>/g, "");
-                text = text.replace(/status-name/g, "status-name status-offline");
-              }
-            }
-            if (text != previousStatusText) {
-              previousStatusText = text;
-              var statusDiv = document.getElementById("statusdiv");
-              statusDiv.innerHTML = text;
-            }
-          } finally {
-            logGetStatus('=> finally');
-            isGetStatusPending = false;
-          }
-        }
-      };
-      xmlhttp.onabort = function() {
-        logGetStatus('=> aborted');
-        isGetStatusPending = false;
-      };
-      xmlhttp.onerror = function() {
-        logGetStatus('=> error');
-        isGetStatusPending = false;
-      };
-      xmlhttp.onload = function() {
-        logGetStatus('=> loaded');
-        isGetStatusPending = false;
-      };
-      xmlhttp.ontimeout = function() {
-        logGetStatus('=> timeout');
-        isGetStatusPending = false;
-      };
-      xmlhttp.open('GET', '?cmd=status', true);
-      xmlhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-      xmlhttp.timeout = 5000;
-      logGetStatus('pending...');
-      isGetStatusPending = true;
-      xmlhttp.send(null);
-    }
-
-    function logGetStatus(info) {
-      if (isLogGetStatus) {
-        console.log(info);
-      }
-    }
-
-    function updateSaveIndicator() {
-      currentSource = editor.getValue();
-      hasSourceChanged = (savedSource != currentSource);
-      hasJexlerChanged = '${jexler.jexlerId}' != document.getElementById('newjexlername').value;
-      if (hasJexlerChanged) {
-        document.getElementById('savestatus').setAttribute("src", "ok.gif")
-      } else if (hasSourceChanged) {
-        document.getElementById('savestatus').setAttribute("src", "log.gif")
-      } else {
-        document.getElementById('savestatus').setAttribute("src", "space.gif")
-      }
-    }
-
-    function isPostSave() {
-      if (${container.confirmSave}) {
-        if (!confirm("Are you sure you want to save '${jexler.jexlerId}'?")) {
-          return false;
-        }
-      }
-      if (hasJexlerChanged) {
-        return true;
-      }
-      var xmlhttp = new XMLHttpRequest();
-      xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState === 4) {
-          if (xmlhttp.status / 100 == 2 && xmlhttp.responseText != "") {
-            editor.focus();
-            savedSource = currentSource;
-            hasSourceChanged = false;
-            document.getElementById('savestatus').setAttribute("src", "space.gif")
-          }
-        }
-      };
-      xmlhttp.open('POST', '?cmd=save&jexler=${jexler.jexlerId}', true);
-      xmlhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-      xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded; charset=utf-8");
-      xmlhttp.timeout = 5000;
-      xmlhttp.send("source=" + encodeURIComponent(currentSource));
-      return false;
-    }
-
-    function isPostDelete() {
-      if (${container.confirmDelete}) {
-        return confirm("Are you sure you want to delete '${jexler.jexlerId}'?");
-      } else {
-        return true;
-      }
-    }
-
-    window.onresize = function() {
-      setHeight();
-    };
-
-    function setHeight() {
-      var hTotal = document.documentElement.clientHeight;
-      var hHeader = document.getElementById('header').offsetHeight;
-      var h = hTotal - hHeader - 50;
-      document.getElementById('sourcediv').style.height = "" + h + "px";
-      document.getElementById('statusdiv').style.height = "" + h + "px";
-    }
-  </script>
-
   </head>
 
   <body onLoad="onPageLoad()">
-
-  <div class="hidden">
-    <script>
-      new Image().src = "ok-dim.gif";
-      new Image().src = "error-dim.gif";
-      new Image().src = "log-dim.gif";
-      new Image().src = "start-dim.gif";
-      new Image().src = "stop-dim.gif";
-      new Image().src = "restart-dim.gif";
-      new Image().src = "zap-dim.gif";
-      new Image().src = "web-dim.gif";
-      new Image().src = "space-dim.gif";
-    </script>
-  </div>
 
   <form action="request.contextPath" method="post">
   
@@ -213,9 +49,12 @@
     <c:otherwise>
       <table class="frame">
       <tr>
-        <td><button type="submit" name="cmd" value="save" ${container.disabledIfReadonly} onclick="return isPostSave()">Save as...</button></td>
-        <td><button type="submit" name="cmd" value="delete" ${container.disabledIfReadonly} onclick="return isPostDelete()">Delete...</button></td>
-        <td><input id="newjexlername" type="text" name="jexler" onkeyup="updateSaveIndicator()" value="${jexler.jexlerId}" ${container.disabledIfReadonly}></td>
+        <td><button type="submit" name="cmd" value="save" ${container.disabledIfReadonly}
+                    onclick="return isPostSave(${container.confirmSave}, '${jexler.jexlerId}')">Save as...</button></td>
+        <td><button type="submit" name="cmd" value="delete" ${container.disabledIfReadonly}
+                    onclick="return isPostDelete(${container.confirmDelete}, '${jexler.jexlerId}')">Delete...</button></td>
+        <td><input id="newjexlername" type="text" name="jexler" onkeyup="updateSaveIndicator('${jexler.jexlerId}')"
+                   value="${jexler.jexlerId}" ${container.disabledIfReadonly}></td>
         <td><img id="savestatus" src="space.gif"></td>
       </tr>
       </table>
@@ -276,7 +115,7 @@
           readOnly: ${!container.scriptAllowEdit}
         });
         editor.on("change", function(cm, change) {
-          updateSaveIndicator();
+            updateSaveIndicator('${jexler.jexlerId}');
         });
       </script>
     </c:otherwise>
