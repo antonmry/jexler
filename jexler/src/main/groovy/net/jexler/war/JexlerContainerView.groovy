@@ -348,20 +348,20 @@ class JexlerContainerView {
     private void handleStart() {
         if (targetJexlerId == null) {
             container.start()
-            container.waitForStartup(startTimeout)
+            JexlerUtil.waitForStartup(container, startTimeout)
         } else if (targetJexler != null) {
             targetJexler.start()
-            targetJexler.waitForStartup(startTimeout)
+            JexlerUtil.waitForStartup(targetJexler, startTimeout)
         }
     }
 
     private void handleStop() {
         if (targetJexlerId == null) {
             container.stop()
-            container.waitForShutdown(stopTimeout)
+            JexlerUtil.waitForShutdown(container, stopTimeout)
         } else if (targetJexler != null) {
             targetJexler.stop()
-            targetJexler.waitForShutdown(stopTimeout)
+            JexlerUtil.waitForShutdown(targetJexler, stopTimeout)
         }
     }
 

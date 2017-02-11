@@ -81,7 +81,7 @@ class JexlerContainerSpec extends Specification {
 
         when:
         container.start()
-        container.waitForStartup(MS_10_SEC)
+        JexlerUtil.waitForStartup(container, MS_10_SEC)
 
         then:
         container.state == ServiceState.IDLE
@@ -93,7 +93,7 @@ class JexlerContainerSpec extends Specification {
 
         when:
         container.stop()
-        container.waitForShutdown(MS_10_SEC)
+        JexlerUtil.waitForShutdown(container, MS_10_SEC)
 
         then:
         container.state == ServiceState.OFF
@@ -104,7 +104,7 @@ class JexlerContainerSpec extends Specification {
 
         when:
         container.start()
-        container.waitForStartup(MS_10_SEC)
+        JexlerUtil.waitForStartup(container, MS_10_SEC)
 
         then:
         container.state == ServiceState.IDLE
@@ -144,7 +144,7 @@ class JexlerContainerSpec extends Specification {
 
         when:
         container.stop()
-        container.waitForShutdown(MS_10_SEC)
+        JexlerUtil.waitForShutdown(container, MS_10_SEC)
 
         then:
         container.state == ServiceState.OFF
@@ -165,7 +165,7 @@ class JexlerContainerSpec extends Specification {
 
         when:
         container.start()
-        container.waitForStartup(MS_10_SEC)
+        JexlerUtil.waitForStartup(container, MS_10_SEC)
 
         then:
         container.state == ServiceState.IDLE
@@ -174,7 +174,7 @@ class JexlerContainerSpec extends Specification {
 
         when:
         container.stop()
-        container.waitForShutdown(MS_10_SEC)
+        JexlerUtil.waitForShutdown(container, MS_10_SEC)
 
         then:
         container.state.off
@@ -183,7 +183,7 @@ class JexlerContainerSpec extends Specification {
         new File(dir, 'Jexler5.groovy').text = "[ 'autostart' : true ]\nwhile(true){}"
         container = new JexlerContainer(dir)
         container.start()
-        container.waitForStartup(MS_10_SEC)
+        JexlerUtil.waitForStartup(container, MS_10_SEC)
 
         then:
         container.state == ServiceState.BUSY_STARTING

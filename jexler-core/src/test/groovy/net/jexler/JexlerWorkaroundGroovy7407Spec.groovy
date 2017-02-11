@@ -68,7 +68,7 @@ class JexlerWorkaroundGroovy7407Spec extends Specification {
         when:
         def jexler = new Jexler(file, new JexlerContainer(dir))
         jexler.start()
-        jexler.waitForStartup(10000)
+        JexlerUtil.waitForStartup(jexler, 10000)
 
         then:
         jexler.state == ServiceState.OFF
@@ -87,7 +87,7 @@ class JexlerWorkaroundGroovy7407Spec extends Specification {
         when:
         def jexler = new Jexler(file, new JexlerContainer(dir))
         jexler.start()
-        jexler.waitForStartup(10000)
+        JexlerUtil.waitForStartup(jexler, 10000)
 
         then:
         jexler.state == ServiceState.OFF

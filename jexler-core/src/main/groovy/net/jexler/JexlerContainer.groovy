@@ -116,40 +116,6 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
         }
     }
 
-    /**
-     * TODO document
-     * @param timeout
-     * @return
-     */
-    boolean waitForStartup(long timeout) {
-        boolean ok = ServiceUtil.waitForStartup(this, timeout)
-        if (!ok) {
-            for (Jexler jexler : jexlers) {
-                if (jexler.state == ServiceState.BUSY_STARTING) {
-                    trackIssue(jexler, 'Timeout waiting for jexler startup.', null)
-                }
-            }
-        }
-        return ok
-    }
-
-    /**
-     * TODO document
-     * @param timeout
-     * @return
-     */
-    boolean waitForShutdown(long timeout) {
-        boolean ok = ServiceUtil.waitForShutdown(this, timeout)
-        if (!ok) {
-            for (Jexler jexler : jexlers) {
-                if (jexler.state != ServiceState.OFF) {
-                    trackIssue(jexler, 'Timeout waiting for jexler shutdown.', null)
-                }
-            }
-        }
-        return ok
-    }
-
     @Override
     void trackIssue(Issue issue) {
         issueTracker.trackIssue(issue)

@@ -16,6 +16,9 @@
 
 package net.jexler
 
+import net.jexler.service.ServiceState
+import net.jexler.service.ServiceUtil
+
 import groovy.transform.CompileStatic
 
 /**
@@ -27,6 +30,67 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class JexlerUtil {
+
+    /**
+     * TODO document
+     * @param timeout
+     * @return
+     */
+    static boolean waitForStartup(Jexler jexler, long timeout) {
+        boolean ok = ServiceUtil.waitForStartup(jexler, timeout)
+        if (!ok) {
+            jexler.trackIssue(jexler, 'Timeout waiting for jexler startup.', null)
+        }
+        return ok
+    }
+
+
+    /**
+     * TODO document
+     * @param timeout
+     * @return
+     */
+    static boolean waitForShutdown(Jexler jexler, long timeout) {
+        boolean ok = ServiceUtil.waitForShutdown(jexler, timeout)
+        if (!ok) {
+            jexler.trackIssue(jexler, 'Timeout waiting for jexler shutdown.', null)
+        }
+        return ok
+    }
+
+    /**
+     * TODO document
+     * @param timeout
+     * @return
+     */
+    static boolean waitForStartup(JexlerContainer container, long timeout) {
+        boolean ok = ServiceUtil.waitForStartup(container, timeout)
+        if (!ok) {
+            for (Jexler jexler : container.jexlers) {
+                if (jexler.state == ServiceState.BUSY_STARTING) {
+                    container.trackIssue(jexler, 'Timeout waiting for jexler startup.', null)
+                }
+            }
+        }
+        return ok
+    }
+
+    /**
+     * TODO document
+     * @param timeout
+     * @return
+     */
+    static boolean waitForShutdown(JexlerContainer container, long timeout) {
+        boolean ok = ServiceUtil.waitForShutdown(container, timeout)
+        if (!ok) {
+            for (Jexler jexler : container.jexlers) {
+                if (jexler.state != ServiceState.OFF) {
+                    container.trackIssue(jexler, 'Timeout waiting for jexler shutdown.', null)
+                }
+            }
+        }
+        return ok
+    }
 
     /**
      * Get stack trace for given throwable as a string.

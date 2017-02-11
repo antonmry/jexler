@@ -56,7 +56,7 @@ class JexlerSlowSpec extends Specification {
         when:
         def jexler = new Jexler(file, new JexlerContainer(dir))
         jexler.start()
-        jexler.waitForStartup(MS_5_SEC)
+        JexlerUtil.waitForStartup(jexler, MS_5_SEC)
 
         then:
         jexler.issues.size() == 1
@@ -64,14 +64,14 @@ class JexlerSlowSpec extends Specification {
 
         when:
         jexler.forgetIssues()
-        jexler.waitForStartup(MS_20_SEC)
+        JexlerUtil.waitForStartup(jexler, MS_20_SEC)
 
         then:
         jexler.issues.empty
 
         when:
         jexler.stop()
-        jexler.waitForShutdown(MS_5_SEC)
+        JexlerUtil.waitForShutdown(jexler, MS_5_SEC)
 
         then:
         jexler.issues.size() == 1
@@ -79,7 +79,7 @@ class JexlerSlowSpec extends Specification {
 
         when:
         jexler.forgetIssues()
-        jexler.waitForShutdown(MS_20_SEC)
+        JexlerUtil.waitForShutdown(jexler, MS_20_SEC)
 
         then:
         jexler.issues.empty

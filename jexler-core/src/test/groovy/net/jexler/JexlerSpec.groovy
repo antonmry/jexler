@@ -49,7 +49,7 @@ class JexlerSpec extends Specification {
         file.setText(text)
         def jexler = new Jexler(file, new JexlerContainer(dir))
         jexler.start()
-        jexler.waitForStartup(MS_10_SEC)
+        JexlerUtil.waitForStartup(jexler, MS_10_SEC)
         jexler.dir.absolutePath == dir.absolutePath
         jexler.file.absolutePath == file.absolutePath
         jexler.id == 'Test'
@@ -78,7 +78,7 @@ class JexlerSpec extends Specification {
 
         when:
         jexler.start()
-        jexler.waitForStartup(MS_10_SEC)
+        JexlerUtil.waitForStartup(jexler, MS_10_SEC)
 
         then:
         jexler.issues.size() == 1
@@ -96,7 +96,7 @@ class JexlerSpec extends Specification {
         file.setText(text)
         def jexler = new Jexler(file, new JexlerContainer(dir))
         jexler.start()
-        jexler.waitForStartup(MS_10_SEC)
+        JexlerUtil.waitForStartup(jexler, MS_10_SEC)
         jexler.state == ServiceState.OFF
         jexler.state.off
         jexler.metaInfo.size() == metaInfoSize
@@ -170,7 +170,7 @@ class JexlerSpec extends Specification {
 
         when:
         jexler.start()
-        jexler.waitForStartup(MS_10_SEC)
+        JexlerUtil.waitForStartup(jexler, MS_10_SEC)
         def mockService = MockService.getInstance('mock-service')
 
         then:
@@ -185,7 +185,7 @@ class JexlerSpec extends Specification {
 
         when:
         jexler.start()
-        jexler.waitForStartup(MS_10_SEC)
+        JexlerUtil.waitForStartup(jexler, MS_10_SEC)
 
         then:
         jexler.state == ServiceState.IDLE
@@ -206,7 +206,7 @@ class JexlerSpec extends Specification {
 
         when:
         jexler.stop()
-        jexler.waitForShutdown(MS_10_SEC)
+        JexlerUtil.waitForShutdown(jexler, MS_10_SEC)
 
         then:
         jexler.state == ServiceState.OFF
@@ -220,7 +220,7 @@ class JexlerSpec extends Specification {
 
         when:
         jexler.stop()
-        jexler.waitForShutdown(MS_10_SEC)
+        JexlerUtil.waitForShutdown(jexler, MS_10_SEC)
 
         then:
         jexler.state == ServiceState.OFF
@@ -259,7 +259,7 @@ class JexlerSpec extends Specification {
 
         when:
         jexler.start()
-        jexler.waitForStartup(MS_10_SEC)
+        JexlerUtil.waitForStartup(jexler, MS_10_SEC)
         def mockService = MockService.getInstance('mock-service')
 
         then:
@@ -274,7 +274,7 @@ class JexlerSpec extends Specification {
 
         when:
         jexler.start()
-        jexler.waitForStartup(MS_10_SEC)
+        JexlerUtil.waitForStartup(jexler, MS_10_SEC)
 
         then:
         jexler.state == ServiceState.IDLE
@@ -295,8 +295,8 @@ class JexlerSpec extends Specification {
 
         when:
         jexler.zap()
-        jexler.waitForShutdown(MS_10_SEC)
-        Thread.sleep(MS_10_SEC)
+        JexlerUtil.waitForShutdown(jexler, MS_10_SEC)
+        JexlerUtil.waitAtLeast(MS_10_SEC)
 
         then:
         jexler.state == ServiceState.OFF
@@ -375,7 +375,7 @@ class JexlerSpec extends Specification {
         when:
         def jexler = new Jexler(file, new JexlerContainer(dir))
         jexler.start()
-        jexler.waitForStartup(MS_10_SEC)
+        JexlerUtil.waitForStartup(jexler, MS_10_SEC)
         def mockService = MockService.getInstance('mock-service')
 
         then:
@@ -385,7 +385,7 @@ class JexlerSpec extends Specification {
 
         when:
         jexler.stop()
-        jexler.waitForShutdown(MS_10_SEC)
+        JexlerUtil.waitForShutdown(jexler, MS_10_SEC)
 
         then:
         jexler.state == ServiceState.OFF
@@ -470,7 +470,7 @@ class JexlerSpec extends Specification {
         when:
         def jexler = new Jexler(file, new JexlerContainer(dir))
         jexler.start()
-        jexler.waitForStartup(MS_10_SEC)
+        JexlerUtil.waitForStartup(jexler, MS_10_SEC)
 
         then:
         jexler.issues.empty
@@ -500,7 +500,7 @@ class JexlerSpec extends Specification {
         jexler.issues.first().cause instanceof InterruptedException
 
         jexler.stop()
-        jexler.waitForShutdown(MS_10_SEC)
+        JexlerUtil.waitForShutdown(jexler, MS_10_SEC)
     }
 
 }

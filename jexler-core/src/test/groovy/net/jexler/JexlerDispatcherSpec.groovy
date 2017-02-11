@@ -74,7 +74,7 @@ class JexlerDispatcherSpec extends Specification {
         when:
         def jexler = new Jexler(file, new JexlerContainer(dir))
         jexler.start()
-        jexler.waitForStartup(MS_10_SEC)
+        JexlerUtil.waitForStartup(jexler, MS_10_SEC)
 
         then:
         jexler.state == ServiceState.IDLE
@@ -111,7 +111,7 @@ class JexlerDispatcherSpec extends Specification {
 
         when:
         jexler.stop()
-        jexler.waitForShutdown(MS_10_SEC)
+        JexlerUtil.waitForShutdown(jexler, MS_10_SEC)
 
         then:
         jexler.state == ServiceState.OFF
@@ -138,7 +138,7 @@ class JexlerDispatcherSpec extends Specification {
         when:
         def jexler = new Jexler(file, new JexlerContainer(dir))
         jexler.start()
-        jexler.waitForStartup(MS_10_SEC)
+        JexlerUtil.waitForStartup(jexler, MS_10_SEC)
 
         then:
         jexler.state == ServiceState.OFF
@@ -184,7 +184,7 @@ class JexlerDispatcherSpec extends Specification {
         when:
         def jexler = new Jexler(file, new JexlerContainer(dir))
         jexler.start()
-        jexler.waitForStartup(MS_10_SEC)
+        JexlerUtil.waitForStartup(jexler, MS_10_SEC)
 
         then:
         jexler.state == ServiceState.IDLE
@@ -261,7 +261,7 @@ class JexlerDispatcherSpec extends Specification {
 
         when:
         jexler.stop()
-        jexler.waitForShutdown(MS_10_SEC)
+        JexlerUtil.waitForShutdown(jexler, MS_10_SEC)
 
         then:
         jexler.state == ServiceState.OFF
@@ -307,7 +307,7 @@ class JexlerDispatcherSpec extends Specification {
         when:
         def jexler = new Jexler(file, new JexlerContainer(dir))
         jexler.start()
-        jexler.waitForStartup(MS_10_SEC)
+        JexlerUtil.waitForStartup(jexler, MS_10_SEC)
 
         then:
         jexler.state == ServiceState.IDLE
@@ -329,7 +329,7 @@ class JexlerDispatcherSpec extends Specification {
         when:
         jexler.forgetIssues()
         jexler.stop()
-        jexler.waitForShutdown(MS_10_SEC)
+        JexlerUtil.waitForShutdown(jexler, MS_10_SEC)
 
         then:
         jexler.state == ServiceState.OFF

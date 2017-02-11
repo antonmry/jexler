@@ -231,19 +231,6 @@ class Jexler implements Service, IssueTracker {
     }
 
     /**
-     * TODO document
-     * @param timeout
-     * @return
-     */
-    boolean waitForStartup(long timeout) {
-        boolean ok = ServiceUtil.waitForStartup(this, timeout)
-        if (!ok) {
-            trackIssue(this, 'Timeout waiting for jexler startup.', null)
-        }
-        return ok
-    }
-
-    /**
      * Handle given event.
      */
     void handle(Event event) {
@@ -260,19 +247,6 @@ class Jexler implements Service, IssueTracker {
             return
         }
         handle(new StopEvent(this))
-    }
-
-    /**
-     * TODO document
-     * @param timeout
-     * @return
-     */
-    boolean waitForShutdown(long timeout) {
-        boolean ok = ServiceUtil.waitForShutdown(this, timeout)
-        if (!ok) {
-            trackIssue(this, 'Timeout waiting for jexler shutdown.', null)
-        }
-        return ok
     }
 
     @Override

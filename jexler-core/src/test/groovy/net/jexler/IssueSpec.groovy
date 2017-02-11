@@ -66,7 +66,7 @@ class IssueSpec extends Specification {
     def 'TEST compare'() {
         when:
         def issueEarlier = new Issue(null, null, null)
-        Thread.sleep(10)
+        JexlerUtil.waitAtLeast(10)
         def issueLater = new Issue(null, null, null)
 
         then:

@@ -82,7 +82,7 @@ class JexlerContainerSlowSpec extends Specification {
 
         when:
         container.start()
-        container.waitForStartup(MS_5_SEC)
+        JexlerUtil.waitForStartup(container, MS_5_SEC)
 
         then:
         container.state == ServiceState.BUSY_STARTING
@@ -96,7 +96,7 @@ class JexlerContainerSlowSpec extends Specification {
 
         when:
         container.forgetIssues()
-        container.waitForStartup(MS_20_SEC)
+        JexlerUtil.waitForStartup(container, MS_20_SEC)
 
         then:
         container.state == ServiceState.IDLE
@@ -107,7 +107,7 @@ class JexlerContainerSlowSpec extends Specification {
 
         when:
         container.stop()
-        container.waitForShutdown(MS_5_SEC)
+        JexlerUtil.waitForShutdown(container, MS_5_SEC)
 
         then:
         container.state == ServiceState.BUSY_STOPPING
@@ -121,7 +121,7 @@ class JexlerContainerSlowSpec extends Specification {
 
         when:
         container.forgetIssues()
-        container.waitForShutdown(MS_20_SEC)
+        JexlerUtil.waitForShutdown(container, MS_20_SEC)
 
         then:
         container.state == ServiceState.OFF
