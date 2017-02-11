@@ -185,7 +185,7 @@ class DirWatchService extends ServiceBase {
         }
     }
 
-    static class DirWatchJob implements Job {
+    private static class DirWatchJob implements Job {
         void execute(JobExecutionContext ctx) throws JobExecutionException {
             DirWatchService service = (DirWatchService)ctx.jobDetail.jobDataMap.service
             String savedName = Thread.currentThread().name

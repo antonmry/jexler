@@ -2,9 +2,10 @@ image:http://www.jexler.net/jexler.jpg["jexler logo", link="http:www.jexler.net/
 
 = jexler releases
 
-=== 2.1.0-SNAPSHOT (20XX-XX-XX)
+=== 2.1.0 (2017-02-11)
 
 * Streamlined internally, practically no impact on scripts.
+* Requires JDK 8.
 * Starting/stopping jexlers more responsive in GUI.
 
 === 2.0.5 (2017-02-04)

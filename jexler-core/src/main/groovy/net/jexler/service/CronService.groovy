@@ -155,7 +155,7 @@ class CronService extends ServiceBase {
         }
     }
 
-    static class CronJob implements Job {
+    private static class CronJob implements Job {
         void execute(JobExecutionContext ctx) throws JobExecutionException {
             CronService service = (CronService)ctx.jobDetail.jobDataMap.service
             String savedName = Thread.currentThread().name
