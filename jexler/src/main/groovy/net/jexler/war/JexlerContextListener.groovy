@@ -70,7 +70,7 @@ class JexlerContextListener implements ServletContextListener    {
         servletContext = event.servletContext
         String webappPath = servletContext.getRealPath('/')
         container = new JexlerContainer(new File(webappPath, 'WEB-INF/jexlers'))
-        container.autostart()
+        container.start()
 
         // determine log file
         logfile = null

@@ -173,7 +173,7 @@ class JexlerContainerView {
     }
 
     String getStart() {
-        String title = jexlerId == null ? 'start all' : 'start'
+        String title = jexlerId == null ? 'start all with autostart set' : 'start'
         return "<a href='?cmd=start$jexlerParam' title='$title'><img src='start.gif'></a>"
     }
 

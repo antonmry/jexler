@@ -107,7 +107,8 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
     /**
      * Start jexlers that are marked as autostart.
      */
-    void autostart() {
+    @Override
+    void start() {
         for (Jexler jexler : jexlers) {
             if (jexler.metaInfo.autostart) {
                 jexler.start()

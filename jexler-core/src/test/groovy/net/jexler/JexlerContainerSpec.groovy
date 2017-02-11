@@ -50,9 +50,9 @@ class JexlerContainerSpec extends Specification {
               }
             }
             """.stripIndent()
-        new File(dir, 'Jexler1.groovy').text = "[ 'autostart' : false ]\n$jexlerBody"
-        new File(dir, 'Jexler2.groovy').text = "[ 'autostart' : true ]\n$jexlerBody"
-        new File(dir, 'Jexler3.groovy').text = "[ 'autostart' : false ]\n$jexlerBody"
+        new File(dir, 'Jexler1.groovy').text = "['autostart':false]\n$jexlerBody"
+        new File(dir, 'Jexler2.groovy').text = "['autostart':true]\n$jexlerBody"
+        new File(dir, 'Jexler3.groovy').text = "['autostart':true]\n$jexlerBody"
         new File(dir, 'Jexler4.script').text = 'foo.bar=xyz'
 
         when:
@@ -86,7 +86,7 @@ class JexlerContainerSpec extends Specification {
         then:
         container.state == ServiceState.IDLE
         container.state.on
-        jexler1.state == ServiceState.IDLE
+        jexler1.state == ServiceState.OFF
         jexler2.state == ServiceState.IDLE
         jexler3.state == ServiceState.IDLE
         container.issues.empty
@@ -103,25 +103,13 @@ class JexlerContainerSpec extends Specification {
         container.issues.empty
 
         when:
-        container.autostart()
-        container.waitForStartup(MS_10_SEC)
-
-        then:
-        container.state == ServiceState.IDLE
-        container.state.on
-        jexler1.state == ServiceState.OFF
-        jexler2.state == ServiceState.IDLE
-        jexler3.state == ServiceState.OFF
-        container.issues.empty
-
-        when:
         container.start()
         container.waitForStartup(MS_10_SEC)
 
         then:
         container.state == ServiceState.IDLE
         container.state.on
-        jexler1.state == ServiceState.IDLE
+        jexler1.state == ServiceState.OFF
         jexler2.state == ServiceState.IDLE
         jexler3.state == ServiceState.IDLE
         container.issues.empty
@@ -133,7 +121,7 @@ class JexlerContainerSpec extends Specification {
         then:
         container.state == ServiceState.IDLE
         container.state.on
-        jexler1.state == ServiceState.IDLE
+        jexler1.state == ServiceState.OFF
         jexler2.state == ServiceState.IDLE
         jexler3.state == ServiceState.OFF
         container.issues.empty
