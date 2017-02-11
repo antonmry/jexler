@@ -31,44 +31,45 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class JexlerUtil {
 
+    private static final String STARTUP_TIMEOUT_MSG = 'Timeout waiting for jexler startup.'
+    private static final String SHUTDOWN_TIMEOUT_MSG = 'Timeout waiting for jexler shutdown.'
+
     /**
-     * TODO document
-     * @param timeout
-     * @return
+     * Wait for jexler startup and report issue if did not start in time.
+     * @return true if started within timeout
      */
     static boolean waitForStartup(Jexler jexler, long timeout) {
         boolean ok = ServiceUtil.waitForStartup(jexler, timeout)
         if (!ok) {
-            jexler.trackIssue(jexler, 'Timeout waiting for jexler startup.', null)
+            jexler.trackIssue(jexler, STARTUP_TIMEOUT_MSG, null)
         }
         return ok
     }
 
 
     /**
-     * TODO document
-     * @param timeout
-     * @return
+     * Wait for jexler shutdown and report issue if did not shut down in time.
+     * @return true if shut down within timeout
      */
     static boolean waitForShutdown(Jexler jexler, long timeout) {
         boolean ok = ServiceUtil.waitForShutdown(jexler, timeout)
         if (!ok) {
-            jexler.trackIssue(jexler, 'Timeout waiting for jexler shutdown.', null)
+            jexler.trackIssue(jexler, SHUTDOWN_TIMEOUT_MSG, null)
         }
         return ok
     }
 
     /**
-     * TODO document
-     * @param timeout
-     * @return
+     * Wait for container startup and report an issue for each
+     * jexler that did not start in time.
+     * @return true if all jexlers started within timeout
      */
     static boolean waitForStartup(JexlerContainer container, long timeout) {
         boolean ok = ServiceUtil.waitForStartup(container, timeout)
         if (!ok) {
             for (Jexler jexler : container.jexlers) {
                 if (jexler.state == ServiceState.BUSY_STARTING) {
-                    container.trackIssue(jexler, 'Timeout waiting for jexler startup.', null)
+                    container.trackIssue(jexler, STARTUP_TIMEOUT_MSG, null)
                 }
             }
         }
@@ -76,16 +77,16 @@ class JexlerUtil {
     }
 
     /**
-     * TODO document
-     * @param timeout
-     * @return
+     * Wait for container shutdown and report an issue for each
+     * jexler that did not shut down in time.
+     * @return true if all jexlers shut down within timeout
      */
     static boolean waitForShutdown(JexlerContainer container, long timeout) {
         boolean ok = ServiceUtil.waitForShutdown(container, timeout)
         if (!ok) {
             for (Jexler jexler : container.jexlers) {
                 if (jexler.state != ServiceState.OFF) {
-                    container.trackIssue(jexler, 'Timeout waiting for jexler shutdown.', null)
+                    container.trackIssue(jexler, SHUTDOWN_TIMEOUT_MSG, null)
                 }
             }
         }

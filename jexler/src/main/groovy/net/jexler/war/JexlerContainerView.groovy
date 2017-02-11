@@ -348,20 +348,20 @@ class JexlerContainerView {
     private void handleStart() {
         if (targetJexlerId == null) {
             container.start()
-            JexlerUtil.waitForStartup(container, startTimeout)
+            runInNewThread { JexlerUtil.waitForStartup(container, startTimeout) }
         } else if (targetJexler != null) {
             targetJexler.start()
-            JexlerUtil.waitForStartup(targetJexler, startTimeout)
+            runInNewThread { JexlerUtil.waitForStartup(targetJexler, startTimeout) }
         }
     }
 
     private void handleStop() {
         if (targetJexlerId == null) {
             container.stop()
-            JexlerUtil.waitForShutdown(container, stopTimeout)
+            runInNewThread { JexlerUtil.waitForShutdown(container, stopTimeout) }
         } else if (targetJexler != null) {
             targetJexler.stop()
-            JexlerUtil.waitForShutdown(targetJexler, stopTimeout)
+            runInNewThread { JexlerUtil.waitForShutdown(targetJexler, stopTimeout) }
         }
     }
 
@@ -518,6 +518,14 @@ class JexlerContainerView {
             replacements.put(original, replacement)
         }
         return replacements
+    }
+
+    private void runInNewThread(Closure closure) {
+        new Thread() {
+            void run() {
+                closure.call()
+            }
+        }.start()
     }
 
 }
