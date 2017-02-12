@@ -2,7 +2,7 @@ image:http://www.jexler.net/jexler.jpg["jexler logo", link="http:www.jexler.net/
 
 = jexler releases
 
-=== 2.1.1-SNAPSHOT (20XX-XX-XX)
+=== 2.1.1 (2017-02-12)
 
 * Refinements in code and documentation.
 * DirWatchService allows to set kinds and modifiers;
