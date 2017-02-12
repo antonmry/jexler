@@ -647,7 +647,7 @@ The code is a Gradle project that contains two Java sub-projects:
 * *jexler*: The jexler web GUI, a simple webapp (WAR) with a single JSP.
 
 jexler-core is deeply tested, close to 100% test coverage in jacoco,
-except for a few artefacts and except that jacoco underrates Groovy
+except for a few artifacts and except that jacoco underrates Groovy
 coverage for purely technical reasons.
 Unit tests are written with https://code.google.com/p/spock/[Spock],
 the fascinating Groovy test framework.
