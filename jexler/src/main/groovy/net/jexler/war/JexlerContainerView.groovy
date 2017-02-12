@@ -20,12 +20,9 @@ import net.jexler.Issue
 import net.jexler.Jexler
 import net.jexler.JexlerContainer
 import net.jexler.JexlerUtil
-import net.jexler.service.ServiceState
 import net.jexler.service.Service
 
 import groovy.transform.CompileStatic
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
 import javax.activation.MimetypesFileTypeMap
 import javax.servlet.http.HttpServletRequest
@@ -34,41 +31,37 @@ import javax.servlet.jsp.PageContext
 import java.text.SimpleDateFormat
 
 /**
- * Jexler(s) view.
+ * Jexler(s) view, used in Jexler.jsp.
  *
  * @author $(whois jexler.net)
  */
 @CompileStatic
 class JexlerContainerView {
 
-    private static final Logger log = LoggerFactory.getLogger(JexlerContainerView.class)
-
-    private final JexlerContainer container
-    private final File logfile
-    private final long startTimeout
-    private final long stopTimeout
-
-    private String jexlerId
-    private Jexler jexler
-
+    // JSP/HTTP
     private PageContext pageContext
     private HttpServletRequest request
     private HttpServletResponse response
+
+    // The jexler and jexler ID set after constructing
+    // in getJexlers(), but not for "container" in JSP,
+    // hence null if container, not null if a jexler
+    private Jexler jexler
+    private String jexlerId
+
+    // The 'jexler' parameter,
+    // set when handling request in handleCommands()
     private String targetJexlerId
+
+    // The jexler for the 'jexler' parameter,
+    // set when handling request in handleCommands()
     private Jexler targetJexler
 
+    // Constructor
     JexlerContainerView() {
-        container = JexlerContextListener.container
-        logfile = JexlerContextListener.logfile
-        startTimeout = JexlerContextListener.startTimeout
-        stopTimeout = JexlerContextListener.stopTimeout
     }
 
-    private void setJexler(Jexler jexler) {
-        this.jexler = jexler
-        jexlerId = jexler.id
-    }
-
+    // Handle commands (based on request parameters)
     String handleCommands(PageContext pageContext) {
         this.pageContext = pageContext
         request = (HttpServletRequest)pageContext.request
@@ -121,12 +114,9 @@ class JexlerContainerView {
         return ''
     }
 
-    String getJexlerTooltip() {
-        return JexlerContextListener.jexlerTooltip
-    }
-    
+    // Get all jexlers from container
     Map<String,JexlerContainerView> getJexlers() {
-        Map<String,JexlerContainerView> jexlersViews = new LinkedHashMap<>()
+        final Map<String,JexlerContainerView> jexlersViews = new LinkedHashMap<>()
         for (Jexler jexler : container.jexlers) {
             JexlerContainerView view = new JexlerContainerView()
             view.jexler = jexler
@@ -135,19 +125,17 @@ class JexlerContainerView {
         return jexlersViews
     }
 
+    // Get jexler ID
     String getJexlerId() {
         return jexlerId
     }
 
-    String getJexlerIdLink() {
-        // italic if busy ("running")
-        String id = jexlerId
-        if (jexler.state.busy) {
-            id = "<em>$id</em>"
-        }
-        return "<a href='?cmd=info$jexlerParam'>$id</a>"
+    // Get tooltip for jexler webapp
+    String getJexlerTooltip() {
+        return JexlerContextListener.jexlerTooltip
     }
 
+    // Get start/stop/zap link with icon for table of jexlers
     String getStartStopZap() {
         boolean on
         boolean zap = false
@@ -171,48 +159,41 @@ class JexlerContainerView {
         }
     }
 
+    // Get start link with icon for table of jexlers
     String getStart() {
-        String title = jexlerId == null ? 'start all with autostart set' : 'start'
+        final String title = jexlerId == null ? 'start all with autostart set' : 'start'
         return "<a href='?cmd=start$jexlerParam' title='$title'><img src='start.gif'></a>"
     }
 
+    // Get stop link with icon for table of jexlers
     String getStop() {
-        String title = jexlerId == null ? 'stop all' : 'stop'
+        final String title = jexlerId == null ? 'stop all' : 'stop'
         return "<a href='?cmd=stop$jexlerParam' title='$title'><img src='stop.gif'></a>"
     }
 
+    // Get zap link with icon for table of jexlers
     String getZap() {
-        String title = jexlerId == null ? 'zap all' : 'zap'
+        final String title = jexlerId == null ? 'zap all' : 'zap'
         return "<a href='?cmd=zap$jexlerParam' title='$title'><img src='zap.gif'></a>"
     }
 
+    // Get restart link with icon for table of jexlers
     String getRestart() {
-        String title = jexlerId == null ? 'stop all, then start all' : 'restart'
+        final String title = jexlerId == null ? 'stop all, then start all' : 'restart'
         return "<a href='?cmd=restart$jexlerParam' title='$title'><img src='restart.gif'></a>"
     }
 
-    String getStateInfo() {
-        return jexler.state.info
-    }
-
-    String getLog() {
-         if (jexlerId == null) {
-            if (container.issues.size() == 0) {
-                return "<a href='?cmd=log$jexlerParam' title='show log'><img src='log.gif'></a>"
-            } else {
-                return "<a href='?cmd=log$jexlerParam' title='show log'><img src='error.gif'></a>"
-            }
-        } else {
-            if (jexler.issues.size() == 0) {
-                return "<img src='ok.gif' title='no issues'>"
-            } else {
-                String title = "show issues (${jexler.issues.size()})"
-                return "<a href='?cmd=log$jexlerParam' title='$title'><img src='error.gif'></a>"
-            }
-
+    // Get link to jexler for table of jexlers
+    String getJexlerIdLink() {
+        // italic if busy ("running")
+        String id = jexlerId
+        if (jexler.state.busy) {
+            id = "<em>$id</em>"
         }
+        return "<a href='?cmd=info$jexlerParam' title='${jexler.state.info}'>$id</a>"
     }
 
+    // Get web link and icon for table of jexlers
     String getWeb() {
         boolean available = false
         if (jexlerId != null) {
@@ -234,8 +215,28 @@ class JexlerContainerView {
         }
     }
 
+    // Get link and icon for logfile and/or issues
+    String getLog() {
+         if (jexlerId == null) {
+            if (container.issues.size() == 0) {
+                return "<a href='?cmd=log$jexlerParam' title='show log'><img src='log.gif'></a>"
+            } else {
+                return "<a href='?cmd=log$jexlerParam' title='show log'><img src='error.gif'></a>"
+            }
+        } else {
+            if (jexler.issues.size() == 0) {
+                return "<img src='ok.gif' title='no issues'>"
+            } else {
+                String title = "show issues (${jexler.issues.size()})"
+                return "<a href='?cmd=log$jexlerParam' title='$title'><img src='error.gif'></a>"
+            }
+
+        }
+    }
+
+    // Get issues for jexler or container
     String getIssues() {
-        List<Issue> issues
+        final List<Issue> issues
         if (jexler == null) {
             issues = container.issues
         } else {
@@ -245,15 +246,14 @@ class JexlerContainerView {
             return''
         }
 
-        StringBuilder builder = new StringBuilder()
-        Map<String,String> replacements = getReplacements()
+        final StringBuilder builder = new StringBuilder()
         builder.append("<pre class='issues'>")
         for (Issue issue : issues) {
             builder.append('\n')
             SimpleDateFormat format = new SimpleDateFormat('EEE dd MMM yyyy HH:mm:ss.SSS')
             builder.append("<strong>Date:      </strong>${format.format(issue.date)}\n")
             builder.append("<strong>Message:   </strong>$issue.message\n")
-            Service service = issue.service
+            final Service service = issue.service
             String s
             if (service == null) {
                 s = '-'
@@ -261,7 +261,7 @@ class JexlerContainerView {
                 s = "${service.class.name}:$service.id"
             }
             builder.append("<strong>Service:   </strong>$s\n")
-            Throwable cause = issue.cause
+            final Throwable cause = issue.cause
             s = (cause==null) ? "-" : cause.toString()
             replacements.each { original, replacement ->
                 s = s.replace(original, replacement)
@@ -279,31 +279,34 @@ class JexlerContainerView {
         return builder.toString()
     }
 
+    // Get logfile
     String getLogfile() {
         if (jexlerId != null) {
             return ''
         }
-        StringBuilder builder = new StringBuilder()
+        final File logfile = JexlerContextListener.logfile
+        final StringBuilder builder = new StringBuilder()
         builder.append("<pre class='log'>\n")
         try {
             String logData = readTextFileReversedLines(logfile)
             logData = logData.replace('<', '&lt')
             builder.append(logData)
         } catch (IOException e) {
-            String msg = "Could not read logfile '$logfile.absolutePath'."
+            final String msg = "Could not read logfile '$logfile.absolutePath'."
             container.trackIssue(null, msg, e)
             builder.append(msg)
         }
         builder.append('</pre>\n')
-        String s = builder.toString()
+        final String s = builder.toString()
         return s
     }
 
+    // Get script source
     String getSource() {
         if (jexler == null) {
             return ''
         }
-        File file = jexler.file
+        final File file = jexler.file
         if (!file.exists()) {
             return ''
         }
@@ -316,22 +319,25 @@ class JexlerContainerView {
         }
     }
 
+    // Get mime type from file extension
     String getMimeType() {
         if (jexler == null) {
             return 'text/plain'
         }
-        MimetypesFileTypeMap map = new MimetypesFileTypeMap()
+        final MimetypesFileTypeMap map = new MimetypesFileTypeMap()
         map.addMimeTypes('text/x-groovy groovy')
-        String mimeType = map.getContentType(jexler.file)
+        final String mimeType = map.getContentType(jexler.file)
         return mimeType
     }
-    
+
+    // Whether editing scripts is allowed by config or not
     String getScriptAllowEdit() {
         return Boolean.toString(JexlerContextListener.scriptAllowEdit)
     }
-    
+
+    // Return disabled attribute if not allowed to edit scripts
     String getDisabledIfReadonly() {
-        boolean allowEdit = JexlerContextListener.scriptAllowEdit
+        final boolean allowEdit = JexlerContextListener.scriptAllowEdit
         if (allowEdit) {
             return ''
         } else {
@@ -339,15 +345,19 @@ class JexlerContainerView {
         }
     }
 
+    // Whether to ask before saving scripts or not according to config
     boolean isConfirmSave() {
         return JexlerContextListener.scriptConfirmSave
     }
 
+    // Whether to ask before deleting scripts or not according to config
     boolean isConfirmDelete() {
         return JexlerContextListener.scriptConfirmDelete
     }
 
+    // Start jexler or container
     private void handleStart() {
+        final long startTimeout = JexlerContextListener.startTimeout
         if (targetJexlerId == null) {
             container.start()
             runInNewThread { JexlerUtil.waitForStartup(container, startTimeout) }
@@ -357,7 +367,9 @@ class JexlerContainerView {
         }
     }
 
+    // Stop jexler or container
     private void handleStop() {
+        final long stopTimeout = JexlerContextListener.stopTimeout
         if (targetJexlerId == null) {
             container.stop()
             runInNewThread { JexlerUtil.waitForShutdown(container, stopTimeout) }
@@ -367,7 +379,10 @@ class JexlerContainerView {
         }
     }
 
+    // Restart jexler or container
     private void handleRestart() {
+        final long startTimeout = JexlerContextListener.startTimeout
+        final long stopTimeout = JexlerContextListener.stopTimeout
         if (targetJexlerId == null) {
             container.stop()
             if (JexlerUtil.waitForShutdown(container, startTimeout)) {
@@ -383,6 +398,7 @@ class JexlerContainerView {
         }
     }
 
+    // Zap jexler or container
     private void handleZap() {
         if (targetJexlerId == null) {
             container.zap()
@@ -391,6 +407,7 @@ class JexlerContainerView {
         }
     }
 
+    // Save script
     private void handleSaveAs() {
         if (!JexlerContextListener.scriptAllowEdit) {
             return
@@ -412,14 +429,16 @@ class JexlerContainerView {
         }
     }
 
+    // Delete script
     private void handleDelete() {
         if (!JexlerContextListener.scriptAllowEdit) {
             return
         }
-        File file = container.getJexlerFile(targetJexlerId)
+        final File file = container.getJexlerFile(targetJexlerId)
         file.delete()
     }
 
+    // Forget issues of jexler or container
     private void handleForget() {
         if (targetJexler != null) {
             targetJexler.forgetIssues()
@@ -428,6 +447,7 @@ class JexlerContainerView {
         }
     }
 
+    // Forget issues of container and of all jexlers
     private void handleForgetAll() {
         container.forgetIssues()
         for (Jexler jexler : container.jexlers) {
@@ -435,6 +455,7 @@ class JexlerContainerView {
         }
     }
 
+    // Handle HTTP event, dispatch to jexler or reply directly in case of errors
     private void handleHttp() {
         if (targetJexlerId == null) {
             sendError(response, 404, 'No jexler parameter indicated.', null)
@@ -445,16 +466,16 @@ class JexlerContainerView {
             return
         }
 
-        Script script = targetJexler.getScript()
+        final Script script = targetJexler.getScript()
         if (script == null || !targetJexler.state.operational) {
             sendError(response, 404, "Jexler '$targetJexlerId' is not operational.", null)
             return
         }
 
-        MetaClass mc = script.metaClass
-        Object[] args = [ PageContext.class ]
+        final MetaClass mc = script.metaClass
+        final Object[] args = [ PageContext.class ]
 
-        MetaMethod mm = mc.getMetaMethod('handleHttp', args)
+        final MetaMethod mm = mc.getMetaMethod('handleHttp', args)
         if (mm == null) {
             sendError(response, 404, "Jexler '$targetJexlerId' does not handle HTTP requests.", null)
             return
@@ -468,11 +489,11 @@ class JexlerContainerView {
         }
     }
 
+    // Send error page
     private void sendError(HttpServletResponse response, int status, String msg, Throwable t) {
         response.status = status
         String stacktrace = ''
         if (t != null) {
-            Map<String,String> replacements = getReplacements()
             stacktrace = JexlerUtil.getStackTrace(t)
             replacements.each { original, replacement ->
                 stacktrace = stacktrace.replace(original, replacement)
@@ -499,10 +520,18 @@ class JexlerContainerView {
 """)
     }
 
-    private static String urlEncode(String s) {
-        return URLEncoder.encode(s, 'UTF-8')
+    // Called in getJexlers() if jexler (not called if container)
+    private void setJexler(Jexler jexler) {
+        this.jexler = jexler
+        jexlerId = jexler.id
     }
 
+    // Get one and only container in this webapp
+    private static JexlerContainer getContainer() {
+        return JexlerContextListener.container
+    }
+
+    // Value of the 'jexler' parameter, either jexler ID or empty for container
     private String getJexlerParam() {
         if (jexlerId == null) {
             return ''
@@ -510,7 +539,12 @@ class JexlerContainerView {
             return "&jexler=${urlEncode(jexlerId)}"
         }
     }
-    
+
+    // Encode URL (UTF-8 character encoding)
+    private static String urlEncode(String s) {
+        return URLEncoder.encode(s, 'UTF-8')
+    }
+
     /**
      * Read log file into string while reversing the order of lines.
      * @param file
@@ -518,18 +552,24 @@ class JexlerContainerView {
      * @throws IOException if reading failed
      */
     private static String readTextFileReversedLines(File file) throws IOException {
-        StringBuilder builder = new StringBuilder()
+        final StringBuilder builder = new StringBuilder()
         file.eachLine { line ->
             builder.insert(0, line + System.lineSeparator())
         }
         return builder.toString()
     }
 
+    // Get map of passages to highlight in stack trace
     private Map<String,String> getReplacements() {
-        Map<String,String> replacements = new LinkedHashMap<String,String>()
+        final Map<String,String> replacements = new LinkedHashMap<String,String>()
         replacements.put('<', '&lt')
+        // start jexler script
         replacements.put('Jexler.start', '<strong>Jexler.start</strong>')
+        // jexler script thread
         replacements.put('Jexler$1.run', '<strong>Jexler$1.run</strong>')
+        // thread that zaps jexler script thread
+        replacements.put('Jexler$2.run', '<strong>Jexler$2.run</strong>')
+        // individual jexlers
         for (Jexler jexler : container.jexlers) {
             String original = "${jexler.id}.groovy"
             String replacement = "<strong>$original</strong>"
@@ -538,6 +578,7 @@ class JexlerContainerView {
         return replacements
     }
 
+    // Run given closure in a new thread
     private void runInNewThread(Closure closure) {
         new Thread() {
             void run() {

@@ -20,6 +20,7 @@ import net.jexler.Jexler
 import net.jexler.TestJexler
 import net.jexler.test.SlowTests
 
+import com.sun.nio.file.SensitivityWatchEventModifier
 import org.junit.Rule
 import org.junit.experimental.categories.Category
 import org.junit.rules.TemporaryFolder
@@ -38,10 +39,10 @@ class DirWatchServiceSlowSpec extends Specification {
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
 
-    private final static long MS_15_SEC = 15000
-    private final static String CRON_EVERY_2_SECS = '*/2 * * * * *'
+    private final static long MS_3_SEC = 3000
+    private final static String CRON_EVERY_SEC = '*/1 * * * * *'
 
-    def 'TEST SLOW (3 min) create/modify/remove files in watch dir'() {
+    def 'TEST SLOW (40 sec) create/modify/remove files in watch dir'() {
         given:
         def watchDir = tempFolder.root
         def jexler = new TestJexler();
@@ -49,7 +50,8 @@ class DirWatchServiceSlowSpec extends Specification {
         when:
         def service = new DirWatchService(jexler, 'watchid')
         service.dir = watchDir
-        service.cron = CRON_EVERY_2_SECS
+        service.cron = CRON_EVERY_SEC
+        service.modifiers = [ SensitivityWatchEventModifier.HIGH ]
 
         then:
         service.id == 'watchid'
@@ -59,8 +61,8 @@ class DirWatchServiceSlowSpec extends Specification {
 
         then:
         service.state.on
-        ServiceUtil.waitForStartup(service, MS_15_SEC)
-        jexler.takeEvent(MS_15_SEC) == null
+        ServiceUtil.waitForStartup(service, MS_3_SEC)
+        jexler.takeEvent(MS_3_SEC) == null
 
         when:
         checkCreateModifyDeleteEventsTriggered(jexler, service, watchDir)
@@ -69,14 +71,14 @@ class DirWatchServiceSlowSpec extends Specification {
 
         then:
         service.state.off
-        ServiceUtil.waitForShutdown(service, MS_15_SEC)
+        ServiceUtil.waitForShutdown(service, MS_3_SEC)
 
         when:
         // create file after service stop
         new File(watchDir, 'temp2').text = 'hello too'
 
         then:
-        jexler.takeEvent(MS_15_SEC) == null
+        jexler.takeEvent(MS_3_SEC) == null
 
         when:
         // different watch directory
@@ -86,8 +88,8 @@ class DirWatchServiceSlowSpec extends Specification {
 
         then:
         service.state.on
-        ServiceUtil.waitForStartup(service, MS_15_SEC)
-        jexler.takeEvent(MS_15_SEC) == null
+        ServiceUtil.waitForStartup(service, MS_3_SEC)
+        jexler.takeEvent(MS_3_SEC) == null
 
         when:
         service.start()
@@ -101,13 +103,13 @@ class DirWatchServiceSlowSpec extends Specification {
         then:
         // delete watch directory
         watchDir.delete()
-        jexler.takeEvent(MS_15_SEC) == null
+        jexler.takeEvent(MS_3_SEC) == null
 
         when:
         service.stop()
 
         then:
-        ServiceUtil.waitForShutdown(service, MS_15_SEC)
+        ServiceUtil.waitForShutdown(service, MS_3_SEC)
 
         when:
         service.stop()
@@ -138,32 +140,32 @@ class DirWatchServiceSlowSpec extends Specification {
         def tempFile = new File(watchDir, 'temp')
         tempFile.createNewFile()
 
-        def event = jexler.takeEvent(MS_15_SEC)
+        def event = jexler.takeEvent(MS_3_SEC)
         assert event instanceof DirWatchEvent
         assert event.service == service
         assert event.file.canonicalPath == tempFile.canonicalPath
         assert event.kind == StandardWatchEventKinds.ENTRY_CREATE
-        assert jexler.takeEvent(MS_15_SEC) == null
+        assert jexler.takeEvent(MS_3_SEC) == null
 
         // modify file
         tempFile.text = 'hello there'
 
-        event = jexler.takeEvent(MS_15_SEC)
+        event = jexler.takeEvent(MS_3_SEC)
         assert event instanceof DirWatchEvent
         assert event.service == service
         assert event.file.canonicalPath == tempFile.canonicalPath
         assert event.kind == StandardWatchEventKinds.ENTRY_MODIFY
-        assert jexler.takeEvent(MS_15_SEC) == null
+        assert jexler.takeEvent(MS_3_SEC) == null
 
         // delete file
         assert tempFile.delete()
 
-        event = jexler.takeEvent(MS_15_SEC)
+        event = jexler.takeEvent(MS_3_SEC)
         assert event instanceof DirWatchEvent
         assert event.service == service
         assert event.file.canonicalPath == tempFile.canonicalPath
         assert event.kind == StandardWatchEventKinds.ENTRY_DELETE
-        assert jexler.takeEvent(MS_15_SEC) == null
+        assert jexler.takeEvent(MS_3_SEC) == null
     }
 
 }

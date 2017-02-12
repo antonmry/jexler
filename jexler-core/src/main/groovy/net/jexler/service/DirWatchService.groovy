@@ -51,7 +51,9 @@ class DirWatchService extends ServiceBase {
     private static final Logger log = LoggerFactory.getLogger(DirWatchService.class)
 
     private final Jexler jexler
-    private File watchDir
+    private File dir
+    private List<WatchEvent.Kind> kinds
+    private List<WatchEvent.Modifier> modifiers
     private String cron
     private Scheduler scheduler
 
@@ -67,19 +69,68 @@ class DirWatchService extends ServiceBase {
     DirWatchService(Jexler jexler, String id) {
         super(id)
         this.jexler = jexler
-        watchDir = jexler.dir
-        this.cron = '*/5 * * * * ?'
+        dir = jexler.dir
+        kinds = [ StandardWatchEventKinds.ENTRY_CREATE,
+                  StandardWatchEventKinds.ENTRY_MODIFY,
+                  StandardWatchEventKinds.ENTRY_DELETE ]
+        modifiers = []
+        cron = '*/5 * * * * ?'
     }
 
     /**
      * Set directory to watch.
      * Default if not set is the directory that contains the jexler.
-     * @param watchDir directory to watch
+     * @param dir directory to watch
      * @return this (for chaining calls)
      */
-    DirWatchService setDir(File watchDir) {
-        this.watchDir = watchDir
+    DirWatchService setDir(File dir) {
+        this.dir = dir
         return this
+    }
+
+    /**
+     * Get directory to watch.
+     */
+    File getDir() {
+        return dir
+    }
+
+    /**
+     * Set kinds of events to watch for.
+     * Default is standard events for create, modify and delete.
+     * @param kinds
+     * @return
+     */
+    DirWatchService setKinds(List<WatchEvent.Kind> kinds) {
+        this.kinds = kinds
+        return this
+    }
+
+    /**
+     * Get kinds of events to watch for.
+     */
+    List<WatchEvent.Kind> getKinds() {
+        return kinds
+    }
+
+    /**
+     * Set modifiers when watching for events.
+     * On Mac OS X, by default the file system seems to be polled
+     * every 10 seconds; to reduce this to 2 seconds, pass a modifier
+     * com.sun.nio.file.SensitivityWatchEventModifier.HIGH.
+     * @param modifiers
+     * @return
+     */
+    DirWatchService setModifiers(List<WatchEvent.Modifier> modifiers) {
+        this.modifiers = modifiers
+        return this
+    }
+
+    /**
+     * Get modifiers when watching for events.
+     */
+    List<WatchEvent.Modifier> getModifiers() {
+        return modifiers
     }
 
     /**
@@ -93,6 +144,13 @@ class DirWatchService extends ServiceBase {
     }
 
     /**
+     * Get cron pattern.
+     */
+    String getCron() {
+        return cron
+    }
+
+    /**
      * Set quartz scheduler.
      * Default is a scheduler shared by all jexlers in the same jexler container.
      * @return this (for chaining calls)
@@ -103,31 +161,17 @@ class DirWatchService extends ServiceBase {
     }
 
     /**
-     * Get jexler.
-     */
-    Jexler getJexler() {
-        return jexler
-    }
-
-    /**
-     * Get directory to watch.
-     */
-    File getWatchDir() {
-        return watchDir
-    }
-
-    /**
-     * Get cron pattern.
-     */
-    String getCron() {
-        return cron
-    }
-
-    /**
      * Get quartz scheduler.
      */
     Scheduler getScheduler() {
         return scheduler
+    }
+
+    /**
+     * Get jexler.
+     */
+    Jexler getJexler() {
+        return jexler
     }
 
     @Override
@@ -135,25 +179,24 @@ class DirWatchService extends ServiceBase {
         if (state.on) {
             return
         }
-        Path path = watchDir.toPath()
+        final Path path = dir.toPath()
         try {
             watchService = path.fileSystem.newWatchService()
             watchKey = path.register(watchService,
-                    StandardWatchEventKinds.ENTRY_CREATE,
-                    StandardWatchEventKinds.ENTRY_MODIFY,
-                    StandardWatchEventKinds.ENTRY_DELETE)
+                    kinds as WatchEvent.Kind[],
+                    modifiers as WatchEvent.Modifier[])
         } catch (IOException e) {
             jexler.trackIssue(this,
-                    "Could not create watch service or key for directory '$watchDir.absolutePath'.", e)
+                    "Could not create watch service or key for directory '$dir.absolutePath'.", e)
             return
         }
 
-        String uuid = UUID.randomUUID()
-        JobDetail job = JobBuilder.newJob(DirWatchJob.class)
+        final String uuid = UUID.randomUUID()
+        final JobDetail job = JobBuilder.newJob(DirWatchJob.class)
                 .withIdentity("job-$id-$uuid", jexler.id)
                 .usingJobData(['service':this] as JobDataMap)
                 .build()
-        Trigger trigger = TriggerBuilder.newTrigger()
+        final Trigger trigger = TriggerBuilder.newTrigger()
                 .withIdentity("trigger-$id-$uuid", jexler.id)
                 .withSchedule(CronScheduleBuilder.cronSchedule(cron))
                 .startNow()
@@ -205,16 +248,18 @@ class DirWatchService extends ServiceBase {
         }
     }
 
-    // must be public, else not called...
+    /**
+     * Internal class, only public because otherwise not called by quartz scheduler.
+     */
     static class DirWatchJob implements Job {
         void execute(JobExecutionContext ctx) throws JobExecutionException {
-            DirWatchService service = (DirWatchService)ctx.jobDetail.jobDataMap.service
-            String savedName = Thread.currentThread().name
+            final DirWatchService service = (DirWatchService)ctx.jobDetail.jobDataMap.service
+            final String savedName = Thread.currentThread().name
             Thread.currentThread().name = "$service.jexler.id|$service.id"
             for (WatchEvent watchEvent : service.watchKey.pollEvents()) {
-                Path contextPath = ((Path) watchEvent.context())
-                File file = new File(service.watchDir, contextPath.toFile().name)
-                WatchEvent.Kind kind = watchEvent.kind()
+                final Path contextPath = ((Path) watchEvent.context())
+                final File file = new File(service.dir, contextPath.toFile().name)
+                final WatchEvent.Kind kind = watchEvent.kind()
                 log.trace("event $kind '$file.absolutePath'")
                 service.jexler.handle(new DirWatchEvent(service, file, kind))
             }

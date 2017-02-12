@@ -64,7 +64,7 @@ class Jexler implements Service, IssueTracker {
             state = ServiceState.IDLE
             while (true) {
                 try {
-                    Event event = (Event)super.take()
+                    final Event event = (Event)super.take()
                     state = ServiceState.BUSY_EVENT
                     return event
                 } catch (InterruptedException e) {
@@ -119,8 +119,7 @@ class Jexler implements Service, IssueTracker {
      * Typically returns before the jexler script has started or completed
      * to initialize all of its services.
      * The jexler remains in the running state until the script exits in
-     * any way, after it has been tried to stop all registered services
-     * (sensors and actors).
+     * any way, after it has been tried to stop all registered services.
      */
     @Override
     void start() {
@@ -142,7 +141,7 @@ class Jexler implements Service, IssueTracker {
         WorkaroundGroovy7407.wrapGrapeEngineIfConfigured(this)
         final CompilerConfiguration config = new CompilerConfiguration()
         if (metaInfo.autoimport == null || metaInfo.autoimport) {
-            ImportCustomizer importCustomizer = new ImportCustomizer()
+            final ImportCustomizer importCustomizer = new ImportCustomizer()
             importCustomizer.addStarImports(
                     'net.jexler', 'net.jexler.service', 'net.jexler.tool')
             config.addCompilationCustomizers(importCustomizer)
@@ -353,13 +352,13 @@ class Jexler implements Service, IssueTracker {
     }
 
     private Map<String,Object> readMetaInfo() {
-        Map<String,Object> info = new HashMap<>()
+        final Map<String,Object> info = new HashMap<>()
 
         if (!file.exists()) {
             return info
         }
 
-        List<String> lines
+        final List<String> lines
         try {
             lines = file.readLines()
         } catch (IOException e) {
@@ -371,14 +370,14 @@ class Jexler implements Service, IssueTracker {
         if (lines.empty) {
             return info
         }
-        String line = lines.first()
+        final String firstLine = lines.first()
 
         WorkaroundGroovy7407.wrapGrapeEngineIfConfigured(this)
 
         // evaluate first line as groovy script
-        Object obj
+        final Object obj
         try {
-            obj = new GroovyShell().evaluate(line)
+            obj = new GroovyShell().evaluate(firstLine)
         } catch (Throwable ignore) {
             // (script may throw anything, checked or not)
             return info
@@ -390,7 +389,7 @@ class Jexler implements Service, IssueTracker {
         }
 
         // set map
-        Map<String,Object> map = (Map<String,Object>)obj
+        final Map<String,Object> map = (Map<String,Object>)obj
         info.putAll(map)
 
         return info
@@ -467,7 +466,7 @@ class Jexler implements Service, IssueTracker {
         }
 
         static void setEngine(GrapeEngine engine) throws Exception {
-            Field field = Grape.class.getDeclaredField('instance')
+            final Field field = Grape.class.getDeclaredField('instance')
             field.accessible = true
             field.set(Grape.class, engine)
         }

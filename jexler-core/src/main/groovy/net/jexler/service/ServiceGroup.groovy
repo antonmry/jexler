@@ -94,7 +94,7 @@ class ServiceGroup implements Service {
      */
     @Override
     ServiceState getState() {
-        Set<ServiceState> set = new HashSet<>()
+        final Set<ServiceState> set = new HashSet<>()
         synchronized(services) {
             for (Service service : services) {
                 set.add(service.state)

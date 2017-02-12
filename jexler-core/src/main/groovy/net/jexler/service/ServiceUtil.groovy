@@ -27,8 +27,9 @@ import java.text.ParseException
 
 /**
  * Service utilities.
+ *
  * Includes some static methods that might be useful in Groovy scripts
- * or in Java (for writing custom services).
+ * or for writing custom services.
  *
  * @author $(whois jexler.net)
  */
@@ -63,7 +64,7 @@ class ServiceUtil {
      * @return true if no timeout, false otherwise
      */
     static boolean waitForShutdown(Service service, long timeout) {
-        long t0 = System.currentTimeMillis()
+        final long t0 = System.currentTimeMillis()
         while (true) {
             if (service.state.off) {
                 return true
@@ -92,7 +93,7 @@ class ServiceUtil {
         if (CronService.CRON_NOW == cron | CronService.CRON_NOW_AND_STOP == cron) {
             return cron
         }
-        List<String> list = cron.trim().split(/\s/) as List<String>
+        final List<String> list = cron.trim().split(/\s/) as List<String>
         // add seconds if missing
         if (list.size() == 5) {
             list.add(0, '0') // on every full minute
@@ -106,17 +107,17 @@ class ServiceUtil {
             }
         }
 
-        String quartzCron = list.join(' ')
+        final String quartzCron = list.join(' ')
         if (quartzCron != cron) {
             log.trace("cron '$cron' => '$quartzCron'")
         }
-        CronExpression cronExpression
+        final CronExpression cronExpression
         try {
             cronExpression = new CronExpression(quartzCron)
         } catch (ParseException e) {
             throw new IllegalArgumentException("Could not parse cron '$quartzCron': $e.message", e)
         }
-        String next = cronExpression.getNextValidTimeAfter(new Date())?.format('EEE dd MMM yyyy HH:mm:ss')
+        final String next = cronExpression.getNextValidTimeAfter(new Date())?.format('EEE dd MMM yyyy HH:mm:ss')
         log.trace("next '$quartzCron' => $next")
         return quartzCron
     }

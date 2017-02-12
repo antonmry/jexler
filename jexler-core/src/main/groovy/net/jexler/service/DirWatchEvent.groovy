@@ -56,4 +56,5 @@ class DirWatchEvent extends EventBase {
     WatchEvent.Kind getKind() {
         return kind
     }
+
 }

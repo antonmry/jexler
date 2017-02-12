@@ -39,11 +39,11 @@ class JexlerUtil {
      * @return true if started within timeout
      */
     static boolean waitForStartup(Jexler jexler, long timeout) {
-        boolean ok = ServiceUtil.waitForStartup(jexler, timeout)
-        if (!ok) {
-            jexler.trackIssue(jexler, STARTUP_TIMEOUT_MSG, null)
+        if (ServiceUtil.waitForStartup(jexler, timeout)) {
+            return true
         }
-        return ok
+        jexler.trackIssue(jexler, STARTUP_TIMEOUT_MSG, null)
+        return false
     }
 
 
@@ -52,11 +52,11 @@ class JexlerUtil {
      * @return true if shut down within timeout
      */
     static boolean waitForShutdown(Jexler jexler, long timeout) {
-        boolean ok = ServiceUtil.waitForShutdown(jexler, timeout)
-        if (!ok) {
-            jexler.trackIssue(jexler, SHUTDOWN_TIMEOUT_MSG, null)
+        if (ServiceUtil.waitForShutdown(jexler, timeout)) {
+            return true
         }
-        return ok
+        jexler.trackIssue(jexler, SHUTDOWN_TIMEOUT_MSG, null)
+        return false
     }
 
     /**
@@ -65,15 +65,15 @@ class JexlerUtil {
      * @return true if all jexlers started within timeout
      */
     static boolean waitForStartup(JexlerContainer container, long timeout) {
-        boolean ok = ServiceUtil.waitForStartup(container, timeout)
-        if (!ok) {
-            for (Jexler jexler : container.jexlers) {
-                if (jexler.state == ServiceState.BUSY_STARTING) {
-                    container.trackIssue(jexler, STARTUP_TIMEOUT_MSG, null)
-                }
+        if (ServiceUtil.waitForStartup(container, timeout)) {
+            return true
+        }
+        for (Jexler jexler : container.jexlers) {
+            if (jexler.state == ServiceState.BUSY_STARTING) {
+                container.trackIssue(jexler, STARTUP_TIMEOUT_MSG, null)
             }
         }
-        return ok
+        return false
     }
 
     /**
@@ -82,15 +82,15 @@ class JexlerUtil {
      * @return true if all jexlers shut down within timeout
      */
     static boolean waitForShutdown(JexlerContainer container, long timeout) {
-        boolean ok = ServiceUtil.waitForShutdown(container, timeout)
-        if (!ok) {
-            for (Jexler jexler : container.jexlers) {
-                if (jexler.state != ServiceState.OFF) {
-                    container.trackIssue(jexler, SHUTDOWN_TIMEOUT_MSG, null)
-                }
+        if (ServiceUtil.waitForShutdown(container, timeout)) {
+            return true
+        }
+        for (Jexler jexler : container.jexlers) {
+            if (jexler.state != ServiceState.OFF) {
+                container.trackIssue(jexler, SHUTDOWN_TIMEOUT_MSG, null)
             }
         }
-        return ok
+        return false
     }
 
     /**
@@ -102,7 +102,7 @@ class JexlerUtil {
             return ''
         }
         try {
-            Writer result = new StringWriter()
+            final Writer result = new StringWriter()
             throwable.printStackTrace(new PrintWriter(result))
             return result
         } catch (RuntimeException ignore) {
@@ -124,9 +124,9 @@ class JexlerUtil {
      * @param ms time to wait in ms
      */
     static void waitAtLeast(long ms) {
-        long t0 = System.currentTimeMillis()
+        final long t0 = System.currentTimeMillis()
         while (true) {
-            long t1 = System.currentTimeMillis()
+            final long t1 = System.currentTimeMillis()
             if (t1-t0 >= ms) {
                 return
             }

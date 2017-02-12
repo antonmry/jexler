@@ -21,6 +21,7 @@ import net.jexler.JexlerContainer
 import net.jexler.JexlerUtil
 
 import ch.qos.logback.classic.LoggerContext
+import ch.qos.logback.core.FileAppender
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -32,7 +33,7 @@ import javax.servlet.ServletContextListener
 /**
  * Jexler context listener.
  *
- * @author $(whois jexler.net)
+ * @author $(whois jexler.net"
  */
 @CompileStatic
 class JexlerContextListener implements ServletContextListener    {
@@ -41,11 +42,19 @@ class JexlerContextListener implements ServletContextListener    {
 
     private static final String GUI_VERSION = '2.1.1-SNAPSHOT' // IMPORTANT: keep in sync with version in main build.gradle
 
+    // Tooltip with jexler version etc.
     static String jexlerTooltip
+
+    // Servlet context
     static ServletContext servletContext
+
+    // The one and only jexler container in this webapp
     static JexlerContainer container
+
+    // The logfile (by default one configured with level trace)
     static File logfile
 
+    // Config items from web.xml
     static long startTimeout
     static long stopTimeout
     static boolean scriptAllowEdit
@@ -55,8 +64,8 @@ class JexlerContextListener implements ServletContextListener    {
     @Override
     void contextInitialized(ServletContextEvent event) {
 
+        // Get and log versions (no versions in unit tests or IDE)
         String coreVersion = Jexler.class.package.implementationVersion
-        // no version in eclipse/unit tests (no jar with MANIFEST.MF)
         coreVersion = (coreVersion == null) ? '0.0.0' : coreVersion
         String groovyVersion = GroovyClassLoader.class.package.implementationVersion
         groovyVersion = (groovyVersion == null) ? '0.0.0' : groovyVersion
@@ -67,30 +76,34 @@ class JexlerContextListener implements ServletContextListener    {
           https://www.jexler.net/""".stripIndent()
         log.info("Welcome to jexler.")
         log.info(JexlerUtil.toSingleLine(jexlerTooltip).replace('%n', ' | ').replace('• ', ''))
+
+        // Set servlet context and set and start container
         servletContext = event.servletContext
-        String webappPath = servletContext.getRealPath('/')
+        final String webappPath = servletContext.getRealPath('/')
         container = new JexlerContainer(new File(webappPath, 'WEB-INF/jexlers'))
         container.start()
 
-        // determine log file
+        // Determine and set log file
         logfile = null
-        LoggerContext context = (LoggerContext)LoggerFactory.ILoggerFactory
+        final LoggerContext context = (LoggerContext)LoggerFactory.ILoggerFactory
         for (Logger logger : context.loggerList) {
             if (logger instanceof ch.qos.logback.classic.Logger) {
                 ch.qos.logback.classic.Logger classicLogger = (ch.qos.logback.classic.Logger)logger
                 classicLogger.iteratorForAppenders().each() { appender ->
-                    if (appender instanceof ch.qos.logback.core.FileAppender) {
-                        logfile = new File(((ch.qos.logback.core.FileAppender)appender).file)
+                    if (appender instanceof FileAppender) {
+                        logfile = new File(((FileAppender)appender).file)
                     }
                 }
             }
         }
         log.trace("logfile: '$logfile.absolutePath'")
-        
+
+        // Set config items from web.xml
+
         String param = servletContext.getInitParameter('jexler.start.timeout')
         startTimeout = param ? Long.parseLong(param) : 10000
         log.trace("jexler start timeout: $startTimeout ms")
-        
+
         param = servletContext.getInitParameter('jexler.stop.timeout')
         stopTimeout = param ? Long.parseLong(param) : 10000
         log.trace("jexler stop timeout: $stopTimeout ms")
@@ -110,6 +123,7 @@ class JexlerContextListener implements ServletContextListener    {
 
     @Override
     void contextDestroyed(ServletContextEvent event) {
+        // Stop and close container
         container.stop()
         container.close()
         log.info('Jexler done.')

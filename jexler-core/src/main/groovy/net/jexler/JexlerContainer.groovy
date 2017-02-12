@@ -79,9 +79,9 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
             // list directory and create jexlers in map for new script files in directory
             dir.listFiles()?.each { File file ->
                 if (file.isFile() && !file.isHidden()) {
-                    String id = getJexlerId(file)
+                    final String id = getJexlerId(file)
                     if (id != null && !jexlerMap.containsKey(id)) {
-                        Jexler jexler = new Jexler(file, this)
+                        final Jexler jexler = new Jexler(file, this)
                         jexlerMap.put(jexler.id, jexler)
                     }
                 }
@@ -143,7 +143,7 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
      * an UnsupportedOperationException.
      */
     List<Jexler> getJexlers() {
-        List<Jexler> jexlers = new LinkedList<>()
+        final List<Jexler> jexlers = new LinkedList<>()
         synchronized(jexlerMap) {
             jexlers.addAll((List<Jexler>)(List)services)
         }
@@ -181,7 +181,7 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
      * or null if not a jexler script.
      */
     String getJexlerId(File jexlerFile) {
-        String name = jexlerFile.name
+        final String name = jexlerFile.name
         if (name.endsWith(EXT)) {
             return name.substring(0, name.length() - EXT.length())
         } else {
@@ -195,9 +195,9 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
     Scheduler getScheduler() {
         synchronized (schedulerLock) {
             if (scheduler == null) {
-                String uuid = UUID.randomUUID()
-                String name = "JexlerContainerScheduler-$id-$uuid"
-                String instanceId = name
+                final String uuid = UUID.randomUUID()
+                final String name = "JexlerContainerScheduler-$id-$uuid"
+                final String instanceId = name
                 DirectSchedulerFactory.getInstance().createScheduler(name, instanceId,
                         new SimpleThreadPool(5, Thread.currentThread().priority), new RAMJobStore())
                 scheduler = DirectSchedulerFactory.getInstance().getScheduler(name)
@@ -213,7 +213,6 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
     void close() {
         synchronized (schedulerLock) {
             if (scheduler != null) {
-                DirectSchedulerFactory.getInstance().allSchedulers
                 scheduler.shutdown()
                 scheduler = null
             }

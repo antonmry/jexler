@@ -78,9 +78,9 @@ class ShellTool {
         @Override
         void run() {
             currentThread().name = threadName
-            StringBuilder out = new StringBuilder()
+            final StringBuilder out = new StringBuilder()
             // (assume default platform character encoding)
-            Scanner scanner = new Scanner(is)
+            final Scanner scanner = new Scanner(is)
             while (scanner.hasNext()) {
                 String line = scanner.nextLine()
                 out.append(line)
@@ -116,6 +116,13 @@ class ShellTool {
     }
 
     /**
+     * Get working directory for command.
+     */
+    File getWorkingDirectory() {
+        return workingDirectory
+    }
+
+    /**
      * Set environment variables for the command.
      * Key is variable name, value is variable value.
      * If not set or set to null, inherit from parent process.
@@ -124,33 +131,6 @@ class ShellTool {
     ShellTool setEnvironment(Map<String,String> env) {
         this.env = env
         return this
-    }
-    
-    /**
-     * Set a closure that will be called to handle each line of stdout.
-     * If not set or set to null, do nothing.
-     * @return this (for chaining calls)
-     */
-    ShellTool setStdoutLineHandler(Closure handler) {
-        stdoutLineHandler = handler
-        return this
-    }
-    
-    /**
-     * Set a closure that will be called to handle each line of stderr.
-     * If not set or set to null, do nothing.
-     * @return this (for chaining calls)
-     */
-    ShellTool setStderrLineHandler(Closure handler) {
-        stderrLineHandler = handler
-        return this
-    }
-
-    /**
-     * Get working directory for command.
-     */
-    File getWorkingDirectory() {
-        return workingDirectory
     }
 
     /**
@@ -161,12 +141,31 @@ class ShellTool {
     }
 
     /**
+     * Set a closure that will be called to handle each line of stdout.
+     * If not set or set to null, do nothing.
+     * @return this (for chaining calls)
+     */
+    ShellTool setStdoutLineHandler(Closure handler) {
+        stdoutLineHandler = handler
+        return this
+    }
+
+    /**
      * Get closure for handling stdout lines.
      */
     Closure getStdoutLineHandler() {
         return stdoutLineHandler
     }
 
+    /**
+     * Set a closure that will be called to handle each line of stderr.
+     * If not set or set to null, do nothing.
+     * @return this (for chaining calls)
+     */
+    ShellTool setStderrLineHandler(Closure handler) {
+        stderrLineHandler = handler
+        return this
+    }
 
     /**
      * Get closure for handling stderr lines.
@@ -185,7 +184,7 @@ class ShellTool {
      */
     Result run(String command) {
         try {
-            Process proc = Runtime.runtime.exec(command, toEnvArray(env), workingDirectory)
+            final Process proc = Runtime.runtime.exec(command, toEnvArray(env), workingDirectory)
             return getResult(proc)
         } catch (Exception e ) {
             return getExceptionResult(JexlerUtil.getStackTrace(e))
@@ -204,7 +203,7 @@ class ShellTool {
         String[] cmdArray = new String[cmdList.size()]
         cmdList.toArray(cmdArray)
         try {
-            Process proc = Runtime.runtime.exec(cmdArray, toEnvArray(env), workingDirectory)
+            final Process proc = Runtime.runtime.exec(cmdArray, toEnvArray(env), workingDirectory)
             return getResult(proc)
         } catch (Exception e ) {
             return getExceptionResult(JexlerUtil.getStackTrace(e))
@@ -215,11 +214,11 @@ class ShellTool {
      * Get result of given process.
      */
     private Result getResult(Process proc) throws Exception {
-        OutputCollector outCollector = new OutputCollector(proc.inputStream, stdoutLineHandler, 'stdout collector')
-        OutputCollector errCollector = new OutputCollector(proc.errorStream, stderrLineHandler, 'stderr collector')
+        final OutputCollector outCollector = new OutputCollector(proc.inputStream, stdoutLineHandler, 'stdout collector')
+        final OutputCollector errCollector = new OutputCollector(proc.errorStream, stderrLineHandler, 'stderr collector')
         outCollector.start()
         errCollector.start()
-        int rc = proc.waitFor()
+        final int rc = proc.waitFor()
         outCollector.join()
         errCollector.join()
         return new Result(rc, outCollector.output, errCollector.output)
@@ -236,7 +235,7 @@ class ShellTool {
      * Convert map of name and value to array of name=value.
      */
     private static String[] toEnvArray(Map<String,String> env) {
-        List envList = []
+        final List envList = []
         env?.each { key, value ->
             envList.add("$key=$value")
         }

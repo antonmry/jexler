@@ -99,34 +99,36 @@ subprojects {
     sourceSets sourceSets.main
   }
 
-  task pom << {
-    pom {
-      project {
-        name 'jexler'
-        description project.description
-        url 'http://www.jexler.net/'
-        packaging project.ext.pkg
-        licenses {
-          license {
-            name 'The Apache Software License, Version 2.0'
-            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-            distribution 'repo'
+  task pom {
+    doLast {
+      pom {
+        project {
+          name 'jexler'
+          description project.description
+          url 'http://www.jexler.net/'
+          packaging project.ext.pkg
+          licenses {
+            license {
+              name 'The Apache Software License, Version 2.0'
+              url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+              distribution 'repo'
+            }
+          }
+          scm {
+            url 'https://github.com/jexler/jexler'
+            connection 'https://github.com/jexler/jexler.git'
+            developerConnection 'https://github.com/jexler/jexler.git'
+          }
+          developers {
+            developer {
+              id 'jexler'
+              name 'Jex Jexler (whois jexler.net)'
+              email 'jex@jexler.net'
+            }
           }
         }
-        scm {
-          url 'https://github.com/jexler/jexler'
-          connection 'https://github.com/jexler/jexler.git'
-          developerConnection 'https://github.com/jexler/jexler.git'
-        }
-        developers {
-          developer {
-            id 'jexler'
-            name 'Jex Jexler (whois jexler.net)'
-            email 'jex@jexler.net'
-          }
-        }
-      }
-    }.writeTo("$buildDir/libs/${project.name}-${project.version}.pom")
+      }.writeTo("$buildDir/libs/${project.name}-${project.version}.pom")
+    }
   }
 
 }

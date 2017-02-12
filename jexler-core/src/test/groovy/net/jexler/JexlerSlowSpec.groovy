@@ -34,21 +34,22 @@ class JexlerSlowSpec extends Specification {
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
 
-    private final static long MS_5_SEC = 5000
-    private final static long MS_20_SEC = 20000
+    private final static long MS_1_SEC = 1000
+    private final static long MS_3_SEC = 3000
+    private final static long MS_6_SEC = 6000
     
-    def 'TEST SLOW (30 sec) jexler start or shutdown too slow'() {
+    def 'TEST SLOW (12 sec) jexler start or shutdown too slow'() {
         given:
         File dir = tempFolder.root
         File file = new File(dir, 'Test.groovy')
         file.text = """\
             log.info('before startup wait ' + jexler.id)
-            JexlerUtil.waitAtLeast(10000)
+            JexlerUtil.waitAtLeast($MS_3_SEC)
             log.info('after startup wait ' + jexler.id)
             while (true) {
               event = events.take()
               if (event instanceof StopEvent) {
-                JexlerUtil.waitAtLeast(10000)
+                JexlerUtil.waitAtLeast($MS_3_SEC)
                 return
               }
             }
@@ -56,7 +57,7 @@ class JexlerSlowSpec extends Specification {
         when:
         def jexler = new Jexler(file, new JexlerContainer(dir))
         jexler.start()
-        JexlerUtil.waitForStartup(jexler, MS_5_SEC)
+        JexlerUtil.waitForStartup(jexler, MS_1_SEC)
 
         then:
         jexler.issues.size() == 1
@@ -64,14 +65,14 @@ class JexlerSlowSpec extends Specification {
 
         when:
         jexler.forgetIssues()
-        JexlerUtil.waitForStartup(jexler, MS_20_SEC)
+        JexlerUtil.waitForStartup(jexler, MS_6_SEC)
 
         then:
         jexler.issues.empty
 
         when:
         jexler.stop()
-        JexlerUtil.waitForShutdown(jexler, MS_5_SEC)
+        JexlerUtil.waitForShutdown(jexler, MS_1_SEC)
 
         then:
         jexler.issues.size() == 1
@@ -79,7 +80,7 @@ class JexlerSlowSpec extends Specification {
 
         when:
         jexler.forgetIssues()
-        JexlerUtil.waitForShutdown(jexler, MS_20_SEC)
+        JexlerUtil.waitForShutdown(jexler, MS_6_SEC)
 
         then:
         jexler.issues.empty

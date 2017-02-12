@@ -30,9 +30,9 @@ import spock.lang.Specification
 @Category(SlowTests.class)
 class ServiceUtilSlowSpec extends Specification {
 
+    private final static long MS_1_SEC = 1000
+    private final static long MS_2_SEC = 2000
     private final static long MS_3_SEC = 3000
-    private final static long MS_6_SEC = 6000
-    private final static long MS_9_SEC = 9000
 
     static class InterruptingThread extends Thread {
         Thread threadToInterrupt
@@ -66,7 +66,7 @@ class ServiceUtilSlowSpec extends Specification {
         }
     }
 
-    def 'TEST SLOW (6 sec) wait for startup'() {
+    def 'TEST SLOW (3 sec) wait for startup'() {
         given:
         def service = new MockService(null, 'mock')
 
@@ -77,17 +77,17 @@ class ServiceUtilSlowSpec extends Specification {
         !ServiceUtil.waitForStartup(service, 0)
 
         when:
-        def interruptingThread = new InterruptingThread(Thread.currentThread(), MS_3_SEC)
+        def interruptingThread = new InterruptingThread(Thread.currentThread(), MS_1_SEC)
         interruptingThread.start()
-        new ServiceStateSettingThread(service, ServiceState.IDLE, MS_6_SEC).start()
+        new ServiceStateSettingThread(service, ServiceState.IDLE, MS_2_SEC).start()
 
         then:
-        ServiceUtil.waitForStartup(service, MS_9_SEC)
+        ServiceUtil.waitForStartup(service, MS_3_SEC)
         interruptingThread.hasInterrupted
         service.state == ServiceState.IDLE
     }
 
-    def 'TEST SLOW (6 sec) wait for shutdown'() {
+    def 'TEST SLOW (3 sec) wait for shutdown'() {
         given:
         def service = new MockService(null, 'mock')
 
@@ -98,12 +98,12 @@ class ServiceUtilSlowSpec extends Specification {
         !ServiceUtil.waitForShutdown(service, 0)
 
         when:
-        def interruptingThread = new InterruptingThread(Thread.currentThread(), MS_3_SEC)
+        def interruptingThread = new InterruptingThread(Thread.currentThread(), MS_1_SEC)
         interruptingThread.start()
-        new ServiceStateSettingThread(service, ServiceState.OFF, MS_6_SEC).start()
+        new ServiceStateSettingThread(service, ServiceState.OFF, MS_2_SEC).start()
 
         then:
-        ServiceUtil.waitForShutdown(service, MS_9_SEC)
+        ServiceUtil.waitForShutdown(service, MS_3_SEC)
         interruptingThread.hasInterrupted
         service.state == ServiceState.OFF
     }

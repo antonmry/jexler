@@ -76,6 +76,13 @@ class CronService extends ServiceBase {
     }
 
     /**
+     * Get cron pattern.
+     */
+    String getCron() {
+        return cron
+    }
+
+    /**
      * Set quartz scheduler.
      * Default is a scheduler shared by all jexlers in the same jexler container.
      * @return this (for chaining calls)
@@ -86,24 +93,17 @@ class CronService extends ServiceBase {
     }
 
     /**
-     * Get jexler.
-     */
-    Jexler getJexler() {
-        return jexler
-    }
-
-    /**
-     * Get cron pattern.
-     */
-    String getCron() {
-        return cron
-    }
-
-    /**
      * Get quartz scheduler.
      */
     Scheduler getScheduler() {
         return scheduler
+    }
+
+    /**
+     * Get jexler.
+     */
+    Jexler getJexler() {
+        return jexler
     }
 
     @Override
@@ -122,12 +122,12 @@ class CronService extends ServiceBase {
             return
         }
 
-        String uuid = UUID.randomUUID()
-        JobDetail job = JobBuilder.newJob(CronJob.class)
+        final String uuid = UUID.randomUUID()
+        final JobDetail job = JobBuilder.newJob(CronJob.class)
                 .withIdentity("job-$id-$uuid", jexler.id)
                 .usingJobData(['service':this] as JobDataMap)
                 .build()
-        Trigger trigger = TriggerBuilder.newTrigger()
+        final Trigger trigger = TriggerBuilder.newTrigger()
                 .withIdentity("trigger-$id-$uuid", jexler.id)
                 .withSchedule(CronScheduleBuilder.cronSchedule(cron))
                 .startNow()
@@ -171,11 +171,13 @@ class CronService extends ServiceBase {
         }
     }
 
-    // must be public, else not called...
+    /**
+     * Internal class, only public because otherwise not called by quartz scheduler.
+     */
     static class CronJob implements Job {
         void execute(JobExecutionContext ctx) throws JobExecutionException {
-            CronService service = (CronService)ctx.jobDetail.jobDataMap.service
-            String savedName = Thread.currentThread().name
+            final CronService service = (CronService)ctx.jobDetail.jobDataMap.service
+            final String savedName = Thread.currentThread().name
             Thread.currentThread().name = "$service.jexler.id|$service.id"
             log.trace("new cron event: $service.cron")
             service.jexler.handle(new CronEvent(service, service.cron))

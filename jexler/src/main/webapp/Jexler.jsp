@@ -1,14 +1,37 @@
+<%--
+Copyright 2012-now $(whois jexler.net)
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--%>
+
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page trimDirectiveWhitespaces="true" %>
 
+<%-- Set 'container' to main view --%>
 <jsp:useBean id="container" class="net.jexler.war.JexlerContainerView">
+
+<%-- Handle request (start/stop jexler, etc.) --%>
 <%= container.handleCommands(pageContext) %>
+
+<%-- Set 'jexler' to container or addressed jexler --%>
 <c:set var="jexler" value="${container.jexlers[param.jexler]}"/>
 <c:set var="jexler" value="${jexler != null ? jexler : container }"/>
 
+<%-- Skip alltogether if request is handled by a jexler --%>
 <c:if test="${param.cmd != 'http'}">
 
+<%-- Skip if getting status table from js, not if requesting page in browser --%>
 <c:if test="${param.cmd != 'status'}">
 
   <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -68,6 +91,7 @@
   <div id="statusdiv" class="autoscroll">
 </c:if>
 
+<%-- Status table --%>
 <table class="status" id="status">
 
 <tr class="status">
@@ -83,13 +107,14 @@
   <td class="status">${loopJexler.value.startStopZap}</td>
   <td class="status">${loopJexler.value.restart}</td>
   <td class="status">${loopJexler.value.log}</td>
-  <td class="status status-name" title="${loopJexler.value.stateInfo}">${loopJexler.value.jexlerIdLink}</td>
+  <td class="status status-name">${loopJexler.value.jexlerIdLink}</td>
   <td class="status">${loopJexler.value.web}</td>
   </tr>
 </c:forEach>
 
 </table>
 
+<%-- Skip if getting status table from js, not if requesting page in browser --%>
 <c:if test="${param.cmd != 'status'}">
 
   </div>

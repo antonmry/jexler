@@ -33,12 +33,13 @@ import spock.lang.Specification
 class JexlerContainerSlowSpec extends Specification {
 
     @Rule
-    public TemporaryFolder tempFolder = new TemporaryFolder();
+    public TemporaryFolder tempFolder = new TemporaryFolder()
 
-    private final static long MS_5_SEC = 5000
-    private final static long MS_20_SEC = 20000
+    private final static long MS_1_SEC = 1000
+    private final static long MS_3_SEC = 3000
+    private final static long MS_6_SEC = 6000
     
-    def 'TEST SLOW (30 sec) startup and shutdown too slower than time waited'() {
+    def 'TEST SLOW (8 sec) startup and shutdown too slower than time waited'() {
         given:
         def dir = tempFolder.root
         def jexlerBodyFast = """\
@@ -51,14 +52,14 @@ class JexlerContainerSlowSpec extends Specification {
             """.stripIndent()
         def jexlerBodySlow = """\
             log.info('before startup wait ' + jexler.id)
-            JexlerUtil.waitAtLeast(10000)
+            JexlerUtil.waitAtLeast($MS_3_SEC)
             log.info('after startup wait ' + jexler.id)
             while (true) {
               event = events.take()
               if (event instanceof StopEvent) {
                 // set explicitly because cannot easily wait after returns
                 jexler.state = ServiceState.BUSY_STOPPING
-                JexlerUtil.waitAtLeast(10000)
+                JexlerUtil.waitAtLeast($MS_3_SEC)
                 return
               }
             }
@@ -82,7 +83,7 @@ class JexlerContainerSlowSpec extends Specification {
 
         when:
         container.start()
-        JexlerUtil.waitForStartup(container, MS_5_SEC)
+        JexlerUtil.waitForStartup(container, MS_1_SEC)
 
         then:
         container.state == ServiceState.BUSY_STARTING
@@ -96,7 +97,7 @@ class JexlerContainerSlowSpec extends Specification {
 
         when:
         container.forgetIssues()
-        JexlerUtil.waitForStartup(container, MS_20_SEC)
+        JexlerUtil.waitForStartup(container, MS_6_SEC)
 
         then:
         container.state == ServiceState.IDLE
@@ -107,7 +108,7 @@ class JexlerContainerSlowSpec extends Specification {
 
         when:
         container.stop()
-        JexlerUtil.waitForShutdown(container, MS_5_SEC)
+        JexlerUtil.waitForShutdown(container, MS_1_SEC)
 
         then:
         container.state == ServiceState.BUSY_STOPPING
@@ -121,7 +122,7 @@ class JexlerContainerSlowSpec extends Specification {
 
         when:
         container.forgetIssues()
-        JexlerUtil.waitForShutdown(container, MS_20_SEC)
+        JexlerUtil.waitForShutdown(container, MS_6_SEC)
 
         then:
         container.state == ServiceState.OFF

@@ -25,7 +25,7 @@ import org.junit.Test
 import org.junit.experimental.categories.Category
 
 /**
- * Starts embedded jetty with a jexler.
+ * Starts embedded jetty with jexler webapp.
  *
  * @author $(whois jexler.net)
  */
@@ -46,7 +46,7 @@ class JexlerJettyTest {
         final Server server = new Server(port)
 
         // create context
-        WebAppContext context = new WebAppContext()
+        final WebAppContext context = new WebAppContext()
         context.resourceBase = './src/main/webapp'
         context.descriptor = 'WEB-INF/web.xml'
         context.contextPath = '/'

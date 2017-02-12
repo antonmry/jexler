@@ -23,7 +23,7 @@ import net.jexler.service.StopEvent
 import groovy.transform.CompileStatic
 
 /**
- * Jexler dispatcher.
+ * Jexler dispatcher for use in jexler scripts.
  *
  * Allows to handle lifecycle and events a bit more structured
  * by implementing specific methods like start() or handleCronEvent()
@@ -36,11 +36,11 @@ class JexlerDispatcher {
 
     static void dispatch(Script script) {
 
-        Jexler jexler = (Jexler)script.binding.variables.jexler
-        Events events = (Events)script.binding.variables.events
+        final Jexler jexler = (Jexler)script.binding.variables.jexler
+        final Events events = (Events)script.binding.variables.events
 
-        MetaClass mc = script.metaClass
-        Object[] noArgs = []
+        final MetaClass mc = script.metaClass
+        final Object[] noArgs = []
 
         MetaMethod mm = mc.getMetaMethod('declare', noArgs)
         if (mm != null) {
@@ -56,7 +56,7 @@ class JexlerDispatcher {
         }
 
         while (true) {
-            Event event = events.take()
+            final Event event = events.take()
 
             if (event instanceof StopEvent) {
                 mm = mc.getMetaMethod('stop', noArgs)

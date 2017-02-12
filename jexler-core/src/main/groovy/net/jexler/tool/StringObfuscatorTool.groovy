@@ -94,17 +94,17 @@ class StringObfuscatorTool {
             throws InvalidKeyException, IllegalBlockSizeException,
             BadPaddingException, UnsupportedEncodingException,
             InvalidAlgorithmParameterException {
-        byte[] plainBytes = plain.getBytes('UTF-8')
-        int lenActual = plainBytes.length
-        int lenMaxAllowed = byteBufferPadLen - MIN_SALT_LEN - LEN_BYTES_LEN
+        final byte[] plainBytes = plain.getBytes('UTF-8')
+        final int lenActual = plainBytes.length
+        final int lenMaxAllowed = byteBufferPadLen - MIN_SALT_LEN - LEN_BYTES_LEN
         if (lenActual > lenMaxAllowed) {
             throw new IllegalArgumentException(
                     "Input string too long ($lenActual bytes UTF-8 encoded, max allowed: $lenMaxAllowed)")
         }
-        byte[] plainPaddedBytes = new byte[byteBufferPadLen]
-        int lenSaltBytes = byteBufferPadLen - lenActual - LEN_BYTES_LEN
-        byte[] saltBytes = new byte[lenSaltBytes]
-        SecureRandom secureRandom = new SecureRandom()
+        final byte[] plainPaddedBytes = new byte[byteBufferPadLen]
+        final int lenSaltBytes = byteBufferPadLen - lenActual - LEN_BYTES_LEN
+        final byte[] saltBytes = new byte[lenSaltBytes]
+        final SecureRandom secureRandom = new SecureRandom()
         secureRandom.nextBytes(saltBytes)
         System.arraycopy(saltBytes, 0, plainPaddedBytes, 0, lenSaltBytes)
         System.arraycopy(plainBytes, 0, plainPaddedBytes, lenSaltBytes, lenActual)
@@ -122,15 +122,15 @@ class StringObfuscatorTool {
             throws InvalidKeyException, IllegalBlockSizeException,
             BadPaddingException, UnsupportedEncodingException,
             InvalidAlgorithmParameterException {
-        byte[] enc = DatatypeConverter.parseHexBinary(encHex)
+        final byte[] enc = DatatypeConverter.parseHexBinary(encHex)
         cipher.init(Cipher.DECRYPT_MODE, key, iv)
-        byte[] plain = cipher.doFinal(enc)
+        final byte[] plain = cipher.doFinal(enc)
         if (plain.length != byteBufferPadLen) {
             throw new IllegalArgumentException(
                     "Illegal length of deciphered buffer ($plain.length bytes, expected $byteBufferPadLen)")
         }
-        int lenPlainBytes = plain[byteBufferPadLen-1] & 0xff
-        int offs = byteBufferPadLen - LEN_BYTES_LEN - lenPlainBytes
+        final int lenPlainBytes = plain[byteBufferPadLen-1] & 0xff
+        final int offs = byteBufferPadLen - LEN_BYTES_LEN - lenPlainBytes
         return new String(plain, offs, lenPlainBytes, 'UTF-8')
     }
 

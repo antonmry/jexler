@@ -56,9 +56,4 @@ abstract class ServiceBase implements Service {
         return id
     }
 
-    @Override
-    void zap() {
-        state = ServiceState.OFF
-    }
-
 }
