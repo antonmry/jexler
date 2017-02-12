@@ -45,14 +45,15 @@ class ServiceStateSpec extends Specification {
         state.idle == idle
         state.busyEvent == busyEvent
         state.busyStopping == busyStopping
+        state.busy == busy
 
         where:
-        state                      | off   | on    | operational | busyStarting | idle  | busyEvent | busyStopping
-        ServiceState.OFF           | true  | false | false       | false        | false | false     | false
-        ServiceState.BUSY_STARTING | false | true  | false       | true         | false | false     | false
-        ServiceState.IDLE          | false | true  | true        | false        | true  | false     | false
-        ServiceState.BUSY_EVENT    | false | true  | true        | false        | false | true      | false
-        ServiceState.BUSY_STOPPING | false | true  | false       | false        | false | false     | true
+        state                      | off   | on    | operational | busyStarting | idle  | busyEvent | busyStopping | busy
+        ServiceState.OFF           | true  | false | false       | false        | false | false     | false        | false
+        ServiceState.BUSY_STARTING | false | true  | false       | true         | false | false     | false        | true
+        ServiceState.IDLE          | false | true  | true        | false        | true  | false     | false        | false
+        ServiceState.BUSY_EVENT    | false | true  | true        | false        | false | true      | false        | true
+        ServiceState.BUSY_STOPPING | false | true  | false       | false        | false | false     | true         | true
     }
 
 }

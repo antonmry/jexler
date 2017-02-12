@@ -77,15 +77,17 @@ class ServiceUtil {
     }
 
     /**
-     * Convert to "quartz-style" cron with seconds:
-     * - leaves untouched if 'now' or 'now+stop'
-     * - adds '0' as first item (seconds) if contains 5 items,
-     *   i.e. if is an "old-style" cron string with minutes resolution
-     * - replaces '*' for day-of-month or day-of-week with '?' when needed
-     *   by quartz to parse such a cron string...
-     * - logs the new cron string if was modified above
-     * - validates the resulting cron string
-     * - if valid, logs the next date+time when the cron string would fire
+     * Convert to "quartz-style" cron with seconds.
+     * <ul>
+     * <li>leaves untouched if 'now' or 'now+stop'</li>
+     * <li>adds '0' as first item (seconds) if contains 5 items,
+     *     i.e. if is an "old-style" cron string with minutes resolution</li>
+     * <li>replaces '*' for day-of-month or day-of-week with '?' when needed
+     *     by quartz to parse such a cron string...</li>
+     * <li>logs the new cron string if was modified above</li>
+     * <li>validates the resulting cron string</li>
+     * <li>if valid, logs the next date+time when the cron string would fire</li>
+     * </ul>
      *
      * @throws IllegalArgumentException if the resulting cron string is not a valid quartz cron string
      */

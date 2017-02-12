@@ -39,6 +39,10 @@ class ShellToolSpec extends Specification {
         def tool = new ShellTool()
 
         expect:
+        tool.workingDirectory == null
+        tool.env == null
+        tool.stdoutLineHandler == null
+        tool.stderrLineHandler == null
         def result = tool.run(cmd)
         result != null
         result.rc == 0
@@ -65,6 +69,10 @@ class ShellToolSpec extends Specification {
         tool.stdoutLineHandler = { testStdout += it }
 
         expect:
+        tool.workingDirectory == dir
+        tool.env == null
+        tool.stdoutLineHandler != null
+        tool.stderrLineHandler == null
         def result = tool.run(cmd)
         result.rc == 0
         result.stdout != ''
@@ -93,6 +101,11 @@ class ShellToolSpec extends Specification {
         def result = tool.run(cmd)
 
         then:
+        tool.workingDirectory == null
+        tool.env.size() == 1
+        tool.env.MYVAR == 'there'
+        tool.stdoutLineHandler != null
+        tool.stderrLineHandler == null
         result.rc == 0
         result.stdout != ''
         result.stdout.contains('hello there')
@@ -113,6 +126,10 @@ class ShellToolSpec extends Specification {
         def result = tool.run(cmd)
 
         then:
+        tool.workingDirectory == null
+        tool.env == null
+        tool.stdoutLineHandler == null
+        tool.stderrLineHandler != null
         result.rc != 0
         result.stdout == ''
         result.stderr != ''

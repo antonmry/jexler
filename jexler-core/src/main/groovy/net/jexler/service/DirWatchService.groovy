@@ -117,7 +117,7 @@ class DirWatchService extends ServiceBase {
      * Set modifiers when watching for events.
      * On Mac OS X, by default the file system seems to be polled
      * every 10 seconds; to reduce this to 2 seconds, pass a modifier
-     * com.sun.nio.file.SensitivityWatchEventModifier.HIGH.
+     * <code>com.sun.nio.file.SensitivityWatchEventModifier.HIGH</code>.
      * @param modifiers
      * @return
      */
@@ -233,10 +233,12 @@ class DirWatchService extends ServiceBase {
         state = ServiceState.OFF
         new Thread() {
             void run() {
-                try {
-                    scheduler.unscheduleJob(triggerKey)
-                } catch (Throwable t) {
-                    log.trace('failed to unschedule cron job', t)
+                if (scheduler != null) {
+                    try {
+                        scheduler.unscheduleJob(triggerKey)
+                    } catch (Throwable t) {
+                        log.trace('failed to unschedule cron job', t)
+                    }
                 }
                 try {
                     watchKey.cancel()
@@ -245,7 +247,7 @@ class DirWatchService extends ServiceBase {
                     log.trace('failed stop watching directory', t)
                 }
             }
-        }
+        }.start()
     }
 
     /**

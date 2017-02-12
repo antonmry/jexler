@@ -22,6 +22,9 @@ import net.jexler.test.FastTests
 import org.junit.experimental.categories.Category
 import spock.lang.Specification
 
+import java.nio.file.StandardWatchEventKinds
+import java.nio.file.WatchEvent
+
 /**
  * Tests the respective class.
  *
@@ -32,18 +35,26 @@ class DirWatchServiceSpec extends Specification {
 
     def 'TEST no watch dir'() {
         given:
-        def watchDir = new File('does-not-exist')
+        def dir = new File('does-not-exist')
         def jexler = new TestJexler()
 
         when:
         def service = new DirWatchService(jexler, 'watchid')
-        service.dir = watchDir
-        service.cron = '* * * * *'
-        service.scheduler = null
+                .setDir(dir)
+                .setKinds([ StandardWatchEventKinds.ENTRY_CREATE ])
+                .setModifiers([])
+                .setCron('* * * * *')
+                .setScheduler(null)
         service.start()
 
         then:
         service.state.off
+        service.dir == dir
+        service.kinds.size() == 1
+        service.kinds.first() == StandardWatchEventKinds.ENTRY_CREATE
+        service.modifiers.empty
+        service.cron == '0 * * * * ?'
+        service.scheduler == null
         jexler.issues.size() == 1
         jexler.issues.first().service == service
         jexler.issues.first().message.startsWith('Could not create watch service or key')

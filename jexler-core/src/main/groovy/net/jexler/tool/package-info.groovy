@@ -15,7 +15,7 @@
 */
 
 /**
- * Tools (shell, string obfuscator) that may be useful in jexler scripts.
+ * Tools (shell, string obfuscator) that can be useful in jexler scripts.
  *
  * @author $(whois jexler.net)
  */

@@ -33,8 +33,14 @@ class CronServiceSpec extends Specification {
     def 'TEST basic construct and set'() {
         given:
         def jexler = new TestJexler()
+
+        when:
         def service = new CronService(jexler, 'cronid')
         service.setCron('* * * * *').setScheduler(null)
+
+        then:
+        service.cron == '0 * * * * ?'
+        service.scheduler == null
     }
 
 }

@@ -117,6 +117,12 @@ class CronServiceSlowSpec extends Specification {
         then:
         service.state == ServiceState.OFF
 
+        when:
+        service.zap()
+
+        then:
+        service.state == ServiceState.OFF
+
         cleanup:
         jexler.container.close()
     }

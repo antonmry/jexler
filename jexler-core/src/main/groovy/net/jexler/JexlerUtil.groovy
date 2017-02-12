@@ -23,7 +23,7 @@ import groovy.transform.CompileStatic
 
 /**
  * Jexler utilities.
- * Includes some static methods that might be useful in Groovy scripts
+ * Includes some static methods that could be useful in Groovy scripts
  * or in Java (for writing custom services or tools).
  *
  * @author $(whois jexler.net)

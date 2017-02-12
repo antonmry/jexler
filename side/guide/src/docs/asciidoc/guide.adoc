@@ -284,12 +284,20 @@ while (true) {
 }
 ----
 
-There are three setters:
+There are the following setters:
 
 * `setDir(File dir)`: The directory to watch,
    default if not set is the directory that contains the jexler.
-* `setCron(String cron)`: When to poll the file system,
-   default if not set is every 5 seconds ("*/5 * * * * ?").
+* `setKinds(List<WatchEvent.Kind> kinds)`: Kinds of events to watch for.
+   Default if not set is standard events for create, modify and delete
+* `setModifiers(List<WatchEvent.Modifier> modifiers)`:
+   Modifiers for watching, default if not set is empty.
+   Useful particularly on Mac OS X, where there is no native support
+   in the JVM and instead the file system is polled, apparently every
+   10 seconds by default. To reduce this to 2 seconds, pass a modifier
+   `com.sun.nio.file.SensitivityWatchEventModifier.HIGH`.
+* `setCron(String cron)`: When to poll the WatchService.
+   Default if not set is every 5 seconds ("*/5 * * * * ?").
    Note that it may take even longer than that for the underlying
    Java WatchService to register the change.
 * `setScheduler(Scheduler scheduler)`: Sets the Quartz scheduler,

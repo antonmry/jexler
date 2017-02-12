@@ -35,6 +35,7 @@ class IssueSpec extends Specification {
         issue.service == service
         issue.message == message
         issue.cause == cause
+        issue.stackTrace == ''
         issue.toString() == string
 
         where:
@@ -51,6 +52,7 @@ class IssueSpec extends Specification {
         issue.service == service
         issue.message == message
         issue.cause == cause
+        issue.stackTrace != ''
         issue.toString().startsWith(string)
         !issue.toString().contains('\r')
         !issue.toString().contains('\n')

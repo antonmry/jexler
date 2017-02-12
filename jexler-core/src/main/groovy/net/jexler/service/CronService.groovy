@@ -44,8 +44,16 @@ import org.slf4j.LoggerFactory
 class CronService extends ServiceBase {
 
     private static final Logger log = LoggerFactory.getLogger(CronService.class)
-    
+
+    /**
+     * Pseudo cron string for a single cron event immediately.
+     */
     public static final String CRON_NOW = 'now'
+
+    /**
+     * Pseudo cron string for a single cron event immediately,
+     * followed by a single stop event.
+     */
     public static final String CRON_NOW_AND_STOP = "$CRON_NOW+stop"
 
     private final Jexler jexler

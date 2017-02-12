@@ -132,6 +132,11 @@ class DirWatchServiceSlowSpec extends Specification {
         then:
         service.state == ServiceState.OFF
 
+        when:
+        service.zap()
+
+        then:
+        service.state == ServiceState.OFF
     }
 
     private static void checkCreateModifyDeleteEventsTriggered(Jexler jexler, Service service, File watchDir) {
