@@ -650,7 +650,7 @@ jexler-core is deeply tested, close to 100% test coverage in jacoco,
 except for a few artefacts and except that jacoco underrates Groovy
 coverage for purely technical reasons.
 Unit tests are written with https://code.google.com/p/spock/[Spock],
-a *fascinating* test framework written in Groovy.
+the fascinating Groovy test framework.
 
 The jexler webapp is very simple and contains a demo unit test that starts it in a Jetty embedded web server.
 
