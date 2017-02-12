@@ -34,7 +34,7 @@ Now instead of just logging the word "hello", let's send an email instead:
 
 [source,groovy]
 ----
-[ "autostart" : true ]
+[ 'autostart' : true ]
 
 @Grab('org.apache.commons:commons-email:1.3')
 import org.apache.commons.mail.*
