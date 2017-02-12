@@ -1,4 +1,4 @@
-[ "autostart" : true ]
+[ 'autostart' : true ]
 
 JexlerDispatcher.dispatch(this)
 
@@ -11,7 +11,7 @@ void start() {}
 // (The handler is invoked independently of normal event handling in jexler,
 // in separate threads, one for each parallel HTTP request.)
 void handleHttp(def p) {
-  log.trace("-- handleHttp")
+  log.trace('-- handleHttp')
 
   if (p.request.parameters.throw != null) {
     throw new RuntimeException("*** Failed intentionally - due to request parameter 'throw' ***")

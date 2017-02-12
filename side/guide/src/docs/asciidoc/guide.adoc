@@ -11,15 +11,15 @@ of their choice - great for prototyping and useful for automating.
 Here's a first example of a jexler Groovy script:
 [source,groovy]
 ----
-[ "autostart" : true ]
+[ 'autostart' : true ]
 
-services.add(new CronService(jexler, "every-minute").setCron("* * * * *"))
+services.add(new CronService(jexler, 'every-minute').setCron('* * * * *'))
 services.start()
 
 while (true) {
   event = events.take();
   if (event instanceof CronEvent) {
-    log.info("hello")
+    log.info('hello')
   } else if (event instanceof StopEvent) {
     return
   }
@@ -39,18 +39,18 @@ Now instead of just logging the word "hello", let's send an email instead:
 @Grab('org.apache.commons:commons-email:1.3')
 import org.apache.commons.mail.*
 
-services.add(new CronService(jexler, "every-15-seconds").setCron("*/15 * * * * *"))
+services.add(new CronService(jexler, 'every-15-seconds').setCron('*/15 * * * * *'))
 services.start()
 
 while (true) {
   event = events.take();
   if (event instanceof CronEvent) {
     new SimpleEmail().with {
-      setFrom "jex@jexler.net"
-      addTo "bugs@acme.org"
+      setFrom 'jex@jexler.net'
+      addTo 'bugs@acme.org'
       // ...
-      setSubject "hello"
-      setMsg "hello from jexler script"
+      setSubject 'hello'
+      setMsg 'hello from jexler script'
       send()
     }
   } else if (event instanceof StopEvent) {
@@ -104,51 +104,51 @@ methods that handle different life cycle stages and received events:
 
 [source,groovy]
 ----
-[ "autostart" : true ]
+[ 'autostart' : true ]
 
 // dispatch to methods below
 JexlerDispatcher.dispatch(this)
 
 // optional, called first
 void declare() {
-  log.trace("-- declare()")
-  cron = "* * * * *"
+  log.trace('-- declare()')
+  cron = '* * * * *'
 }
 
 // mandatory, called after declare(), before the event loop
 void start() {
   log.trace("-- start()")
-  services.add(new CronService(jexler, "EveryMinute").setCron(cron))
-  services.add(new CronService(jexler, "Every30Seconds").setCron("0/30 * * * * *"))
-  services.add(new CronService(jexler, "OnceImmediately").setCron("now"))
+  services.add(new CronService(jexler, 'EveryMinute').setCron(cron))
+  services.add(new CronService(jexler, 'Every30Seconds').setCron('0/30 * * * * *'))
+  services.add(new CronService(jexler, 'OnceImmediately').setCron('now'))
   services.start()
 }
 
 // optional*, called during event loop
 // handle<event-class><service-id>(event), searched first
 void handleCronEventEveryMinute(def event) {
-  log.trace("-- handleCronEventEveryMinute(event)")
+  log.trace('-- handleCronEventEveryMinute(event)')
   log.trace("every minute, it is now ${new Date()} ($event.service.id)")
 }
 
 // optional*, called during event loop
 // handle<event-class><service-id>(event), searched second
 void handleCronEventEvery30Seconds(def event) {
-  log.trace("-- handleCronEventEvery30Seconds(event)")
-  log.trace("every 30 seconds")
+  log.trace('-- handleCronEventEvery30Seconds(event)')
+  log.trace('every 30 seconds')
 }
 
 // optional*, called during event loop
 // handle(event), fallback, searched last
 // * if no matching handler was found, an issue is tracked
 void handle(def event) {
- log.trace("-- handle(event)")
+ log.trace('-- handle(event)')
   log.trace("got event $event.service.id")
 }
 
 // optional, called after receiving StopEvent in the event loop, just before the script returns
 void stop() {
-  log.trace("-- stop()")
+  log.trace('-- stop()')
   // nothing to do, services.stop() is called automatically after the script returns
 }
 ----
@@ -157,17 +157,17 @@ So that the first example above could e.g. be written as:
 
 [source,groovy]
 ----
-[ "autostart" : true ]
+[ 'autostart' : true ]
 
 JexlerDispatcher.dispatch(this)
 
 void start() {
-  services.add(new CronService(jexler, "every-minute").setCron("* * * * *"))
+  services.add(new CronService(jexler, 'every-minute').setCron('* * * * *'))
   services.start()
 }
 
 void handleCronEvent(def event) {
-    log.info("hello")
+    log.info('hello')
 }
 ----
 
@@ -271,7 +271,7 @@ when a file is created, modified or deleted:
 
 [source,groovy]
 ----
-services.add(new DirWatchService(jexler, "watch-jexler-dir"))
+services.add(new DirWatchService(jexler, 'watch-jexler-dir'))
 services.start()
 
 while (true) {
@@ -349,8 +349,8 @@ log.trace(result.toString())
 There are the following setters:
 
 * `setWorkingDirectory(File dir)`:
-   Set working directory for the command;
-   if not set or set to null, inherit from parent process.
+  Set working directory for the command;
+  if not set or set to null, inherit from parent process.
 * `setEnvironment(Map<String,String> env)`:
   Set environment variables for the command
   (key is variable name, value is variable value);
@@ -362,7 +362,7 @@ There are the following setters:
   Set a closure that will be called to handle each line of stderr;
   if not set or set to null, do nothing.
 
-Note that the setters again return their ShellTool instance, i.e. setters can be chained:
+Note that the setters again return their ShellTool instance,i.e. setters can be chained:
 
 [source,groovy]
 result = new ShellTool().setWorkingDirectory('/tmp').setStderrLineHandler({log.info(it)}).run('ls')

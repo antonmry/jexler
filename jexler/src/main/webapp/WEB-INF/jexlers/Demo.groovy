@@ -1,11 +1,11 @@
-[ "autostart" : true ]
+[ 'autostart' : true ]
 
 @Grab('org.apache.httpcomponents:httpclient:4.2.3')
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.impl.client.BasicResponseHandler
 import org.apache.http.impl.client.DefaultHttpClient
 
-services.add(new CronService(jexler, "every-minute").setCron("* * * * *"))
+services.add(new CronService(jexler, 'every-minute').setCron('* * * * *'))
 services.start()
 
 while (true) {
@@ -15,7 +15,7 @@ while (true) {
     // run shell command
     def handler = { line ->
       if (line.startsWith('hello')) {
-        log.info('stdout matched: ' + line)
+        log.info("stdout matched: $line")
       }
     }
     shellTool = new ShellTool().setStdoutLineHandler(handler)
@@ -24,14 +24,14 @@ while (true) {
     
     // http get request
     httpclient = new DefaultHttpClient()
-    httpget = new HttpGet("http://www.google.com/")
+    httpget = new HttpGet('http://www.google.com/')
     responseHandler = new BasicResponseHandler()
     responseBody = httpclient.execute(httpget, responseHandler)
     log.trace("response body: ${JexlerUtil.toSingleLine(responseBody)}")
     
     Thread.sleep(30000)
     
-    throw new RuntimeException("Demo RuntimeException")
+    throw new RuntimeException('Demo RuntimeException')
         
   } else if (event instanceof StopEvent) {
     return

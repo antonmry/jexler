@@ -1,7 +1,7 @@
 class Util {
 
   static def hello() {
-    return "Hello World"
+    return 'Hello World'
   }
   
   // Jex.vars gives access to the script binding

@@ -1,6 +1,6 @@
-[ "autostart" : true ]
+[ 'autostart' : true ]
 
-services.add(new DirWatchService(jexler, "watch-jexler-dir"))
+services.add(new DirWatchService(jexler, 'watch-jexler-dir'))
 services.start()
 
 while (true) {
