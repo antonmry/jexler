@@ -2,10 +2,11 @@ image:http://www.jexler.net/jexler.jpg["jexler logo", link="http:www.jexler.net/
 
 = jexler releases
 
-=== 2.1.2-SNAPSHOT (20XX-XX-XX)
+=== 2.1.2 (2017-02-13)
 
 * Access to binding variables with 'jexlerBinding' instead
   of with 'Jex.vars'.
+* Hopefully done again for a while now...
 
 === 2.1.1 (2017-02-12)
 
