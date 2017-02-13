@@ -673,28 +673,32 @@ and the following variables are available to jexler Groovy scripts (binding):
 * `Logger log`: The logback logger for the jexler instance.
 
 It is even possible to access the binding variables from other classes,
-use e.g. `Jex.vars.log` to access the logger:
+use e.g. `jexlerBinding.log` to access the logger:
 
 [source,groovy]
 ----
 class Util {
-  static def log = Jex.vars.log
+  static def log = jexlerBinding.log
   static {
-    log.trace("Class loaded for jexler '${Jex.vars.jexler.id}'")
+    log.trace("Class loaded for jexler '${jexlerBinding.jexler.id}'")
   }
   static logMethodCall() {
-    log.trace("Method called for jexler '${Jex.vars.jexler.id}'")
+    log.trace("Method called for jexler '${jexlerBinding.jexler.id}'")
   }
 }
 ----
 
 This is implemented by always adding the following class to the Groovy
-classpath and by setting its static variable `vars` to the map of the
-script binding via reflection:
+classpath plus, by default, by statically importing its `jexlerBinding`
+member variable with every compiled source.
 
 [source,groovy]
 ----
-public class Jex { public static Map vars }
+package net.jexler
+@groovy.transform.CompileStatic
+class JexlerBinding {
+  public static Map<String,Object> jexlerBinding
+}
 ----
 
 === Meta Info
@@ -713,14 +717,16 @@ There are two boolean settings that jexler uses by default:
 
 * `autostart`: If true, the jexler is started when the webapp starts up.
    Default is false.
-* `autoimport`: If false, the three mentioned packages are not automatically imported. Default is true.
+* `autoimport`: If false, the three mentioned packages are not automatically
+   imported and there is no static import of `JexlerBinding.jexlerBinding`.
+   Default is true.
 
 === Distribution
 
-* jexler-core is at http://search.maven.org/#search%7Cga%7C1%7Cjexler-core[Maven Central]
-* jexler webapp is at https://sourceforge.net/projects/jexler/[Sourceforge] (see "Files" tab)
-* http://www.jexler.net/[jexler.net] hosts http://www.jexler.net/groovydoc/[Groovydoc],
-  http://www.jexler.net/jacoco/[jacoco] and this http://www.jexler.net/guide/[guide]
+* The jexler-core JAR is at http://search.maven.org/#search%7Cga%7C1%7Cjexler-core[Maven Central]
+* The jexler webapp is at https://sourceforge.net/projects/jexler/[Sourceforge] (see "Files" tab)
+* The website http://www.jexler.net/[www.jexler.net] hosts http://www.jexler.net/groovydoc/[Groovydoc],
+  http://www.jexler.net/jacoco/[JaCoCo] and this http://www.jexler.net/guide/[guide]
 
 == Use Cases
 

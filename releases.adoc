@@ -4,7 +4,8 @@ image:http://www.jexler.net/jexler.jpg["jexler logo", link="http:www.jexler.net/
 
 === 2.1.2-SNAPSHOT (20XX-XX-XX)
 
-* ...
+* Access to binding variables with 'jexlerBinding' instead
+  of with 'Jex.vars'.
 
 === 2.1.1 (2017-02-12)
 

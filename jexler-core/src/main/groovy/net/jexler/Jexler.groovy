@@ -140,8 +140,8 @@ class Jexler implements Service, IssueTracker {
         // prepare for compile
         WorkaroundGroovy7407.wrapGrapeEngineIfConfigured(this)
         final CompilerConfiguration config = new CompilerConfiguration()
+        final ImportCustomizer importCustomizer = new ImportCustomizer()
         if (metaInfo.autoimport == null || metaInfo.autoimport) {
-            final ImportCustomizer importCustomizer = new ImportCustomizer()
             importCustomizer.addStarImports(
                     'net.jexler', 'net.jexler.service', 'net.jexler.tool')
             config.addCompilationCustomizers(importCustomizer)
@@ -149,7 +149,7 @@ class Jexler implements Service, IssueTracker {
         final GroovyClassLoader loader = new GroovyClassLoader(Thread.currentThread().contextClassLoader, config)
         loader.addClasspath(file.parent)
 
-        // provide access to binding in other classes via Jex.vars
+        // define script binding
         final Jexler jexler = this
         final Binding binding = new Binding([
                 'jexler' : jexler,
@@ -158,8 +158,18 @@ class Jexler implements Service, IssueTracker {
                 'services' : services,
                 'log' : log,
         ])
-        final Class jexClazz = loader.parseClass('public class Jex { public static Map vars }')
-        jexClazz.getDeclaredField('vars').set(null, binding.variables)
+
+        // provide access to binding variables in other classes as 'jexlerBinding'
+        final Class jexlerBindingClazz = loader.parseClass("""\
+          package net.jexler
+          @groovy.transform.CompileStatic
+          class JexlerBinding { 
+            public static Map<String,Object> jexlerBinding
+          }""".stripIndent())
+        jexlerBindingClazz.getDeclaredField('jexlerBinding').set(null, binding.variables)
+        if (metaInfo.autoimport == null || metaInfo.autoimport) {
+            importCustomizer.addStaticImport('net.jexler.JexlerBinding', 'jexlerBinding')
+        }
 
         // compile
         final Class clazz

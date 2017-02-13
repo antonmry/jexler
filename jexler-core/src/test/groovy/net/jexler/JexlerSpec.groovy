@@ -372,6 +372,7 @@ class JexlerSpec extends Specification {
               }
             }
             """.stripIndent()
+
         when:
         def jexler = new Jexler(file, new JexlerContainer(dir))
         jexler.start()
@@ -397,7 +398,56 @@ class JexlerSpec extends Specification {
         mockService.nEventsSent == 0
         mockService.nEventsGotBack == 0
         mockService.nStopped == 1
+    }
 
+    def 'TEST access to jexlerBinding in other classes and jexler itself'() {
+
+        given:
+        def dir = tempFolder.root
+        def file = new File(dir, 'Test.groovy')
+        file.text = """\
+            [ 'autostart' : false, 'foo' : 'bar' ]
+            def mockService = new MockService(jexlerBinding.jexler, 'mock-service')
+            services.add(mockService)
+            services.start()
+            while (true) {
+              event = events.take()
+              if (event instanceof MockEvent) {
+                mockService.notifyGotEvent()
+                Util.writeId()
+              } else if (event instanceof StopEvent) {
+                return
+              }
+            }
+            """.stripIndent()
+        def fileUtil = new File(dir, 'Util.groovy')
+        fileUtil.text = """\
+            class Util {
+              static def id = jexlerBinding.jexler.id
+              static def writeId() {
+                new File(jexlerBinding.jexler.dir, 'out').setText(id)
+              }
+            }
+            """.stripIndent()
+
+        when:
+        def jexler = new Jexler(file, new JexlerContainer(dir))
+        jexler.start()
+        JexlerUtil.waitForStartup(jexler, MS_10_SEC)
+        def mockService = MockService.getInstance('mock-service')
+        mockService.notifyJexler()
+        jexler.stop()
+        JexlerUtil.waitForShutdown(jexler, MS_10_SEC)
+
+        then:
+        jexler.state == ServiceState.OFF
+        jexler.state.off
+        jexler.issues.size() == 0
+        mockService.nStarted == 1
+        mockService.nEventsSent == 1
+        mockService.nEventsGotBack == 1
+        mockService.nStopped == 1
+        new File(dir, 'out').text == 'Test'
     }
 
     def 'TEST meta info: no file'() {
