@@ -179,7 +179,7 @@ class JexlerContainerView {
 
     // Get restart link with icon for table of jexlers
     String getRestart() {
-        final String title = jexlerId == null ? 'stop all, then start all' : 'restart'
+        final String title = jexlerId == null ? 'stop all, then start all with autostart set' : 'restart'
         return "<a href='?cmd=restart$jexlerParam' title='$title'><img src='restart.gif'></a>"
     }
 
