@@ -1,4 +1,4 @@
-image:http://www.jexler.net/jexler.jpg["jexler logo", link="http:www.jexler.net/"]
+image:https://www.jexler.net/jexler.jpg["jexler logo", link="https://www.jexler.net/"]
 
 == jexler
 
@@ -242,7 +242,7 @@ log.trace(cronEvent.cron)
     
 (Note that `cronEvent.cron` is a Groovy shortcut for `cronEvent.getCron()`.)
 
-Implemented using the Open Source http://quartz-scheduler.org[Quartz] library.
+Implemented using the Open Source https://www.quartz-scheduler.org[Quartz] library.
 
 By default, a Quartz `Scheduler` instance that is shared between all jexlers
 is used (because each scheduler creates a new thread). Alternatively, the scheduler
@@ -483,7 +483,7 @@ there are no issues and a red button can be clicked to view the issue(s).
 *Issues* are what jexler usually creates when something exceptionally happens that might
 require intervention by an administrator to get things running smoothly again.
 
-Jexler uses http://logback.qos.ch[logback] for logging, by default
+Jexler uses https://logback.qos.ch[logback] for logging, by default
 (see WEB-INF/classes/logback.xml) the jexler webapp logs to `${catalina.base}/logs/jexler.log`
 (with daily log rotation). If you change that location, the GUI should still automatically
 find the log file, unless you do something more fancy, like splitting up logging into several files.
@@ -723,10 +723,10 @@ There are two boolean settings that jexler uses by default:
 
 === Distribution
 
-* The jexler-core JAR is at http://search.maven.org/#search%7Cga%7C1%7Cjexler-core[Maven Central]
+* The jexler-core JAR is at https://search.maven.org/#search%7Cga%7C1%7Cjexler-core[Maven Central]
 * The jexler webapp is at https://sourceforge.net/projects/jexler/[Sourceforge] (see "Files" tab)
-* The website http://www.jexler.net/[www.jexler.net] hosts http://www.jexler.net/groovydoc/[Groovydoc],
-  http://www.jexler.net/jacoco/[JaCoCo] and this http://www.jexler.net/guide/[guide]
+* The website https://www.jexler.net/[www.jexler.net] hosts https://www.jexler.net/groovydoc/[Groovydoc],
+  https://www.jexler.net/jacoco/[JaCoCo] and this https://www.jexler.net/guide/[guide]
 
 == Use Cases
 
@@ -746,9 +746,9 @@ an Open Source HTTP test tool written in C by Christian Liesch
 * "httest is a script based tool for testing and benchmarking web applications,
 web servers, proxy servers and web browsers. httest can emulate clients and servers
 in the same test script, very useful for testing proxys."
-* Project: http://htt.sourceforge.net/
-* Sourceforge: http://sourceforge.net/projects/htt/
-* Binaries (by me): http://www.jexler.net/htt/
+* Project: https://htt.sourceforge.net/
+* Sourceforge: https://sourceforge.net/projects/htt/
+* Binaries (by me): https://www.jexler.net/htt/
 
 Release builds were triggered automatically by polling sourceforge for a new httest
 source release. After checking out the source and building the binaries, the binaries
@@ -795,7 +795,7 @@ things may flow freely around it, but jexler itself is unlikely
 to change much.
 
 Copyright &copy; 2012-now $(whois jexler.net) +
-http://www.jexler.net/
+https://www.jexler.net/
 
 Note also that the jexler logo with the bat is my own creation (*2010).
 
@@ -805,7 +805,7 @@ Licensed under the Apache License, Version 2.0 (the "License"); +
 you may not use this file except in compliance with the License. +
 You may obtain a copy of the License at +
 
-http://www.apache.org/licenses/LICENSE-2.0 +
+https://www.apache.org/licenses/LICENSE-2.0 +
 
 Unless required by applicable law or agreed to in writing, software +
 distributed under the License is distributed on an "AS IS" BASIS, +

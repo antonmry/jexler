@@ -105,12 +105,12 @@ subprojects {
         project {
           name 'jexler'
           description project.description
-          url 'http://www.jexler.net/'
+          url 'https://www.jexler.net/'
           packaging project.ext.pkg
           licenses {
             license {
               name 'The Apache Software License, Version 2.0'
-              url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+              url 'https://www.apache.org/licenses/LICENSE-2.0'
               distribution 'repo'
             }
           }

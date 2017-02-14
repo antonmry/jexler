@@ -1,4 +1,4 @@
-image:http://www.jexler.net/jexler.jpg["jexler logo", link="http:www.jexler.net/"]
+image:https://www.jexler.net/jexler.jpg["jexler logo", link="https://www.jexler.net/"]
 
 = jexler releases
 
