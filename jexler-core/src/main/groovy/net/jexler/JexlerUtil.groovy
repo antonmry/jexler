@@ -31,8 +31,8 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class JexlerUtil {
 
-    private static final String STARTUP_TIMEOUT_MSG = 'Timeout waiting for jexler startup.'
-    private static final String SHUTDOWN_TIMEOUT_MSG = 'Timeout waiting for jexler shutdown.'
+    public static final String STARTUP_TIMEOUT_MSG = 'Timeout waiting for jexler startup.'
+    public static final String SHUTDOWN_TIMEOUT_MSG = 'Timeout waiting for jexler shutdown.'
 
     /**
      * Wait for jexler startup and report issue if did not start in time.
@@ -70,7 +70,7 @@ class JexlerUtil {
         }
         for (Jexler jexler : container.jexlers) {
             if (jexler.state == ServiceState.BUSY_STARTING) {
-                container.trackIssue(jexler, STARTUP_TIMEOUT_MSG, null)
+                jexler.trackIssue(jexler, STARTUP_TIMEOUT_MSG, null)
             }
         }
         return false
@@ -87,7 +87,7 @@ class JexlerUtil {
         }
         for (Jexler jexler : container.jexlers) {
             if (jexler.state != ServiceState.OFF) {
-                container.trackIssue(jexler, SHUTDOWN_TIMEOUT_MSG, null)
+                jexler.trackIssue(jexler, SHUTDOWN_TIMEOUT_MSG, null)
             }
         }
         return false

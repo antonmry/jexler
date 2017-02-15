@@ -80,6 +80,10 @@ class JexlerContainerSlowSpec extends Specification {
         jexler1.state.off
         jexler2.state.off
         jexler3.state.off
+        container.issues.empty
+        jexler1.issues.empty
+        jexler2.issues.empty
+        jexler3.issues.empty
 
         when:
         container.start()
@@ -90,13 +94,18 @@ class JexlerContainerSlowSpec extends Specification {
         jexler1.state == ServiceState.BUSY_STARTING
         jexler2.state == ServiceState.IDLE
         jexler3.state == ServiceState.BUSY_STARTING
-        container.issues.size() == 2
-        container.issues.each { issue ->
-            assert issue.message == 'Timeout waiting for jexler startup.'
-        }
+        container.issues.empty
+        jexler1.issues.size() == 1
+        jexler1.issues.first().message == JexlerUtil.STARTUP_TIMEOUT_MSG
+        jexler2.issues.empty
+        jexler3.issues.size() == 1
+        jexler3.issues.first().message == JexlerUtil.STARTUP_TIMEOUT_MSG
 
         when:
         container.forgetIssues()
+        jexler1.forgetIssues()
+        jexler2.forgetIssues()
+        jexler3.forgetIssues()
         JexlerUtil.waitForStartup(container, MS_6_SEC)
 
         then:
@@ -105,6 +114,9 @@ class JexlerContainerSlowSpec extends Specification {
         jexler2.state == ServiceState.IDLE
         jexler3.state == ServiceState.IDLE
         container.issues.empty
+        jexler1.issues.empty
+        jexler2.issues.empty
+        jexler3.issues.empty
 
         when:
         container.stop()
@@ -115,13 +127,18 @@ class JexlerContainerSlowSpec extends Specification {
         jexler1.state == ServiceState.BUSY_STOPPING
         jexler2.state == ServiceState.OFF
         jexler3.state == ServiceState.BUSY_STOPPING
-        container.issues.size() == 2
-        container.issues.each { issue ->
-            assert issue.message == 'Timeout waiting for jexler shutdown.'
-        }
+        container.issues.empty
+        jexler1.issues.size() == 1
+        jexler1.issues.first().message == JexlerUtil.SHUTDOWN_TIMEOUT_MSG
+        jexler2.issues.empty
+        jexler3.issues.size() == 1
+        jexler3.issues.first().message == JexlerUtil.SHUTDOWN_TIMEOUT_MSG
 
         when:
         container.forgetIssues()
+        jexler1.forgetIssues()
+        jexler2.forgetIssues()
+        jexler3.forgetIssues()
         JexlerUtil.waitForShutdown(container, MS_6_SEC)
 
         then:
@@ -130,6 +147,9 @@ class JexlerContainerSlowSpec extends Specification {
         jexler2.state == ServiceState.OFF
         jexler3.state == ServiceState.OFF
         container.issues.empty
-    }
+        jexler1.issues.empty
+        jexler2.issues.empty
+        jexler3.issues.empty
+   }
 
 }
