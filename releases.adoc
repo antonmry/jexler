@@ -2,7 +2,7 @@ image:https://www.jexler.net/jexler.jpg["jexler logo", link="https://www.jexler.
 
 = jexler releases
 
-=== 2.1.4-SNAPSHOT (20XX-XX-XX)
+=== 2.1.4 (2017-02-15)
 
 * When waiting for container timeout, report issues in jexlers
   that failed to start or stop, no longer in the container.
