@@ -2,6 +2,10 @@ image:https://www.jexler.net/jexler.jpg["jexler logo", link="https://www.jexler.
 
 = jexler releases
 
+=== 2.1.4-SNAPSHOT (20XX-XX-XX)
+
+* ...
+
 === 2.1.3 (2017-02-15)
 
 * New methods `events.isNextStop()` and `events.hasStop()`
