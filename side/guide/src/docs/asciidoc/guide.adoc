@@ -1,4 +1,4 @@
-image:https://www.jexler.net/jexler.jpg["jexler logo", link="https://www.jexler.net/"]
+image:https://www.jexler.net/jexler.jpg["Jexler", link="https://www.jexler.net/"]
 
 == jexler
 
