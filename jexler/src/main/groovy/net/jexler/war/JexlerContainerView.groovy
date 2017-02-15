@@ -23,6 +23,8 @@ import net.jexler.JexlerUtil
 import net.jexler.service.Service
 
 import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 import javax.activation.MimetypesFileTypeMap
 import javax.servlet.http.HttpServletRequest
@@ -37,6 +39,13 @@ import java.text.SimpleDateFormat
  */
 @CompileStatic
 class JexlerContainerView {
+
+    private static final Logger log = LoggerFactory.getLogger(Jexler.class)
+
+    private static final String CONTAINER = '*container*'
+
+    // Markers for when processing jexler/container stop/start/restart
+    private static Set<String> processing = Collections.synchronizedSet([] as Set)
 
     // JSP/HTTP
     private PageContext pageContext
@@ -162,25 +171,31 @@ class JexlerContainerView {
     // Get start link with icon for table of jexlers
     String getStart() {
         final String title = jexlerId == null ? 'start all with autostart set' : 'start'
-        return "<a href='?cmd=start$jexlerParam' title='$title'><img src='start.gif'></a>"
+        final boolean dim = isProcessing(jexlerId)
+        final String img = "<img src='start${dim?'-dim':''}.gif'>"
+        return dim ? img : "<a href='?cmd=start$jexlerParam' title='$title'>$img</a>"
     }
 
     // Get stop link with icon for table of jexlers
     String getStop() {
         final String title = jexlerId == null ? 'stop all' : 'stop'
-        return "<a href='?cmd=stop$jexlerParam' title='$title'><img src='stop.gif'></a>"
+        final boolean dim = isProcessing(jexlerId)
+        final String img = "<img src='stop${dim?'-dim':''}.gif'>"
+        return dim ? img : "<a href='?cmd=stop$jexlerParam' title='$title'>$img</a>"
+     }
+
+    // Get restart link with icon for table of jexlers
+    String getRestart() {
+        final String title = jexlerId == null ? 'stop all, then start all with autostart set' : 'restart'
+        final boolean dim = isProcessing(jexlerId)
+        final String img = "<img src='restart${dim?'-dim':''}.gif'>"
+        return dim ? img : "<a href='?cmd=restart$jexlerParam' title='$title'>$img</a>"
     }
 
     // Get zap link with icon for table of jexlers
     String getZap() {
         final String title = jexlerId == null ? 'zap all' : 'zap'
         return "<a href='?cmd=zap$jexlerParam' title='$title'><img src='zap.gif'></a>"
-    }
-
-    // Get restart link with icon for table of jexlers
-    String getRestart() {
-        final String title = jexlerId == null ? 'stop all, then start all with autostart set' : 'restart'
-        return "<a href='?cmd=restart$jexlerParam' title='$title'><img src='restart.gif'></a>"
     }
 
     // Get link to jexler for table of jexlers
@@ -217,6 +232,9 @@ class JexlerContainerView {
 
     // Get link and icon for logfile and/or issues
     String getLog() {
+         if (isProcessing(jexlerId)) {
+             return "<img src='wheel.gif'>"
+         }
          if (jexlerId == null) {
             if (container.issues.size() == 0) {
                 return "<a href='?cmd=log$jexlerParam' title='show log'><img src='log.gif'></a>"
@@ -359,11 +377,19 @@ class JexlerContainerView {
     private void handleStart() {
         final long startTimeout = JexlerContextListener.startTimeout
         if (targetJexlerId == null) {
+            processing.add(CONTAINER)
             container.start()
-            runInNewThread { JexlerUtil.waitForStartup(container, startTimeout) }
+            runInNewThread {
+                JexlerUtil.waitForStartup(container, startTimeout)
+                processing.remove(CONTAINER)
+            }
         } else if (targetJexler != null) {
+            processing.add(targetJexlerId)
             targetJexler.start()
-            runInNewThread { JexlerUtil.waitForStartup(targetJexler, startTimeout) }
+            runInNewThread {
+                JexlerUtil.waitForStartup(targetJexler, startTimeout)
+                processing.remove(targetJexlerId)
+            }
         }
     }
 
@@ -371,11 +397,19 @@ class JexlerContainerView {
     private void handleStop() {
         final long stopTimeout = JexlerContextListener.stopTimeout
         if (targetJexlerId == null) {
+            processing.add(CONTAINER)
             container.stop()
-            runInNewThread { JexlerUtil.waitForShutdown(container, stopTimeout) }
+            runInNewThread {
+                JexlerUtil.waitForShutdown(container, stopTimeout)
+                processing.remove(CONTAINER)
+            }
         } else if (targetJexler != null) {
+            processing.add(targetJexlerId)
             targetJexler.stop()
-            runInNewThread { JexlerUtil.waitForShutdown(targetJexler, stopTimeout) }
+            runInNewThread {
+                JexlerUtil.waitForShutdown(targetJexler, stopTimeout)
+                processing.remove(targetJexlerId)
+            }
         }
     }
 
@@ -384,16 +418,28 @@ class JexlerContainerView {
         final long startTimeout = JexlerContextListener.startTimeout
         final long stopTimeout = JexlerContextListener.stopTimeout
         if (targetJexlerId == null) {
+            processing.add(CONTAINER)
             container.stop()
             if (JexlerUtil.waitForShutdown(container, startTimeout)) {
                 container.start()
-                runInNewThread { JexlerUtil.waitForStartup(container, startTimeout) }
+                runInNewThread {
+                    JexlerUtil.waitForStartup(container, startTimeout)
+                    processing.remove(CONTAINER)
+                }
+            } else {
+                processing.remove(CONTAINER)
             }
         } else if (targetJexler != null) {
+            processing.add(targetJexlerId)
             targetJexler.stop()
             if (JexlerUtil.waitForShutdown(targetJexler, stopTimeout)) {
                 targetJexler.start()
-                runInNewThread { JexlerUtil.waitForStartup(targetJexler, startTimeout) }
+                runInNewThread {
+                    JexlerUtil.waitForStartup(targetJexler, startTimeout)
+                    processing.remove(targetJexlerId)
+                }
+            } else {
+                processing.remove(targetJexlerId)
             }
         }
     }
@@ -585,6 +631,11 @@ class JexlerContainerView {
                 closure.call()
             }
         }.start()
+    }
+
+    // whether is processing given jexler or container
+    private static boolean isProcessing(String jexlerId) {
+        return processing.contains(CONTAINER) || jexlerId != null && processing.contains(jexlerId)
     }
 
 }
