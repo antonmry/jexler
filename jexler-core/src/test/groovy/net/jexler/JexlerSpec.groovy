@@ -16,8 +16,11 @@
 
 package net.jexler
 
+import net.jexler.service.MockEvent
 import net.jexler.service.MockService
+import net.jexler.service.ServiceBase
 import net.jexler.service.ServiceState
+import net.jexler.service.StopEvent
 import net.jexler.test.FastTests
 
 import org.codehaus.groovy.control.CompilationFailedException
@@ -310,6 +313,51 @@ class JexlerSpec extends Specification {
         // called a second time because stopping thread throws
         mockService.nStopped == 2
         mockService.nZapped == 1
+    }
+
+    def 'TEST detect stop events in queue'() {
+        given:
+        def events = new Jexler.Events()
+        def service = new ServiceBase('testid') {
+            void start() {}
+            void stop() {}
+            void zap() {}
+        }
+        when:
+        // empty queue, need a dummy statement
+        events.size()
+
+        then:
+        !events.nextIsStop()
+        !events.hasStop()
+
+        when:
+        events.put(new MockEvent(service))
+
+        then:
+        !events.nextIsStop()
+        !events.hasStop()
+
+        when:
+        events.put(new StopEvent(service))
+
+        then:
+        !events.nextIsStop()
+        events.hasStop()
+
+        when:
+        events.poll()
+
+        then:
+        events.nextIsStop()
+        events.hasStop()
+
+        when:
+        events.poll()
+
+        then:
+        !events.nextIsStop()
+        !events.hasStop()
     }
 
     def 'TEST track issue'() {

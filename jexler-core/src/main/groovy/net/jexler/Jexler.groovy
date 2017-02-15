@@ -72,6 +72,28 @@ class Jexler implements Service, IssueTracker {
                 }
             }
         }
+
+        /**
+         * Return true if there is a next event in the queue
+         * and it is a stop event.
+         */
+        boolean nextIsStop() {
+            return peek() instanceof StopEvent
+        }
+
+        /**
+         * Return true if the event queue contains a stop event.
+         */
+        boolean hasStop() {
+            Object[] events = toArray()
+            for (Object event : events) {
+                if (event instanceof StopEvent) {
+                    return true
+                }
+            }
+            return false
+        }
+
     }
 
     private final File file

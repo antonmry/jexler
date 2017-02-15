@@ -8,6 +8,9 @@ while (true) {
   if (event instanceof CronEvent) {
     // hangs forever resp. until eventually zapped
     while (true) {
+    // these would stop...
+    //while (!events.nextIsStop()) {
+    //while (!events.hasStop()) {
       try {
         Thread.sleep(1000)
       } catch (InterruptedException ignore) {

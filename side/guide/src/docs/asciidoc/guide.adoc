@@ -515,6 +515,13 @@ means to stop the jexler thread with `Thread#stop()` and to stop all of its serv
 Note that if the jexler script started more threads those won't be stopped and stopping
 a thread can also have other side effects, in fact it is generally considered unsafe.
 
+If you need jexlers to react to stop events between polling events, it is better
+to do this programmatically, using `events.nextIsStop()` (equivalent to
+`events.peek() instanceof StopEvent`) to tell if the next event is a stop event
+and `events.hasStop()` to tell if there are any stop events in the event queue.
+Zapping should usually only be used as a last resort before restarting the
+containing Java VM.
+
 === Edit jexler Scripts
 
 image:jexler-gui-edit.jpg[web gui edit scripts]
