@@ -510,7 +510,7 @@ for which this feature has not been supported in the jexler web GUI.
 Hover over the jexler logo to see the jexler release version.
 
 If a jexler becomes unresponsive, i.e. does not respond to stopping within the timeout,
-the stop icon changes to a flash icon in the GUI. This allows to "zap" the jexler, which
+the restart icon changes to a flash icon in the GUI. This allows to "zap" the jexler, which
 means to stop the jexler thread with `Thread#stop()` and to stop all of its services.
 Note that if the jexler script started more threads those won't be stopped and stopping
 a thread can also have other side effects, in fact it is generally considered unsafe.
