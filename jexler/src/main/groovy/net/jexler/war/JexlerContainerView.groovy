@@ -144,58 +144,55 @@ class JexlerContainerView {
         return JexlerContextListener.jexlerTooltip
     }
 
-    // Get start/stop/zap link with icon for table of jexlers
-    String getStartStopZap() {
+    // Get start/stop link with icon for table of jexlers
+    String getStartStop() {
         boolean on
-        boolean zap = false
         if (jexlerId == null) {
             on = container.state.on
         } else {
             on = jexler.state.on
-            if (on) {
-                for (Issue issue : jexler.issues) {
-                    if (issue.getMessage() == 'Timeout waiting for jexler shutdown.') {
-                        zap = true
-                        break
-                    }
+        }
+        return on ? getStop() : getStart()
+    }
+
+    // Get restart/zap link with icon for table of jexlers
+    String getRestartZap() {
+        if (jexlerId != null && jexler.state.on) {
+            for (Issue issue : jexler.issues) {
+                if (issue.getMessage() == JexlerUtil.SHUTDOWN_TIMEOUT_MSG) {
+                    return getZap()
                 }
             }
         }
-        if (on) {
-            return zap ? getZap() : getStop()
-        } else {
-            return getStart()
-        }
+        return getRestart()
     }
 
     // Get start link with icon for table of jexlers
     String getStart() {
         final String title = jexlerId == null ? 'start all with autostart set' : 'start'
-        final boolean dim = isProcessing(jexlerId)
-        final String img = "<img src='start${dim?'-dim':''}.gif'>"
-        return dim ? img : "<a href='?cmd=start$jexlerParam' title='$title'>$img</a>"
+        final String img = "<img src='start.gif'>"
+        return isProcessing(jexlerId) ? img : "<a href='?cmd=start$jexlerParam' title='$title'>$img</a>"
     }
 
     // Get stop link with icon for table of jexlers
     String getStop() {
         final String title = jexlerId == null ? 'stop all' : 'stop'
-        final boolean dim = isProcessing(jexlerId)
-        final String img = "<img src='stop${dim?'-dim':''}.gif'>"
-        return dim ? img : "<a href='?cmd=stop$jexlerParam' title='$title'>$img</a>"
+        final String img = "<img src='stop.gif'>"
+        return isProcessing(jexlerId) ? img : "<a href='?cmd=stop$jexlerParam' title='$title'>$img</a>"
      }
 
     // Get restart link with icon for table of jexlers
     String getRestart() {
         final String title = jexlerId == null ? 'stop all, then start all with autostart set' : 'restart'
-        final boolean dim = isProcessing(jexlerId)
-        final String img = "<img src='restart${dim?'-dim':''}.gif'>"
-        return dim ? img : "<a href='?cmd=restart$jexlerParam' title='$title'>$img</a>"
+        final String img = "<img src='restart.gif'>"
+        return isProcessing(jexlerId) ? img : "<a href='?cmd=restart$jexlerParam' title='$title'>$img</a>"
     }
 
     // Get zap link with icon for table of jexlers
     String getZap() {
-        final String title = jexlerId == null ? 'zap all' : 'zap'
-        return "<a href='?cmd=zap$jexlerParam' title='$title'><img src='zap.gif'></a>"
+        final String title = jexlerId == null ? 'zap all (unsafe)' : 'zap (unsafe)'
+        final String img = "<img src='zap.gif'>"
+        return isProcessing(jexlerId) ? img : "<a href='?cmd=zap$jexlerParam' title='$title'>$img</a>"
     }
 
     // Get link to jexler for table of jexlers
@@ -232,23 +229,23 @@ class JexlerContainerView {
 
     // Get link and icon for logfile and/or issues
     String getLog() {
-         if (isProcessing(jexlerId)) {
-             return "<img src='wheel.gif'>"
-         }
-         if (jexlerId == null) {
+        if (jexlerId == null) {
             if (container.issues.size() == 0) {
                 return "<a href='?cmd=log$jexlerParam' title='show log'><img src='log.gif'></a>"
             } else {
                 return "<a href='?cmd=log$jexlerParam' title='show log'><img src='error.gif'></a>"
             }
         } else {
-            if (jexler.issues.size() == 0) {
-                return "<img src='ok.gif' title='no issues'>"
-            } else {
-                String title = "show issues (${jexler.issues.size()})"
-                return "<a href='?cmd=log$jexlerParam' title='$title'><img src='error.gif'></a>"
+            final String title = jexler.issues.empty ? 'no issues' : "show issues (${jexler.issues.size()})"
+            String imgPart = jexler.issues.empty ? "img src='ok.gif'" : "img src='error.gif'"
+            if (isProcessing(jexlerId)) {
+                imgPart = "img src='wheel.gif' class='wheel'"
             }
-
+            if (jexler.issues.size() == 0) {
+                return "<$imgPart title='$title'>"
+            } else {
+                return "<a href='?cmd=log$jexlerParam' title='$title'><$imgPart></a>"
+            }
         }
     }
 
@@ -375,81 +372,51 @@ class JexlerContainerView {
 
     // Start jexler or container
     private void handleStart() {
-        final long startTimeout = JexlerContextListener.startTimeout
         if (targetJexlerId == null) {
-            processing.add(CONTAINER)
-            container.start()
-            runInNewThread {
-                JexlerUtil.waitForStartup(container, startTimeout)
-                processing.remove(CONTAINER)
+            for (Jexler jexler : container.jexlers) {
+                if (jexler.metaInfo.autostart) {
+                    handleStart(jexler)
+                }
             }
-        } else if (targetJexler != null) {
-            processing.add(targetJexlerId)
-            targetJexler.start()
-            runInNewThread {
-                JexlerUtil.waitForStartup(targetJexler, startTimeout)
-                processing.remove(targetJexlerId)
-            }
+        } else {
+            handleStart(targetJexler)
         }
     }
 
     // Stop jexler or container
     private void handleStop() {
-        final long stopTimeout = JexlerContextListener.stopTimeout
         if (targetJexlerId == null) {
-            processing.add(CONTAINER)
-            container.stop()
-            runInNewThread {
-                JexlerUtil.waitForShutdown(container, stopTimeout)
-                processing.remove(CONTAINER)
+            for (Jexler jexler : container.jexlers) {
+                if (jexler.state.on) {
+                    handleStop(jexler)
+                }
             }
-        } else if (targetJexler != null) {
-            processing.add(targetJexlerId)
-            targetJexler.stop()
-            runInNewThread {
-                JexlerUtil.waitForShutdown(targetJexler, stopTimeout)
-                processing.remove(targetJexlerId)
-            }
+        } else {
+            handleStop(targetJexler)
         }
     }
 
     // Restart jexler or container
     private void handleRestart() {
-        final long startTimeout = JexlerContextListener.startTimeout
-        final long stopTimeout = JexlerContextListener.stopTimeout
         if (targetJexlerId == null) {
-            processing.add(CONTAINER)
-            container.stop()
-            if (JexlerUtil.waitForShutdown(container, startTimeout)) {
-                container.start()
-                runInNewThread {
-                    JexlerUtil.waitForStartup(container, startTimeout)
-                    processing.remove(CONTAINER)
-                }
-            } else {
-                processing.remove(CONTAINER)
+            for (Jexler jexler : container.jexlers) {
+                handleRestart(jexler)
             }
-        } else if (targetJexler != null) {
-            processing.add(targetJexlerId)
-            targetJexler.stop()
-            if (JexlerUtil.waitForShutdown(targetJexler, stopTimeout)) {
-                targetJexler.start()
-                runInNewThread {
-                    JexlerUtil.waitForStartup(targetJexler, startTimeout)
-                    processing.remove(targetJexlerId)
-                }
-            } else {
-                processing.remove(targetJexlerId)
-            }
+        } else {
+            handleRestart(targetJexler)
         }
     }
 
     // Zap jexler or container
     private void handleZap() {
         if (targetJexlerId == null) {
-            container.zap()
-        } else if (targetJexler != null) {
-            targetJexler.zap()
+            for (Jexler jexler : container.jexlers) {
+                if (jexler.state.on) {
+                    handleZap(jexler)
+                }
+            }
+        } else {
+            handleZap(targetJexler)
         }
     }
 
@@ -633,9 +600,64 @@ class JexlerContainerView {
         }.start()
     }
 
-    // whether is processing given jexler or container
+    // Whether is processing given jexler / container
     private static boolean isProcessing(String jexlerId) {
-        return processing.contains(CONTAINER) || jexlerId != null && processing.contains(jexlerId)
+        if (jexlerId == null) {
+            // always allow to stop/start all, must be robust
+            return false
+        } else {
+            return processing.contains(jexlerId)
+        }
+    }
+
+    // Start given jexler
+    private void handleStart(Jexler jexler) {
+        if (processing.contains(jexler.id)) {
+            return
+        }
+        processing.add(jexler.id)
+        jexler.start()
+        runInNewThread {
+            JexlerUtil.waitForStartup(jexler, JexlerContextListener.startTimeout)
+            processing.remove(jexler.id)
+        }
+    }
+
+    // Stop given jexler
+    private void handleStop(Jexler jexler) {
+        if (processing.contains(jexler.id)) {
+            return
+        }
+        processing.add(jexler.id)
+        jexler.stop()
+        runInNewThread {
+            JexlerUtil.waitForShutdown(jexler, JexlerContextListener.stopTimeout)
+            processing.remove(jexler.id)
+        }
+    }
+
+    // Restart given jexler
+    private void handleRestart(Jexler jexler) {
+        if (processing.contains(jexler.id)) {
+            return
+        }
+        processing.add(jexler.id)
+        jexler.stop()
+        runInNewThread {
+            if (JexlerUtil.waitForShutdown(jexler, JexlerContextListener.stopTimeout)) {
+                processing.remove(jexler.id)
+                handleStart(jexler)
+            } else {
+                processing.remove(jexler.id)
+            }
+        }
+    }
+
+    // Zap given jexler
+    private void handleZap(Jexler jexler) {
+        processing.add(jexler.id)
+        jexler.zap()
+        processing.remove(jexler.id)
     }
 
 }

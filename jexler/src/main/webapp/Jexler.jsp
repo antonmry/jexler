@@ -95,8 +95,8 @@ limitations under the License.
 <table class="status" id="status">
 
 <tr class="status">
-<td class="status">${container.startStopZap}</td>
-<td class="status">${container.restart}</td>
+<td class="status">${container.startStop}</td>
+<td class="status">${container.restartZap}</td>
 <td class="status">${container.log}</td>
 <td class="status status-name"><strong>Scripts</strong></td>
 <td class="status">${container.web}</td>
@@ -104,8 +104,8 @@ limitations under the License.
 
 <c:forEach items="${container.jexlers}" var="loopJexler">
   <tr class="status">
-  <td class="status">${loopJexler.value.startStopZap}</td>
-  <td class="status">${loopJexler.value.restart}</td>
+  <td class="status">${loopJexler.value.startStop}</td>
+  <td class="status">${loopJexler.value.restartZap}</td>
   <td class="status">${loopJexler.value.log}</td>
   <td class="status status-name">${loopJexler.value.jexlerIdLink}</td>
   <td class="status">${loopJexler.value.web}</td>
