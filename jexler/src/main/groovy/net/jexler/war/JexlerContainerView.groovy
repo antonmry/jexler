@@ -42,9 +42,7 @@ class JexlerContainerView {
 
     private static final Logger log = LoggerFactory.getLogger(Jexler.class)
 
-    private static final String CONTAINER = '*container*'
-
-    // Markers for when processing jexler/container stop/start/restart
+    // Markers for when processing jexler stop/start/restart
     private static Set<String> processing = Collections.synchronizedSet([] as Set)
 
     // JSP/HTTP
