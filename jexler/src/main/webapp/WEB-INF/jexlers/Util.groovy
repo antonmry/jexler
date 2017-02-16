@@ -14,5 +14,4 @@ class Util {
     log.trace("Method called for jexler '${jexlerBinding.jexler.id}'")
   }
 
-
 }

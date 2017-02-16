@@ -13,7 +13,7 @@ void start() {}
 void handleHttp(def p) {
   log.trace('-- handleHttp')
 
-  if (p.request.parameters.throw != null) {
+  if (p.request.getParameter('throw') != null) {
     throw new RuntimeException("*** Failed intentionally - due to request parameter 'throw' ***")
   }
 
