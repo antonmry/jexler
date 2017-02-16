@@ -2,6 +2,10 @@ image:https://www.jexler.net/jexler.jpg["jexler logo", link="https://www.jexler.
 
 = jexler releases
 
+=== 2.1.6-SNAPSHOT (20XX-XX-XX)
+
+* ...
+
 === 2.1.5 (2017-02-16)
 
 * GUI start/stop/restart/zap to perfection.
