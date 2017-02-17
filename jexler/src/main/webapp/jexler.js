@@ -150,13 +150,14 @@ function setHeight() {
 }
 
 function preloadDim() {
-    new Image().src = "ok-dim.gif";
     new Image().src = "error-dim.gif";
     new Image().src = "log-dim.gif";
+    new Image().src = "ok-dim.gif";
+    new Image().src = "restart-dim.gif";
+    new Image().src = "space-dim.gif";
     new Image().src = "start-dim.gif";
     new Image().src = "stop-dim.gif";
-    new Image().src = "restart-dim.gif";
-    new Image().src = "zap-dim.gif";
     new Image().src = "web-dim.gif";
-    new Image().src = "space-dim.gif";
+    new Image().src = "wheel-dim.gif";
+    new Image().src = "zap-dim.gif";
 }
