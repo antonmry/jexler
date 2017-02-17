@@ -206,7 +206,7 @@ class JexlerContainerView {
     // Get web link and icon for table of jexlers
     String getWeb() {
         if (jexlerId == null) {
-            return "<a href='https://www.jexler.net/' title='homepage with user guide etc.'><img src='info.gif'></a>"
+            return "<a href='https://www.jexler.net/' title='web'><img src='space.gif'></a>"
         }
         Script script = jexler.script
         if (script != null && jexler.state.operational) {
