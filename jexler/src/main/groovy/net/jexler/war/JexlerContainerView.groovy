@@ -205,24 +205,20 @@ class JexlerContainerView {
 
     // Get web link and icon for table of jexlers
     String getWeb() {
-        boolean available = false
-        if (jexlerId != null) {
-            Script script = jexler.script
-            if (script != null && jexler.state.operational) {
-                MetaClass mc = script.metaClass
-                Object[] args = [ PageContext.class ]
-                MetaMethod mm = mc.getMetaMethod('handleHttp', args)
-                if (mm != null) {
-                    available = true
-                }
-
+        if (jexlerId == null) {
+            return "<a href='https://www.jexler.net/' title='homepage with user guide etc.'><img src='info.gif'></a>"
+        }
+        Script script = jexler.script
+        if (script != null && jexler.state.operational) {
+            MetaClass mc = script.metaClass
+            Object[] args = [PageContext.class]
+            MetaMethod mm = mc.getMetaMethod('handleHttp', args)
+            if (mm != null) {
+                return "<a href='?cmd=http$jexlerParam' title='web'><img src='web.gif'></a>"
             }
+
         }
-        if (available) {
-            return "<a href='?cmd=http$jexlerParam' title='web'><img src='web.gif'></a>"
-        } else {
-            return "<img src='space.gif'>"
-        }
+        return "<img src='space.gif'>"
     }
 
     // Get link and icon for logfile and/or issues

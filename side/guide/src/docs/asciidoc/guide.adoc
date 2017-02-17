@@ -183,7 +183,7 @@ HTTP requests sent to the jexler webapp with request parameters `cmd=http&jexler
 are passed to a method `handleHttp(PageContext p)`
 of the corresponding jexler, if found and the jexler is operational.
 The method parameter is a `javax.servlet.jsp.PageContext`, i.e. you can use
-things like `p.request`, `p.request.parameters.myparam`, `p.out`, `p.session`,
+things like `p.request`, `p.request.getParameter('action')`, `p.out`, `p.session`,
 `p.servletContext`, etc. in the handler.
 
 Simple example:
