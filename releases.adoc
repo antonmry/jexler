@@ -2,7 +2,7 @@ image:https://www.jexler.net/jexler.jpg["jexler logo", link="https://www.jexler.
 
 = jexler releases
 
-=== 2.1.6-SNAPSHOT (20XX-XX-XX)
+=== 2.1.6 (2017-02-18)
 
 * Post+redirect for actions that modify state, so that the
   reload browser button can be routinely used.
@@ -30,7 +30,6 @@ image:https://www.jexler.net/jexler.jpg["jexler logo", link="https://www.jexler.
 
 * Access to binding variables with 'jexlerBinding' instead
   of with 'Jex.vars'.
-* Hopefully done again for a while now...
 
 === 2.1.1 (2017-02-12)
 
