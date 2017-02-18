@@ -430,7 +430,11 @@ class JexlerContainerView {
     private void handleRestart() {
         if (targetJexlerId == '') {
             for (Jexler jexler : container.jexlers) {
-                handleRestart(jexler)
+                if (jexler.metaInfo.autostart) {
+                    handleRestart(jexler)
+                } else if (jexler.state.on) {
+                    handleStop(jexler)
+                }
             }
         } else if (targetJexler != null) {
             handleRestart(targetJexler)

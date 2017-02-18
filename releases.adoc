@@ -2,6 +2,11 @@ image:https://www.jexler.net/jexler.jpg["jexler logo", link="https://www.jexler.
 
 = jexler releases
 
+=== 2.1.7-SNAPSHOT (20XX-XX-XX)
+
+* Restart all jexlers in GUI now again skips the ones without
+  autostart set.
+
 === 2.1.6 (2017-02-18)
 
 * Post+redirect for actions that modify state, so that the
