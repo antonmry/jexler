@@ -80,11 +80,30 @@ class JexlerContextListener implements ServletContextListener    {
             • jexler-core: $coreVersion
             • Groovy: $groovyVersion""".stripIndent()
 
-        // Set servlet context and set and start container
+        // Set servlet context
         servletContext = event.servletContext
         final String webappPath = servletContext.getRealPath('/')
-        container = new JexlerContainer(new File(webappPath, 'WEB-INF/jexlers'))
-        container.start()
+
+        // Get settings from files
+
+        File settingsFile = new File(webappPath, 'WEB-INF/settings.groovy')
+        Map settings = new ConfigSlurper('').parse(settingsFile.toURI().toURL()).flatten()
+        File settingsCustomFile = new File(webappPath, 'WEB-INF/settings-custom.groovy')
+        settings.putAll(new ConfigSlurper('').parse(settingsCustomFile.toURI().toURL()).flatten())
+        log.trace("settings: $settings")
+
+        startTimeoutSecs = (Long)settings."operation.jexler.startTimeoutSecs"
+        log.trace("jexler start timeout: $startTimeoutSecs secs")
+        stopTimeoutSecs = (Long)settings."operation.jexler.stopTimeoutSecs"
+        log.trace("jexler stop timeout: $stopTimeoutSecs secs")
+
+        scriptAllowEdit = (Boolean)settings."security.script.allowEdit"
+        log.trace("allow to edit jexler scripts: $scriptAllowEdit")
+
+        scriptConfirmSave = (Boolean)settings."safety.script.confirmSave"
+        log.trace("confirm jexler script save: $scriptConfirmSave")
+        scriptConfirmDelete = (Boolean)settings."safety.script.confirmDelete"
+        log.trace("confirm jexler script delete: $scriptConfirmDelete")
 
         // Determine and set log file
         logfile = null
@@ -101,25 +120,9 @@ class JexlerContextListener implements ServletContextListener    {
         }
         log.trace("logfile: '$logfile.absolutePath'")
 
-        // Get settings from files
-
-        File settingsFile = new File(webappPath, 'WEB-INF/settings.groovy')
-        Map settings = new ConfigSlurper('').parse(settingsFile.toURI().toURL()).flatten()
-        File settingsCustomFile = new File(webappPath, 'WEB-INF/settings-custom.groovy')
-        settings.putAll(new ConfigSlurper('').parse(settingsCustomFile.toURI().toURL()).flatten())
-        log.trace("settings: $settings")
-
-        startTimeoutSecs = (Long)settings."operation.jexler.startTimeoutSecs"
-        stopTimeoutSecs = (Long)settings."operation.jexler.stopTimeoutSecs"
-        scriptAllowEdit = (Boolean)settings."security.script.allowEdit"
-        scriptConfirmSave = (Boolean)settings."safety.script.confirmSave"
-        scriptConfirmDelete = (Boolean)settings."safety.script.confirmDelete"
-
-        log.trace("jexler start timeout: $startTimeoutSecs secs")
-        log.trace("jexler stop timeout: $stopTimeoutSecs secs")
-        log.trace("allow to edit jexler scripts: $scriptAllowEdit")
-        log.trace("confirm jexler script save: $scriptConfirmSave")
-        log.trace("confirm jexler script delete: $scriptConfirmDelete")
+        // Set and start container
+        container = new JexlerContainer(new File(webappPath, 'WEB-INF/jexlers'))
+        container.start()
     }
 
     @Override
