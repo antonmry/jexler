@@ -57,7 +57,7 @@ limitations under the License.
 
   <body onLoad="onPageLoad()">
 
-  <form action="." method="post">
+  <form action="${jexler.formAction}" method="post">
 
   <table class="frame">
   <tr id="header">
@@ -69,7 +69,6 @@ limitations under the License.
     <c:when test="${param.cmd == 'log' || param.cmd == 'clearissues'}">
       <button type="submit" name="cmd" value="forget">Forget</button>
       <button type="submit" name="cmd" value="forgetall">Forget All</button>
-      <input type="hidden" name="jexler" value="${jexler.jexlerId}">
     </c:when>
     <c:otherwise>
       <table class="frame">
@@ -78,7 +77,7 @@ limitations under the License.
                     onclick="return isPostSave(${container.confirmSave}, '${jexler.jexlerId}')">Save as...</button></td>
         <td><button type="submit" name="cmd" value="delete" ${container.disabledIfReadonly}
                     onclick="return isPostDelete(${container.confirmDelete}, '${jexler.jexlerId}')">Delete...</button></td>
-        <td><input id="newjexlername" type="text" name="jexler" onkeyup="updateSaveIndicator('${jexler.jexlerId}')"
+        <td><input id="newjexlername" type="text" name="jexlername" onkeyup="updateSaveIndicator('${jexler.jexlerId}')"
                    value="${jexler.jexlerId}" ${container.disabledIfReadonly}></td>
         <td><img id="savestatus" src="space.gif"></td>
       </tr>

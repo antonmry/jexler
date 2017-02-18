@@ -52,9 +52,11 @@ class JexlerContainerView {
 
     // The jexler and jexler ID set after constructing
     // in getJexlers(), but not for "container" in JSP,
-    // hence null if container, not null if a jexler
+    // hence jexler null if container, not null if a jexler,
+    // and setting jexlerId to '' for container because
+    // need the parameter in forms
     private Jexler jexler
-    private String jexlerId
+    private String jexlerId = ''
 
     // The 'jexler' parameter,
     // set when handling request in handleCommands()
@@ -74,9 +76,13 @@ class JexlerContainerView {
         request = (HttpServletRequest)pageContext.request
         response = (HttpServletResponse)pageContext.response
         container.refresh()
+
         // set jexler from request parameter
         targetJexlerId = request.getParameter('jexler')
-        if (targetJexlerId != null) {
+        if (targetJexlerId == null) {
+            targetJexlerId = ''
+        }
+        if (targetJexlerId != '') {
             targetJexler = container.getJexler(targetJexlerId)
         }
 
@@ -147,10 +153,15 @@ class JexlerContainerView {
         this.jexlerId = jexlerId
     }
 
+    // Form action for form in JSP, default is always the current jexler (or the container)
+    String getFormAction() {
+        return getAction(jexlerId)
+    }
+
     // Get start/stop link with icon for table of jexlers
     String getStartStop() {
         boolean on
-        if (jexlerId == null) {
+        if (jexlerId == '') {
             on = container.state.on
         } else {
             on = jexler.state.on
@@ -160,7 +171,7 @@ class JexlerContainerView {
 
     // Get restart/zap link with icon for table of jexlers
     String getRestartZap() {
-        if (jexlerId != null && jexler.state.on) {
+        if (jexlerId != '' && jexler.state.on) {
             for (Issue issue : jexler.issues) {
                 if (issue.getMessage() == JexlerUtil.SHUTDOWN_TIMEOUT_MSG) {
                     return getZap()
@@ -171,45 +182,43 @@ class JexlerContainerView {
     }
 
     // Get form action
-    private String getAction(String jexlerId) {
-        return jexlerId != null ? "?jexler=$jexlerId" : '.'
+    private static String getAction(String jexlerId) {
+        return "?jexler=$jexlerId"
     }
 
     // Get link for posting form for start/stop/restart/zap buttons
     private String getLink(String cmdParam, String imgName, String imgTitle) {
         String type = cmdParam == null ? 'button' : 'submit'
         return """\
-            <form action="${getAction(jexlerId)}" method="post">\
-            <button class="img" type="$type" name="cmd" value="$cmdParam">\
+            <button class="img" type="$type" name="cmd" value="$cmdParam" formaction="${getAction(jexlerId)}" >\
             <img src="${imgName}.gif"${imgTitle == null ? '' : " title='$imgTitle'"}>\
-            </button>\
-            </form>""".replace('            ', '')
+            </button>""".replace('            ', '')
     }
 
     // Get start link with icon for table of jexlers
     String getStart() {
-        final String title = jexlerId == null ? 'start all with autostart set' : 'start'
+        final String title = jexlerId == '' ? 'start all with autostart set' : 'start'
         String cmd = isProcessing(jexlerId) ? null : 'start'
         return getLink(cmd, 'start', title)
     }
 
     // Get stop link with icon for table of jexlers
     String getStop() {
-        final String title = jexlerId == null ? 'stop all' : 'stop'
+        final String title = jexlerId == '' ? 'stop all' : 'stop'
         String cmd = isProcessing(jexlerId) ? null : 'stop'
         return getLink(cmd, 'stop', title)
      }
 
     // Get restart link with icon for table of jexlers
     String getRestart() {
-        final String title = jexlerId == null ? 'stop all, then start all with autostart set' : 'restart'
+        final String title = jexlerId == '' ? 'stop all, then start all with autostart set' : 'restart'
         String cmd = isProcessing(jexlerId) ? null : 'restart'
         return getLink(cmd, 'restart', title)
     }
 
     // Get zap link with icon for table of jexlers
     String getZap() {
-        final String title = jexlerId == null ? 'zap all (unsafe)' : 'zap (unsafe)'
+        final String title = jexlerId == '' ? 'zap all (unsafe)' : 'zap (unsafe)'
         String cmd = isProcessing(jexlerId) ? null : 'zap'
         return getLink(cmd, 'zap', title)
     }
@@ -221,12 +230,12 @@ class JexlerContainerView {
         if (jexler.state.busy) {
             id = "<em>$id</em>"
         }
-        return "<a href='?cmd=info$jexlerParam' title='${jexler.state.info}'>$id</a>"
+        return "<a href='?cmd=info&jexler=$jexlerId' title='${jexler.state.info}'>$id</a>"
     }
 
     // Get web link and icon for table of jexlers
     String getWeb() {
-        if (jexlerId == null) {
+        if (jexlerId == '') {
             String img = "<img src='info.gif' title='${JexlerContextListener.infoTooltip}'>"
             return "<a href='https://www.jexler.net/guide/' target='_blank'>$img</a>"
         }
@@ -236,7 +245,7 @@ class JexlerContainerView {
             Object[] args = [PageContext.class]
             MetaMethod mm = mc.getMetaMethod('handleHttp', args)
             if (mm != null) {
-                return "<a href='?cmd=http$jexlerParam' title='web'><img src='web.gif'></a>"
+                return "<a href='?cmd=http&jexler=$jexlerId' title='web'><img src='web.gif'></a>"
             }
 
         }
@@ -245,11 +254,11 @@ class JexlerContainerView {
 
     // Get link and icon for logfile and/or issues
     String getLog() {
-        if (jexlerId == null) {
+        if (jexlerId == '') {
             if (container.issues.size() == 0) {
-                return "<a href='?cmd=log$jexlerParam' title='show log'><img src='log.gif'></a>"
+                return "<a href='?cmd=log&jexler=$jexlerId' title='show log'><img src='log.gif'></a>"
             } else {
-                return "<a href='?cmd=log$jexlerParam' title='show log'><img src='error.gif'></a>"
+                return "<a href='?cmd=log&jexler=$jexlerId' title='show log'><img src='error.gif'></a>"
             }
         } else {
             final String title = jexler.issues.empty ? 'no issues' : "show issues (${jexler.issues.size()})"
@@ -260,7 +269,7 @@ class JexlerContainerView {
             if (jexler.issues.size() == 0) {
                 return "<$imgPart title='$title'>"
             } else {
-                return "<a href='?cmd=log$jexlerParam' title='$title'><$imgPart></a>"
+                return "<a href='?cmd=log&jexler=$jexlerId' title='$title'><$imgPart></a>"
             }
         }
     }
@@ -312,7 +321,7 @@ class JexlerContainerView {
 
     // Get logfile
     String getLogfile() {
-        if (jexlerId != null) {
+        if (jexlerId != '') {
             return ''
         }
         final File logfile = JexlerContextListener.logfile
@@ -388,52 +397,63 @@ class JexlerContainerView {
 
     // Start jexler or container
     private void handleStart() {
-        if (targetJexlerId == null) {
+        if (targetJexlerId == '') {
             for (Jexler jexler : container.jexlers) {
                 if (jexler.metaInfo.autostart) {
                     handleStart(jexler)
                 }
             }
-        } else {
+        } else if (targetJexler != null) {
             handleStart(targetJexler)
         }
     }
 
     // Stop jexler or container
     private void handleStop() {
-        if (targetJexlerId == null) {
+        if (targetJexlerId == '') {
             for (Jexler jexler : container.jexlers) {
                 if (jexler.state.on) {
                     handleStop(jexler)
                 }
             }
-        } else {
+        } else if (targetJexler != null) {
             handleStop(targetJexler)
         }
     }
 
     // Restart jexler or container
     private void handleRestart() {
-        if (targetJexlerId == null) {
+        if (targetJexlerId == '') {
             for (Jexler jexler : container.jexlers) {
                 handleRestart(jexler)
             }
-        } else {
+        } else if (targetJexler != null) {
             handleRestart(targetJexler)
         }
     }
 
     // Zap jexler or container
     private void handleZap() {
-        if (targetJexlerId == null) {
+        if (targetJexlerId == '') {
             for (Jexler jexler : container.jexlers) {
                 if (jexler.state.on) {
                     handleZap(jexler)
                 }
             }
-        } else {
+        } else if (targetJexler != null) {
             handleZap(targetJexler)
         }
+    }
+
+    // Override targetJexlerId for save and delete,
+    // returns true if had parameter, false otherwise
+    private boolean overrideTargetJexlerId() {
+        targetJexlerId = request.getParameter('jexlername')
+        if (targetJexlerId == null) {
+            return false
+        }
+        targetJexler = container.getJexler(targetJexlerId)
+        return true
     }
 
     // Save script
@@ -442,7 +462,7 @@ class JexlerContainerView {
             return
         }
         String source = request.getParameter('source')
-        if (source != null) {
+        if (source != null && overrideTargetJexlerId()) {
             source = source.replace('\r\n', '\n')
             File file = container.getJexlerFile(targetJexlerId)
             try {
@@ -463,8 +483,10 @@ class JexlerContainerView {
         if (!JexlerContextListener.scriptAllowEdit) {
             return
         }
-        final File file = container.getJexlerFile(targetJexlerId)
-        file.delete()
+        if (overrideTargetJexlerId()) {
+            final File file = container.getJexlerFile(targetJexlerId)
+            file.delete()
+        }
     }
 
     // Forget issues of jexler or container
@@ -486,8 +508,8 @@ class JexlerContainerView {
 
     // Handle HTTP event, dispatch to jexler or reply directly in case of errors
     private void handleHttp() {
-        if (targetJexlerId == null) {
-            sendError(response, 404, 'No jexler parameter indicated.', null)
+        if (targetJexlerId == '') {
+            sendError(response, 404, 'No jexler indicated via request parameter.', null)
             return
         }
         if (targetJexler == null) {
@@ -554,20 +576,6 @@ class JexlerContainerView {
         return JexlerContextListener.container
     }
 
-    // Value of the 'jexler' parameter, either jexler ID or empty for container
-    private String getJexlerParam() {
-        if (jexlerId == null) {
-            return ''
-        } else {
-            return "&jexler=${urlEncode(jexlerId)}"
-        }
-    }
-
-    // Encode URL (UTF-8 character encoding)
-    private static String urlEncode(String s) {
-        return URLEncoder.encode(s, 'UTF-8')
-    }
-
     /**
      * Read log file into string while reversing the order of lines.
      * @param file
@@ -612,7 +620,7 @@ class JexlerContainerView {
 
     // Whether is processing given jexler / container
     private static boolean isProcessing(String jexlerId) {
-        if (jexlerId == null) {
+        if (jexlerId == '') {
             // always allow to stop/start all, must be robust
             return false
         } else {
