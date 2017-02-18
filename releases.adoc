@@ -2,6 +2,10 @@ image:https://www.jexler.net/jexler.jpg["jexler logo", link="https://www.jexler.
 
 = jexler releases
 
+=== 2.1.8-SNAPSHOT (20XX-XX-XX)
+
+* ...
+
 === 2.1.7 (2017-02-18)
 
 * Restart all jexlers in GUI now again skips the ones without
