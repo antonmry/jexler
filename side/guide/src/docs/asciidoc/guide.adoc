@@ -1,8 +1,9 @@
-image:https://www.jexler.net/jexler.jpg["Jn gexler", link="https://www.jexler.net/"]
+image:https://www.jexler.net/jexler.jpg["jexler", link="https://www.jexler.net/"]
 
-== jexler
+== Jexler User Guide
 
-Jexler is a simple relaxed Groovy framework for starting/stopping
+https://www.jexler.net/[Jexler] is a simple relaxed
+http://www.groovy-lang.org[Groovy] framework for starting/stopping
 Groovy scripts as services and enabling them to react to events
 of their choice - great for prototyping and useful for automating.
 
@@ -77,8 +78,11 @@ jexler/
   WEB-INF/
     jexlers/
       Cron.groovy
+      CronDispatched.groovy
       Demo.groovy
       DirWatcher.groovy
+      Hangs.groovy
+      Http.groovy
       Util.groovy
       some.properties
       ...
@@ -86,8 +90,9 @@ jexler/
   ...
 ----
 
-The first two jexlers are running, the third one is off, and you could start
-or stop them in the GUI, or look at the log file, edit the scripts, etc.
+The first jexlers is busy stopping, the next three are running, the fourth failed
+to stop in time, and you could start or stop them in the GUI, or look at the
+log file, edit the scripts, etc.
 
 If you want to try it out and play with jexler immediately:
 
@@ -469,16 +474,27 @@ No need to reinvent the wheel.
 
 image:jexler-gui-basic.jpg[web gui basic usage]
 
-Use the red/green/blue buttons in the first two columns of the table to start/stop/restart
-a single jexler or all jexlers (top row).
+Use the red/green/blue icons in the first two columns of the table to start/stop/restart
+jexlers. The top row addresses all jexlers:
+
+* Red stop icon: Stop all running jexlers.
+* Green start icon: Start all jexlers that have autostart set to true (see further below).
+* Blue restart icon: Stop all running jexlers, then start all jexlers that have autostart
+  set to true.
+
+The rows below address individual jexlers:
+
+* Red stop icon: Stop jexler.
+* Green start icon: Start jexler.
+* Blue restart icon: Stop jexler, then start jexler.
 
 Note that a jexler utility Groovy script that just declares a class with methods
 simply runs and stops immediately again (since its `main()` method is implicitly empty),
 so this causes no trouble at all when starting/stopping all jexlers.
 
-The third column allows to view the jexler log file (blue button in top row) and
-to view any issues that a jexler may have had, where a green button means that
-there are no issues and a red button can be clicked to view the issue(s).
+The third column allows to view the jexler log file (blue round icon in top row) and
+to view any issues that a jexler may have had, where a green round icon means that
+there are no issues and a red round icon can be clicked to view the issue(s).
 
 *Issues* are what jexler usually creates when something exceptionally happens that might
 require intervention by an administrator to get things running smoothly again.
@@ -488,6 +504,10 @@ Jexler uses https://logback.qos.ch[logback] for logging, by default
 (with daily log rotation). If you change that location, the GUI should still automatically
 find the log file, unless you do something more fancy, like splitting up logging into several files.
 
+When a jexler is starting up or stopping, an animated progress icon
+is displayed in the third column, but it can still be clicked to view
+issues if there are any.
+
 Click the name of any jexler in the fourth column to edit its script.
 Hover over the name to see the service state of the jexler.
 
@@ -496,18 +516,18 @@ There are five service states that apply to a jexler:
 * *off*: Not running.
 * *busy (starting)*: Busy starting, not ready to process events, yet.
 * *idle*: Waiting for an event, i.e. hanging in `event.take()`.
-* *busy (event)*: Busy processing an event.
+* *busy (event)*: Busy processing an event, if so the script name is shown in _italics_ in the GUI.
 * *busy (stopping)*: Stopping, not processing events any more.
 
 These states also apply to all jexlers as a group (and technically to all
 classes that implement the `Service` interface, like the CronService).
 
-Click the jexler logo to reload the main view. Note that the table with the service
-states is reloaded automatically every second by JavaScript. You typically only need
-to reload explicitly if JavaScript is off or for very old Internet Explorer browsers
-for which this feature has not been supported in the jexler web GUI.
+The table with the service states is reloaded automatically every second by JavaScript.
+You typically only need to reload the current page explicitly if JavaScript is off
+or for very old Internet Explorer browsers for which this feature is not supported
+in the jexler web GUI.
 
-Hover over the jexler logo to see the jexler release version.
+Hover over the info icon to see jexler and Groovy versions, click for this user guide.
 
 If a jexler becomes unresponsive, i.e. does not respond to stopping within the timeout,
 the restart icon changes to a flash icon in the GUI. This allows to "zap" the jexler, which
@@ -529,8 +549,8 @@ image:jexler-gui-edit.jpg[web gui edit scripts]
 New files are created simply by typing a new name and clicking save.
 
 Note that save does by default not ask for permission before (over-)writing a script,
-whereas delete asks by default for permission. These settings can be changed in the web.xml,
-see further below.
+whereas delete asks by default for permission. These settings can be changed in the
+WEB-INF/settings-custom.groovy file, see further below.
 
 === Issues
 
@@ -808,11 +828,12 @@ Keep me updated at mailto:jex@jexler.net[jex@jexler.net].
 Well, there is none, except to keep jexler really small and to keep the quality high. :)
 
 Then again, in spring 2015 I migrated Jexler from Java 7/JUnit to Groovy/Spock
-(and scheduling from Cron4j to Quartz which now allows scheduling per second)
-for Jexler 2, so you might never know...
+(and scheduling from Cron4j to Quartz, which now allows scheduling per second)
+for Jexler 2, and in winter 2017 I made a lot of GUI improvements and more for
+Jexler 2.1 and 2.2, so you might never know...
 
 I will gladly link third party libraries and similar additions around jexler
-on my web site and, if you want to take it all to a new level, feel free to
+on my website and, if you want to take it all to a new level, feel free to
 do so within jexler's Apache 2 Open Source license.
 
 Or to put it a bit more poetically, to me jexler is an island,
