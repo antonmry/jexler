@@ -17,17 +17,15 @@ button.img {
 }
 input[type="text"] {font-family: 'Droid Sans', sans-serif}
 img {border:none}
+img.jexler {width: 196px}
 a {text-decoration: none; color: darkblue}
 a:visited {color: darkblue}
 a:hover {color: blue}
 table.frame {
-  border-width: 0;
-  border-spacing: 0;
-  border-style: none;
+  border: none;
 }
 td.frame {
   padding: 5px;
-  border-style: none;
   vertical-align: top;
 }
 td.frame-buttons {
@@ -37,8 +35,7 @@ td.frame-text {
   width: 100%;
 }
 table.status {
-  border-width: 1px 1px 1px 1px;
-  border-style: solid;
+  border: 1px solid #eee;
   border-collapse: collapse;
   width: 100%;
 }
@@ -46,10 +43,7 @@ tr.status:nth-child(even) {
   background-color: #eee;
 }
 td.status {
-  border-width: 1px 1px 1px 1px;
   padding: 1px 4px 1px 4px;
-  border-style: solid;
-  border-color: #eee;
 }
 td.status-name {
   width: 100%;
@@ -62,7 +56,7 @@ div.autoscroll {
   vertical-align: top;
   overflow-y: auto;
 }
-img.wheel {padding: 2px 2px 2px 2px}
+img.wheel {padding: 2px}
 pre.log {
   color:gray;
   font-size: small;

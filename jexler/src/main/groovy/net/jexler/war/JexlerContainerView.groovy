@@ -147,11 +147,6 @@ class JexlerContainerView {
         this.jexlerId = jexlerId
     }
 
-    // Get tooltip for jexler webapp
-    String getJexlerTooltip() {
-        return JexlerContextListener.jexlerTooltip
-    }
-
     // Get start/stop link with icon for table of jexlers
     String getStartStop() {
         boolean on
@@ -232,7 +227,8 @@ class JexlerContainerView {
     // Get web link and icon for table of jexlers
     String getWeb() {
         if (jexlerId == null) {
-            return "<a href='https://www.jexler.net/guide/' target='_blank'><img src='info.gif' title='${jexlerTooltip}'></a>"
+            String img = "<img src='info.gif' title='${JexlerContextListener.infoTooltip}'>"
+            return "<a href='https://www.jexler.net/guide/' target='_blank'>$img</a>"
         }
         Script script = jexler.script
         if (script != null && jexler.state.operational) {
@@ -451,6 +447,7 @@ class JexlerContainerView {
             File file = container.getJexlerFile(targetJexlerId)
             try {
                 file.text = source
+                //log.trace("file as received from post:\n$file.text")
             } catch (IOException e) {
                 String msg = "Could not save script file '${file.absolutePath}'"
                 if (targetJexler != null) {
@@ -544,8 +541,8 @@ class JexlerContainerView {
     <link rel="stylesheet" href="jexler.css"/>
   </head>
   <body>
-    <a href="."><img src="jexler-mini.jpg" title="go to jexler"></a>
-    <h1><font color="red">Error $status</font></h1>
+    <a href="."><img class="jexler" src="jexler.jpg" title="back to jexler main view"></a>
+    <h1 style='color:darkred'>Error $status</h1>
     <p>$msg</p>
     $stacktrace
   </body>
