@@ -57,13 +57,14 @@ limitations under the License.
 
   <body onLoad="onPageLoad()">
 
+  <form action="." method="post">
+
   <table class="frame">
   <tr id="header">
   <td class="frame">
   <a href="https://www.jexler.net/"><img class="jexler" src="jexler.jpg" title="jexler"></a>
   </td>
   <td class="frame frame-buttons">
-    <form action="." method="post">
     <c:choose>
     <c:when test="${param.cmd == 'log' || param.cmd == 'clearissues'}">
       <button type="submit" name="cmd" value="forget">Forget</button>
@@ -84,7 +85,6 @@ limitations under the License.
       </table>
     </c:otherwise>
     </c:choose>
-    </form>
   </td>
   </tr>
   <tr>
@@ -152,6 +152,8 @@ limitations under the License.
   </td>
   </tr>
   </table>
+
+  </form>
 
   </body>
 
