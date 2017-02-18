@@ -40,7 +40,7 @@ class JexlerContextListener implements ServletContextListener    {
 
     private static final Logger log = LoggerFactory.getLogger(JexlerContextListener.class)
 
-    private static final String GUI_VERSION = '2.1.6-SNAPSHOT' // IMPORTANT: keep in sync with version in main build.gradle
+    private static final String GUI_VERSION = '2.2.0-SNAPSHOT' // IMPORTANT: keep in sync with version in main build.gradle
 
     // Info tooltip with versions
     static String infoTooltip
@@ -55,8 +55,8 @@ class JexlerContextListener implements ServletContextListener    {
     static File logfile
 
     // Config items from web.xml
-    static long startTimeout
-    static long stopTimeout
+    static long startTimeoutSecs
+    static long stopTimeoutSecs
     static boolean scriptAllowEdit
     static boolean scriptConfirmSave
     static boolean scriptConfirmDelete
@@ -101,26 +101,24 @@ class JexlerContextListener implements ServletContextListener    {
         }
         log.trace("logfile: '$logfile.absolutePath'")
 
-        // Set config items from web.xml
+        // Get settings from files
 
-        String param = servletContext.getInitParameter('jexler.start.timeout')
-        startTimeout = param ? Long.parseLong(param) : 10000
-        log.trace("jexler start timeout: $startTimeout ms")
+        File settingsFile = new File(webappPath, 'WEB-INF/settings.groovy')
+        Map settings = new ConfigSlurper('').parse(settingsFile.toURI().toURL()).flatten()
+        File settingsCustomFile = new File(webappPath, 'WEB-INF/settings-custom.groovy')
+        settings.putAll(new ConfigSlurper('').parse(settingsCustomFile.toURI().toURL()).flatten())
+        log.trace("settings: $settings")
 
-        param = servletContext.getInitParameter('jexler.stop.timeout')
-        stopTimeout = param ? Long.parseLong(param) : 10000
-        log.trace("jexler stop timeout: $stopTimeout ms")
+        startTimeoutSecs = (Long)settings."operation.jexler.startTimeoutSecs"
+        stopTimeoutSecs = (Long)settings."operation.jexler.stopTimeoutSecs"
+        scriptAllowEdit = (Boolean)settings."security.script.allowEdit"
+        scriptConfirmSave = (Boolean)settings."safety.script.confirmSave"
+        scriptConfirmDelete = (Boolean)settings."safety.script.confirmDelete"
 
-        param = servletContext.getInitParameter('jexler.security.script.allowEdit')
-        scriptAllowEdit = Boolean.parseBoolean(param)
+        log.trace("jexler start timeout: $startTimeoutSecs secs")
+        log.trace("jexler stop timeout: $stopTimeoutSecs secs")
         log.trace("allow to edit jexler scripts: $scriptAllowEdit")
-
-        param = servletContext.getInitParameter('jexler.safety.script.confirmSave')
-        scriptConfirmSave = Boolean.parseBoolean(param)
         log.trace("confirm jexler script save: $scriptConfirmSave")
-
-        param = servletContext.getInitParameter('jexler.safety.script.confirmDelete')
-        scriptConfirmDelete = Boolean.parseBoolean(param)
         log.trace("confirm jexler script delete: $scriptConfirmDelete")
     }
 

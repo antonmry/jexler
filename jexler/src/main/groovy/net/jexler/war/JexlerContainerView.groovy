@@ -628,7 +628,7 @@ class JexlerContainerView {
         processing.add(jexler.id)
         jexler.start()
         runInNewThread {
-            JexlerUtil.waitForStartup(jexler, JexlerContextListener.startTimeout)
+            JexlerUtil.waitForStartup(jexler, JexlerContextListener.startTimeoutSecs * 1000L)
             processing.remove(jexler.id)
         }
     }
@@ -641,7 +641,7 @@ class JexlerContainerView {
         processing.add(jexler.id)
         jexler.stop()
         runInNewThread {
-            JexlerUtil.waitForShutdown(jexler, JexlerContextListener.stopTimeout)
+            JexlerUtil.waitForShutdown(jexler, JexlerContextListener.stopTimeoutSecs * 1000L)
             processing.remove(jexler.id)
         }
     }
@@ -654,7 +654,7 @@ class JexlerContainerView {
         processing.add(jexler.id)
         jexler.stop()
         runInNewThread {
-            if (JexlerUtil.waitForShutdown(jexler, JexlerContextListener.stopTimeout)) {
+            if (JexlerUtil.waitForShutdown(jexler, JexlerContextListener.stopTimeoutSecs * 1000L)) {
                 processing.remove(jexler.id)
                 handleStart(jexler)
             } else {

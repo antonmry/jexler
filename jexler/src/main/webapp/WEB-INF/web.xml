@@ -5,34 +5,6 @@
    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
    version="2.5">
 
-  <context-param>
-    <description>Timeout for starting a jexler in ms.</description>
-    <param-name>jexler.start.timeout</param-name>
-    <param-value>10000</param-value>
-  </context-param>
-  <context-param>
-    <description>Timeout for stopping a jexler in ms.</description>
-    <param-name>jexler.stop.timeout</param-name>
-    <param-value>10000</param-value>
-  </context-param>
-
-  <context-param>
-    <description>Whether to allow editing jexler scripts in web gui or not.</description>
-    <param-name>jexler.security.script.allowEdit</param-name>
-    <param-value>true</param-value>
-  </context-param>
-  
-  <context-param>
-    <description>Whether to confirm script save in web gui or not.</description>
-    <param-name>jexler.safety.script.confirmSave</param-name>
-    <param-value>false</param-value>
-  </context-param>
-  <context-param>
-    <description>Whether to confirm script delete in web gui or not.</description>
-    <param-name>jexler.safety.script.confirmDelete</param-name>
-    <param-value>true</param-value>
-  </context-param>
-
   <servlet>
     <servlet-name>jexler</servlet-name>
     <jsp-file>/Jexler.jsp</jsp-file>
@@ -50,8 +22,8 @@
     <url-pattern>*.ico</url-pattern>
     <url-pattern>*.png</url-pattern>
     <url-pattern>*.jpg</url-pattern>
-    <url-pattern>*.htc</url-pattern>
     <url-pattern>*.gif</url-pattern>
+    <url-pattern>*.htc</url-pattern>
     <url-pattern>*.ttf</url-pattern>
   </servlet-mapping>
 

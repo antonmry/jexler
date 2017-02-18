@@ -46,10 +46,12 @@ limitations under the License.
   <link rel="icon" href="favicon.ico">
   <link rel="stylesheet" href="cm/lib/codemirror.css">
   <link rel="stylesheet" href="jexler.css">
-  <script src="jexler.js"></script>
+  <link rel="stylesheet" href="jexler-custom.css">
   <script src="cm/lib/codemirror.js"></script>
   <script src="cm/addon/edit/matchbrackets.js"></script>
   <script src="cm/mode/groovy/groovy.js"></script>
+  <script src="jexler.js"></script>
+  <script src="jexler-custom.js"></script>
 
   </head>
 

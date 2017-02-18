@@ -569,34 +569,51 @@ image:jexler-gui-log.jpg[web gui view log file]
 
 Note that newest log entries are on top.
 
-=== Customizing (and Security)
+=== Customizing and Safety/Security
 
-Several context parameters can be set in the web.xml.
+Default settings are in WEB-INF/settings.groovy and can be overridden
+with custom settings in WEB-INF/settings-custom.groovy.
 
-[source,xml]
-<context-param>
-  <description>Timeout for starting a jexler in ms.</description>
-  <param-name>jexler.start.timeout</param-name>
-  <param-value>10000</param-value>
-</context-param>
-<context-param>
-  <description>Timeout for stopping a jexler in ms.</description>
-  <param-name>jexler.stop.timeout</param-name>
-  <param-value>10000</param-value>
-</context-param>
+Both files are Groovy config files, read with the Groovy `ConfigSlurper`.
+Settings can be indicated separated with dots like in Java properties
+or in a tree structure.
+
+==== Timeouts
+
+[source,groovy]
+operation {
+    jexler {
+        // Timeout in seconds for starting a jexler before reporting an issue.
+        startTimeoutSecs = 10
+        // Timeout in seconds for stopping a jexler before reporting an issue.
+        stopTimeoutSecs = 10
+    }
+}
 
 These two parameters control how long the jexler waits before returning
 to the client when starting / stopping a jexler or all jexlers.
-(An issue is tracked if the timeout occurs.) Default is 10 sec each.
+An issue is tracked if the timeout occurs. Default is 10 secs each.
 
-[source,xml]
-<context-param>
-  <description>Whether to allow editing jexler scripts in web gui or not.</description>
-  <param-name>jexler.security.script.allowEdit</param-name>
-  <param-value>true</param-value>
-</context-param>
+Sample overrides:
 
-This parameter can be used to disallow editing of jexler scripts in the GUI as a security measure. Default is to allow editing.
+[source,groovy]
+operation.jexler.startTimeoutSecs = 30
+operation {
+  jexler.stopTimeoutSecs = 20
+}
+
+==== Security
+
+[source,groovy]
+security {
+    script {
+        // Whether to allow editing jexler scripts in web GUI or not.
+        allowEdit = true
+    }
+}
+
+This parameter can be used to disallow editing of jexler scripts in the GUI
+as a security measure. Default is to allow editing.
 
 Please be aware that jexler (thanks to Groovy and Grape) is a very powerful tool:
 
@@ -604,25 +621,26 @@ Please be aware that jexler (thanks to Groovy and Grape) is a very powerful tool
 is practically like giving someone shell access as the user under which
 the web GUI is running_*.
 
-So, please protect the web GUI accordingly.
+Please protect the web GUI accordingly.
 
 Without write permission, jexler is relatively harmless, also since it is not possible
 to give a jexler any kind of start parameters in the web GUI without editing the script.
 
-[source,xml]
-<context-param>
-  <description>Whether to confirm script save in web gui or not.</description>
-  <param-name>jexler.safety.script.confirmSave</param-name>
-  <param-value>false</param-value>
-</context-param>
-<context-param>
-  <description>Whether to confirm script delete in web gui or not.</description>
-  <param-name>jexler.safety.script.confirmDelete</param-name>
-  <param-value>true</param-value>
-</context-param>
+==== Safety
 
-These two parameters indicate whether the web GUI should ask the user to confirm
-before saving or deleting a jexler script file. Default is false for saving and true for deleting.
+[source,xml]
+safety {
+    script {
+        // Whether to confirm script save in web GUI or not.
+        confirmSave = false
+        // Whether to confirm script delete in web GUI or not.
+        confirmDelete = true
+    }
+}
+
+These two parameters indicate whether the web GUI should ask the user
+to confirm before saving or deleting a jexler script file.
+Default is false for saving and true for deleting.
 
 == Troubleshooting
 
