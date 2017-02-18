@@ -153,6 +153,11 @@ class JexlerContainerView {
         this.jexlerId = jexlerId
     }
 
+    // Get jexler tooltip
+    String getJexlerTooltip() {
+        return JexlerContextListener.jexlerTooltip
+    }
+
     // Form action for form in JSP, default is always the current jexler (or the container)
     String getFormAction() {
         return getAction(jexlerId)
@@ -236,7 +241,7 @@ class JexlerContainerView {
     // Get web link and icon for table of jexlers
     String getWeb() {
         if (jexlerId == '') {
-            String img = "<img src='info.gif' title='${JexlerContextListener.infoTooltip}'>"
+            String img = "<img src='info.gif' title='user guide'>"
             return "<a href='https://www.jexler.net/guide/' target='_blank'>$img</a>"
         }
         Script script = jexler.script

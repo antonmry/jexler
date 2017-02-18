@@ -527,7 +527,8 @@ You typically only need to reload the current page explicitly if JavaScript is o
 or for very old Internet Explorer browsers for which this feature is not supported
 in the jexler web GUI.
 
-Hover over the info icon to see jexler and Groovy versions, click for this user guide.
+Click the info icon for this user guide, click the jexler bat logo to visit its
+homepage and hover to see jexler and Groovy versions.
 
 If a jexler becomes unresponsive, i.e. does not respond to stopping within the timeout,
 the restart icon changes to a flash icon in the GUI. This allows to "zap" the jexler, which

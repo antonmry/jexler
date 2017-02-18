@@ -2,14 +2,13 @@ image:https://www.jexler.net/jexler.jpg["jexler logo", link="https://www.jexler.
 
 = jexler releases
 
-=== 2.2.0-SNAPSHOT (20XX-XX-XX)
+=== 2.1.6-SNAPSHOT (20XX-XX-XX)
 
 * Post+redirect for actions that modify state, so that the
   reload browser button can be routinely used.
 * Info button with link to user guide.
-* GUI setting in separate settings files, no longer in web.xml.
-* Easier customization of web GUI.
-* Various refinements.
+* Easier customization of web GUI, settings in separate files,
+  no longer in web.xml.
 
 === 2.1.5 (2017-02-16)
 
