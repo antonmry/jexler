@@ -41,11 +41,11 @@ class JexlerJettyTest {
 
         System.setProperty('groovy.grape.report.downloads', 'true')
 
-        // create server
+        // creating server
         final int port = 9080
         final Server server = new Server(port)
 
-        // create context
+        // creating context
         final WebAppContext context = new WebAppContext()
         context.resourceBase = './src/main/webapp'
         context.descriptor = 'WEB-INF/web.xml'

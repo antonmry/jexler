@@ -41,11 +41,11 @@ limitations under the License.
   <head>
 
   <title>Jexler</title>
-  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
-  <link rel="shortcut icon" href="favicon.ico"/>
-  <link rel="icon" href="favicon.ico"/>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="icon" href="favicon.ico">
   <link rel="stylesheet" href="cm/lib/codemirror.css">
-  <link rel="stylesheet" href="jexler.css"/>
+  <link rel="stylesheet" href="jexler.css">
   <script src="jexler.js"></script>
   <script src="cm/lib/codemirror.js"></script>
   <script src="cm/addon/edit/matchbrackets.js"></script>
@@ -55,14 +55,13 @@ limitations under the License.
 
   <body onLoad="onPageLoad()">
 
-  <form action="request.contextPath" method="post">
-  
   <table class="frame">
   <tr id="header">
   <td class="frame">
   <a href="."><img src="jexler-mini.jpg" title="${container.jexlerTooltip}"></a>
   </td>
   <td class="frame frame-buttons">
+    <form action="." method="post">
     <c:choose>
     <c:when test="${param.cmd == 'log' || param.cmd == 'clearissues'}">
       <button type="submit" name="cmd" value="forget">Forget</button>
@@ -83,6 +82,7 @@ limitations under the License.
       </table>
     </c:otherwise>
     </c:choose>
+    </form>
   </td>
   </tr>
   <tr>
@@ -150,8 +150,6 @@ limitations under the License.
   </td>
   </tr>
   </table>
-  
-  </form>
 
   </body>
 

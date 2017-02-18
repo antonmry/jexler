@@ -7,18 +7,25 @@ pre {font-family: 'Roboto Mono', monospace}
   height: auto;
 }
 button {font-family: 'Droid Sans', sans-serif}
+button.img {
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  height: 20px;
+  width: 20px;
+}
 input[type="text"] {font-family: 'Droid Sans', sans-serif}
-img {border:0px}
+img {border:none}
 a {text-decoration: none; color: darkblue}
 a:visited {color: darkblue}
 a:hover {color: blue}
 table.frame {
-  border-width: 0px 0px 0px 0px;
-  border-spacing: 0px;
+  border-width: 0;
+  border-spacing: 0;
   border-style: none;
 }
 td.frame {
-  border-width: 0px 0px 0px 0px;
   padding: 5px;
   border-style: none;
   vertical-align: top;
@@ -40,10 +47,9 @@ tr.status:nth-child(even) {
 }
 td.status {
   border-width: 1px 1px 1px 1px;
-  padding-left: 4px;
-  padding-right: 4px;
+  padding: 1px 4px 1px 4px;
   border-style: solid;
-  border-color: #eee
+  border-color: #eee;
 }
 td.status-name {
   width: 100%;

@@ -114,6 +114,10 @@ class JexlerContainerView {
                 // ignore
                 break
             }
+            // redirect to self to allow reloading page in browser
+            if (request.method == 'POST' && cmd != 'http') {
+                response.sendRedirect(getAction(targetJexlerId))
+            }
         }
 
         container.refresh()
@@ -127,14 +131,20 @@ class JexlerContainerView {
         for (Jexler jexler : container.jexlers) {
             JexlerContainerView view = new JexlerContainerView()
             view.jexler = jexler
+            view.jexlerId = jexler.id
             jexlersViews.put(jexler.id, view)
         }
         return jexlersViews
     }
 
-    // Get jexler ID
+    // Get jexler ID, needed in JSP
     String getJexlerId() {
         return jexlerId
+    }
+
+    // Set jexler ID, needed to set in views for jexlers
+    void setJexlerId(String jexlerId) {
+        this.jexlerId = jexlerId
     }
 
     // Get tooltip for jexler webapp
@@ -165,32 +175,48 @@ class JexlerContainerView {
         return getRestart()
     }
 
+    // Get form action
+    private String getAction(String jexlerId) {
+        return jexlerId != null ? "?jexler=$jexlerId" : '.'
+    }
+
+    // Get link for posting form for start/stop/restart/zap buttons
+    private String getLink(String cmdParam, String imgName, String imgTitle) {
+        String type = cmdParam == null ? 'button' : 'submit'
+        return """\
+            <form action="${getAction(jexlerId)}" method="post">\
+            <button class="img" type="$type" name="cmd" value="$cmdParam">\
+            <img src="${imgName}.gif"${imgTitle == null ? '' : " title='$imgTitle'"}>\
+            </button>\
+            </form>""".replace('            ', '')
+    }
+
     // Get start link with icon for table of jexlers
     String getStart() {
         final String title = jexlerId == null ? 'start all with autostart set' : 'start'
-        final String img = "<img src='start.gif'>"
-        return isProcessing(jexlerId) ? img : "<a href='?cmd=start$jexlerParam' title='$title'>$img</a>"
+        String cmd = isProcessing(jexlerId) ? null : 'start'
+        return getLink(cmd, 'start', title)
     }
 
     // Get stop link with icon for table of jexlers
     String getStop() {
         final String title = jexlerId == null ? 'stop all' : 'stop'
-        final String img = "<img src='stop.gif'>"
-        return isProcessing(jexlerId) ? img : "<a href='?cmd=stop$jexlerParam' title='$title'>$img</a>"
+        String cmd = isProcessing(jexlerId) ? null : 'stop'
+        return getLink(cmd, 'stop', title)
      }
 
     // Get restart link with icon for table of jexlers
     String getRestart() {
         final String title = jexlerId == null ? 'stop all, then start all with autostart set' : 'restart'
-        final String img = "<img src='restart.gif'>"
-        return isProcessing(jexlerId) ? img : "<a href='?cmd=restart$jexlerParam' title='$title'>$img</a>"
+        String cmd = isProcessing(jexlerId) ? null : 'restart'
+        return getLink(cmd, 'restart', title)
     }
 
     // Get zap link with icon for table of jexlers
     String getZap() {
         final String title = jexlerId == null ? 'zap all (unsafe)' : 'zap (unsafe)'
-        final String img = "<img src='zap.gif'>"
-        return isProcessing(jexlerId) ? img : "<a href='?cmd=zap$jexlerParam' title='$title'>$img</a>"
+        String cmd = isProcessing(jexlerId) ? null : 'zap'
+        return getLink(cmd, 'zap', title)
     }
 
     // Get link to jexler for table of jexlers
@@ -525,12 +551,6 @@ class JexlerContainerView {
   </body>
 </html>
 """)
-    }
-
-    // Called in getJexlers() if jexler (not called if container)
-    private void setJexler(Jexler jexler) {
-        this.jexler = jexler
-        jexlerId = jexler.id
     }
 
     // Get one and only container in this webapp

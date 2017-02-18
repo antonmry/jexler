@@ -4,7 +4,8 @@ image:https://www.jexler.net/jexler.jpg["jexler logo", link="https://www.jexler.
 
 === 2.1.6-SNAPSHOT (20XX-XX-XX)
 
-* ...
+* Post plus redirect for actions that modify state, so that the
+  reload browser button can be routinely used.
 
 === 2.1.5 (2017-02-16)
 
