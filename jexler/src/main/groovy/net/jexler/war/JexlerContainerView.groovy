@@ -450,15 +450,19 @@ class JexlerContainerView {
         }
     }
 
-    // Override targetJexlerId for save and delete,
-    // returns true if had parameter, false otherwise
-    private boolean overrideTargetJexlerId() {
-        targetJexlerId = request.getParameter('jexlername')
-        if (targetJexlerId == null) {
-            return false
+    private void setTargetJexlerIdFromJexlerNameParameter() {
+
+        String newJexlerId = request.getParameter('jexlername')
+
+        // strangely the input field with the jexler name is not always posted
+        // (apparently only at save and only for some already existing files)
+        if (newJexlerId == null) {
+            return
         }
+
+        targetJexlerId = newJexlerId
         targetJexler = container.getJexler(targetJexlerId)
-        return true
+
     }
 
     // Save script
@@ -467,7 +471,8 @@ class JexlerContainerView {
             return
         }
         String source = request.getParameter('source')
-        if (source != null && overrideTargetJexlerId()) {
+        setTargetJexlerIdFromJexlerNameParameter()
+        if (source != null && targetJexlerId != '') {
             source = source.replace('\r\n', '\n')
             File file = container.getJexlerFile(targetJexlerId)
             try {
@@ -488,9 +493,17 @@ class JexlerContainerView {
         if (!JexlerContextListener.scriptAllowEdit) {
             return
         }
-        if (overrideTargetJexlerId()) {
+        setTargetJexlerIdFromJexlerNameParameter()
+        if (targetJexlerId != '') {
             final File file = container.getJexlerFile(targetJexlerId)
-            file.delete()
+            if (!file.delete()) {
+                String msg = "Could not delete script file '${file.absolutePath}'"
+                if (targetJexler != null) {
+                    targetJexler.trackIssue(null, msg, null)
+                } else {
+                    container.trackIssue(null, msg, null)
+                }
+            }
         }
     }
 
