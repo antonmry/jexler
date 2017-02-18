@@ -544,7 +544,7 @@ class JexlerContainerView {
     <link rel="stylesheet" href="jexler.css"/>
   </head>
   <body>
-    <a href="."><img src="jexler.jpg" title="$jexlerTooltip}"></a>
+    <a href="."><img src="jexler-mini.jpg" title="go to jexler"></a>
     <h1><font color="red">Error $status</font></h1>
     <p>$msg</p>
     $stacktrace
