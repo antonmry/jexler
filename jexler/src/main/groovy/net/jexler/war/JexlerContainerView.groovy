@@ -342,7 +342,7 @@ class JexlerContainerView {
             return ''
         }
         try {
-            return file.text
+            return file.text.replace('&', '&amp;')
         } catch (IOException e) {
             String msg = "Could not read jexler script file '$file.absolutePath'."
             jexler.trackIssue(null, msg, e)
@@ -447,7 +447,6 @@ class JexlerContainerView {
             File file = container.getJexlerFile(targetJexlerId)
             try {
                 file.text = source
-                //log.trace("file as received from post:\n$file.text")
             } catch (IOException e) {
                 String msg = "Could not save script file '${file.absolutePath}'"
                 if (targetJexler != null) {
