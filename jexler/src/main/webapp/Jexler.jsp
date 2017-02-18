@@ -58,7 +58,7 @@ limitations under the License.
   <table class="frame">
   <tr id="header">
   <td class="frame">
-  <a href="."><img src="jexler-mini.jpg" title="${container.jexlerTooltip}"></a>
+  <a href="https://www.jexler.net/"><img src="jexler-mini.jpg" title="jexler"></a>
   </td>
   <td class="frame frame-buttons">
     <form action="." method="post">

@@ -232,7 +232,7 @@ class JexlerContainerView {
     // Get web link and icon for table of jexlers
     String getWeb() {
         if (jexlerId == null) {
-            return "<a href='https://www.jexler.net/'><img src='space.gif'></a>"
+            return "<a href='https://www.jexler.net/guide/' target='_blank'><img src='info.gif' title='${jexlerTooltip}'></a>"
         }
         Script script = jexler.script
         if (script != null && jexler.state.operational) {

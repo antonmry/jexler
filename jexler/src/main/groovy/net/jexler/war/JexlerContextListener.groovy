@@ -69,13 +69,14 @@ class JexlerContextListener implements ServletContextListener    {
         coreVersion = (coreVersion == null) ? '0.0.0' : coreVersion
         String groovyVersion = GroovyClassLoader.class.package.implementationVersion
         groovyVersion = (groovyVersion == null) ? '0.0.0' : groovyVersion
-        jexlerTooltip = """\
-          Jexler $GUI_VERSION
-          • jexler-core: $coreVersion
-          • Groovy: $groovyVersion
-          https://www.jexler.net/""".stripIndent()
         log.info("Welcome to jexler.")
-        log.info(JexlerUtil.toSingleLine(jexlerTooltip).replace('%n', ' | ').replace('• ', ''))
+        log.info("Jexler $GUI_VERSION | jexler-core: $coreVersion | Groovy: $groovyVersion")
+
+        // Assemble jexler tooltip
+        jexlerTooltip = """\
+            • jexler: $GUI_VERSION
+            • jexler-core: $coreVersion
+            • Groovy: $groovyVersion""".stripIndent()
 
         // Set servlet context and set and start container
         servletContext = event.servletContext
