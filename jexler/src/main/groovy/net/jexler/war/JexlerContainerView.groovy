@@ -43,7 +43,8 @@ class JexlerContainerView {
     private static final Logger log = LoggerFactory.getLogger(Jexler.class)
 
     // Markers for when processing jexler stop/start/restart
-    private static Set<String> processing = Collections.synchronizedSet([] as Set)
+    // Map value is the tooltip to show
+    private static Map<String,String> processing = Collections.synchronizedMap([:])
 
     // JSP/HTTP
     private PageContext pageContext
@@ -202,7 +203,7 @@ class JexlerContainerView {
     private String getLink(String cmdParam, String imgName, String imgTitle) {
         String type = cmdParam == null ? 'button' : 'submit'
         return """\
-            <button class="img" type="$type" name="cmd" value="$cmdParam" formaction="${getAction(jexlerId)}" >\
+            <button class="img" type="$type" name="cmd" value="$cmdParam" formaction="${getAction(jexlerId)}">\
             <img src="${imgName}.gif"${imgTitle == null ? '' : " title='$imgTitle'"}>\
             </button>""".replace('            ', '')
     }
@@ -243,7 +244,7 @@ class JexlerContainerView {
         if (jexler.state.busy) {
             id = "<em>$id</em>"
         }
-        return "<a href='?cmd=info&jexler=$jexlerId' title='Status: ${jexler.state.info}'>$id</a>"
+        return "<a href='?cmd=info&jexler=$jexlerId'><span title='Status: ${jexler.state.info}'>$id</span></a>"
     }
 
     // Get web link and icon for table of jexlers
@@ -258,7 +259,7 @@ class JexlerContainerView {
             Object[] args = [PageContext.class]
             MetaMethod mm = mc.getMetaMethod('handleHttp', args)
             if (mm != null) {
-                return "<a href='?cmd=http&jexler=$jexlerId' title='Go to web served by jexler script'><img src='web.gif'></a>"
+                return "<a href='?cmd=http&jexler=$jexlerId'><img src='web.gif' title='Go to web served by jexler script'></a>"
             }
 
         }
@@ -269,20 +270,24 @@ class JexlerContainerView {
     String getLog() {
         if (jexlerId == '') {
             if (container.issues.size() == 0) {
-                return "<a href='?cmd=log&jexler=$jexlerId' title='Show jexler log'><img src='log.gif'></a>"
+                return "<a href='?cmd=log&jexler=$jexlerId'><img src='log.gif' title='Show jexler log'></a>"
             } else {
-                return "<a href='?cmd=log&jexler=$jexlerId' title='Show jexler log'><img src='error.gif'></a>"
+                return "<a href='?cmd=log&jexler=$jexlerId'><img src='error.gif' title='Show jexler log'></a>"
             }
         } else {
-            final String title = jexler.issues.empty ? 'No issues' : "Show issues (${jexler.issues.size()})"
-            String imgPart = jexler.issues.empty ? "img src='ok.gif'" : "img src='error.gif'"
-            if (isProcessing(jexlerId)) {
-                imgPart = "img src='wheel.gif' class='wheel'"
+            String img
+            final String processingTitle = processing.get(jexlerId)
+            if (processingTitle != null) {
+                img = "<img src='wheel.gif' title='$processingTitle'>"
+            } else if (jexler.issues.empty) {
+                img = "<img src='ok.gif' title='No Issues'>"
+            } else {
+                img = "<img src='error.gif' title='Show issues (${jexler.issues.size()})'>"
             }
             if (jexler.issues.size() == 0) {
-                return "<$imgPart title='$title'>"
+                return img
             } else {
-                return "<a href='?cmd=log&jexler=$jexlerId' title='$title'><$imgPart></a>"
+                return "<a href='?cmd=log&jexler=$jexlerId'>$img</a>"
             }
         }
     }
@@ -654,16 +659,16 @@ class JexlerContainerView {
             // always allow to stop/start all, must be robust
             return false
         } else {
-            return processing.contains(jexlerId)
+            return processing.get(jexlerId) != null
         }
     }
 
     // Start given jexler
     private void handleStart(Jexler jexler) {
-        if (processing.contains(jexler.id)) {
+        if (isProcessing(jexler.id)) {
             return
         }
-        processing.add(jexler.id)
+        processing.put(jexler.id, "Starting...")
         jexler.start()
         runInNewThread {
             JexlerUtil.waitForStartup(jexler, JexlerContextListener.startTimeoutSecs * 1000L)
@@ -673,10 +678,10 @@ class JexlerContainerView {
 
     // Stop given jexler
     private void handleStop(Jexler jexler) {
-        if (processing.contains(jexler.id)) {
+        if (isProcessing(jexler.id)) {
             return
         }
-        processing.add(jexler.id)
+        processing.put(jexler.id, "Stopping...")
         jexler.stop()
         runInNewThread {
             JexlerUtil.waitForShutdown(jexler, JexlerContextListener.stopTimeoutSecs * 1000L)
@@ -686,10 +691,10 @@ class JexlerContainerView {
 
     // Restart given jexler
     private void handleRestart(Jexler jexler) {
-        if (processing.contains(jexler.id)) {
+        if (isProcessing(jexler.id)) {
             return
         }
-        processing.add(jexler.id)
+        processing.put(jexler.id, "Stopping...")
         jexler.stop()
         runInNewThread {
             if (JexlerUtil.waitForShutdown(jexler, JexlerContextListener.stopTimeoutSecs * 1000L)) {
@@ -703,7 +708,8 @@ class JexlerContainerView {
 
     // Zap given jexler
     private void handleZap(Jexler jexler) {
-        processing.add(jexler.id)
+        // ignore other things in progress
+        processing.put(jexler.id, "Zapping...")
         jexler.zap()
         processing.remove(jexler.id)
     }

@@ -41,8 +41,11 @@ function getStatus() {
                     if (text.indexOf("(offline)") < 0) {
                         text = text.replace("<strong>Jexlers</strong>", "<strong>(offline)</strong>");
                         text = text.replace(/\.gif'/g, "-dim.gif'");
-                        text = text.replace(/<a href='\?cmd=[a-z]+(&jexler=[A-Za-z0-9]+)?'>/g, "");
+                        text = text.replace(/\.gif"/g, "-dim.gif\"");
+                        text = text.replace(/<a href=.\?cmd=[a-z]+&jexler=[A-Za-z0-9]*.>/g, "");
                         text = text.replace(/<\/a>/g, "");
+                        text = text.replace(/<button.* formaction=.\?jexler=[A-Za-z0-9]*.>/g, "");
+                        text = text.replace(/<\/button>/g, "");
                         text = text.replace(/status-name/g, "status-name status-offline");
                     }
                 }
