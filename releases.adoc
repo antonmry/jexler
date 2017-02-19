@@ -2,6 +2,10 @@ image:https://www.jexler.net/jexler.jpg["jexler logo", link="https://www.jexler.
 
 = jexler releases
 
+=== 2.1.9-SNAPSHOT (20XX-XX-XX)
+
+* ...
+
 === 2.1.8 (2017-02-19)
 
 * GUI visually refined.
