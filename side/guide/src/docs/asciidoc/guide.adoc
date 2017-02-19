@@ -831,7 +831,7 @@ Well, there is none, except to keep jexler really small and to keep the quality 
 Then again, in spring 2015 I migrated Jexler from Java 7/JUnit to Groovy/Spock
 (and scheduling from Cron4j to Quartz, which now allows scheduling per second)
 for Jexler 2, and in winter 2017 I made a lot of GUI improvements and more for
-Jexler 2.1 and 2.2, so you might never know...
+Jexler 2.1.x, so you might never know...
 
 I will gladly link third party libraries and similar additions around jexler
 on my website and, if you want to take it all to a new level, feel free to
