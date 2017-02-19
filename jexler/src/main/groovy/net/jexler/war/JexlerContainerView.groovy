@@ -200,11 +200,13 @@ class JexlerContainerView {
     }
 
     // Get link for posting form for start/stop/restart/zap buttons
-    private String getLink(String cmdParam, String imgName, String imgTitle) {
+    private String getLink(String cmdParam, String imgName, String title) {
         String type = cmdParam == null ? 'button' : 'submit'
+        // title in image to keep tooltip when dimmed by Javascript (server not reachable),
+        // title also in button, otherwise not visible in Firefox...
         return """\
-            <button class="img" type="$type" name="cmd" value="$cmdParam" formaction="${getAction(jexlerId)}">\
-            <img src="${imgName}.gif"${imgTitle == null ? '' : " title='$imgTitle'"}>\
+            <button class="img" type="$type" name="cmd" value="$cmdParam" title="$title" formaction="${getAction(jexlerId)}">\
+            <img src="${imgName}.gif" title="$title">\
             </button>""".replace('            ', '')
     }
 
