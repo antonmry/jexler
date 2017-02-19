@@ -39,7 +39,7 @@ function getStatus() {
                 if (text == "") {
                     text = previousStatusText;
                     if (text.indexOf("(offline)") < 0) {
-                        text = text.replace("<strong>Scripts</strong>", "<strong>(offline)</strong>");
+                        text = text.replace("<strong>Jexlers</strong>", "<strong>(offline)</strong>");
                         text = text.replace(/\.gif'/g, "-dim.gif'");
                         text = text.replace(/<a href='\?cmd=[a-z]+(&jexler=[A-Za-z0-9]+)?'>/g, "");
                         text = text.replace(/<\/a>/g, "");

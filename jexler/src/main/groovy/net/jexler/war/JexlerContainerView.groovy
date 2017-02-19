@@ -72,9 +72,16 @@ class JexlerContainerView {
 
     // Handle commands (based on request parameters)
     String handleCommands(PageContext pageContext) {
+
         this.pageContext = pageContext
         request = (HttpServletRequest)pageContext.request
         response = (HttpServletResponse)pageContext.response
+
+        // no caching of jexler status queries etc.
+        response.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
+        response.setHeader('Pragma', 'no-cache')
+        response.setHeader('Expires', '0')
+
         container.refresh()
 
         // set jexler from request parameter

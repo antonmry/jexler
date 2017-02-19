@@ -4,7 +4,8 @@ image:https://www.jexler.net/jexler.jpg["jexler logo", link="https://www.jexler.
 
 === 2.1.8-SNAPSHOT (20XX-XX-XX)
 
-* ...
+* GUI visually refined.
+* HTTP headers for no storing or caching.
 
 === 2.1.7 (2017-02-18)
 

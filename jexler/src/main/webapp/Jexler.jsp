@@ -99,7 +99,7 @@ limitations under the License.
 <td class="status">${container.startStop}</td>
 <td class="status">${container.restartZap}</td>
 <td class="status">${container.log}</td>
-<td class="status status-name"><strong>Scripts</strong></td>
+<td class="status status-name"><span title="Jexler Groovy script container"><strong>Jexlers</strong></span></td>
 <td class="status">${container.web}</td>
 </tr>
 
