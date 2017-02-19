@@ -258,7 +258,7 @@ class JexlerContainerView {
             Object[] args = [PageContext.class]
             MetaMethod mm = mc.getMetaMethod('handleHttp', args)
             if (mm != null) {
-                return "<a href='?cmd=http&jexler=$jexlerId' title='Go to web served by jexler'><img src='web.gif'></a>"
+                return "<a href='?cmd=http&jexler=$jexlerId' title='Go to web served by jexler script'><img src='web.gif'></a>"
             }
 
         }
