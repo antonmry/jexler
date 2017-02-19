@@ -30,7 +30,7 @@ void handleHttp(def p) {
     <link rel="stylesheet" href="jexler.css"/>
   </head>
   <body>
-    <a href="."><img class="jexler" src="jexler.jpg" title="back to jexler main view"></a>
+    <a href="."><img class="jexler" src="jexler.jpg" title="Back to jexler main view"></a>
     <h1>jexler HTTP demo</h1>
     <p>Demo: <a href="?cmd=http&jexler=${jexler.id}&throw=true" style="color:darkred;text-decoration:none">Throw exception</a></p>
     <h3>System Properties</h3>

@@ -209,28 +209,29 @@ class JexlerContainerView {
 
     // Get start link with icon for table of jexlers
     String getStart() {
-        final String title = jexlerId == '' ? 'start all with autostart set' : 'start'
+        final String title = jexlerId == '' ? 'Start all jexlers with autostart set' : 'Start jexler'
         String cmd = isProcessing(jexlerId) ? null : 'start'
         return getLink(cmd, 'start', title)
     }
 
     // Get stop link with icon for table of jexlers
     String getStop() {
-        final String title = jexlerId == '' ? 'stop all' : 'stop'
+        final String title = jexlerId == '' ? 'Stop all jexlers' : 'Stop jexler'
         String cmd = isProcessing(jexlerId) ? null : 'stop'
         return getLink(cmd, 'stop', title)
      }
 
     // Get restart link with icon for table of jexlers
     String getRestart() {
-        final String title = jexlerId == '' ? 'stop all, then start all with autostart set' : 'restart'
+        final String title = jexlerId == '' ? 'Stop all jexlers, then start all with autostart set' : 'Restart jexler'
         String cmd = isProcessing(jexlerId) ? null : 'restart'
         return getLink(cmd, 'restart', title)
     }
 
     // Get zap link with icon for table of jexlers
     String getZap() {
-        final String title = jexlerId == '' ? 'zap all (unsafe)' : 'zap (unsafe)'
+        final String title = jexlerId == '' ? 'Zap all jexlers (unsafe, some threads/resources may remain)'
+                : 'Zap jexler (unsafe, some threads/resources may remain)'
         String cmd = isProcessing(jexlerId) ? null : 'zap'
         return getLink(cmd, 'zap', title)
     }
@@ -242,13 +243,13 @@ class JexlerContainerView {
         if (jexler.state.busy) {
             id = "<em>$id</em>"
         }
-        return "<a href='?cmd=info&jexler=$jexlerId' title='${jexler.state.info}'>$id</a>"
+        return "<a href='?cmd=info&jexler=$jexlerId' title='Status: ${jexler.state.info}'>$id</a>"
     }
 
     // Get web link and icon for table of jexlers
     String getWeb() {
         if (jexlerId == '') {
-            String img = "<img src='info.gif' title='user guide'>"
+            String img = "<img src='info.gif' title='Go to User Guide in new tab'>"
             return "<a href='https://www.jexler.net/guide/' target='_blank'>$img</a>"
         }
         Script script = jexler.script
@@ -257,7 +258,7 @@ class JexlerContainerView {
             Object[] args = [PageContext.class]
             MetaMethod mm = mc.getMetaMethod('handleHttp', args)
             if (mm != null) {
-                return "<a href='?cmd=http&jexler=$jexlerId' title='web'><img src='web.gif'></a>"
+                return "<a href='?cmd=http&jexler=$jexlerId' title='Go to web served by jexler'><img src='web.gif'></a>"
             }
 
         }
@@ -268,12 +269,12 @@ class JexlerContainerView {
     String getLog() {
         if (jexlerId == '') {
             if (container.issues.size() == 0) {
-                return "<a href='?cmd=log&jexler=$jexlerId' title='show log'><img src='log.gif'></a>"
+                return "<a href='?cmd=log&jexler=$jexlerId' title='Show jexler log'><img src='log.gif'></a>"
             } else {
-                return "<a href='?cmd=log&jexler=$jexlerId' title='show log'><img src='error.gif'></a>"
+                return "<a href='?cmd=log&jexler=$jexlerId' title='Show jexler log'><img src='error.gif'></a>"
             }
         } else {
-            final String title = jexler.issues.empty ? 'no issues' : "show issues (${jexler.issues.size()})"
+            final String title = jexler.issues.empty ? 'No issues' : "Show issues (${jexler.issues.size()})"
             String imgPart = jexler.issues.empty ? "img src='ok.gif'" : "img src='error.gif'"
             if (isProcessing(jexlerId)) {
                 imgPart = "img src='wheel.gif' class='wheel'"
@@ -591,7 +592,7 @@ class JexlerContainerView {
     <link rel="stylesheet" href="jexler.css"/>
   </head>
   <body>
-    <a href="."><img class="jexler" src="jexler.jpg" title="back to jexler main view"></a>
+    <a href="."><img class="jexler" src="jexler.jpg" title="Back to jexler main view"></a>
     <h1 style='color:darkred'>Error $status</h1>
     <p>$msg</p>
     $stacktrace

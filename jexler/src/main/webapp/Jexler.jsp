@@ -67,17 +67,20 @@ limitations under the License.
   <td class="frame frame-buttons">
     <c:choose>
     <c:when test="${param.cmd == 'log' || param.cmd == 'clearissues'}">
-      <button type="submit" name="cmd" value="forget">Forget</button>
-      <button type="submit" name="cmd" value="forgetall">Forget All</button>
+      <button type="submit" name="cmd" value="forget" title="Forget issues">Forget</button>
+      <button type="submit" name="cmd" value="forgetall" title="Forget issues for all jexlers and container">Forget All</button>
     </c:when>
     <c:otherwise>
       <table class="frame">
       <tr>
         <td><button type="submit" name="cmd" value="save" ${container.disabledIfReadonly}
+                    title="Save/create script file"
                     onclick="return isPostSave(${container.confirmSave}, '${jexler.jexlerId}')">Save as...</button></td>
         <td><button type="submit" name="cmd" value="delete" ${container.disabledIfReadonly}
+                    title="Delete script file"
                     onclick="return isPostDelete(${container.confirmDelete}, '${jexler.jexlerId}')">Delete...</button></td>
         <td><input id="newjexlername" type="text" name="jexlername" onkeyup="updateSaveIndicator('${jexler.jexlerId}')"
+                   title="Jexler script file name, without '.groovy' extension"
                    value="${jexler.jexlerId}" ${container.disabledIfReadonly}></td>
         <td><img id="savestatus" src="space.gif"></td>
       </tr>
