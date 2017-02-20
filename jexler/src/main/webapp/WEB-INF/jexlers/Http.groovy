@@ -42,6 +42,14 @@ ${sysProps}
 """)
 }
 
+// HTTP REST call support: The method below is invoked for requests
+// to <context-path>/rest/ (see web.xml) for HTTP requests containing
+// a request header 'jexler: Http' (see settings.groovy).
+void service(def req, def resp) {
+  resp.status = 200
+  resp.writer.println("hello world")
+}
+
 void handle(def event) {
   log.trace("got event $event.service.id")
 }

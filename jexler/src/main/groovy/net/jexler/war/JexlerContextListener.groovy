@@ -33,7 +33,7 @@ import javax.servlet.ServletContextListener
 /**
  * Jexler context listener.
  *
- * @author $(whois jexler.net"
+ * @author $(whois jexler.net)
  */
 @CompileStatic
 class JexlerContextListener implements ServletContextListener    {
@@ -47,6 +47,9 @@ class JexlerContextListener implements ServletContextListener    {
 
     // Servlet context
     static ServletContext servletContext
+
+    // Slurped settings
+    static Map settings
 
     // The one and only jexler container in this webapp
     static JexlerContainer container
@@ -85,22 +88,22 @@ class JexlerContextListener implements ServletContextListener    {
         // Get settings from files
 
         File settingsFile = new File(webappPath, 'WEB-INF/settings.groovy')
-        Map settings = new ConfigSlurper('').parse(settingsFile.toURI().toURL()).flatten()
+        settings = new ConfigSlurper('').parse(settingsFile.toURI().toURL()).flatten()
         File settingsCustomFile = new File(webappPath, 'WEB-INF/settings-custom.groovy')
         settings.putAll(new ConfigSlurper('').parse(settingsCustomFile.toURI().toURL()).flatten())
         log.trace("settings: $settings")
 
-        startTimeoutSecs = (Long)settings."operation.jexler.startTimeoutSecs"
+        startTimeoutSecs = (Long)settings.'operation.jexler.startTimeoutSecs'
         log.trace("jexler start timeout: $startTimeoutSecs secs")
-        stopTimeoutSecs = (Long)settings."operation.jexler.stopTimeoutSecs"
+        stopTimeoutSecs = (Long)settings.'operation.jexler.stopTimeoutSecs'
         log.trace("jexler stop timeout: $stopTimeoutSecs secs")
 
-        scriptAllowEdit = (Boolean)settings."security.script.allowEdit"
+        scriptAllowEdit = (Boolean)settings.'security.script.allowEdit'
         log.trace("allow to edit jexler scripts: $scriptAllowEdit")
 
-        scriptConfirmSave = (Boolean)settings."safety.script.confirmSave"
+        scriptConfirmSave = (Boolean)settings.'safety.script.confirmSave'
         log.trace("confirm jexler script save: $scriptConfirmSave")
-        scriptConfirmDelete = (Boolean)settings."safety.script.confirmDelete"
+        scriptConfirmDelete = (Boolean)settings.'safety.script.confirmDelete'
         log.trace("confirm jexler script delete: $scriptConfirmDelete")
 
         // Determine and set log file

@@ -6,13 +6,23 @@
    version="2.5">
 
   <servlet>
-    <servlet-name>jexler</servlet-name>
+    <servlet-name>jexler-jsp</servlet-name>
     <jsp-file>/Jexler.jsp</jsp-file>
   </servlet>
 
+  <servlet>
+    <servlet-name>jexler-rest-servlet</servlet-name>
+    <servlet-class>net.jexler.war.JexlerRestDispatcherServlet</servlet-class>
+  </servlet>
+
   <servlet-mapping>
-    <servlet-name>jexler</servlet-name>
+    <servlet-name>jexler-jsp</servlet-name>
     <url-pattern>/</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>jexler-rest-servlet</servlet-name>
+    <url-pattern>/rest/</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>

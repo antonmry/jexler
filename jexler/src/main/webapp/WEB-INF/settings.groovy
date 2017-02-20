@@ -25,3 +25,19 @@ safety {
         confirmDelete = true
     }
 }
+
+rest {
+    dispatch {
+        jexler {
+            // Return jexler ID from HttpServletRequest,
+            // script binding passes 'httpReq' and 'log'.
+            getter = '''
+                String jexlerId = httpReq.getHeader('jexler')
+                if (jexlerId == null) {
+                  log.error("Missing header 'jexler'.")
+                }
+                return jexlerId
+                '''
+        }
+    }
+}
