@@ -60,7 +60,7 @@ class JexlerRestDispatcherServlet extends HttpServlet    {
         super.init()
         String getterSource = JexlerContextListener.settings.'rest.idGetter'
         idGetterClass = new GroovyClassLoader().parseClass(getterSource)
-        String errorSenderSource = JexlerContextListener.settings.'rest.dispatch.jexler.errorSender'
+        String errorSenderSource = JexlerContextListener.settings.'rest.errorSender'
         errorSenderClass = new GroovyClassLoader().parseClass(errorSenderSource)
     }
 
