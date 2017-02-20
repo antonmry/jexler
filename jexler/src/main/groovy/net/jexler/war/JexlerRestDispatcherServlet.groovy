@@ -50,17 +50,16 @@ class JexlerRestDispatcherServlet extends HttpServlet    {
     private static final Logger log = LoggerFactory.getLogger(JexlerRestDispatcherServlet.class)
 
     // Script class for getting jexler ID from HTTP request.
-    private Class<Script> getterClass
+    private Class<Script> idGetterClass
 
     // Script class for sending error HTTP response.
     private Class<Script> errorSenderClass
 
-
     @Override
     void init() throws ServletException {
         super.init()
-        String getterSource = JexlerContextListener.settings.'rest.dispatch.jexler.getter'
-        getterClass = new GroovyClassLoader().parseClass(getterSource)
+        String getterSource = JexlerContextListener.settings.'rest.idGetter'
+        idGetterClass = new GroovyClassLoader().parseClass(getterSource)
         String errorSenderSource = JexlerContextListener.settings.'rest.dispatch.jexler.errorSender'
         errorSenderClass = new GroovyClassLoader().parseClass(errorSenderSource)
     }
@@ -73,9 +72,7 @@ class JexlerRestDispatcherServlet extends HttpServlet    {
             throws ServletException, IOException {
 
         // Check for jexler ID in request
-        Script getterScript = getterClass.newInstance()
-        getterScript.setBinding(new Binding([ 'httpReq' : httpReq, 'log' : log ]))
-        final String jexlerId = (String)getterScript.run()
+        final String jexlerId = getJexlerId(httpReq)
         if (jexlerId == null) {
             // error already logged in script
             sendError(httpReq, httpResp, 400)
@@ -115,6 +112,13 @@ class JexlerRestDispatcherServlet extends HttpServlet    {
             jexler.trackIssue(jexler, "Service method failed to handle HTTP request.", t)
             sendError(httpReq, httpResp, 500)
         }
+    }
+
+    private String getJexlerId(HttpServletRequest httpReq) {
+        Script idGetterScript = idGetterClass.newInstance()
+        idGetterScript.setBinding(new Binding([ 'httpReq' : httpReq, 'log' : log ]))
+        return (String)idGetterScript.run()
+
     }
 
     private void sendError(HttpServletRequest httpReq, HttpServletResponse httpResp, int status) {
