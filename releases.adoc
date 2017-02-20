@@ -2,10 +2,10 @@ image:https://www.jexler.net/jexler.jpg["jexler logo", link="https://www.jexler.
 
 = jexler releases
 
-=== 2.1.9-SNAPSHOT (20XX-XX-XX)
+=== 2.1.9 (2017-02-20)
 
 * Servlet for easier handling of HTTP REST calls by jexler scripts;
-  see user guide for details.
+  see user guide and source code and default settings for details.
 
 === 2.1.8 (2017-02-19)
 
