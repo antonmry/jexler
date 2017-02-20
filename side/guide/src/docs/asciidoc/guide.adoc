@@ -182,48 +182,6 @@ source at github and copy it to a  Groovy script called e.g. `MyJexlerDispatcher
 put it into the jexlers directory, adjust it as needed, and then call
 `MyJexlerDispatcher.dispatch(this)` instead at the top of your jexler scripts).
 
-=== Handling HTTP Requests
-
-HTTP requests sent to the jexler webapp with request parameters `cmd=http&jexler=<jexler-id>`
-are passed to a method `handleHttp(PageContext p)`
-of the corresponding jexler, if found and the jexler is operational.
-The method parameter is a `javax.servlet.jsp.PageContext`, i.e. you can use
-things like `p.request`, `p.request.getParameter('action')`, `p.out`, `p.session`,
-`p.servletContext`, etc. in the handler.
-
-Simple example:
-
-[source,groovy]
-----
-void handleHttp(def p) {
-  p.response.status = 200
-  p.out.println("""\
-<html>
-  <head>
-    <title>Jexler Http</title>
-  </head>
-  <body>
-    <h1>Jexler Http</h1>
-    <a href="."><img src="jexler.jpg"></a>
-    <p>Status: $p.response.status</p>
-    </pre>
-  </body>
-</html>
-""")
-}
-----
-
-If an exception occurs in the handler, a simple 500 error page is returned.
-Similarly, if there is no corresponding operational jexler or it contains
-no handler with the above signature, a 404 error page is returned.
-
-In the GUI, a web icon is shown on the right when the jexler is available
-for HTTP requests and clicking the icon takes you there.
-
-Note that incoming HTTP requests are processed in parallel to the normal jexler
-event queue, possibly in several threads created by the web container.
-Make sure operations are thread-safe in these two respects.
-
 == Services
 
 === CronService
@@ -662,6 +620,65 @@ safety {
 These two parameters indicate whether the web GUI should ask the user
 to confirm before saving or deleting a jexler script file.
 Default is false for saving and true for deleting.
+
+== Handling HTTP Requests
+
+=== Basic: Use Case "Web GUI"
+
+HTTP requests sent to the jexler webapp with request parameters
+`cmd=http&jexler=<jexler-id>` are passed to a method `handleHttp(PageContext p)`
+of the corresponding jexler, if found and the jexler is operational.
+The method parameter is a `javax.servlet.jsp.PageContext`, i.e. you can use
+things like `p.request`, `p.request.getParameter('action')`, `p.out`, `p.session`,
+`p.servletContext`, etc. in the handler.
+
+Simple example:
+
+[source,groovy]
+----
+void handleHttp(def p) {
+  p.response.status = 200
+  p.out.println("""\
+<html>
+  <head>
+    <title>Jexler Http</title>
+  </head>
+  <body>
+    <h1>Jexler Http</h1>
+    <a href="."><img src="jexler.jpg"></a>
+    <p>Status: $p.response.status</p>
+    </pre>
+  </body>
+</html>
+""")
+}
+----
+
+If an exception occurs in the handler, a simple 500 error page is returned.
+Similarly, if there is no corresponding operational jexler or it contains
+no handler with the above signature, a 404 error page is returned.
+
+In the GUI, a web icon is shown on the right when the jexler is available
+for HTTP requests and clicking the icon takes you there.
+
+Note that incoming HTTP requests are processed in parallel to the normal jexler
+event queue, possibly in several threads created by the web container.
+Make sure operations are thread-safe in these two respects.
+
+=== Advanced: Use Case "REST Calls"
+
+By default the `JexlerRestDispatcherServlet` is configured for the location
+`/rest/` and also by default requests with an HTTP header `jexler` are
+redirected to a `service(httpReq, httpResp)` method in the jexler indicated
+by the header value. How to get the jexler ID from the request is freely
+configurable in the settings, as well as how to react to errors outside of
+the handling jexler. One idea behind configuring a separate location is to
+separate authentication between a user of the web GUI who can freely edit
+and run Groovy scripts and a web service with limited functionality.
+
+Of course, the generic servlet may also be used to serve a web GUI, with a
+configurable error page and at a location independent of the running jexler
+webapp.
 
 == Troubleshooting
 
