@@ -29,8 +29,8 @@ safety {
 rest {
     dispatch {
         jexler {
-            // Return jexler ID from HttpServletRequest,
-            // script binding passes 'httpReq' and 'log'.
+            // Return jexler ID from HttpServletRequest; script binding
+            // passes 'httpReq' and 'log'.
             getter = '''
                 String jexlerId = httpReq.getHeader('jexler')
                 if (jexlerId == null) {
@@ -38,6 +38,11 @@ rest {
                 }
                 return jexlerId
                 '''
+            // Send error HTTP response; script binding passes 'httpReq'
+            // and 'httpResp', with the httpReq.status already set.
+            // The default does nothing more, resulting in an empty response
+            // body (unless already committed by a failing jexler script).
+            errorSender = ''
         }
     }
 }

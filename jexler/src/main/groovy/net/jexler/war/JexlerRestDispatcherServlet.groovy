@@ -38,8 +38,9 @@ import javax.servlet.http.HttpServletResponse
  * outside of the jexler event queue, possibly in several threads.
  *
  * In case of errors, the corresponding status code is returned, with
- * no response body (except if a jexler to handle was found, called
- * and then threw while having already committed part of the response).
+ * no response body by default (except if a jexler to handler was found,
+ * called and then threw while having already committed at least part
+ * of the response).
  *
  * @author $(whois jexler.net)
  */
@@ -51,12 +52,17 @@ class JexlerRestDispatcherServlet extends HttpServlet    {
     // Script class for getting jexler ID from HTTP request.
     private Class<Script> getterClass
 
+    // Script class for sending error HTTP response.
+    private Class<Script> errorSenderClass
+
 
     @Override
     void init() throws ServletException {
         super.init()
         String getterSource = JexlerContextListener.settings.'rest.dispatch.jexler.getter'
         getterClass = new GroovyClassLoader().parseClass(getterSource)
+        String errorSenderSource = JexlerContextListener.settings.'rest.dispatch.jexler.errorSender'
+        errorSenderClass = new GroovyClassLoader().parseClass(errorSenderSource)
     }
 
     /**
@@ -72,7 +78,7 @@ class JexlerRestDispatcherServlet extends HttpServlet    {
         final String jexlerId = (String)getterScript.run()
         if (jexlerId == null) {
             // error already logged in script
-            httpResp.status = 400
+            sendError(httpReq, httpResp, 400)
             return
         }
 
@@ -80,7 +86,7 @@ class JexlerRestDispatcherServlet extends HttpServlet    {
         final Jexler jexler = JexlerContextListener.container.getJexler(jexlerId)
         if (jexler == null) {
             log.error("No jexler '$jexlerId'.")
-            httpResp.status = 404
+            sendError(httpReq, httpResp, 404)
             return
         }
 
@@ -88,7 +94,7 @@ class JexlerRestDispatcherServlet extends HttpServlet    {
         final Script script = jexler.script
         if (script == null || !jexler.state.operational) {
             log.error("Jexler '$jexlerId' not operational.")
-            httpResp.status = 404
+            sendError(httpReq, httpResp, 404)
             return
         }
 
@@ -98,7 +104,7 @@ class JexlerRestDispatcherServlet extends HttpServlet    {
         final MetaMethod mm = mc.getMetaMethod('service', args)
         if (mm == null) {
             jexler.trackIssue(jexler, "No 'service(httpReq,httpResp)' method for handling HTTP request.", null)
-            httpResp.status = 500
+            sendError(httpReq, httpResp, 500)
             return
         }
 
@@ -107,8 +113,15 @@ class JexlerRestDispatcherServlet extends HttpServlet    {
             mm.invoke(script, [ httpReq, httpResp ] as Object[])
         } catch (Throwable t) {
             jexler.trackIssue(jexler, "Service method failed to handle HTTP request.", t)
-            httpResp.status = 500
+            sendError(httpReq, httpResp, 500)
         }
+    }
+
+    private void sendError(HttpServletRequest httpReq, HttpServletResponse httpResp, int status) {
+        httpResp.status = status
+        Script errorSenderScript = errorSenderClass.newInstance()
+        errorSenderScript.setBinding(new Binding([ 'httpReq' : httpReq, 'httpResp' : httpResp ]))
+        errorSenderScript.run()
     }
 
 }
