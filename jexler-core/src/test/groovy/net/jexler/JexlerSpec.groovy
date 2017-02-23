@@ -306,7 +306,7 @@ class JexlerSpec extends Specification {
         jexler.state.off
         jexler.issues.size() == 1
         jexler.issues.first().message == 'Script run failed.'
-        jexler.issues.first().cause.class == java.lang.ThreadDeath
+        jexler.issues.first().cause.class == ThreadDeath
         mockService.nStarted == 1
         mockService.nEventsSent == 1
         mockService.nEventsGotBack == 0
