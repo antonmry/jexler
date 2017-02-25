@@ -19,7 +19,6 @@ package net.jexler.service
 import net.jexler.Jexler
 
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 import org.quartz.CronScheduleBuilder
 import org.quartz.Job
 import org.quartz.JobBuilder

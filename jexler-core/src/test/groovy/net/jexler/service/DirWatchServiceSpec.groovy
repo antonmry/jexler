@@ -23,7 +23,6 @@ import org.junit.experimental.categories.Category
 import spock.lang.Specification
 
 import java.nio.file.StandardWatchEventKinds
-import java.nio.file.WatchEvent
 
 /**
  * Tests the respective class.

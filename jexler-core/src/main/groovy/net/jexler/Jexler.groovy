@@ -20,19 +20,15 @@ import net.jexler.service.Event
 import net.jexler.service.Service
 import net.jexler.service.ServiceGroup
 import net.jexler.service.ServiceState
-import net.jexler.service.ServiceUtil
 import net.jexler.service.StopEvent
 
-import groovy.grape.Grape
-import groovy.grape.GrapeEngine
+import ch.grengine.Grengine
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 import org.codehaus.groovy.control.CompilerConfiguration
 import org.codehaus.groovy.control.customizers.ImportCustomizer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-import java.lang.reflect.Field
 import java.util.concurrent.LinkedBlockingQueue
 
 /**
@@ -44,6 +40,8 @@ import java.util.concurrent.LinkedBlockingQueue
 class Jexler implements Service, IssueTracker {
 
     private static final Logger log = LoggerFactory.getLogger(Jexler.class)
+
+    private static final Grengine META_INFO_GRENGINE = new Grengine()
 
     /**
      * Blocking queue for events sent to a Jexler
@@ -160,7 +158,6 @@ class Jexler implements Service, IssueTracker {
         }
 
         // prepare for compile
-        WorkaroundGroovy7407.wrapGrapeEngineIfConfigured(this)
         final CompilerConfiguration config = new CompilerConfiguration()
         final ImportCustomizer importCustomizer = new ImportCustomizer()
         if (metaInfo.autoimport == null || metaInfo.autoimport) {
@@ -402,14 +399,18 @@ class Jexler implements Service, IssueTracker {
         if (lines.empty) {
             return info
         }
-        final String firstLine = lines.first()
+        final String firstLine = lines.first().trim()
 
-        WorkaroundGroovy7407.wrapGrapeEngineIfConfigured(this)
+        if (firstLine.empty || firstLine.startsWith('//') || firstLine.startsWith('//')) {
+            return info
+        }
 
-        // evaluate first line as groovy script
+        // evaluate first line as groovy, using Grengine to automatically
+        // compile only once per unique line
         final Object obj
         try {
-            obj = new GroovyShell().evaluate(firstLine)
+            obj = META_INFO_GRENGINE.run(firstLine)
+            //obj = new GroovyShell().evaluate(firstLine)
         } catch (Throwable ignore) {
             // (script may throw anything, checked or not)
             return info
@@ -426,153 +427,5 @@ class Jexler implements Service, IssueTracker {
 
         return info
     }
-
-    // Workaround for bug GROOVY-7407:
-    //   "Compilation not thread safe if Grape / Ivy is used in Groovy scripts"
-    //   https://issues.apache.org/jira/browse/GROOVY-7407
-    @CompileStatic
-    @PackageScope
-    static class WorkaroundGroovy7407 {
-        // boolean whether to wrap the GrapeEngine in the Grape class with a synchronized version
-        public static final String GRAPE_ENGINE_WRAP_PROPERTY_NAME =
-                'net.jexler.workaround.groovy.7407.grape.engine.wrap'
-        public static final String LOG_PREFIX = 'workaround GROOVY-7407:'
-        private static volatile Boolean isWrapGrapeEngine
-        static void wrapGrapeEngineIfConfigured(Jexler thisJexler) {
-            if (isWrapGrapeEngine == null) {
-                isWrapGrapeEngine = Boolean.valueOf(System.getProperty(GRAPE_ENGINE_WRAP_PROPERTY_NAME))
-                if (isWrapGrapeEngine) {
-                    log.trace("$LOG_PREFIX wrapping GrapeEngine...")
-                    try {
-                        WorkaroundGroovy7407WrappingGrapeEngine.createAndSet()
-                        log.trace("$LOG_PREFIX successfully wrapped GrapeEngine")
-                    } catch (Exception e) {
-                        String msg = "failed to wrap GrapeEngine: $e"
-                        log.trace("$LOG_PREFIX failed to wrap GrapeEngine: $e")
-                        thisJexler.trackIssue(thisJexler, msg, e)
-                    }
-
-                }
-            }
-        }
-        static void resetForUnitTests() {
-            isWrapGrapeEngine = null
-        }
-    }
-
-    /**
-     * A GrapeEngine that wraps the current GrapeEngine with a wrapper where all calls
-     * of the GrapeEngine API are synchronized with a configurable lock, and allows to
-     * set this engine in the Grape class.
-     *
-     * Works at least in basic situations with Groovy 2.4.3 where the wrapped GrapeEngine
-     * is always a GrapeIvy instance (not all public interface methods have been tested).
-     *
-     * But note that while a synchronized GrapeEngine call is in progress (which may take
-     * a long time to complete, if e.g. downloading a JAR file from a maven repo),
-     * all other threads that want to pull Grape dependencies must wait...
-     *
-     * Several things are not so nice about this approach:
-     * - This is using a "trick" to set the static protected GrapeEngine instance in Grape;
-     *   although nominally protected variables are part of the public API (and in this case
-     *   is shown in the online JavaDoc of the Grape class).
-     * - The "magic" with "calleeDepth" is based on exact knowledge of what GrapeIvy
-     *   does (which, by the way, appears even inconsistent internally(?)), so this
-     *   workaround is not guaranteed to be robust if GroovyIvy implementation changes.
-     * - I refrained from referring to the GrapeIvy class in the source, because it is
-     *   not publicly documented in the online JavaDoc of groovy-core.
-     */
-    @CompileStatic
-    @PackageScope
-    static class WorkaroundGroovy7407WrappingGrapeEngine implements GrapeEngine {
-
-        private final Object lock
-        private final GrapeEngine innerEngine
-
-        // GrapeIvy.DEFAULT_DEPTH + 1, because is additionally wrapped by this class...
-        private static final int DEFAULT_DEPTH = 4
-
-        WorkaroundGroovy7407WrappingGrapeEngine(Object lock, GrapeEngine innerEngine) {
-            this.lock = lock
-            this.innerEngine = innerEngine
-        }
-
-        static void setEngine(GrapeEngine engine) throws Exception {
-            final Field field = Grape.class.getDeclaredField('instance')
-            field.accessible = true
-            field.set(Grape.class, engine)
-        }
-
-        // call this somewhere during initialization to apply the workaround
-        static void createAndSet() throws Exception {
-            engine = new WorkaroundGroovy7407WrappingGrapeEngine(Grape.class, Grape.instance)
-        }
-
-        @Override
-        Object grab(String endorsedModule) {
-            synchronized(lock) {
-                return innerEngine.grab(endorsedModule)
-            }
-        }
-
-        @Override
-        Object grab(Map args) {
-            synchronized(lock) {
-                if (args.get('calleeDepth') == null) {
-                    args.put('calleeDepth', DEFAULT_DEPTH + 1)
-                }
-                return innerEngine.grab(args)
-            }
-        }
-
-        @Override
-        Object grab(Map args, Map... dependencies) {
-            synchronized(lock) {
-                if (args.get('calleeDepth') == null) {
-                    args.put('calleeDepth', DEFAULT_DEPTH)
-                }
-                return innerEngine.grab(args, dependencies)
-            }
-        }
-
-        @Override
-        Map<String, Map<String, List<String>>> enumerateGrapes() {
-            synchronized(lock) {
-                return innerEngine.enumerateGrapes()
-            }
-        }
-
-        @Override
-        URI[] resolve(Map args, Map... dependencies) {
-            synchronized(lock) {
-                if (args.get('calleeDepth') == null) {
-                    args.put('calleeDepth', DEFAULT_DEPTH)
-                }
-                return innerEngine.resolve(args, dependencies)
-            }
-        }
-
-        @Override
-        URI[] resolve(Map args, List depsInfo, Map... dependencies) {
-            synchronized(lock) {
-                return innerEngine.resolve(args, depsInfo, dependencies)
-            }
-        }
-
-        @Override
-        Map[] listDependencies(ClassLoader classLoader) {
-            synchronized(lock) {
-                return innerEngine.listDependencies(classLoader)
-            }
-        }
-
-        @Override
-        void addResolver(Map<String, Object> args) {
-            synchronized(lock) {
-                innerEngine.addResolver(args)
-            }
-        }
-    }
-
 
 }

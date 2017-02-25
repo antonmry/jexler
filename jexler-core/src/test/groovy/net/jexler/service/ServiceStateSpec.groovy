@@ -16,7 +16,6 @@
 
 package net.jexler.service
 
-import net.jexler.service.ServiceState
 import net.jexler.test.FastTests
 
 import org.junit.experimental.categories.Category

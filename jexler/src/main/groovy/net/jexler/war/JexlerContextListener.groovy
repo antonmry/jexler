@@ -18,7 +18,6 @@ package net.jexler.war
 
 import net.jexler.Jexler
 import net.jexler.JexlerContainer
-import net.jexler.JexlerUtil
 
 import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.core.FileAppender
