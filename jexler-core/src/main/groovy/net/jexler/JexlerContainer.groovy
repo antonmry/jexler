@@ -19,10 +19,24 @@ package net.jexler
 import net.jexler.service.Service
 import net.jexler.service.ServiceGroup
 
+import ch.grengine.Grengine
+import ch.grengine.code.CompilerFactory
+import ch.grengine.code.groovy.DefaultGroovyCompilerFactory
+import ch.grengine.engine.Engine
+import ch.grengine.engine.LayeredEngine
+import ch.grengine.except.GrengineException
+import ch.grengine.load.DefaultTopCodeCacheFactory
+import ch.grengine.load.LoadMode
+import ch.grengine.load.TopCodeCacheFactory
+import ch.grengine.source.DefaultSourceFactory
+import ch.grengine.sources.Sources
+import ch.grengine.sources.SourcesUtil
 import groovy.grape.Grape
 import groovy.grape.GrapeEngine
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
+import org.codehaus.groovy.control.CompilerConfiguration
+import org.codehaus.groovy.control.customizers.ImportCustomizer
 import org.quartz.Scheduler
 import org.quartz.impl.DirectSchedulerFactory
 import org.quartz.simpl.RAMJobStore
@@ -54,6 +68,8 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
     private Scheduler scheduler
     private final Object schedulerLock
 
+    private final Grengine grengine
+
     /**
      * Constructor from jexler script directory.
      * @param dir directory which contains jexler scripts
@@ -73,6 +89,7 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
         schedulerLock = new Object()
         WorkaroundGroovy7407.wrapGrapeEngineIfConfigured(this)
         refresh()
+        grengine = createGrengine()
     }
 
     /**
@@ -240,6 +257,55 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
      */
     static Logger getLogger() {
         return log
+    }
+
+    Grengine getGrengine() {
+        return grengine
+    }
+
+    private Grengine createGrengine() {
+
+        // setting most settings explicitly even if would be default value anyway
+
+        final CompilerConfiguration compilerConfiguration = new CompilerConfiguration()
+        compilerConfiguration.getOptimizationOptions().put(CompilerConfiguration.INVOKEDYNAMIC, true)
+        compilerConfiguration.setTargetBytecode(CompilerConfiguration.JDK8)
+        final ImportCustomizer importCustomizer = new ImportCustomizer()
+        importCustomizer.addStarImports('net.jexler', 'net.jexler.service', 'net.jexler.tool')
+        compilerConfiguration.addCompilationCustomizers(importCustomizer)
+
+        final CompilerFactory compilerFactory = new DefaultGroovyCompilerFactory(compilerConfiguration);
+
+        final Sources sources = new JexlerContainerSources.Builder(this)
+                .setCompilerFactory(compilerFactory)
+                .setSourceFactory(new DefaultSourceFactory())
+                .setLatencyMs(800)
+                .build()
+
+        final TopCodeCacheFactory topCodeCacheFactory = new DefaultTopCodeCacheFactory.Builder()
+                .setCompilerFactory(compilerFactory)
+                .build()
+
+        Engine engine = new LayeredEngine.Builder()
+                .setAllowSameClassNamesInMultipleCodeLayers(false)
+                .setAllowSameClassNamesInParentAndCodeLayers(true)
+                .setWithTopCodeCache(true)
+                .setTopLoadMode(LoadMode.PARENT_FIRST)
+                .setTopCodeCacheFactory(topCodeCacheFactory)
+                .build()
+
+        Grengine gren = new Grengine.Builder()
+                .setEngine(engine)
+                .setLatencyMs(800)
+                .setSourcesLayers(SourcesUtil.sourcesArrayToList(sources))
+                .build()
+
+        GrengineException lastUpdateExecption = gren.getLastUpdateException()
+        if (lastUpdateExecption != null) {
+            trackIssue(this, "Container Grengine update failed.", lastUpdateExecption)
+        }
+
+        return gren
     }
 
     // Workaround for bug GROOVY-7407:

@@ -169,11 +169,8 @@ class Jexler implements Service, IssueTracker {
         // prepare for compile
         final CompilerConfiguration config = new CompilerConfiguration()
         final ImportCustomizer importCustomizer = new ImportCustomizer()
-        if (!(metaConfigAtStart?.autoimport == false)) {
-            importCustomizer.addStarImports(
-                    'net.jexler', 'net.jexler.service', 'net.jexler.tool')
-            config.addCompilationCustomizers(importCustomizer)
-        }
+        importCustomizer.addStarImports('net.jexler', 'net.jexler.service', 'net.jexler.tool')
+        config.addCompilationCustomizers(importCustomizer)
         final GroovyClassLoader loader = new GroovyClassLoader(Thread.currentThread().contextClassLoader, config)
         loader.addClasspath(file.parent)
 
@@ -365,7 +362,7 @@ class Jexler implements Service, IssueTracker {
      *
      * Example:
      * <pre>
-     * // jexler { autostart = true; autoimport = false }
+     * // jexler { autostart = true; some = 'thing' }
      * </pre>
      *
      * Returns null if there is no meta config in the jexler or the

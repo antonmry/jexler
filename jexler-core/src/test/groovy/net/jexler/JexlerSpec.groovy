@@ -77,7 +77,7 @@ class JexlerSpec extends Specification {
 
         then:
         jexler.issues.size() == 1
-        jexler.issues.first().service == jexler
+        jexler.issues.first().service == jexler.container
         jexler.issues.first().message == "Could not read meta config from jexler file '$file.absolutePath'."
         jexler.issues.first().cause instanceof IOException
     }
@@ -494,7 +494,7 @@ class JexlerSpec extends Specification {
 
         then:
         jexler.issues.size() == 1
-        jexler.issues.first().service == jexler
+        jexler.issues.first().service == jexler.container
         jexler.issues.first().message.startsWith('Could not read meta config from jexler file')
         jexler.issues.first().cause instanceof IOException
     }
@@ -518,7 +518,7 @@ class JexlerSpec extends Specification {
         def dir = tempFolder.root
         def file = new File(dir, 'Test.groovy')
         file.text = """\
-            // jexler { autoimport = false }
+            // jexler { autostart = false }
             while (true) {
               event = events.take()
               if (event instanceof net.jexler.service.StopEvent) {

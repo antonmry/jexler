@@ -717,7 +717,7 @@ the fascinating Groovy test framework.
 
 The jexler webapp is very simple and contains a demo unit test that starts it in a Jetty embedded web server.
 
-Within a jexler, the following packages are automatically imported by default:
+The following packages are automatically imported:
 
 * `net.jexler`
 * `net.jexler.service`
@@ -747,17 +747,15 @@ of any value, the so called *meta config*, e.g.:
 
 [source,groovy]
 ----
-// jexler { autostart = true; autoimport = true; whatever = 'my words' }
+// jexler { autostart = true; whatever = 'my words' }
 ----
 
 These are evaluated before running the jexler script, i.e. none of the variables
 listed above are available for that map.
-There are two boolean settings that jexler uses by default:
+There is one boolean settings that jexler uses by default:
 
 * `autostart`: If true, the jexler is started when the webapp starts up.
    Default is false.
-* `autoimport`: If false, the three mentioned packages are not automatically
-   imported. Default is true.
 
 === Distribution
 
