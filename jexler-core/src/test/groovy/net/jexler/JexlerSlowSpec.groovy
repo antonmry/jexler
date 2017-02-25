@@ -43,6 +43,7 @@ class JexlerSlowSpec extends Specification {
         File dir = tempFolder.root
         File file = new File(dir, 'Test.groovy')
         file.text = """\
+            // jexler {}
             log.info('before startup wait ' + jexler.id)
             JexlerUtil.waitAtLeast($MS_3_SEC)
             log.info('after startup wait ' + jexler.id)

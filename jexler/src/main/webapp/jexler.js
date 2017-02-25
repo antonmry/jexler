@@ -156,6 +156,7 @@ function preloadDim() {
     new Image().src = "error-dim.gif";
     new Image().src = "info-dim.gif";
     new Image().src = "log-dim.gif";
+    new Image().src = "neutral-dim.gif";
     new Image().src = "ok-dim.gif";
     new Image().src = "restart-dim.gif";
     new Image().src = "space-dim.gif";

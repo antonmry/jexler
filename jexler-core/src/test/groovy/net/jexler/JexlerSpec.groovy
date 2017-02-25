@@ -23,6 +23,7 @@ import net.jexler.service.ServiceState
 import net.jexler.service.StopEvent
 import net.jexler.test.FastTests
 
+import ch.grengine.except.CompileException
 import org.codehaus.groovy.control.CompilationFailedException
 import org.junit.Rule
 import org.junit.experimental.categories.Category
@@ -43,7 +44,7 @@ class JexlerSpec extends Specification {
     private final static long MS_1_SEC = 1000
     private final static long MS_10_SEC = 10000
 
-    def 'TEST script simple run (exit immediately or silently not even started if not Script instance)'() {
+    def 'TEST script simple run (exit immediately)'() {
         given:
         def dir = tempFolder.root
         def file = new File(dir, 'Test.groovy')
@@ -58,36 +59,44 @@ class JexlerSpec extends Specification {
         jexler.id == 'Test'
         jexler.state == ServiceState.OFF
         jexler.state.off
-        jexler.metaInfo.size() == metaInfoSize
         jexler.issues.empty
 
         where:
-        metaInfoSize | text
-        0            | ''
-        0            | 'return 5'
-        1            | "['autostart' : true]"
-        0            | 'class NotInstanceOfScript {}'
+        text << [ '// jexler {}', '//  JEXLER\t  {  }\nreturn 5', '//jexler{autostart=true}' ]
     }
 
-    def 'TEST script cannot read meta info'() {
+    def 'TEST script cannot read meta config'() {
         when:
         def dir = tempFolder.root
         def file = new File(dir, 'Test.groovy')
         def jexler = new Jexler(file, new JexlerContainer(dir))
-
-        then:
         // create directory with name of jexler script file
         file.mkdir()
-
-        when:
         jexler.start()
         JexlerUtil.waitForStartup(jexler, MS_10_SEC)
 
         then:
         jexler.issues.size() == 1
         jexler.issues.first().service == jexler
-        jexler.issues.first().message == "Could not read meta info from jexler file '$file.absolutePath'."
+        jexler.issues.first().message == "Could not read meta config from jexler file '$file.absolutePath'."
         jexler.issues.first().cause instanceof IOException
+    }
+
+    def 'TEST script cannot parse meta config'() {
+        when:
+        def dir = tempFolder.root
+        def file = new File(dir, 'Test.groovy')
+        def jexler = new Jexler(file, new JexlerContainer(dir))
+        // : instead of =
+        file.text = '// jexler { autostart&% = true }'
+        jexler.start()
+        JexlerUtil.waitForStartup(jexler, MS_10_SEC)
+
+        then:
+        jexler.issues.size() == 1
+        jexler.issues.first().service == jexler
+        jexler.issues.first().message == "Could not parse meta config of jexler 'Test'."
+        jexler.issues.first().cause instanceof CompileException
     }
 
     def 'TEST script compile, create or run fails'() {
@@ -102,41 +111,42 @@ class JexlerSpec extends Specification {
         JexlerUtil.waitForStartup(jexler, MS_10_SEC)
         jexler.state == ServiceState.OFF
         jexler.state.off
-        jexler.metaInfo.size() == metaInfoSize
+        (jexler.metaConfig == null ? 0 : jexler.metaConfig.size()) == metaConfigSize
         jexler.issues.size() == 1
         jexler.issues.first().service == jexler
         jexler.issues.first().message == message
         causeClass.isAssignableFrom(jexler.issues.first().cause.class)
 
         where:
-        metaInfoSize | message                  | causeClass
-        2            | 'Script compile failed.' | CompilationFailedException.class
-        0            | 'Script create failed.'  | ExceptionInInitializerError.class
-        2            | 'Script run failed.'     | IllegalArgumentException.class
-        0            | 'Script run failed.'     | FileNotFoundException.class
-        1            | 'Script run failed.'     | NoClassDefFoundError.class
+        metaConfigSize | message                  | causeClass
+        2              | 'Script compile failed.' | CompilationFailedException.class
+        0              | 'Script create failed.'  | ExceptionInInitializerError.class
+        2              | 'Script run failed.'     | IllegalArgumentException.class
+        0              | 'Script run failed.'     | FileNotFoundException.class
+        1              | 'Script run failed.'     | NoClassDefFoundError.class
 
         text << [
                 """\
-                    [ 'autostart' : false, 'foo' : 'bar' ]
+                    // jexler { autostart = false; foo = 'bar' }
                     # does not compile...
                 """.stripIndent(),
                 """\
+                    // jexler {}
                     public class Test extends Script {
                       static { throw new RuntimeException() }
                       public def run() {}
                     }
                 """.stripIndent(),
                 """\
-                    [ 'autostart' : false, 'foo' : 'bar' ]
+                    // jexler { autostart = false; foo = 'bar' }
                     throw new IllegalArgumentException()
                 """.stripIndent(),
                 """\
-                    []
+                    // jexler {}
                     throw new FileNotFoundException()
                 """.stripIndent(),
                 """\
-                    [ 'autostart' : true ]
+                    // jexler { autostart = true }
                     throw new NoClassDefFoundError()
                 """.stripIndent()
         ]
@@ -147,7 +157,7 @@ class JexlerSpec extends Specification {
         def dir = tempFolder.root
         def file = new File(dir, 'Test.groovy')
         file.text = """\
-            [ 'autostart' : false, 'foo' : 'bar' ]
+            // jexler { autostart = false; foo = 'bar' }
             def mockService = new MockService(jexler, 'mock-service')
             services.add(mockService)
             services.start()
@@ -166,9 +176,9 @@ class JexlerSpec extends Specification {
         then:
         jexler.state == ServiceState.OFF
         jexler.state.off
-        jexler.metaInfo.size() == 2
-        jexler.metaInfo.autostart == false
-        jexler.metaInfo.foo == 'bar'
+        jexler.metaConfig.size() == 2
+        jexler.metaConfig.autostart == false
+        jexler.metaConfig.foo == 'bar'
         jexler.issues.empty
 
         when:
@@ -236,7 +246,7 @@ class JexlerSpec extends Specification {
         def dir = tempFolder.root
         def file = new File(dir, 'Test.groovy')
         file.text = """\
-            [ 'autostart' : false, 'foo' : 'bar' ]
+            // jexler { autostart = false; foo = 'bar' }
             def mockService = new MockService(jexler, 'mock-service')
             services.add(mockService)
             services.start()
@@ -255,9 +265,9 @@ class JexlerSpec extends Specification {
         then:
         jexler.state == ServiceState.OFF
         jexler.state.off
-        jexler.metaInfo.size() == 2
-        jexler.metaInfo.autostart == false
-        jexler.metaInfo.foo == 'bar'
+        jexler.metaConfig.size() == 2
+        jexler.metaConfig.autostart == false
+        jexler.metaConfig.foo == 'bar'
         jexler.issues.empty
 
         when:
@@ -406,7 +416,7 @@ class JexlerSpec extends Specification {
         def dir = tempFolder.root
         def file = new File(dir, 'Test.groovy')
         file.text = """\
-            [ 'autostart' : false, 'foo' : 'bar' ]
+            // jexler { autostart = false; foo = 'bar' }
             def mockService = new MockService(jexler, 'mock-service')
             mockService.stopRuntimeException = new RuntimeException()
             services.add(mockService)
@@ -448,57 +458,7 @@ class JexlerSpec extends Specification {
         mockService.nStopped == 1
     }
 
-    def 'TEST access to jexlerBinding in other classes and jexler itself'() {
-
-        given:
-        def dir = tempFolder.root
-        def file = new File(dir, 'Test.groovy')
-        file.text = """\
-            [ 'autostart' : false, 'foo' : 'bar' ]
-            def mockService = new MockService(jexlerBinding.jexler, 'mock-service')
-            services.add(mockService)
-            services.start()
-            while (true) {
-              event = events.take()
-              if (event instanceof MockEvent) {
-                mockService.notifyGotEvent()
-                Util.writeId()
-              } else if (event instanceof StopEvent) {
-                return
-              }
-            }
-            """.stripIndent()
-        def fileUtil = new File(dir, 'Util.groovy')
-        fileUtil.text = """\
-            class Util {
-              static def id = jexlerBinding.jexler.id
-              static def writeId() {
-                new File(jexlerBinding.jexler.dir, 'out').setText(id)
-              }
-            }
-            """.stripIndent()
-
-        when:
-        def jexler = new Jexler(file, new JexlerContainer(dir))
-        jexler.start()
-        JexlerUtil.waitForStartup(jexler, MS_10_SEC)
-        def mockService = MockService.getInstance('mock-service')
-        mockService.notifyJexler()
-        jexler.stop()
-        JexlerUtil.waitForShutdown(jexler, MS_10_SEC)
-
-        then:
-        jexler.state == ServiceState.OFF
-        jexler.state.off
-        jexler.issues.size() == 0
-        mockService.nStarted == 1
-        mockService.nEventsSent == 1
-        mockService.nEventsGotBack == 1
-        mockService.nStopped == 1
-        new File(dir, 'out').text == 'Test'
-    }
-
-    def 'TEST meta info: no file'() {
+    def 'TEST meta config: no file'() {
         given:
         def dir = tempFolder.root
         def file = new File(dir, 'Test.groovy')
@@ -511,14 +471,14 @@ class JexlerSpec extends Specification {
         jexler.issues.empty
 
         when:
-        def metaInfo = jexler.metaInfo
+        def metaConfig = jexler.metaConfig
 
         then:
-        metaInfo.isEmpty()
+        metaConfig == null
         jexler.issues.empty
     }
 
-    def 'TEST meta info: IOException while reading file'() {
+    def 'TEST meta config: IOException while reading file'() {
         given:
         def dir = tempFolder.root
 
@@ -530,26 +490,27 @@ class JexlerSpec extends Specification {
         jexler.issues.empty
 
         when:
-        jexler.metaInfo
+        jexler.metaConfig
 
         then:
         jexler.issues.size() == 1
         jexler.issues.first().service == jexler
-        jexler.issues.first().message.startsWith('Could not read meta info from jexler file')
+        jexler.issues.first().message.startsWith('Could not read meta config from jexler file')
         jexler.issues.first().cause instanceof IOException
     }
 
-    def 'TEST meta info: default to empty'() {
+    def 'TEST meta config: default to null'() {
         given:
         def dir = tempFolder.root
         def file = new File(dir, 'Test.groovy')
+        file.text = text
 
         expect:
         def jexler = new Jexler(file, new JexlerContainer(dir))
-        jexler.metaInfo.isEmpty()
+        jexler.metaConfig == null
 
         where:
-        text << [ '', "[ 'not-a-map' ]", '#does not compile' ]
+        text << [ '', "[ '...' ]", '#does not compile' ]
     }
     
     def 'TEST interrupt event take in jexler event loop'() {
@@ -557,7 +518,7 @@ class JexlerSpec extends Specification {
         def dir = tempFolder.root
         def file = new File(dir, 'Test.groovy')
         file.text = """\
-            [ 'autoimport' : false ]
+            // jexler { autoimport = false }
             while (true) {
               event = events.take()
               if (event instanceof net.jexler.service.StopEvent) {

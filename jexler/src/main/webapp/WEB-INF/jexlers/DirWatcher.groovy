@@ -1,4 +1,4 @@
-[ 'autostart' : true ]
+// jexler { autostart = true }
 
 services.add(new DirWatchService(jexler, 'watch-jexler-dir'))
 services.start()

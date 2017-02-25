@@ -1,4 +1,4 @@
-[ 'autostart' : true ]
+// jexler { autostart = true }
 
 services.add(new CronService(jexler, 'once-immediately').setCron('now'))
 services.start()

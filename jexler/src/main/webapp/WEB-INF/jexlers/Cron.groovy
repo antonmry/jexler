@@ -1,4 +1,4 @@
-[ 'autostart' : true ]
+// jexler { autostart = true }
 
 services.add(new CronService(jexler, 'every-minute').setCron('* * * * *'))
 services.add(new CronService(jexler, 'every-30-seconds').setCron('*/30 * * * * *'))
@@ -10,7 +10,7 @@ while (true) {
   if (event instanceof CronEvent) {
     log.trace("It is now: ${new Date()} (${event.service.id})")
     log.trace("Util.hello(): ${Util.hello()}")
-    Util.logMethodCall()
+    Util.logMethodCall(this)
   } else if (event instanceof StopEvent) {
     return
   }

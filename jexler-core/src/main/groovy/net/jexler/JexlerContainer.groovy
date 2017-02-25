@@ -115,7 +115,7 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
     @Override
     void start() {
         for (Jexler jexler : jexlers) {
-            if (jexler.metaInfo.autostart) {
+            if (jexler.metaConfig?.autostart) {
                 jexler.start()
             }
         }
@@ -142,7 +142,8 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
     }
 
     /**
-     * Get the list of all jexlers, sorted by id.
+     * Get the list of all jexlers, first runnable jexlers,
+     * then non-runnable ones, each group sorted by id.
      *
      * This is a copy, iterating over it can be freely done
      * and trying to add or remove list elements throws
@@ -150,8 +151,17 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
      */
     List<Jexler> getJexlers() {
         final List<Jexler> jexlers = new LinkedList<>()
+        final List<Jexler> nonRunnables = new LinkedList<>()
         synchronized(jexlerMap) {
-            jexlers.addAll((List<Jexler>)(List)services)
+            for (Service service : services) {
+                Jexler jexler = (Jexler)service
+                if (jexler.runnable) {
+                    jexlers.add(jexler)
+                } else {
+                    nonRunnables.add(jexler)
+                }
+            }
+            jexlers.addAll(nonRunnables)
         }
         return Collections.unmodifiableList(jexlers)
     }
@@ -230,13 +240,6 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
      */
     static Logger getLogger() {
         return log
-    }
-
-    /**
-     * Get logger for given class.
-     */
-    static Logger getLogger(Class clazz) {
-        return LoggerFactory.getLogger(clazz)
     }
 
     // Workaround for bug GROOVY-7407:

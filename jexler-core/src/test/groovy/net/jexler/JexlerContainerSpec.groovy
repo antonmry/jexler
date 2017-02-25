@@ -50,9 +50,9 @@ class JexlerContainerSpec extends Specification {
               }
             }
             """.stripIndent()
-        new File(dir, 'Jexler1.groovy').text = "['autostart':false]\n$jexlerBody"
-        new File(dir, 'Jexler2.groovy').text = "['autostart':true]\n$jexlerBody"
-        new File(dir, 'Jexler3.groovy').text = "['autostart':true]\n$jexlerBody"
+        new File(dir, 'Jexler1.groovy').text = "// jexler { autostart = false }\n$jexlerBody"
+        new File(dir, 'Jexler2.groovy').text = "// jexler { autostart = true }\n$jexlerBody"
+        new File(dir, 'Jexler3.groovy').text = "// jexler { autostart = true }\n$jexlerBody"
         new File(dir, 'Jexler4.script').text = 'foo.bar=xyz'
 
         when:
@@ -180,7 +180,7 @@ class JexlerContainerSpec extends Specification {
         container.state.off
 
         when:
-        new File(dir, 'Jexler5.groovy').text = "[ 'autostart' : true ]\nwhile(true){}"
+        new File(dir, 'Jexler5.groovy').text = "// jexler { autostart = true }\nwhile(true){}"
         container = new JexlerContainer(dir)
         container.start()
         JexlerUtil.waitForStartup(container, MS_10_SEC)

@@ -12,7 +12,7 @@ of their choice - great for prototyping and useful for automating.
 Here's a first example of a jexler Groovy script:
 [source,groovy]
 ----
-[ 'autostart' : true ]
+// jexler { autostart = true }
 
 services.add(new CronService(jexler, 'every-minute').setCron('* * * * *'))
 services.start()
@@ -35,7 +35,7 @@ Now instead of just logging the word "hello", let's send an email instead:
 
 [source,groovy]
 ----
-[ 'autostart' : true ]
+// jexler { autostart = true }
 
 @Grab('org.apache.commons:commons-email:1.3')
 import org.apache.commons.mail.*
@@ -109,7 +109,7 @@ methods that handle different life cycle stages and received events:
 
 [source,groovy]
 ----
-[ 'autostart' : true ]
+// jexler { autostart = true }
 
 // dispatch to methods below
 JexlerDispatcher.dispatch(this)
@@ -162,7 +162,7 @@ So that the first example above could e.g. be written as:
 
 [source,groovy]
 ----
-[ 'autostart' : true ]
+// jexler { autostart = true }
 
 JexlerDispatcher.dispatch(this)
 
@@ -735,43 +735,19 @@ and the following variables are available to jexler Groovy scripts (binding):
    stopped if the jexler exits (regularly or due to an exception).
 * `Logger log`: The logback logger for the jexler instance.
 
-It is even possible to access the binding variables from other classes,
-use e.g. `jexlerBinding.log` to access the logger:
+To get these variables from other classes, pass `this` of the running
+jexler in a constructor or similar to those classes.
+You can also use `JexlerContainer.getLogger()` to get the logger of the
+JexlerContainer class.
 
-[source,groovy]
-----
-class Util {
-  static def log = jexlerBinding.log
-  static {
-    log.trace("Class loaded for jexler '${jexlerBinding.jexler.id}'")
-  }
-  static logMethodCall() {
-    log.trace("Method called for jexler '${jexlerBinding.jexler.id}'")
-  }
-}
-----
-
-This is implemented by always adding the following class to the Groovy
-classpath plus, by default, by statically importing its `jexlerBinding`
-member variable with every compiled source.
-
-[source,groovy]
-----
-package net.jexler
-@groovy.transform.CompileStatic
-class JexlerBinding {
-  public static Map<String,Object> jexlerBinding
-}
-----
-
-=== Meta Info
+=== Meta Config
 
 The first line of a jexler script may contain a map with string keys and values
-of any value, the so called *meta info*, e.g.:
+of any value, the so called *meta config*, e.g.:
 
 [source,groovy]
 ----
-[ 'autostart' : true, 'autoimport' : true, 'whatever' : 'my words' ]
+// jexler { autostart = true; autoimport = true; whatever = 'my words' }
 ----
 
 These are evaluated before running the jexler script, i.e. none of the variables
@@ -781,8 +757,7 @@ There are two boolean settings that jexler uses by default:
 * `autostart`: If true, the jexler is started when the webapp starts up.
    Default is false.
 * `autoimport`: If false, the three mentioned packages are not automatically
-   imported and there is no static import of `JexlerBinding.jexlerBinding`.
-   Default is true.
+   imported. Default is true.
 
 === Distribution
 

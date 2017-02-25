@@ -173,6 +173,9 @@ class JexlerContainerView {
 
     // Get start/stop link with icon for table of jexlers
     String getStartStop() {
+        if (jexlerId != '' && !jexler.runnable) {
+            return getSpace()
+        }
         boolean on
         if (jexlerId == '') {
             on = container.state.on
@@ -184,6 +187,9 @@ class JexlerContainerView {
 
     // Get restart/zap link with icon for table of jexlers
     String getRestartZap() {
+        if (jexlerId != '' && !jexler.runnable) {
+            return getSpace()
+        }
         if (jexlerId != '' && jexler.state.on) {
             for (Issue issue : jexler.issues) {
                 if (issue.getMessage() == JexlerUtil.SHUTDOWN_TIMEOUT_MSG) {
@@ -208,6 +214,10 @@ class JexlerContainerView {
             <button class="img" type="$type" name="cmd" value="$cmdParam" title="$title" formaction="${getAction(jexlerId)}">\
             <img src="${imgName}.gif" title="$title">\
             </button>""".replace('            ', '')
+    }
+
+    String getSpace() {
+        return "<img src='space.gif' title=''>"
     }
 
     // Get start link with icon for table of jexlers
@@ -246,7 +256,13 @@ class JexlerContainerView {
         if (jexler.state.busy) {
             id = "<em>$id</em>"
         }
-        return "<a href='?cmd=info&jexler=$jexlerId'><span title='Status: ${jexler.state.info}'>$id</span></a>"
+        String title
+        if (jexler.runnable) {
+            title = "Jexler: ${jexler.state.info}"
+        } else {
+            title = "Utility class or config, etc."
+        }
+        return "<a href='?cmd=info&jexler=$jexlerId'><span title='$title'>$id</span></a>"
     }
 
     // Get web link and icon for table of jexlers
@@ -270,6 +286,9 @@ class JexlerContainerView {
 
     // Get link and icon for logfile and/or issues
     String getLog() {
+        if (jexlerId != '' && !jexler.runnable) {
+            return "<img src='neutral.gif' title=''>"
+        }
         if (jexlerId == '') {
             if (container.issues.size() == 0) {
                 return "<a href='?cmd=log&jexler=$jexlerId'><img src='log.gif' title='Show jexler log'></a>"
@@ -419,7 +438,7 @@ class JexlerContainerView {
     private void handleStart() {
         if (targetJexlerId == '') {
             for (Jexler jexler : container.jexlers) {
-                if (jexler.metaInfo.autostart) {
+                if (jexler.metaConfig?.autostart) {
                     handleStart(jexler)
                 }
             }
@@ -445,7 +464,7 @@ class JexlerContainerView {
     private void handleRestart() {
         if (targetJexlerId == '') {
             for (Jexler jexler : container.jexlers) {
-                if (jexler.metaInfo.autostart) {
+                if (jexler.metaConfig?.autostart) {
                     handleRestart(jexler)
                 } else if (jexler.state.on) {
                     handleStop(jexler)

@@ -4,14 +4,11 @@ class Util {
     return 'Hello World'
   }
   
-  // jexlerBinding gives access to jexler script binding
-  // variables in other classes, even from a static context
-  static def log = jexlerBinding.log
-  static {
-    log.trace("Class loaded for jexler '${jexlerBinding.jexler.id}'")
-  }
-  static logMethodCall() {
-    log.trace("Method called for jexler '${jexlerBinding.jexler.id}'")
+  static def log = JexlerContainer.getLogger()
+
+  static logMethodCall(def script) {
+    log.trace("Method called for jexler '$script.jexler.id'")
+    script.log.trace("Method called...")
   }
 
 }

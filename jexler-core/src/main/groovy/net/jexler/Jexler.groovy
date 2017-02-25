@@ -30,6 +30,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 import java.util.concurrent.LinkedBlockingQueue
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 /**
  * Jexler, runs a Groovy script that handles events.
@@ -41,7 +43,10 @@ class Jexler implements Service, IssueTracker {
 
     private static final Logger log = LoggerFactory.getLogger(Jexler.class)
 
-    private static final Grengine META_INFO_GRENGINE = new Grengine()
+    private static final Grengine META_CONFIG_GRENGINE = new Grengine()
+
+    private static final Pattern META_CONFIG_PATTERN = Pattern.compile(
+            '^//\\s*jexler\\s*\\{\\s*(.*?)\\s*\\}$', Pattern.CASE_INSENSITIVE)
 
     /**
      * Blocking queue for events sent to a Jexler
@@ -115,7 +120,7 @@ class Jexler implements Service, IssueTracker {
 
     private final IssueTracker issueTracker
 
-    private Map<String,Object> metaInfoAtStart
+    private ConfigObject metaConfigAtStart
 
     /**
      * Constructor.
@@ -151,16 +156,20 @@ class Jexler implements Service, IssueTracker {
 
         forgetIssues()
 
-        metaInfoAtStart = readMetaInfo()
+        metaConfigAtStart = readMetaConfig()
         if (!issues.empty) {
             state = ServiceState.OFF
+            return
+        }
+        if (metaConfigAtStart == null) {
+            // not runnable
             return
         }
 
         // prepare for compile
         final CompilerConfiguration config = new CompilerConfiguration()
         final ImportCustomizer importCustomizer = new ImportCustomizer()
-        if (metaInfo.autoimport == null || metaInfo.autoimport) {
+        if (!(metaConfigAtStart?.autoimport == false)) {
             importCustomizer.addStarImports(
                     'net.jexler', 'net.jexler.service', 'net.jexler.tool')
             config.addCompilationCustomizers(importCustomizer)
@@ -177,18 +186,6 @@ class Jexler implements Service, IssueTracker {
                 'services' : services,
                 'log' : log,
         ])
-
-        // provide access to binding variables in other classes as 'jexlerBinding'
-        final Class jexlerBindingClazz = loader.parseClass("""\
-          package net.jexler
-          @groovy.transform.CompileStatic
-          class JexlerBinding { 
-            public static Map<String,Object> jexlerBinding
-          }""".stripIndent())
-        jexlerBindingClazz.getDeclaredField('jexlerBinding').set(null, binding.variables)
-        if (metaInfo.autoimport == null || metaInfo.autoimport) {
-            importCustomizer.addStaticImport('net.jexler.JexlerBinding', 'jexlerBinding')
-        }
 
         // compile
         final Class clazz
@@ -352,80 +349,73 @@ class Jexler implements Service, IssueTracker {
         return script
     }
 
+    boolean isRunnable() {
+        return getMetaConfig() != null
+    }
+
     /**
-     * Get meta info.
+     * Get meta config.
      *
      * Read from the jexler file at each call except if the jexler
-     * is already running, in that case returns meta info read at
+     * is already running, in that case returns meta config read at
      * the time the jexler was started.
      *
-     * The meta info of a jexler is stored in the first line of
-     * a jexler script file as a map in Groovy notation.
+     * The meta config of a jexler is stored in the first line of
+     * a jexler script file.
      *
      * Example:
      * <pre>
-     *
-     * [ "autostart" : true, "root" : new File('/') ]
+     * // jexler { autostart = true; autoimport = false }
      * </pre>
      *
-     * Meta info is silently considered empty if for some reason
-     * evaluating the line is not possible or fails or or evaluates
-     * to an object which is not a map.
+     * Returns null if there is no meta config in the jexler or the
+     * file could not be read; returns an empty config object if
+     * config is present but could not be parsed.
      */
-    Map<String,Object> getMetaInfo() {
+    ConfigObject getMetaConfig() {
         if (state.on) {
-            return metaInfoAtStart
+            return metaConfigAtStart
         } else {
-            return readMetaInfo()
+            return readMetaConfig()
         }
     }
 
-    private Map<String,Object> readMetaInfo() {
-        final Map<String,Object> info = new HashMap<>()
+    private ConfigObject readMetaConfig() {
 
         if (!file.exists()) {
-            return info
+            return null
         }
 
         final List<String> lines
         try {
             lines = file.readLines()
         } catch (IOException e) {
-            String msg = "Could not read meta info from jexler file '$file.absolutePath'."
-            trackIssue(this, msg, e)
-            return info
+            String msg = "Could not read meta config from jexler file '$file.absolutePath'."
+            trackIssue(this.container, msg, e)
+            return null
+        }
+        if (lines.isEmpty()) {
+            return null
         }
 
-        if (lines.empty) {
-            return info
+        String line = lines.first().trim()
+        Matcher matcher = META_CONFIG_PATTERN.matcher(line)
+        if (!matcher.matches()) {
+            return null
         }
-        final String firstLine = lines.first().trim()
+        final String metaConfigText = matcher.group(1)
 
-        if (firstLine.empty || firstLine.startsWith('//') || firstLine.startsWith('//')) {
-            return info
-        }
-
-        // evaluate first line as groovy, using Grengine to automatically
-        // compile only once per unique line
-        final Object obj
+        // Using Grengine to automatically compile only once per unique
+        // meta config text
         try {
-            obj = META_INFO_GRENGINE.run(firstLine)
-            //obj = new GroovyShell().evaluate(firstLine)
-        } catch (Throwable ignore) {
+            final Script script = META_CONFIG_GRENGINE.create(metaConfigText)
+            return new ConfigSlurper().parse(script)
+        } catch (Throwable t) {
             // (script may throw anything, checked or not)
-            return info
+            String msg = "Could not parse meta config of jexler '$id'."
+            trackIssue(this, msg, t)
+            return new ConfigObject()
         }
-
-        // evaluated to a map?
-        if (obj == null || !(obj instanceof Map)) {
-            return info
-        }
-
-        // set map
-        final Map<String,Object> map = (Map<String,Object>)obj
-        info.putAll(map)
-
-        return info
     }
 
 }
