@@ -528,7 +528,7 @@ class JexlerContainerView {
                 container.forgetIssues()
                 GrengineException lastUpdateException = container.grengine.getLastUpdateException()
                 if (lastUpdateException != null) {
-                    container.trackIssue(container, JexlerContainer.MSG_CONTAINER_GRENGINE_UPDATE_FAILED, lastUpdateExecption)
+                    container.trackIssue(container, JexlerContainer.MSG_CONTAINER_GRENGINE_UPDATE_FAILED, lastUpdateException)
                 }
             }
         }
