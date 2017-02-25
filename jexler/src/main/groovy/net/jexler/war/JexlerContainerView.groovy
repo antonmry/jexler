@@ -34,7 +34,7 @@ import javax.servlet.jsp.PageContext
 import java.text.SimpleDateFormat
 
 /**
- * Jexler(s) view, used in Jexler.jsp.
+ * Container/jexler view, used in Jexler.jsp.
  *
  * @author $(whois jexler.net)
  */
