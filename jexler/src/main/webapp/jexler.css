@@ -21,6 +21,12 @@ img.jexler {width: 196px}
 a {text-decoration: none; color: darkblue}
 a:visited {color: darkblue}
 a:hover {color: blue}
+
+p.grengine {color: gray; font-size: x-small}
+a.grengine {color: gray}
+a.grengine:visited {color: gray}
+a.grengine:hover {color: darkblue}
+
 table.frame {
   border: none;
 }

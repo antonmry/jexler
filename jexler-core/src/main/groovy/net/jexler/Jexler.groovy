@@ -24,8 +24,6 @@ import net.jexler.service.StopEvent
 
 import ch.grengine.Grengine
 import groovy.transform.CompileStatic
-import org.codehaus.groovy.control.CompilerConfiguration
-import org.codehaus.groovy.control.customizers.ImportCustomizer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -166,14 +164,6 @@ class Jexler implements Service, IssueTracker {
             return
         }
 
-        // prepare for compile
-        final CompilerConfiguration config = new CompilerConfiguration()
-        final ImportCustomizer importCustomizer = new ImportCustomizer()
-        importCustomizer.addStarImports('net.jexler', 'net.jexler.service', 'net.jexler.tool')
-        config.addCompilationCustomizers(importCustomizer)
-        final GroovyClassLoader loader = new GroovyClassLoader(Thread.currentThread().contextClassLoader, config)
-        loader.addClasspath(file.parent)
-
         // define script binding
         final Jexler jexler = this
         final Binding binding = new Binding([
@@ -187,7 +177,7 @@ class Jexler implements Service, IssueTracker {
         // compile
         final Class clazz
         try {
-            clazz = loader.parseClass(file)
+            clazz = container.grengine.load(file)
         } catch (Throwable t) {
             // (may throw almost anything, checked or not)
             trackIssue(this, 'Script compile failed.', t)

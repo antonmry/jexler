@@ -287,6 +287,8 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
                 .build()
 
         Engine engine = new LayeredEngine.Builder()
+                // without GroovyClassLoader as parent, grape does not work
+                .setParent(new GroovyClassLoader())
                 .setAllowSameClassNamesInMultipleCodeLayers(false)
                 .setAllowSameClassNamesInParentAndCodeLayers(true)
                 .setWithTopCodeCache(true)

@@ -119,7 +119,7 @@ class JexlerSpec extends Specification {
 
         where:
         metaConfigSize | message                  | causeClass
-        2              | 'Script compile failed.' | CompilationFailedException.class
+        2              | 'Script compile failed.' | CompileException.class
         0              | 'Script create failed.'  | ExceptionInInitializerError.class
         2              | 'Script run failed.'     | IllegalArgumentException.class
         0              | 'Script run failed.'     | FileNotFoundException.class
