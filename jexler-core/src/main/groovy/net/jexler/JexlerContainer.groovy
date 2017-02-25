@@ -40,7 +40,7 @@ import java.lang.reflect.Field
 @CompileStatic
 class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Closeable {
 
-    private static final Logger log = LoggerFactory.getLogger(Jexler.class)
+    private static final Logger log = LoggerFactory.getLogger(JexlerContainer.class)
 
     private static final String EXT = '.groovy'
 
@@ -223,6 +223,20 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
                 scheduler = null
             }
         }
+    }
+
+    /**
+     * Get logger for container.
+     */
+    static Logger getLogger() {
+        return log
+    }
+
+    /**
+     * Get logger for given class.
+     */
+    static Logger getLogger(Class clazz) {
+        return LoggerFactory.getLogger(clazz)
     }
 
     // Workaround for bug GROOVY-7407:
