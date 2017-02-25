@@ -22,6 +22,7 @@ import net.jexler.JexlerContainer
 import net.jexler.JexlerUtil
 import net.jexler.service.Service
 
+import ch.grengine.except.GrengineException
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -521,6 +522,13 @@ class JexlerContainerView {
                     targetJexler.trackIssue(null, msg, e)
                 } else {
                     container.trackIssue(null, msg, e)
+                }
+            }
+            if (targetJexler != null && !targetJexler.runnable) {
+                container.forgetIssues()
+                GrengineException lastUpdateException = container.grengine.getLastUpdateException()
+                if (lastUpdateException != null) {
+                    container.trackIssue(container, JexlerContainer.MSG_CONTAINER_GRENGINE_UPDATE_FAILED, lastUpdateExecption)
                 }
             }
         }

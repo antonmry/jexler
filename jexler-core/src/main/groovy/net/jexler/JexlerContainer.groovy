@@ -56,6 +56,8 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
 
     private static final Logger log = LoggerFactory.getLogger(JexlerContainer.class)
 
+    static final String MSG_CONTAINER_GRENGINE_UPDATE_FAILED = "Container Grengine update failed."
+
     private static final String EXT = '.groovy'
 
     private final File dir
@@ -302,9 +304,9 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
                 .setSourcesLayers(SourcesUtil.sourcesArrayToList(sources))
                 .build()
 
-        GrengineException lastUpdateExecption = gren.getLastUpdateException()
-        if (lastUpdateExecption != null) {
-            trackIssue(this, "Container Grengine update failed.", lastUpdateExecption)
+        GrengineException lastUpdateException = gren.getLastUpdateException()
+        if (lastUpdateException != null) {
+            trackIssue(this, MSG_CONTAINER_GRENGINE_UPDATE_FAILED, lastUpdateException)
         }
 
         return gren
