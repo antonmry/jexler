@@ -61,7 +61,7 @@ class JexlerWorkaroundGroovy7407Spec extends Specification {
         given:
         def dir = tempFolder.root
         def file = new File(dir, 'test.groovy')
-        file.text = '// jexler {}\nreturn 5'
+        file.text = '// Jexler {}\nreturn 5'
         assert !(Grape.instance instanceof JexlerContainer.WorkaroundGroovy7407WrappingGrapeEngine)
         System.setProperty(JexlerContainer.WorkaroundGroovy7407.GRAPE_ENGINE_WRAP_PROPERTY_NAME, 'true')
 
@@ -80,7 +80,7 @@ class JexlerWorkaroundGroovy7407Spec extends Specification {
         given:
         def dir = tempFolder.root
         def file = new File(dir, 'test.groovy')
-        file.text = '// jexler {}\n&%!+'
+        file.text = '// Jexler {}\n&%!+'
         assert !(Grape.instance instanceof JexlerContainer.WorkaroundGroovy7407WrappingGrapeEngine)
         System.setProperty(JexlerContainer.WorkaroundGroovy7407.GRAPE_ENGINE_WRAP_PROPERTY_NAME, 'true')
 

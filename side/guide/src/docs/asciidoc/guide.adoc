@@ -12,7 +12,7 @@ of their choice - great for prototyping and useful for automating.
 Here's a first example of a jexler Groovy script:
 [source,groovy]
 ----
-// jexler { autostart = true }
+// Jexler { autostart = true }
 
 services.add(new CronService(jexler, 'every-minute').setCron('* * * * *'))
 services.start()
@@ -35,7 +35,7 @@ Now instead of just logging the word "hello", let's send an email instead:
 
 [source,groovy]
 ----
-// jexler { autostart = true }
+// Jexler { autostart = true }
 
 @Grab('org.apache.commons:commons-email:1.3')
 import org.apache.commons.mail.*
@@ -109,7 +109,7 @@ methods that handle different life cycle stages and received events:
 
 [source,groovy]
 ----
-// jexler { autostart = true }
+// Jexler { autostart = true }
 
 // dispatch to methods below
 JexlerDispatcher.dispatch(this)
@@ -162,7 +162,7 @@ So that the first example above could e.g. be written as:
 
 [source,groovy]
 ----
-// jexler { autostart = true }
+// Jexler { autostart = true }
 
 JexlerDispatcher.dispatch(this)
 
@@ -742,20 +742,34 @@ JexlerContainer class.
 
 === Meta Config
 
-The first line of a jexler script may contain a map with string keys and values
-of any value, the so called *meta config*, e.g.:
+The first line of a jexler script must start with `// Jexler {`
+(with arbitrary whitespace before and in between, case insensitive)
+and may contain a Groovy config (which the Groovy `ConfigSlurper can
+parse) with string keys and values of any type, the so called
+*meta config*, for example
 
 [source,groovy]
 ----
-// jexler { autostart = true; whatever = 'my words' }
+// Jexler { autostart = true; whatever = 'my words' }
 ----
 
-These are evaluated before running the jexler script, i.e. none of the variables
-listed above are available for that map.
+or
+
+[source,groovy]
+----
+// jexler {}
+----
+
+The meta config is evaluated before running the jexler script,
+i.e. none of the variables listed above are available for that map.
 There is one boolean settings that jexler uses by default:
 
 * `autostart`: If true, the jexler is started when the webapp starts up.
    Default is false.
+
+Adding more items typically makes no sense as long as the source of
+the jexler webapp or core itself is not modified, and could be useful
+if you use the jexler core library in a different context.
 
 === Distribution
 

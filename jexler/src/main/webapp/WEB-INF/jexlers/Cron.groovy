@@ -1,4 +1,4 @@
-// jexler { autostart = true }
+// Jexler { autostart = true }
 
 services.add(new CronService(jexler, 'every-minute').setCron('* * * * *'))
 services.add(new CronService(jexler, 'every-30-seconds').setCron('*/30 * * * * *'))

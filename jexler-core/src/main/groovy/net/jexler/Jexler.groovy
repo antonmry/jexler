@@ -352,7 +352,7 @@ class Jexler implements Service, IssueTracker {
      *
      * Example:
      * <pre>
-     * // jexler { autostart = true; some = 'thing' }
+     * // Jexler { autostart = true; some = 'thing' }
      * </pre>
      *
      * Returns null if there is no meta config in the jexler or the

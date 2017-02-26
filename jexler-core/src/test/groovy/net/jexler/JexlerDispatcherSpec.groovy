@@ -63,7 +63,7 @@ class JexlerDispatcherSpec extends Specification {
         def dir = tempFolder.root
         def file = new File(dir, 'Test.groovy')
         file.text = """\
-            // jexler {}
+            // Jexler {}
             mockService = new MockService(jexler, 'MockService')
             JexlerDispatcher.dispatch(this)
             void start() {
@@ -127,7 +127,7 @@ class JexlerDispatcherSpec extends Specification {
         def dir = tempFolder.root
         def file = new File(dir, 'Test.groovy')
         file.text = """\
-            // jexler {}
+            // Jexler {}
             mockService = new MockService(jexler, 'MockService')
             JexlerDispatcher.dispatch(this)
             void noStartMethod() {
@@ -153,7 +153,7 @@ class JexlerDispatcherSpec extends Specification {
         def dir = tempFolder.root
         def file = new File(dir, 'Test.groovy')
         file.text = """\
-            // jexler {}
+            // Jexler {}
             JexlerDispatcher.dispatch(this)
             void declare() {
               mockService = new MockService(jexler, 'MockService')
@@ -283,7 +283,7 @@ class JexlerDispatcherSpec extends Specification {
         def dir = tempFolder.root
         def file = new File(dir, 'Test.groovy')
         file.text = """\
-            // jexler {}
+            // Jexler {}
             JexlerDispatcher.dispatch(this)            
             void declare() {            
               mockService = new MockService(jexler, 'MockService')            

@@ -1,3 +1,6 @@
+// Utility class, available to all jexlers,
+// compiled together with all other utility classes.
+
 class Util {
 
   static def hello() {

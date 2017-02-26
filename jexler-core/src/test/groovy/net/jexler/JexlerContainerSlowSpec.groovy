@@ -64,9 +64,9 @@ class JexlerContainerSlowSpec extends Specification {
               }
             }
             """.stripIndent()
-        new File(dir, 'Jexler1.groovy').text = "// jexler { autostart = true }\n$jexlerBodySlow"
-        new File(dir, 'Jexler2.groovy').text = "// jexler { autostart = true }\n$jexlerBodyFast"
-        new File(dir, 'Jexler3.groovy').text = "// jexler { autostart = true }\n$jexlerBodySlow"
+        new File(dir, 'Jexler1.groovy').text = "// Jexler { autostart = true }\n$jexlerBodySlow"
+        new File(dir, 'Jexler2.groovy').text = "// Jexler { autostart = true }\n$jexlerBodyFast"
+        new File(dir, 'Jexler3.groovy').text = "// Jexler { autostart = true }\n$jexlerBodySlow"
 
         when:
         def container = new JexlerContainer(dir)

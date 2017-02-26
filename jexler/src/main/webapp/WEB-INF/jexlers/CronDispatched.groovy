@@ -1,4 +1,4 @@
-// jexler { autostart = true }
+// Jexler { autostart = true }
 
 // dispatch to methods below
 JexlerDispatcher.dispatch(this)

@@ -62,7 +62,7 @@ class JexlerSpec extends Specification {
         jexler.issues.empty
 
         where:
-        text << [ '// jexler {}', '//  JEXLER\t  {  }\nreturn 5', '//jexler{autostart=true}' ]
+        text << [ '// jexler {}', '//  JEXLER\t  { x=1; y=2 }\nreturn 5', '//Jexler{autostart=true}' ]
     }
 
     def 'TEST script cannot read meta config'() {
@@ -88,7 +88,7 @@ class JexlerSpec extends Specification {
         def file = new File(dir, 'Test.groovy')
         def jexler = new Jexler(file, new JexlerContainer(dir))
         // : instead of =
-        file.text = '// jexler { autostart&% = true }'
+        file.text = '// Jexler { autostart&% = true }'
         jexler.start()
         JexlerUtil.waitForStartup(jexler, MS_10_SEC)
 
@@ -127,26 +127,26 @@ class JexlerSpec extends Specification {
 
         text << [
                 """\
-                    // jexler { autostart = false; foo = 'bar' }
+                    // Jexler { autostart = false; foo = 'bar' }
                     # does not compile...
                 """.stripIndent(),
                 """\
-                    // jexler {}
+                    // Jexler {}
                     public class Test extends Script {
                       static { throw new RuntimeException() }
                       public def run() {}
                     }
                 """.stripIndent(),
                 """\
-                    // jexler { autostart = false; foo = 'bar' }
+                    // Jexler { autostart = false; foo = 'bar' }
                     throw new IllegalArgumentException()
                 """.stripIndent(),
                 """\
-                    // jexler {}
+                    // Jexler {}
                     throw new FileNotFoundException()
                 """.stripIndent(),
                 """\
-                    // jexler { autostart = true }
+                    // Jexler { autostart = true }
                     throw new NoClassDefFoundError()
                 """.stripIndent()
         ]
@@ -157,7 +157,7 @@ class JexlerSpec extends Specification {
         def dir = tempFolder.root
         def file = new File(dir, 'Test.groovy')
         file.text = """\
-            // jexler { autostart = false; foo = 'bar' }
+            // Jexler { autostart = false; foo = 'bar' }
             def mockService = new MockService(jexler, 'mock-service')
             services.add(mockService)
             services.start()
@@ -246,7 +246,7 @@ class JexlerSpec extends Specification {
         def dir = tempFolder.root
         def file = new File(dir, 'Test.groovy')
         file.text = """\
-            // jexler { autostart = false; foo = 'bar' }
+            // Jexler { autostart = false; foo = 'bar' }
             def mockService = new MockService(jexler, 'mock-service')
             services.add(mockService)
             services.start()
@@ -416,7 +416,7 @@ class JexlerSpec extends Specification {
         def dir = tempFolder.root
         def file = new File(dir, 'Test.groovy')
         file.text = """\
-            // jexler { autostart = false; foo = 'bar' }
+            // Jexler { autostart = false; foo = 'bar' }
             def mockService = new MockService(jexler, 'mock-service')
             mockService.stopRuntimeException = new RuntimeException()
             services.add(mockService)
@@ -518,7 +518,7 @@ class JexlerSpec extends Specification {
         def dir = tempFolder.root
         def file = new File(dir, 'Test.groovy')
         file.text = """\
-            // jexler { autostart = false }
+            // Jexler { autostart = false }
             while (true) {
               event = events.take()
               if (event instanceof net.jexler.service.StopEvent) {
