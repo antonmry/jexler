@@ -118,9 +118,9 @@ limitations under the License.
 
 </table>
 
-  <p class="grengine">
-    <em>Powered by <a class="grengine" href="https://www.grengine.ch/">Grengine</a>.</em>
-  </p>
+<p class="grengine">
+  <a href="https://www.grengine.ch/"><img src="powered-by-grengine.gif" title="www.grengine.ch"></a>
+</p>
 
 <%-- Skip if getting status table from js, not if requesting page in browser --%>
 <c:if test="${param.cmd != 'status'}">
