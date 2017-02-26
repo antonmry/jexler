@@ -1,4 +1,4 @@
-image:https://www.jexler.net/jexler.jpg["jexler", link="https://www.jexler.net/"]
+image:jexler.jpg["jexler", link="https://www.jexler.net/"]
 
 == Jexler User Guide
 
@@ -6,6 +6,11 @@ https://www.jexler.net/[Jexler] is a simple relaxed
 http://www.groovy-lang.org[Groovy] framework for starting/stopping
 Groovy scripts as services and enabling them to react to events
 of their choice - great for prototyping and useful for automating.
+
+Jexler uses https://www.grengine.ch/[Grengine] to run its container
+of Groovy scripts and utility classes.
+
+image:powered-by-grengine.gif["Powered by Grengine", link="https://www.grengine.ch/"]
 
 == Introduction
 
@@ -510,6 +515,19 @@ New files are created simply by typing a new name and clicking save.
 Note that save does by default not ask for permission before (over-)writing a script,
 whereas delete asks by default for permission. These settings can be changed in the
 WEB-INF/settings-custom.groovy file, see further below.
+
+After saving a _jexler script source_, the web GUI tries to compile and
+load the new script. If this fails, an issue is reported for the jexler.
+An already running jexler keeps running (with its previous source)
+and starting a stopped jexler would fail until the issue in the source
+is fixed.
+
+After saving a _utility source_, the web GUI tries to update the container
+of all utility sources, i.e. compile to it (actually, this is largely
+handled by Grengine automatically). If this fails. an issue is reported
+for the container. Note that running jexlers are not affected by this.
+You can even stop and restart them and they will see the last known good
+state of the container (which is again a Grengine feature).
 
 === Issues
 

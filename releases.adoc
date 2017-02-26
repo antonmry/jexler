@@ -4,7 +4,13 @@ image:https://www.jexler.net/jexler.jpg["jexler logo", link="https://www.jexler.
 
 === 3.0.0-SNAPSHOT (2017-XX-XX)
 
-* Powered by Grengine.
+* Powered by Grengine, for more robust and economic operation.
+* Removed: jexlerBinding, autoimport.
+* Changed: meta info map to meta config comment to distinguish
+  runnable jexlers from utility classes, config, etc; the
+  workaround for Groovy issue GROOVY-7407 is now active by default.
+* New: getAsConfig() for faster and more economic config slurping,
+  using Grengine.
 
 === 2.1.9 (2017-02-20)
 

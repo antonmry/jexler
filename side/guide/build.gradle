@@ -16,6 +16,7 @@ asciidoctor {
     resources {
         from('src/docs/asciidoc') {
             include '*.jpg'
+            include '*.gif'
         }
     }
 
