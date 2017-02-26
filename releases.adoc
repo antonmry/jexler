@@ -2,7 +2,7 @@ image:https://www.jexler.net/jexler.jpg["jexler logo", link="https://www.jexler.
 
 = jexler releases
 
-=== 3.0.0-SNAPSHOT (2017-XX-XX)
+=== 3.0.0 (2017-02-26)
 
 * Powered by Grengine, for more robust and economic operation.
 * Removed: jexlerBinding, autoimport.
