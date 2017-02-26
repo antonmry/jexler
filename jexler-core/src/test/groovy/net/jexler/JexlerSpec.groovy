@@ -458,6 +458,21 @@ class JexlerSpec extends Specification {
         mockService.nStopped == 1
     }
 
+    def 'TEST getAsConfig'() {
+        given:
+        def dir = tempFolder.root
+        def file = new File(dir, 'Test.groovy')
+
+        when:
+        file.setText("a { x=1; y=true; z { aa='hello' } }")
+        def jexler = new Jexler(file, new JexlerContainer(dir))
+
+        then:
+        jexler.getAsConfig().a.x == 1
+        jexler.getAsConfig().a.y == true
+        jexler.getAsConfig().a.z.aa == 'hello'
+    }
+
     def 'TEST meta config: no file'() {
         given:
         def dir = tempFolder.root

@@ -259,6 +259,18 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
         return log
     }
 
+    /**
+     * Convenience method for getting ConfigSlurper config from parsing
+     * the given jexler; uses the class already compiled by Grengine.
+     */
+    ConfigObject getAsConfig(String jexlerId) {
+        Class clazz = grengine.load(new File(dir, "${jexlerId}.groovy"))
+        return new ConfigSlurper().parse(clazz)
+    }
+
+    /**
+     * Get container Grengine instance.
+     */
     Grengine getGrengine() {
         return grengine
     }

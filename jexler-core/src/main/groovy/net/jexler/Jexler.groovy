@@ -336,6 +336,19 @@ class Jexler implements Service, IssueTracker {
         return script
     }
 
+    /**
+     * Convenience method for getting ConfigSlurper config from parsing
+     * this jexler; uses the class already compiled by Grengine.
+     */
+    ConfigObject getAsConfig() {
+        return new ConfigSlurper().parse(container.grengine.load(file))
+    }
+
+    /**
+     * Return true if jexler is indicated as a jexler in the first
+     * line of its script text (meta config); more precisely returns
+     * the state at startup if already running, else reads from file.
+     */
     boolean isRunnable() {
         return getMetaConfig() != null
     }

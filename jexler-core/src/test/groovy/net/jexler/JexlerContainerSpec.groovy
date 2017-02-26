@@ -318,4 +318,19 @@ class JexlerContainerSpec extends Specification {
         scheduler3.shutdown
     }
 
+    def 'TEST getAsConfig'() {
+        given:
+        def dir = tempFolder.root
+        def file = new File(dir, 'Test.groovy')
+        file.setText("a { x=1; y=true; z { aa='hello' } }")
+
+        when:
+        def container = new JexlerContainer(dir)
+
+        then:
+        container.getAsConfig('Test').a.x == 1
+        container.getAsConfig('Test').a.y == true
+        container.getAsConfig('Test').a.z.aa == 'hello'
+    }
+
 }
