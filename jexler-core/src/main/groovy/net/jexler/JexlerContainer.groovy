@@ -324,7 +324,9 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
         private static volatile Boolean isWrapGrapeEngine
         static void wrapGrapeEngineIfConfigured(JexlerContainer container) {
             if (isWrapGrapeEngine == null) {
-                isWrapGrapeEngine = Boolean.valueOf(System.getProperty(GRAPE_ENGINE_WRAP_PROPERTY_NAME))
+                // default is to wrap
+                String value = System.getProperty(GRAPE_ENGINE_WRAP_PROPERTY_NAME)
+                isWrapGrapeEngine = value == null || Boolean.valueOf(value)
                 if (isWrapGrapeEngine) {
                     log.trace("$LOG_PREFIX wrapping GrapeEngine...")
                     try {
@@ -335,7 +337,6 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
                         log.trace("$LOG_PREFIX failed to wrap GrapeEngine: $e")
                         container.trackIssue(container, msg, e)
                     }
-
                 }
             }
         }
