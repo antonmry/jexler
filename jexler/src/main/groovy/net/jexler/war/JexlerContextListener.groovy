@@ -18,6 +18,7 @@ package net.jexler.war
 
 import net.jexler.Jexler
 import net.jexler.JexlerContainer
+import net.jexler.JexlerUtil
 
 import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.core.FileAppender
@@ -90,7 +91,7 @@ class JexlerContextListener implements ServletContextListener    {
         settings = new ConfigSlurper('').parse(settingsFile.toURI().toURL()).flatten()
         File settingsCustomFile = new File(webappPath, 'WEB-INF/settings-custom.groovy')
         settings.putAll(new ConfigSlurper('').parse(settingsCustomFile.toURI().toURL()).flatten())
-        log.trace("settings: $settings")
+        log.trace("settings: ${JexlerUtil.toSingleLine(settings.toString())}")
 
         startTimeoutSecs = (Long)settings.'operation.jexler.startTimeoutSecs'
         log.trace("jexler start timeout: $startTimeoutSecs secs")
