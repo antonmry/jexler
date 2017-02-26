@@ -261,7 +261,7 @@ class JexlerContainerView {
         if (jexler.runnable) {
             title = "Jexler: ${jexler.state.info}"
         } else {
-            title = "Utility class or config, etc."
+            title = 'Container class (utilities etc.)'
         }
         return "<a href='?cmd=info&jexler=$jexlerId'><span title='$title'>$id</span></a>"
     }
