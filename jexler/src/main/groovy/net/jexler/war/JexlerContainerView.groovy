@@ -523,12 +523,26 @@ class JexlerContainerView {
                 } else {
                     container.trackIssue(null, msg, e)
                 }
+                return
             }
-            if (targetJexler != null && !targetJexler.runnable) {
-                container.forgetIssues()
-                GrengineException lastUpdateException = container.grengine.getLastUpdateException()
-                if (lastUpdateException != null) {
-                    container.trackIssue(container, JexlerContainer.MSG_CONTAINER_GRENGINE_UPDATE_FAILED, lastUpdateException)
+            if (targetJexler != null) {
+                if (targetJexler.runnable) {
+                    // check if can compile jexler
+                    targetJexler.forgetIssues()
+                    try {
+                        container.grengine.load(targetJexler.file)
+                    } catch (Exception e) {
+                        targetJexler.trackIssue(targetJexler,
+                                'Compiling/loading of updated jexler failed.', e)
+                    }
+                } else {
+                    // check if can update container Grengine
+                    container.forgetIssues()
+                    GrengineException lastUpdateException = container.grengine.getLastUpdateException()
+                    if (lastUpdateException != null) {
+                        container.trackIssue(container, 'Compiling of updated container sources failed' +
+                                ' - previous state of utility classes remains active.', lastUpdateException)
+                    }
                 }
             }
         }
@@ -548,6 +562,20 @@ class JexlerContainerView {
                     targetJexler.trackIssue(null, msg, null)
                 } else {
                     container.trackIssue(null, msg, null)
+                }
+                return
+            }
+            if (targetJexler != null) {
+                if (targetJexler.runnable) {
+                    // nothing to compile
+                } else {
+                    // check if can update container Grengine
+                    container.forgetIssues()
+                    GrengineException lastUpdateException = container.grengine.getLastUpdateException()
+                    if (lastUpdateException != null) {
+                        container.trackIssue(container, 'Compiling of updated container sources failed' +
+                                ' - previous state of utility classes remains active.', lastUpdateException)
+                    }
                 }
             }
         }

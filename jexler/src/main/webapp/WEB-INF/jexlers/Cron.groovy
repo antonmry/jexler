@@ -6,7 +6,7 @@ services.add(new CronService(jexler, 'once-immediately').setCron('now'))
 services.start()
 
 while (true) {
-  event = events.take();
+  event = events.take()
   if (event instanceof CronEvent) {
     log.trace("It is now: ${new Date()} (${event.service.id})")
     log.trace("Util.hello(): ${Util.hello()}")

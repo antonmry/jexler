@@ -56,8 +56,6 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
 
     private static final Logger log = LoggerFactory.getLogger(JexlerContainer.class)
 
-    static final String MSG_CONTAINER_GRENGINE_UPDATE_FAILED = "Container Grengine update failed."
-
     private static final String EXT = '.groovy'
 
     private final File dir
@@ -306,7 +304,8 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
 
         GrengineException lastUpdateException = gren.getLastUpdateException()
         if (lastUpdateException != null) {
-            trackIssue(this, MSG_CONTAINER_GRENGINE_UPDATE_FAILED, lastUpdateException)
+            trackIssue(this, 'Compiling of container sources failed at startup' +
+                    ' - utility classes are not available to jexlers.', lastUpdateException)
         }
 
         return gren
