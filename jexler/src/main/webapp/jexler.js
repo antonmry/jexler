@@ -158,6 +158,7 @@ function preloadDim() {
     new Image().src = "log-dim.gif";
     new Image().src = "neutral-dim.gif";
     new Image().src = "ok-dim.gif";
+    new Image().src = "powered-by-grengine-dim.gif";
     new Image().src = "restart-dim.gif";
     new Image().src = "space-dim.gif";
     new Image().src = "start-dim.gif";
