@@ -29,7 +29,7 @@ while (true) {
     responseBody = httpclient.execute(httpget, responseHandler)
     log.trace("response body: ${JexlerUtil.toSingleLine(responseBody)}")
     
-    Thread.sleep(30000)
+    Thread.sleep(5000)
     
     throw new RuntimeException('Demo RuntimeException')
         

@@ -451,6 +451,8 @@ class JexlerContainerView {
     // Stop jexler or container
     private void handleStop() {
         if (targetJexlerId == '') {
+            // do this first to get a new grengine instance
+            container.stop()
             for (Jexler jexler : container.jexlers) {
                 if (jexler.state.on) {
                     handleStop(jexler)
@@ -464,6 +466,8 @@ class JexlerContainerView {
     // Restart jexler or container
     private void handleRestart() {
         if (targetJexlerId == '') {
+            // do this first to get a new grengine instance
+            container.stop()
             for (Jexler jexler : container.jexlers) {
                 if (jexler.metaConfig?.autostart) {
                     handleRestart(jexler)
