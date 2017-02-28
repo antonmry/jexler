@@ -2,9 +2,14 @@ image:https://www.jexler.net/jexler.jpg["jexler logo", link="https://www.jexler.
 
 = jexler releases
 
-=== 3.0.1-SNAPSHOT (20XX-XX-XX)
+=== 3.0.1 (2017-02-28)
 
-* ...
+* Jexlers are already compiled and loaded in separate threads,
+  for faster startup of all jexlers.
+* Fix/workaround around issue with Grape that loading a class
+  with Grape dependencies only works reliably if a parent
+  GroovyClassLoader already added the respective dependencies
+  to its classpath.
 
 === 3.0.0 (2017-02-26)
 

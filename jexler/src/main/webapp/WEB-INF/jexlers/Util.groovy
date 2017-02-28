@@ -5,8 +5,14 @@
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.impl.client.DefaultHttpClient
 import org.apache.http.util.EntityUtils
+import org.apache.http.conn.HttpHostConnectException
+
+@Grab('org.apache.commons:commons-email:1.3.3')
+import org.apache.commons.mail.*
 
 class Util {
+  
+  private static Class exClazz = HttpHostConnectException.class
 
   static def hello() {
     return 'Hello World'
@@ -33,6 +39,24 @@ class Util {
       }
     } finally {
       httpGet.releaseConnection()
+    }
+  }
+
+  def sendMail(recipients, subject, msg) {
+    try {
+      new SimpleEmail().with {
+        setFrom "jex@jexler.net"
+        for (to in recipients) {
+          addTo to
+        }
+        setHostName "localhost"
+        setSubject subject
+        setMsg msg
+        send()
+      }
+      log.trace("mail successfully sent")
+    } catch (EmailException e) {
+      jexler.trackIssue(null, "Could not send mail.", e)
     }
   }
 

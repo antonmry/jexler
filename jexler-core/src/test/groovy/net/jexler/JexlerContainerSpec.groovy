@@ -152,15 +152,6 @@ class JexlerContainerSpec extends Specification {
         jexler2.state == ServiceState.OFF
         jexler3.state == ServiceState.OFF
         container.issues.empty
-        container.jexlers.size() == 3
-
-        when:
-        // now after stopping must remove Jexler2
-        container.refresh()
-
-        then:
-        container.state == ServiceState.OFF
-        container.issues.empty
         container.jexlers.size() == 2
 
         when:

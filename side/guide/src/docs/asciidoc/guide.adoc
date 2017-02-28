@@ -441,6 +441,9 @@ Use the red/green/blue icons in the first two columns of the table to start/stop
 jexlers. The top row addresses all jexlers:
 
 * Red stop icon: Stop all running jexlers.
+  This has the additional effect of replacing the Grengine instance with
+  a new one, in order to get rid of accumulated dependencies pulled via Grape;
+  this is especially useful when you replace a dependency with a newer version.
 * Green start icon: Start all jexlers that have autostart set to true (see further below).
 * Blue restart icon: Stop all running jexlers, then start all jexlers that have autostart
   set to true.

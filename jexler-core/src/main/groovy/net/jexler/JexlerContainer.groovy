@@ -68,7 +68,7 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
     private Scheduler scheduler
     private final Object schedulerLock
 
-    private final Grengine grengine
+    private Grengine grengine
 
     /**
      * Constructor from jexler script directory.
@@ -87,8 +87,7 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
         jexlerMap = new TreeMap<>()
         issueTracker = new IssueTrackerBase()
         schedulerLock = new Object()
-        WorkaroundGroovy7407.wrapGrapeEngineIfConfigured(this)
-        refresh()
+        // calls also refresh() via JexlerContainerSources
         grengine = createGrengine()
     }
 
@@ -136,6 +135,13 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
                 jexler.start()
             }
         }
+    }
+
+    @Override
+    void stop() {
+        super.stop()
+        // replace grengine to clean up possibly accumulated grapes
+        grengine = createGrengine()
     }
 
     @Override
@@ -298,9 +304,15 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
                 .setCompilerFactory(compilerFactory)
                 .build()
 
+        //System.setProperty('groovy.grape.report.downloads', 'true')
+        //System.setProperty('ivy.message.logger.level', '4')
+        WorkaroundGroovy7407.wrapGrapeEngineIfConfigured(this)
+        final GroovyClassLoader accumulator = new GroovyClassLoader()
+        WorkaroundGroovy7407WrappingGrapeEngine.instance.setAccumulator(accumulator)
+
         Engine engine = new LayeredEngine.Builder()
                 // without GroovyClassLoader as parent, grape does not work
-                .setParent(new GroovyClassLoader())
+                .setParent(accumulator)
                 .setAllowSameClassNamesInMultipleCodeLayers(false)
                 .setAllowSameClassNamesInParentAndCodeLayers(true)
                 .setWithTopCodeCache(true)
@@ -385,6 +397,9 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
 
         private final Object lock
         private final GrapeEngine innerEngine
+        private static WorkaroundGroovy7407WrappingGrapeEngine instance =
+                new WorkaroundGroovy7407WrappingGrapeEngine(Grape.class, Grape.instance)
+        private GroovyClassLoader accumulator
 
         // GrapeIvy.DEFAULT_DEPTH + 1, because is additionally wrapped by this class...
         private static final int DEFAULT_DEPTH = 4
@@ -402,8 +417,17 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
 
         // call this somewhere during initialization to apply the workaround
         static void createAndSet() throws Exception {
-            engine = new WorkaroundGroovy7407WrappingGrapeEngine(Grape.class, Grape.instance)
+            setEngine(instance)
         }
+
+        WorkaroundGroovy7407WrappingGrapeEngine getInstance() {
+            return instance
+        }
+
+        void setAccumulator(GroovyClassLoader accumulator) {
+            this.accumulator = accumulator
+        }
+
 
         @Override
         Object grab(String endorsedModule) {
@@ -427,6 +451,13 @@ class JexlerContainer extends ServiceGroup implements Service, IssueTracker, Clo
             synchronized(lock) {
                 if (args.get('calleeDepth') == null) {
                     args.put('calleeDepth', DEFAULT_DEPTH)
+                }
+                if (accumulator != null && args.containsKey("classLoader") &&
+                        args.get("classLoader") != ClassLoader.getSystemClassLoader()) {
+                    Map args2 = new HashMap()
+                    args2.putAll(args)
+                    args2.put("classLoader", accumulator)
+                    innerEngine.grab(args2, dependencies)
                 }
                 return innerEngine.grab(args, dependencies)
             }
