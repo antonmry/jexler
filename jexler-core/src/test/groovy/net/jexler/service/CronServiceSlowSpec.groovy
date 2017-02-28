@@ -30,12 +30,12 @@ import spock.lang.Specification
 @Category(SlowTests.class)
 class CronServiceSlowSpec extends Specification {
 
-    private final static long MS_3_SEC = 3000
-    private final static long MS_1_SEC = 1000
+    private final static long MS_4_SEC = 4000
+    private final static long MS_2_SEC = 2000
     private final static String CRON_EVERY_SEC = '*/1 * * * * *'
     private final static String QUARTZ_CRON_EVERY_SEC = '*/1 * * * * ?'
 
-    def 'TEST SLOW (7 sec) cron every sec'() {
+    def 'TEST SLOW (10 sec) cron every sec'() {
         given:
         def jexler = new TestJexler()
 
@@ -52,10 +52,10 @@ class CronServiceSlowSpec extends Specification {
 
         then:
         service.state.on
-        ServiceUtil.waitForStartup(service, MS_3_SEC)
+        ServiceUtil.waitForStartup(service, MS_4_SEC)
 
         when:
-        def event = jexler.takeEvent(MS_3_SEC)
+        def event = jexler.takeEvent(MS_4_SEC)
 
         then:
         event.service.is(service)
@@ -66,16 +66,16 @@ class CronServiceSlowSpec extends Specification {
         service.stop()
 
         then:
-        ServiceUtil.waitForShutdown(service, MS_3_SEC)
+        ServiceUtil.waitForShutdown(service, MS_4_SEC)
         service.state.off
-        jexler.takeEvent(MS_3_SEC) == null
+        jexler.takeEvent(MS_4_SEC) == null
 
         when:
         service.start()
 
         then:
         service.state.on
-        ServiceUtil.waitForStartup(service, MS_3_SEC)
+        ServiceUtil.waitForStartup(service, MS_4_SEC)
 
         when:
         service.start()
@@ -84,7 +84,7 @@ class CronServiceSlowSpec extends Specification {
         service.state == ServiceState.IDLE
 
         when:
-        event = jexler.takeEvent(MS_3_SEC)
+        event = jexler.takeEvent(MS_4_SEC)
 
         then:
         event.service.is(service)
@@ -95,9 +95,9 @@ class CronServiceSlowSpec extends Specification {
         service.stop()
 
         then:
-        ServiceUtil.waitForShutdown(service, MS_3_SEC)
+        ServiceUtil.waitForShutdown(service, MS_4_SEC)
         service.state.off
-        jexler.takeEvent(MS_3_SEC) == null
+        jexler.takeEvent(MS_4_SEC) == null
 
         when:
         service.stop()
@@ -133,7 +133,7 @@ class CronServiceSlowSpec extends Specification {
 
         when:
         def service = new CronService(jexler, 'cronid').setCron(CronService.CRON_NOW)
-        def event = jexler.takeEvent(MS_1_SEC)
+        def event = jexler.takeEvent(MS_2_SEC)
 
         then:
         event == null
@@ -145,21 +145,21 @@ class CronServiceSlowSpec extends Specification {
         service.state.on
 
         when:
-        event = jexler.takeEvent(MS_1_SEC)
+        event = jexler.takeEvent(MS_2_SEC)
 
         then:
         event.service.is(service)
         event instanceof CronEvent
         event.cron == CronService.CRON_NOW
-        jexler.takeEvent(MS_1_SEC) == null
+        jexler.takeEvent(MS_2_SEC) == null
 
         when:
         service.stop()
 
         then:
-        ServiceUtil.waitForShutdown(service, MS_3_SEC)
+        ServiceUtil.waitForShutdown(service, MS_4_SEC)
         service.state.off
-        jexler.takeEvent(MS_1_SEC) == null
+        jexler.takeEvent(MS_2_SEC) == null
 
         when:
         service.start()
@@ -168,21 +168,21 @@ class CronServiceSlowSpec extends Specification {
         service.state.on
 
         when:
-        event = jexler.takeEvent(MS_1_SEC)
+        event = jexler.takeEvent(MS_2_SEC)
 
         then:
         event.service.is(service)
         event instanceof CronEvent
         event.cron == CronService.CRON_NOW
-        jexler.takeEvent(MS_1_SEC) == null
+        jexler.takeEvent(MS_2_SEC) == null
 
         when:
         service.stop()
 
         then:
-        ServiceUtil.waitForShutdown(service, MS_3_SEC)
+        ServiceUtil.waitForShutdown(service, MS_4_SEC)
         service.state.off
-        jexler.takeEvent(MS_1_SEC) == null
+        jexler.takeEvent(MS_2_SEC) == null
     }
 
     def 'TEST SLOW (4 sec) cron now+stop'() {
@@ -191,7 +191,7 @@ class CronServiceSlowSpec extends Specification {
 
         when:
         def service = new CronService(jexler, 'cronid').setCron(CronService.CRON_NOW_AND_STOP)
-        def event = jexler.takeEvent(MS_1_SEC)
+        def event = jexler.takeEvent(MS_2_SEC)
 
         then:
         event == null
@@ -203,7 +203,7 @@ class CronServiceSlowSpec extends Specification {
         service.state.off
 
         when:
-        event = jexler.takeEvent(MS_1_SEC)
+        event = jexler.takeEvent(MS_2_SEC)
 
         then:
         event.service.is(service)
@@ -211,11 +211,11 @@ class CronServiceSlowSpec extends Specification {
         event.cron == CronService.CRON_NOW_AND_STOP
 
         when:
-        event = jexler.takeEvent(MS_1_SEC)
+        event = jexler.takeEvent(MS_2_SEC)
 
         then:
         event instanceof StopEvent
-        jexler.takeEvent(MS_1_SEC) == null
+        jexler.takeEvent(MS_2_SEC) == null
 
         when:
         service.start()
@@ -224,7 +224,7 @@ class CronServiceSlowSpec extends Specification {
         service.state.off
 
         when:
-        event = jexler.takeEvent(MS_1_SEC)
+        event = jexler.takeEvent(MS_2_SEC)
 
         then:
         event.service.is(service)
@@ -232,11 +232,11 @@ class CronServiceSlowSpec extends Specification {
         event.cron == CronService.CRON_NOW_AND_STOP
 
         when:
-        event = jexler.takeEvent(MS_1_SEC)
+        event = jexler.takeEvent(MS_2_SEC)
 
         then:
         event instanceof StopEvent
-        jexler.takeEvent(MS_1_SEC) == null
+        jexler.takeEvent(MS_2_SEC) == null
     }
 
 }
