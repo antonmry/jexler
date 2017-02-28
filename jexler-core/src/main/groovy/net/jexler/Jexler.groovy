@@ -150,51 +150,50 @@ class Jexler implements Service, IssueTracker {
         if (state.on) {
             return
         }
+
         state = ServiceState.BUSY_STARTING
-
         forgetIssues()
-
-        metaConfigAtStart = readMetaConfig()
-        if (!issues.empty) {
-            state = ServiceState.OFF
-            return
-        }
-        if (metaConfigAtStart == null) {
-            // not runnable
-            return
-        }
-
-        // define script binding
         final Jexler jexler = this
-        final Binding binding = new Binding([
-                'jexler' : jexler,
-                'container' : container,
-                'events' : events,
-                'services' : services,
-                'log' : log,
-        ])
 
-        // compile
-        final Class clazz
-        try {
-            clazz = container.grengine.load(file)
-        } catch (Throwable t) {
-            // (may throw almost anything, checked or not)
-            trackIssue(this, 'Script compile failed.', t)
-            state = ServiceState.OFF
-            return
-        }
-
-        // not a runnable script?
-        if (!Script.class.isAssignableFrom(clazz)) {
-            state = ServiceState.OFF
-            return
-        }
-
-        // create script and run in a separate thread
+        // compile, load, create and run in a separate thread
         scriptThread = new Thread(
                 new Runnable() {
                     void run() {
+
+                        // read meta config
+                        metaConfigAtStart = readMetaConfig()
+                        final boolean runnable = metaConfigAtStart != null
+                        if (!runnable || !issues.empty) {
+                            state = ServiceState.OFF
+                            return
+                        }
+
+                        // define script binding
+                        final Binding binding = new Binding([
+                                'jexler' : jexler,
+                                'container' : container,
+                                'events' : events,
+                                'services' : services,
+                                'log' : log,
+                        ])
+
+                        // compile and load class
+                        final Class clazz
+                        try {
+                            clazz = container.grengine.load(file)
+                        } catch (Throwable t) {
+                            // (may throw almost anything, checked or not)
+                            trackIssue(jexler, 'Script compile failed.', t)
+                            state = ServiceState.OFF
+                            return
+                        }
+
+                        // not a runnable script?
+                        if (!Script.class.isAssignableFrom(clazz)) {
+                            state = ServiceState.OFF
+                            return
+                        }
+
                         // create script instance
                         try {
                             script = (Script)clazz.newInstance()
