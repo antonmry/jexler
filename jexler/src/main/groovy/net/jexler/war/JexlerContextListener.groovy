@@ -20,6 +20,7 @@ import net.jexler.Jexler
 import net.jexler.JexlerContainer
 import net.jexler.JexlerUtil
 
+import ch.grengine.Grengine
 import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.core.FileAppender
 import groovy.transform.CompileStatic
@@ -70,15 +71,18 @@ class JexlerContextListener implements ServletContextListener    {
         // Get and log versions (no versions in unit tests or IDE)
         String coreVersion = Jexler.class.package.implementationVersion
         coreVersion = (coreVersion == null) ? '0.0.0' : coreVersion
+        String grengineVersion = Grengine.class.package.implementationVersion
+        grengineVersion = (grengineVersion == null) ? '0.0.0' : grengineVersion
         String groovyVersion = GroovyClassLoader.class.package.implementationVersion
         groovyVersion = (groovyVersion == null) ? '0.0.0' : groovyVersion
         log.info("Welcome to jexler.")
-        log.info("Jexler $GUI_VERSION | jexler-core: $coreVersion | Groovy: $groovyVersion")
+        log.info("Jexler $GUI_VERSION | jexler-core: $coreVersion | Grengine: $grengineVersion | Groovy: $groovyVersion")
 
         // Assemble jexler tooltip
         jexlerTooltip = """\
             Jexler $GUI_VERSION
             • jexler-core: $coreVersion
+            • Grengine: $grengineVersion
             • Groovy: $groovyVersion""".stripIndent()
 
         // Set servlet context
