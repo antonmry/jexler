@@ -4,7 +4,7 @@ image:https://www.jexler.net/jexler.jpg["jexler logo", link="https://www.jexler.
 
 === 3.0.2-SNAPSHOT (20XX-XX-XX)
 
-* ...
+* Using Grengine 1.2.0 for Grape support.
 
 === 3.0.1 (2017-02-28)
 

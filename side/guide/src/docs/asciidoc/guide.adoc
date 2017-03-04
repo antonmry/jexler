@@ -701,25 +701,6 @@ Of course, the generic servlet may also be used to serve a web GUI, with a
 configurable error page and at a location independent of the running jexler
 webapp.
 
-== Troubleshooting
-
-=== Grape Concurrency Issues
-
-There is a bug in Groovy/Grape and Ivy up to at least Groovy 2.4.8 / Ivy 2.4.0.
-Using Grape is simply not thread-safe (unless only a single GroovyClassLoader
-is used), see https://issues.apache.org/jira/browse/GROOVY-7407
-
-This shows especially at startup when autostarting jexlers or later if starting
-all jexlers with autostart set.
-
-By default a workaround is applied, which can be suppressed by setting
-the following system property to false:
-
-* `net.jexler.workaround.groovy.7407.grape.engine.wrap`:
-  If not set or set to "true", the GrapeEngine in the Grape class will be wrapped,
-  so that all Grape calls (@grab etc.) will be synchronized on the Grape.class.
-  See the above link for more details and limitations.
-
 == Source Code
 
 The source code is at github: https://github.com/jexler/jexler
