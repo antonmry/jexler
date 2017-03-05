@@ -25,7 +25,9 @@ subprojects {
   }
 
   dependencies {
-    compile 'org.codehaus.groovy:groovy-all:2.4.8:indy'
+    //compile files('../../groovy/target/libs/groovy-all-2.5.0-SNAPSHOT-indy.jar')
+    //compile files('../../groovy/target/libs/groovy-all-2.5.0-SNAPSHOT.jar')
+    compile 'org.codehaus.groovy:groovy-all:2.4.9:indy'
     compile 'org.apache.ivy:ivy:2.4.0'
     compile('ch.grengine:grengine:1.2.0') {
       exclude group: 'org.codehaus.groovy', module: 'groovy'
