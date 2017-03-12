@@ -4,7 +4,8 @@ image:https://www.jexler.net/jexler.jpg["jexler logo", link="https://www.jexler.
 
 === 3.0.3-SNAPSHOT (20XX-XX-XX)
 
-* ...
+* If removed running jexler source, do not add to sources to
+  compile any more.
 
 === 3.0.2 (2017-03-04)
 

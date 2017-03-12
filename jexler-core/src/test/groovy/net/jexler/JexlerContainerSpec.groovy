@@ -140,11 +140,14 @@ class JexlerContainerSpec extends Specification {
 
         then:
         container.getJexler('Jexler2') == jexler2
+        container.issues.empty
         container.jexlers.size() == 3
 
         when:
         container.stop()
         JexlerUtil.waitForShutdown(container, MS_10_SEC)
+        // remove it now
+        container.refresh()
 
         then:
         container.state == ServiceState.OFF

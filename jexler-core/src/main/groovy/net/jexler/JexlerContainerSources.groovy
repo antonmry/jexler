@@ -63,7 +63,9 @@ class JexlerContainerSources extends BaseSources {
         for (Jexler jexler : jexlerList) {
             if (!jexler.runnable) {
                 File file = jexler.file
-                sourceSet.add(sourceFactory.fromFile(file))
+                if (file.exists()) {
+                    sourceSet.add(sourceFactory.fromFile(file))
+                }
             }
         }
         return sourceSet
