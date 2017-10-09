@@ -24,6 +24,20 @@ Comes as a core library (JAR) plus a web GUI (WAR).
 * or deploy jexler/build/libs/jexler-*.war
 * or deploy jexler-*.war from sourceforge (link below)
 
+== Docker
+
+You can build a Docker image and run it with the following commands:
+
+```
+gradle clean explodedWar
+docker build -t jexler .
+docker run -d -p 8080:8080 -p 8443:8443 jexler
+```
+
+Go to http://localhost:8080/ or http://YOUR_DOCKER_MACHINE_IP:8080/ depending of your configuration.
+
+If you would like to save your jexlers, you can mount as volume the `/var/lib/jetty/webapps/jexler/WEB-INF/jexlers` folder.
+
 == Resources
 
 * Website: https://www.jexler.net/

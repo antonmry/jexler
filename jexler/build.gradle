@@ -12,6 +12,11 @@ war {
   }
 }
 
+task explodedWar(type: Sync) {
+    into "${buildDir}/jexler"
+    with war
+}
+
 dependencies {
   compile project(':jexler-core')
   testCompile project (path: ":jexler-core", configuration: 'testArtifacts')
